@@ -1,4 +1,9 @@
 export type View = 'home' | 'city' | 'detail' | 'login' | 'dashboard' | 'admin'
+
+export interface SearchParams {
+  query: string
+  city?: string
+}
 export type DashboardTab = 'dashboard' | 'visits' | 'addresses' | 'badges'
 export type AdminTab = 'dashboard' | 'establishments' | 'customers' | 'bookings' | 'reviews' | 'badges' | 'invoices' | 'settings'
 
