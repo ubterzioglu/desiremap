@@ -28,6 +28,7 @@
 | #19 | " | 🟣 | Added useTranslations to FeaturedCities | ~50 |
 | #20 | 3:50 PM | 🔴 | Fixed SSR translations with getMessages({ locale }) | ~30 |
 | #21 | 3:55 PM | ✅ | curl verified - all 4 locales render correctly | ~100 |
+| #22 | 4:05 PM | 🔴 | Fixed hydration mismatch (root vs locale layout) | ~50 |
 
 </agents-mem-context>
 
