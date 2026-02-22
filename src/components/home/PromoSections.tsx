@@ -1,0 +1,21 @@
+'use client'
+
+import { ArrowRight, Bell, Check, Crown, Eye, Percent, TrendingUp, Zap } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+
+type PromoSectionsProps = { onLoginRequired: (message: string) => void }
+
+export function PromoSections({ onLoginRequired }: PromoSectionsProps) {
+  const plans = [{ name: 'Basic', price: 'EUR49', features: ['Profilseite', 'Kontaktdaten', '5 Fotos'], popular: false }, { name: 'Premium', price: 'EUR149', features: ['Top Platzierung', 'Unbegrenzte Fotos', 'Verifiziert Badge', 'Reservierungssystem'], popular: true }, { name: 'Sponsored', price: 'EUR299', features: ['Homepage Featured', 'Top Anzeige Badge', 'Statistiken', 'Priority Support'], popular: false }]
+  const benefits = [{ icon: <Zap className="w-6 h-6" />, text: 'Reservierungsprioritaet' }, { icon: <Bell className="w-6 h-6" />, text: 'Auto-Booking' }, { icon: <Percent className="w-6 h-6" />, text: '25% Rabatt' }, { icon: <Eye className="w-6 h-6" />, text: 'Exklusiver Inhalt' }]
+
+  return (
+    <>
+      <section id="premium" className="py-20 bg-gradient-to-b from-[#0a0a0f] to-[#150a15]"><div className="max-w-7xl mx-auto px-6"><motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="relative overflow-hidden rounded-3xl"><div className="absolute inset-0 bg-gradient-to-r from-[#8b1a4a] to-[#6b3fa0]" /><div className="relative z-10 px-8 py-16 md:px-16 md:py-20 text-center"><div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 mb-6"><Crown className="w-10 h-10 text-white" /></div><h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">Premium Mitgliedschaft</h2><p className="text-white/80 max-w-2xl mx-auto mb-8 text-lg">Prioritaets-Reservierung, automatische Buchung bei Verfuegbarkeit und exklusive Rabatte.</p><div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mb-8">{benefits.map((benefit) => <div key={benefit.text} className="bg-white/10 rounded-xl p-4 backdrop-blur-sm"><div className="text-white mb-2 flex justify-center">{benefit.icon}</div><div className="text-white text-sm">{benefit.text}</div></div>)}</div><Button size="lg" onClick={() => onLoginRequired('Sie muessen sich anmelden, um Premium-Funktionen nutzen zu koennen.')} className="bg-white text-[#8b1a4a] hover:bg-white/90 px-8 rounded-full">Jetzt Premium werden <ArrowRight className="w-4 h-4 ml-2" /></Button></div></motion.div></div></section>
+      <section id="werbung" className="py-20 bg-[#0a0a0f]"><div className="max-w-7xl mx-auto px-6"><div className="text-center mb-12"><Badge className="bg-[#8b1a4a]/20 text-[#b76e79] border-[#8b1a4a]/30 mb-4"><TrendingUp className="w-3 h-3 mr-1" /> Fuer Betriebe</Badge><h2 className="text-3xl font-bold text-white mb-4">Werben auf DesireMap.de</h2><p className="text-gray-400">Tausende potenzielle Kunden taeglich erreichen</p></div><div className="grid grid-cols-1 md:grid-cols-3 gap-6">{plans.map((plan) => <div key={plan.name} className={cn('relative p-6 rounded-2xl bg-white/5 backdrop-blur-sm border', plan.popular ? 'border-[#8b1a4a]/50 ring-2 ring-[#8b1a4a]/20' : 'border-white/5')}>{plan.popular && <div className="absolute -top-3 left-1/2 -translate-x-1/2"><Badge className="bg-gradient-to-r from-[#8b1a4a] to-[#6b3fa0] text-white border-0">Beliebt</Badge></div>}<h3 className="text-white font-semibold text-xl mb-2">{plan.name}</h3><div className="text-3xl font-bold text-white mb-4">{plan.price}<span className="text-base font-normal text-gray-400">/Monat</span></div><ul className="space-y-3 mb-6">{plan.features.map((feature) => <li key={feature} className="flex items-center gap-2 text-gray-300 text-sm"><Check className="w-4 h-4 text-green-400" /> {feature}</li>)}</ul><Button onClick={() => onLoginRequired('Sie muessen sich anmelden, um ein Werbepaket buchen zu koennen.')} className={cn('w-full', plan.popular ? 'bg-gradient-to-r from-[#8b1a4a] to-[#6b3fa0] text-white border-0' : 'bg-white/5 hover:bg-white/10 text-white border border-white/10')}>Auswaehlen</Button></div>)}</div></div></section>
+    </>
+  )
+}

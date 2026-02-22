@@ -1,0 +1,33 @@
+'use client'
+
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { Building2, MapPin, Search, Shield, Star, Users } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { germanCities } from '@/data/mock-data'
+import type { Translations } from '@/types'
+
+const starPositions = [{ left: 12, top: 15 }, { left: 25, top: 8 }, { left: 38, top: 22 }, { left: 52, top: 5 }, { left: 67, top: 18 }, { left: 80, top: 12 }, { left: 92, top: 25 }, { left: 8, top: 42 }, { left: 22, top: 55 }, { left: 35, top: 38 }, { left: 48, top: 62 }, { left: 62, top: 45 }, { left: 75, top: 58 }, { left: 88, top: 35 }, { left: 5, top: 72 }, { left: 18, top: 85 }, { left: 32, top: 68 }, { left: 45, top: 92 }, { left: 58, top: 75 }, { left: 72, top: 88 }]
+
+type HeroProps = { translations: Translations['hero']; stats: Translations['stats'] }
+
+export function HeroSection({ translations, stats }: HeroProps) {
+  const [location, setLocation] = useState('')
+  const statItems = [{ icon: <Building2 />, value: '847+', label: stats.establishments }, { icon: <Users />, value: '12.000+', label: stats.ladies }, { icon: <Star />, value: '4.6', label: stats.rating }, { icon: <Shield />, value: '100%', label: stats.verified }]
+
+  return (
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
+      <div className="absolute inset-0 z-0"><img src="/hero-bg.jpg" alt="Atmospheric background" loading="eager" fetchPriority="high" decoding="async" className="absolute inset-0 w-full h-full object-cover" /><div className="absolute inset-0 bg-black/40" /><div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" /><div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/60" /></div>
+      <div className="absolute inset-0 overflow-hidden">{starPositions.map((pos, index) => <motion.div key={index} className="absolute w-1 h-1 bg-white rounded-full" style={{ left: `${pos.left}%`, top: `${pos.top}%` }} animate={{ opacity: [0.2, 0.8, 0.2], scale: [1, 1.5, 1] }} transition={{ duration: 2 + (index % 4), repeat: Infinity, delay: (index % 5) * 0.4 }} />)}</div>
+      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto space-y-8">
+        <motion.h1 initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white tracking-wider">{translations.title}</motion.h1>
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-base sm:text-xl md:text-2xl lg:text-3xl text-gray-300 font-light tracking-wide">{translations.subtitle}</motion.p>
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-gray-400 max-w-2xl mx-auto">{translations.description}</motion.p>
+        <div className="max-w-2xl mx-auto pt-4"><div className="flex flex-col sm:flex-row gap-3 p-2 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10"><div className="relative flex-1"><MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#b76e79]" /><Select value={location} onValueChange={setLocation}><SelectTrigger className="w-full bg-transparent border-0 pl-12 text-white h-12"><SelectValue placeholder={translations.selectCity} /></SelectTrigger><SelectContent className="bg-[#1a1a24] border-[#8b1a4a]/20">{germanCities.map((city) => <SelectItem key={city.name} value={city.name.toLowerCase()} className="text-gray-300 focus:bg-[#8b1a4a]/20 focus:text-white">{city.name} ({city.count})</SelectItem>)}</SelectContent></Select></div><div className="relative flex-[2]"><Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#b76e79]" /><Input placeholder={translations.searchPlaceholder} className="bg-transparent border-0 pl-12 text-white h-12" /></div><Button className="h-12 px-8 bg-gradient-to-r from-[#8b1a4a] to-[#6b3fa0] hover:from-[#a8255c] hover:to-[#7d4fb5] text-white border-0 rounded-xl"><Search className="w-5 h-5 mr-2" />{translations.search}</Button></div></div>
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-6 md:gap-8 pt-6 sm:pt-8">{statItems.map((stat) => <div key={stat.label} className="flex items-center gap-2 sm:gap-3"><div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-white/5 flex items-center justify-center text-[#b76e79]">{stat.icon}</div><div className="text-left"><div className="text-white font-semibold text-sm sm:text-base md:text-lg">{stat.value}</div><div className="text-gray-500 text-xs sm:text-sm">{stat.label}</div></div></div>)}</div>
+      </div>
+    </section>
+  )
+}

@@ -98,3 +98,9 @@ cache/
 # ====================
 examples/
 mini-services/
+# AI Tool skill folders
+.agent/
+.agents/
+.cline/
+.factory/
+.kilocode/

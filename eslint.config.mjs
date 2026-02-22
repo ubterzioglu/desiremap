@@ -7,6 +7,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
+  files: ["**/*.{ts,tsx}"],
+
   rules: {
     // TypeScript rules
     "@typescript-eslint/no-explicit-any": "off",
@@ -42,9 +44,72 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
     "no-undef": "off",
     "no-unreachable": "off",
     "no-useless-escape": "off",
+      /**
+       * DOSYA BOYUTU
+       * GLM için kritik limit
+       */
+    "max-lines": [
+        "error",
+        {
+          max: 200,
+          skipBlankLines: true,
+          skipComments: true,
+        },
+      ],
+
+      /**
+       * COMPONENT / FUNCTION BOYUTU
+       */
+      "max-lines-per-function": [
+        "error",
+        {
+          max: 80,
+          skipBlankLines: true,
+          skipComments: true,
+        },
+      ],
+
+      /**
+       * COMPLEXITY
+       */
+      "complexity": [
+        "warn",
+        8
+      ],
+
+      /**
+       * STATEMENT COUNT
+       */
+      "max-statements": [
+        "warn",
+        40
+      ],
+
+      /**
+       * NESTING
+       */
+      "max-depth": [
+        "warn",
+        3
+      ],
   },
 }, {
-  ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts", "examples/**", "skills"]
+  ignores: [
+    "node_modules/**",
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+    "examples/**",
+    "skills",
+    ".claude/**",
+    ".cline/**",
+    ".factory/**",
+    ".kilocode/**",
+    ".agent/**",
+    ".agents/**",
+    "src/components/ui/**"
+  ]
 }];
 
 export default eslintConfig;
