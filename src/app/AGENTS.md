@@ -26,6 +26,8 @@
 | #17 | " | 🟣 | Added useTranslations to HeroSection with stats | ~120 |
 | #18 | 3:40 PM | 🟣 | Added useTranslations to CategoriesSection | ~60 |
 | #19 | " | 🟣 | Added useTranslations to FeaturedCities | ~50 |
+| #20 | 3:50 PM | 🔴 | Fixed SSR translations with getMessages({ locale }) | ~30 |
+| #21 | 3:55 PM | ✅ | curl verified - all 4 locales render correctly | ~100 |
 
 </agents-mem-context>
 
