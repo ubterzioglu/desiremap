@@ -1,0 +1,89 @@
+{
+  "site": {
+    "name": "DesireMap",
+    "tagline": "Where Desire Meets Reality"
+  },
+  "nav": {
+    "discover": "Discover",
+    "cities": "Cities",
+    "premium": "Premium",
+    "advertise": "Advertise",
+    "login": "Login",
+    "register": "List Business",
+    "myAccount": "My Account"
+  },
+  "hero": {
+    "title": "DESIREMAP",
+    "subtitle": "Where Desire Meets Reality",
+    "description": "Germany's leading directory for exclusive erotic clubs, brothels and FKK saunas. Discreet, verified, elegant.",
+    "searchPlaceholder": "Search for clubs, services...",
+    "selectCity": "Select city...",
+    "search": "Search",
+    "scrollToExplore": "Scroll to explore"
+  },
+  "stats": {
+    "establishments": "Establishments",
+    "ladies": "Ladies",
+    "rating": "Rating",
+    "verified": "Verified"
+  },
+  "categories": {
+    "title": "Explore by Category",
+    "subtitle": "Find exactly what you're looking for",
+    "fkk": "FKK Clubs",
+    "laufhaus": "Laufhaus",
+    "bordell": "Brothels",
+    "studio": "Studios",
+    "privat": "Private",
+    "establishments": "Establishments"
+  },
+  "cities": {
+    "title": "Popular Cities",
+    "subtitle": "Locations"
+  },
+  "listing": {
+    "open": "Open",
+    "closed": "Closed",
+    "premium": "Premium",
+    "verified": "Verified",
+    "top": "TOP",
+    "price": "Price",
+    "reserve": "Reserve",
+    "reviews": "Reviews",
+    "ladies": "Ladies"
+  },
+  "reservation": {
+    "title": "Reservation",
+    "selectDate": "Date",
+    "availableTimes": "Available Times",
+    "duration": "Duration",
+    "autoReserve": "Auto-Reservation",
+    "premiumPriority": "Priority reservation active",
+    "next": "Next",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "complete": "Reservation successful!",
+    "completeMessage": "Your reservation has been confirmed."
+  },
+  "durations": {
+    "30min": "30 Min",
+    "60min": "60 Min",
+    "90min": "90 Min",
+    "120min": "120 Min"
+  },
+  "auth": {
+    "loginRequired": "You must log in to use this feature.",
+    "premiumRequired": "You must log in to use premium features.",
+    "advertiseRequired": "You must log in to book an advertising package.",
+    "registerRequired": "You must log in to list your business."
+  },
+  "footer": {
+    "copyright": "© 2026 DesireMap. All rights reserved."
+  },
+  "languages": {
+    "de": "Deutsch",
+    "en": "English",
+    "ar": "العربية",
+    "tr": "Türkçe"
+  }
+}

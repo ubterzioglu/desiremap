@@ -17,6 +17,11 @@
 | #8 | " | 🟣 | Categories Section mobile padding and sizing | ~150 |
 | #9 | 2:40 PM | 🟣 | Featured Cities mobile grid and card sizing | ~120 |
 | #10 | " | 🟣 | Listing Cards mobile layout optimization | ~200 |
+| #11 | 3:05 PM | 🟣 | i18n setup: next-intl config, routing, request | ~150 |
+| #12 | " | 🟣 | Created translation files (de, en, ar, tr) | ~300 |
+| #13 | 3:10 PM | 🟣 | Created [locale] layout with metadata | ~200 |
+| #14 | " | 🟣 | Created LanguageSelector component | ~80 |
+| #15 | 3:15 PM | ✅ | Build successful with i18n routing | ~50 |
 
 </agents-mem-context>
 

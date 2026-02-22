@@ -1,0 +1,89 @@
+{
+  "site": {
+    "name": "DesireMap",
+    "tagline": "Where Desire Meets Reality"
+  },
+  "nav": {
+    "discover": "Keşfet",
+    "cities": "Şehirler",
+    "premium": "Premium",
+    "advertise": "Reklam Ver",
+    "login": "Giriş",
+    "register": "İşletme Ekle",
+    "myAccount": "Hesabım"
+  },
+  "hero": {
+    "title": "DESIREMAP",
+    "subtitle": "Where Desire Meets Reality",
+    "description": "Almanya'nın seçkin erotik kulüpler, genelevler ve FKK saunaları için önde gelen rehberi. Gizli, doğrulanmış, zarif.",
+    "searchPlaceholder": "Kulüp, hizmet ara...",
+    "selectCity": "Şehir seç...",
+    "search": "Ara",
+    "scrollToExplore": "Scroll to explore"
+  },
+  "stats": {
+    "establishments": "İşletme",
+    "ladies": "Bayan",
+    "rating": "Puan",
+    "verified": "Doğrulanmış"
+  },
+  "categories": {
+    "title": "Kategoriye Göre Keşfet",
+    "subtitle": "Aradığınızı tam olarak bulun",
+    "fkk": "FKK Kulüpler",
+    "laufhaus": "Laufhaus",
+    "bordell": "Genelevler",
+    "studio": "Stüdyolar",
+    "privat": "Özel",
+    "establishments": "İşletme"
+  },
+  "cities": {
+    "title": "Popüler Şehirler",
+    "subtitle": "Konumlar"
+  },
+  "listing": {
+    "open": "Açık",
+    "closed": "Kapalı",
+    "premium": "Premium",
+    "verified": "Doğrulanmış",
+    "top": "EN İYİ",
+    "price": "Fiyat",
+    "reserve": "Rezerve Et",
+    "reviews": "Değerlendirme",
+    "ladies": "Bayan"
+  },
+  "reservation": {
+    "title": "Rezervasyon",
+    "selectDate": "Tarih",
+    "availableTimes": "Müsait Saatler",
+    "duration": "Süre",
+    "autoReserve": "Otomatik Rezervasyon",
+    "premiumPriority": "Öncelikli rezervasyon aktif",
+    "next": "İleri",
+    "confirm": "Onayla",
+    "cancel": "İptal",
+    "complete": "Rezervasyon başarılı!",
+    "completeMessage": "Rezervasyonunuz onaylandı."
+  },
+  "durations": {
+    "30min": "30 Dak",
+    "60min": "60 Dak",
+    "90min": "90 Dak",
+    "120min": "120 Dak"
+  },
+  "auth": {
+    "loginRequired": "Bu özelliği kullanmak için giriş yapmalısınız.",
+    "premiumRequired": "Premium özellikleri kullanmak için giriş yapmalısınız.",
+    "advertiseRequired": "Reklam paketi satın almak için giriş yapmalısınız.",
+    "registerRequired": "İşletmenizi eklemek için giriş yapmalısınız."
+  },
+  "footer": {
+    "copyright": "© 2026 DesireMap. Tüm hakları saklıdır."
+  },
+  "languages": {
+    "de": "Deutsch",
+    "en": "English",
+    "ar": "العربية",
+    "tr": "Türkçe"
+  }
+}

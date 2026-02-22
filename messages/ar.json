@@ -1,0 +1,89 @@
+{
+  "site": {
+    "name": "DesireMap",
+    "tagline": "Where Desire Meets Reality"
+  },
+  "nav": {
+    "discover": "استكشف",
+    "cities": "المدن",
+    "premium": "بريميوم",
+    "advertise": "الإعلان",
+    "login": "تسجيل الدخول",
+    "register": "إضافة عمل",
+    "myAccount": "حسابي"
+  },
+  "hero": {
+    "title": "DESIREMAP",
+    "subtitle": "Where Desire Meets Reality",
+    "description": "الدليل الرائد في ألمانيا لأندية الإروتيك الحصرية وبيوت الدعارة وساونات FKK. سرية، موثقة، أنيقة.",
+    "searchPlaceholder": "ابحث عن أندية، خدمات...",
+    "selectCity": "اختر مدينة...",
+    "search": "بحث",
+    "scrollToExplore": "Scroll to explore"
+  },
+  "stats": {
+    "establishments": "منشأة",
+    "ladies": "سيدات",
+    "rating": "التقييم",
+    "verified": "موثق"
+  },
+  "categories": {
+    "title": "استكشف حسب الفئة",
+    "subtitle": "ابحث عما تريده بالضبط",
+    "fkk": "أندية FKK",
+    "laufhaus": "لاوفهاوس",
+    "bordell": "بيوت الدعارة",
+    "studio": "استوديوهات",
+    "privat": "خاص",
+    "establishments": "منشأة"
+  },
+  "cities": {
+    "title": "المدن الشائعة",
+    "subtitle": "المواقع"
+  },
+  "listing": {
+    "open": "مفتوح",
+    "closed": "مغلق",
+    "premium": "بريميوم",
+    "verified": "موثق",
+    "top": "الأفضل",
+    "price": "السعر",
+    "reserve": "حجز",
+    "reviews": "تقييمات",
+    "ladies": "سيدات"
+  },
+  "reservation": {
+    "title": "الحجز",
+    "selectDate": "التاريخ",
+    "availableTimes": "الأوقات المتاحة",
+    "duration": "المدة",
+    "autoReserve": "الحجز التلقائي",
+    "premiumPriority": "الحجز الأولوي نشط",
+    "next": "التالي",
+    "confirm": "تأكيد",
+    "cancel": "إلغاء",
+    "complete": "تم الحجز بنجاح!",
+    "completeMessage": "تم تأكيد حجزك."
+  },
+  "durations": {
+    "30min": "30 دقيقة",
+    "60min": "60 دقيقة",
+    "90min": "90 دقيقة",
+    "120min": "120 دقيقة"
+  },
+  "auth": {
+    "loginRequired": "يجب تسجيل الدخول لاستخدام هذه الميزة.",
+    "premiumRequired": "يجب تسجيل الدخول لاستخدام ميزات بريميوم.",
+    "advertiseRequired": "يجب تسجيل الدخول لحجز حزمة إعلانية.",
+    "registerRequired": "يجب تسجيل الدخول لإضافة عملك."
+  },
+  "footer": {
+    "copyright": "© 2026 DesireMap. جميع الحقوق محفوظة."
+  },
+  "languages": {
+    "de": "Deutsch",
+    "en": "English",
+    "ar": "العربية",
+    "tr": "Türkçe"
+  }
+}
