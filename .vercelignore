@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+*.log
+.env*
+!.env.example
+examples/
+prisma/
+db/
+download/
+upload/
+.zscripts/
+mini-services/
+*.md
+bun.lock
