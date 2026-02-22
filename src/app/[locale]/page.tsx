@@ -1102,6 +1102,7 @@ function ListingsSection({ onDetailClick }: { onDetailClick: (bordell: Bordell) 
           >
             Empfehlungen
           </motion.span>
+            {/* TODO: Aşağıdaki kısım Çeviri olmamış */}
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">
             Ausgewählte Betriebe
           </h2>

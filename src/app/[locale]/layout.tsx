@@ -1,8 +1,19 @@
 import type { Metadata, Viewport } from 'next'
+import { Geist, Geist_Mono } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { Toaster } from '@/components/ui/toaster'
+
+const geistSans = Geist({
+  variable: '--font-geist-sans',
+  subsets: ['latin']
+})
+
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
+  subsets: ['latin']
+})
 
 const siteUrl = 'https://desiremap.de'
 
@@ -109,7 +120,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} className="dark" suppressHydrationWarning dir={locale === 'ar' ? 'rtl' : 'ltr'}>
-      <body className="antialiased bg-background text-foreground font-sans">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
         <NextIntlClientProvider messages={messages}>
           {children}
