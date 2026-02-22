@@ -22,6 +22,10 @@
 | #13 | 3:10 PM | 🟣 | Created [locale] layout with metadata | ~200 |
 | #14 | " | 🟣 | Created LanguageSelector component | ~80 |
 | #15 | 3:15 PM | ✅ | Build successful with i18n routing | ~50 |
+| #16 | 3:35 PM | 🟣 | Added useTranslations to Header component | ~80 |
+| #17 | " | 🟣 | Added useTranslations to HeroSection with stats | ~120 |
+| #18 | 3:40 PM | 🟣 | Added useTranslations to CategoriesSection | ~60 |
+| #19 | " | 🟣 | Added useTranslations to FeaturedCities | ~50 |
 
 </agents-mem-context>
 

@@ -372,6 +372,7 @@ const fadeInUp = {
 
 // Header
 function Header({ onLoginClick, isLoggedIn, onDashboardClick }: { onLoginClick: (message?: string) => void; isLoggedIn?: boolean; onDashboardClick?: () => void }) {
+  const t = useTranslations('nav')
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -403,10 +404,10 @@ function Header({ onLoginClick, isLoggedIn, onDashboardClick }: { onLoginClick: 
           </a>
 
           <nav className="hidden md:flex items-center gap-8">
-            <a href="#" className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">Entdecken</a>
-            <a href="#" className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">Städte</a>
-            <button onClick={() => onLoginClick('premium')} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">Premium</button>
-            <button onClick={() => onLoginClick('advertise')} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">Werben</button>
+            <a href="#" className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{t('discover')}</a>
+            <a href="#" className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{t('cities')}</a>
+            <button onClick={() => onLoginClick('premium')} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{t('premium')}</button>
+            <button onClick={() => onLoginClick('advertise')} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{t('advertise')}</button>
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-3">
@@ -420,14 +421,14 @@ function Header({ onLoginClick, isLoggedIn, onDashboardClick }: { onLoginClick: 
                   className="text-gray-300 hover:text-white"
                 >
                   <User className="w-4 h-4 mr-2" />
-                  Mein Konto
+                  {t('myAccount')}
                 </Button>
                 <Button 
                   size="sm" 
-                  onClick={() => onLoginClick('Sie müssen sich anmelden, um Ihren Betrieb einzutragen.')}
+                  onClick={() => onLoginClick('register')}
                   className="bg-gradient-to-r from-[#8b1a4a] to-[#6b3fa0] hover:from-[#a8255c] hover:to-[#7d4fb5] text-white border-0 rounded-full px-5"
                 >
-                  Eintragen
+                  {t('register')}
                 </Button>
               </>
             ) : (
@@ -439,14 +440,14 @@ function Header({ onLoginClick, isLoggedIn, onDashboardClick }: { onLoginClick: 
                   className="hidden sm:flex text-gray-300 hover:text-white"
                 >
                   <LogIn className="w-4 h-4 mr-2" />
-                  Anmelden
+                  {t('login')}
                 </Button>
                 <Button 
                   size="sm" 
-                  onClick={() => onLoginClick('Sie müssen sich anmelden, um Ihren Betrieb einzutragen.')}
+                  onClick={() => onLoginClick('register')}
                   className="bg-gradient-to-r from-[#8b1a4a] to-[#6b3fa0] hover:from-[#a8255c] hover:to-[#7d4fb5] text-white border-0 rounded-full px-5"
                 >
-                  Eintragen
+                  {t('register')}
                 </Button>
               </>
             )}
@@ -456,15 +457,14 @@ function Header({ onLoginClick, isLoggedIn, onDashboardClick }: { onLoginClick: 
           </div>
         </div>
 
-        {/* Mobile Menu */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="md:hidden mt-6 pb-4">
               <nav className="flex flex-col gap-4">
-                <a href="#" className="text-gray-300 hover:text-white transition-colors py-2">Entdecken</a>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors py-2">Städte</a>
-                <button onClick={() => { setMobileMenuOpen(false); onLoginClick('Sie müssen sich anmelden, um Premium-Funktionen nutzen zu können.'); }} className="text-left text-gray-300 hover:text-white transition-colors py-2">Premium</button>
-                <button onClick={() => { setMobileMenuOpen(false); onLoginClick('Sie müssen sich anmelden, um ein Werbepaket buchen zu können.'); }} className="text-left text-gray-300 hover:text-white transition-colors py-2">Werben</button>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors py-2">{t('discover')}</a>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors py-2">{t('cities')}</a>
+                <button onClick={() => { setMobileMenuOpen(false); onLoginClick('premium'); }} className="text-left text-gray-300 hover:text-white transition-colors py-2">{t('premium')}</button>
+                <button onClick={() => { setMobileMenuOpen(false); onLoginClick('advertise'); }} className="text-left text-gray-300 hover:text-white transition-colors py-2">{t('advertise')}</button>
               </nav>
             </motion.div>
           )}
@@ -490,6 +490,8 @@ const starPositions = [
 
 // Hero Section - LUMINA Style
 function HeroSection() {
+  const t = useTranslations('hero')
+  const tStats = useTranslations('stats')
   const [location, setLocation] = useState('')
 
   return (
@@ -540,7 +542,6 @@ function HeroSection() {
       <div className="absolute top-1/4 left-1/4 w-[200px] h-[200px] sm:w-[300px] sm:h-[300px] md:w-[500px] md:h-[500px] bg-[#8b1a4a]/20 rounded-full blur-[80px] sm:blur-[100px] md:blur-[120px]" />
       <div className="absolute bottom-1/4 right-1/4 w-[150px] h-[150px] sm:w-[250px] sm:h-[250px] md:w-[400px] md:h-[400px] bg-[#6b3fa0]/20 rounded-full blur-[60px] sm:blur-[80px] md:blur-[100px]" />
 
-      {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -548,37 +549,33 @@ function HeroSection() {
           transition={{ duration: 0.8 }}
           className="space-y-8"
         >
-          {/* Main Title */}
           <motion.h1
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white tracking-wider"
           >
-            DESIREMAP
+            {t('title')}
           </motion.h1>
 
-          {/* Subtitle */}
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
             className="text-base sm:text-xl md:text-2xl lg:text-3xl text-gray-300 font-light tracking-wide"
           >
-            Where Desire Meets Reality
+            {t('subtitle')}
           </motion.p>
 
-          {/* Description */}
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.5 }}
             className="text-gray-400 max-w-2xl mx-auto"
           >
-            Deutschlands führendes Verzeichnis für exklusive Erotik-Clubs, Bordelle und FKK-Saunen. Diskret, verifiziert, elegant.
+            {t('description')}
           </motion.p>
 
-          {/* Search Bar */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -586,12 +583,11 @@ function HeroSection() {
             className="max-w-2xl mx-auto pt-4"
           >
             <div className="flex flex-col sm:flex-row gap-3 p-2 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10">
-              {/* Location */}
               <div className="relative flex-1">
                 <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#b76e79]" />
                 <Select value={location} onValueChange={setLocation}>
                   <SelectTrigger className="w-full bg-transparent border-0 pl-12 text-white placeholder:text-gray-500 focus:ring-0 h-12">
-                    <SelectValue placeholder="Stadt wählen..." />
+                    <SelectValue placeholder={t('selectCity')} />
                   </SelectTrigger>
                   <SelectContent className="bg-[#1a1a24] border-[#8b1a4a]/20">
                     {germanCities.map((city) => (
@@ -603,24 +599,21 @@ function HeroSection() {
                 </Select>
               </div>
 
-              {/* Search Input */}
               <div className="relative flex-[2]">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#b76e79]" />
                 <Input
-                  placeholder="Suche nach Clubs, Services..."
+                  placeholder={t('searchPlaceholder')}
                   className="bg-transparent border-0 pl-12 text-white placeholder:text-gray-500 focus:ring-0 h-12"
                 />
               </div>
 
-              {/* Search Button */}
               <Button className="h-12 px-8 bg-gradient-to-r from-[#8b1a4a] to-[#6b3fa0] hover:from-[#a8255c] hover:to-[#7d4fb5] text-white border-0 rounded-xl">
                 <Search className="w-5 h-5 mr-2" />
-                Suchen
+                {t('search')}
               </Button>
             </div>
           </motion.div>
 
-          {/* Quick Stats */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -628,10 +621,10 @@ function HeroSection() {
             className="flex flex-wrap justify-center gap-3 sm:gap-6 md:gap-8 pt-6 sm:pt-8"
           >
             {[
-              { icon: <Building2 />, value: '847+', label: 'Betriebe' },
-              { icon: <Users />, value: '12.000+', label: 'Damen' },
-              { icon: <Star />, value: '4.6', label: 'Bewertung' },
-              { icon: <Shield />, value: '100%', label: 'Verifiziert' }
+              { icon: <Building2 />, value: '847+', label: tStats('establishments') },
+              { icon: <Users />, value: '12.000+', label: tStats('ladies') },
+              { icon: <Star />, value: '4.6', label: tStats('rating') },
+              { icon: <Shield />, value: '100%', label: tStats('verified') }
             ].map((stat) => (
               <div key={stat.label} className="flex items-center gap-2 sm:gap-3">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-white/5 flex items-center justify-center text-[#b76e79]">
@@ -647,14 +640,13 @@ function HeroSection() {
         </motion.div>
       </div>
 
-      {/* Scroll Indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       >
-        <span className="text-gray-500 text-sm">Scroll to explore</span>
+        <span className="text-gray-500 text-sm">{t('scrollToExplore')}</span>
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
@@ -673,6 +665,7 @@ function HeroSection() {
 
 // Categories Section - Redesigned
 function CategoriesSection() {
+  const t = useTranslations('categories')
   return (
     <section className="relative py-12 sm:py-16 md:py-24 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-black via-[#0a0810] to-[#0f0f14]" />
@@ -693,13 +686,13 @@ function CategoriesSection() {
             viewport={{ once: true }}
             className="inline-block text-[#b76e79] text-xs sm:text-sm font-medium tracking-widest uppercase mb-3 sm:mb-4"
           >
-            Kategorien
+            {t('title')}
           </motion.span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4">
-            Nach Kategorie entdecken
+            {t('title')}
           </h2>
           <p className="text-gray-400 text-sm sm:text-base md:text-lg max-w-xl mx-auto">
-            Finde genau das, was du suchst
+            {t('subtitle')}
           </p>
         </motion.div>
 
@@ -746,6 +739,7 @@ function CategoriesSection() {
 
 // Featured Cities - Redesigned
 function FeaturedCities({ onCityClick }: { onCityClick: (city: string) => void }) {
+  const t = useTranslations('cities')
   return (
     <section className="relative py-12 sm:py-16 md:py-24 bg-[#0f0f14] overflow-hidden">
       <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
@@ -766,10 +760,10 @@ function FeaturedCities({ onCityClick }: { onCityClick: (city: string) => void }
               viewport={{ once: true }}
               className="inline-block text-[#b76e79] text-xs sm:text-sm font-medium tracking-widest uppercase mb-2 sm:mb-3"
             >
-              Standorte
+              {t('subtitle')}
             </motion.span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white">
-              Beliebte Städte
+              {t('title')}
             </h2>
           </div>
         </motion.div>
