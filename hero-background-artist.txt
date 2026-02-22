@@ -1,1 +1,12 @@
-https://pixabay.com/photos/woman-boudoir-underwear-8054232/
+homepage:
+    hero:
+        - https://pixabay.com/photos/woman-boudoir-underwear-8054232/
+        - Sunriseforever
+    featured_cities:
+        - https://pixabay.com/photos/woman-beauty-fashion-glamour-5635437/
+        - innamykytas
+search_page:
+    header_background:
+    - https://pixabay.com/photos/adult-attractive-beautiful-beauty-10109858/
+    - u_c77a8ky15j
+

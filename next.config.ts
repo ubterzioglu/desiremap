@@ -6,7 +6,11 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 const nextConfig: NextConfig = {
   output: 'standalone',
   reactStrictMode: false,
-  typedRoutes: true
+  typedRoutes: true,
+  typescript: {
+    tsconfigPath:"tsconfig.json",
+    ignoreBuildErrors:false
+  }
 }
 
 export default withNextIntl(nextConfig)

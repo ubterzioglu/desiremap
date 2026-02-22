@@ -1,6 +1,11 @@
 {
   "version": 1,
   "skills": {
+    "component-refactoring": {
+      "source": "langgenius/dify",
+      "sourceType": "github",
+      "computedHash": "98d951503a52e094d701a15fedfe9448d1dffa7f50cc075c2e8483a3cb754c10"
+    },
     "frontend-design": {
       "source": "anthropics/skills",
       "sourceType": "github",
@@ -11,6 +16,11 @@
       "sourceType": "github",
       "computedHash": "f86a7b1a3c840d7f9eb289387b875fee81c10f4acba37960e895e45bceae0520"
     },
+    "next-best-practices": {
+      "source": "vercel-labs/next-skills",
+      "sourceType": "github",
+      "computedHash": "515ba75178bd44875812d9a560bdf14651f86709f89cf1d4f209638e879807f3"
+    },
     "nextjs-seo": {
       "source": "laguagu/claude-code-nextjs-skills",
       "sourceType": "github",
@@ -20,6 +30,16 @@
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
       "computedHash": "6bd4cde58bb701b5dc90a0fae2f0ea3efc7c3e6fd2ae754083fa659930e7d39f"
+    },
+    "systematic-debugging": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "computedHash": "72e9ab72627e4fd8ed26a582e82309a98ecdc4f6e1c99418430ac05682c9e91d"
+    },
+    "test-driven-development": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "computedHash": "126f1ebf6ccd414f42544f6e83d8cc5adb089e1108eaffb7c400701e37eecd9f"
     },
     "web-design-guidelines": {
       "source": "vercel-labs/agent-skills",
