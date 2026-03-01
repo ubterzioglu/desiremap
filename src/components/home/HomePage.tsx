@@ -28,7 +28,7 @@ export function HomePage({ locale, onCityClick, onBordellClick, onLoginRequired 
         translations={{ title: hero('title'), subtitle: hero('subtitle'), description: hero('description'), searchPlaceholder: hero('searchPlaceholder'), selectCity: hero('selectCity'), search: hero('search'), scrollToExplore: hero('scrollToExplore') }} 
         stats={{ establishments: stats('establishments'), ladies: stats('ladies'), rating: stats('rating'), verified: stats('verified') }}
       />
-      <CategoriesSection translations={{ title: categories('title'), subtitle: categories('subtitle') }} />
+      <CategoriesSection locale={locale} translations={{ title: categories('title'), subtitle: categories('subtitle') }} />
       <FeaturedCities onCityClick={onCityClick} translations={{ title: cities('title'), subtitle: cities('subtitle') }} />
       <ListingsSection bordells={bordells} onBordellClick={onBordellClick} />
       <PromoSections onLoginRequired={onLoginRequired} />

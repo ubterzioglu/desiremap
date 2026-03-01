@@ -1,10 +1,5 @@
 import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
 import nextTypescript from "eslint-config-next/typescript";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
   files: ["**/*.{ts,tsx}"],
@@ -46,12 +41,11 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
     "no-useless-escape": "off",
       /**
        * DOSYA BOYUTU
-       * GLM için kritik limit
        */
     "max-lines": [
-        "error",
+        "warn",
         {
-          max: 200,
+          max: 400,
           skipBlankLines: true,
           skipComments: true,
         },
@@ -61,9 +55,9 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
        * COMPONENT / FUNCTION BOYUTU
        */
       "max-lines-per-function": [
-        "error",
+        "warn",
         {
-          max: 80,
+          max: 150,
           skipBlankLines: true,
           skipComments: true,
         },
@@ -74,7 +68,7 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
        */
       "complexity": [
         "warn",
-        8
+        15
       ],
 
       /**

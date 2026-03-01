@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useTranslations, useLocale } from 'next-intl'
-import { bordells, mockUser } from '@/data/mock-data'
+import { bordells } from '@/data/mock-data'
 import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
 import { HomePage } from '@/components/home/HomePage'
@@ -34,15 +34,15 @@ function ViewDetail(props: { bordell: Bordell; hasCity: boolean; handlers: Handl
 }
 
 function ViewLogin(props: { loginMessage?: string; handlers: Handlers }) {
-  return <LoginPage key="login" onBack={props.handlers.onBackHome} loginMessage={props.loginMessage} onLogin={props.handlers.onLogin} onAdminLogin={props.handlers.onAdminLogin} />
+  return <LoginPage key="login" onBack={props.handlers.onBackHome} loginMessage={props.loginMessage} onAdminLogin={props.handlers.onAdminLogin} />
 }
 
-function ViewDashboard(props: { onLogout: () => void }) {
-  return <DashboardPage key="dashboard" user={mockUser} onLogout={props.onLogout} />
+function ViewDashboard() {
+  return <DashboardPage key="dashboard" />
 }
 
-function ViewAdmin(props: { onLogout: () => void }) {
-  return <AdminPanel key="admin" onLogout={props.onLogout} />
+function ViewAdmin() {
+  return <AdminPanel key="admin" />
 }
 
 export default function Home() {
@@ -71,8 +71,8 @@ export default function Home() {
       city: selectedCity ? <ViewCity city={selectedCity} handlers={handlers} /> : null,
       detail: selectedBordell ? <ViewDetail bordell={selectedBordell} hasCity={!!selectedCity} handlers={handlers} /> : null,
       login: <ViewLogin loginMessage={loginMessage} handlers={handlers} />,
-      dashboard: isLoggedIn ? <ViewDashboard onLogout={handlers.onLogout} /> : null,
-      admin: isAdmin ? <ViewAdmin onLogout={handlers.onLogout} /> : null
+      dashboard: <ViewDashboard />,
+      admin: <ViewAdmin />
     }
     return viewMap[view]
   }
