@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useTranslations, useLocale } from 'next-intl'
 import { bordells } from '@/data/mock-data'
@@ -19,7 +20,7 @@ function useNavTranslations() {
   return { discover: t('discover'), cities: t('cities'), premium: t('premium'), advertise: t('advertise'), login: t('login'), register: t('register'), myAccount: t('myAccount') }
 }
 
-type Handlers = { onCityClick: (city: string) => void; onBordellClick: (bordell: Bordell) => void; onBackHome: () => void; onBackCity: () => void; onLogin: () => void; onAdminLogin: () => void; onLogout: () => void }
+type Handlers = { onCityClick: (city: string) => void; onBordellClick: (bordell: Bordell) => void; onBackHome: () => void; onBackCity: () => void; onLogin: () => void; onAdminLogin: () => void; onLogout: () => void; onRegister: () => void }
 
 function ViewHome(props: { locale: string; onCityClick: (city: string) => void; onBordellClick: (bordell: Bordell) => void; onLoginRequired: (message?: string) => void }) {
   return <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><HomePage {...props} /></motion.div>
@@ -34,7 +35,7 @@ function ViewDetail(props: { bordell: Bordell; hasCity: boolean; handlers: Handl
 }
 
 function ViewLogin(props: { loginMessage?: string; handlers: Handlers }) {
-  return <LoginPage key="login" onBack={props.handlers.onBackHome} loginMessage={props.loginMessage} onAdminLogin={props.handlers.onAdminLogin} />
+  return <LoginPage key="login" onBack={props.handlers.onBackHome} loginMessage={props.loginMessage} onAdminLogin={props.handlers.onAdminLogin} onRegister={props.handlers.onRegister} />
 }
 
 function ViewDashboard() {
@@ -46,6 +47,7 @@ function ViewAdmin() {
 }
 
 export default function Home() {
+  const router = useRouter()
   const locale = useLocale()
   const [view, setView] = useState<View>('home')
   const [selectedCity, setSelectedCity] = useState<string | null>(null)
@@ -63,7 +65,8 @@ export default function Home() {
     onBackCity: () => { setView('city'); setSelectedBordell(null); toTop() },
     onLogin: () => { setIsLoggedIn(true); setLoginMessage(undefined); setView('dashboard'); toTop() },
     onAdminLogin: () => { setIsAdmin(true); setView('admin'); toTop() },
-    onLogout: () => { setIsLoggedIn(false); setIsAdmin(false); setView('home'); toTop() }
+    onLogout: () => { setIsLoggedIn(false); setIsAdmin(false); setView('home'); toTop() },
+    onRegister: () => { router.push('/de/register') }
   }
   const renderView = () => {
     const viewMap: Record<View, React.ReactNode> = {

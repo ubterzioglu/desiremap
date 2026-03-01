@@ -10,6 +10,7 @@ export default function Login() {
     <LoginPage
       onBack={() => router.push('/de')}
       onAdminLogin={() => router.push('/de/admin')}
+      onRegister={() => router.push('/de/register')}
     />
   )
 }
