@@ -1,14 +1,15 @@
 const siteUrl = 'https://desiremap.de'
 const companyName = 'DesireMap'
 
-// Product Listings für Homepage
+// Product Listings für Homepage - URLs point to actual product detail pages
 const productListings = [
   {
     id: '1',
     name: 'Artemis Berlin',
+    slug: 'artemis-berlin',
     description: 'Berlins größtes FKK Club mit exklusivem Wellness-Bereich, mehreren Saunen und einer eleganten Bar. Diskretes Ambiente mit höchsten Standards.',
     image: `${siteUrl}/covers/artemis-bg.jpg`,
-    url: `${siteUrl}/de/search?category=fkk`,
+    url: `${siteUrl}/de/bordell/artemis-berlin`,
     brand: companyName,
     sku: 'FKK-BERLIN-001',
     mpn: 'ARTEMIS-001',
@@ -21,9 +22,10 @@ const productListings = [
   {
     id: '2',
     name: 'Pascha Köln',
+    slug: 'pascha-koln',
     description: 'Europas größtes Laufhaus mit 7 Etagen und über 120 Damen. 24 Stunden geöffnet, perfekte Erreichbarkeit im Zentrum von Köln.',
     image: `${siteUrl}/covers/pascha-bg.jpg`,
-    url: `${siteUrl}/de/search?category=laufhaus`,
+    url: `${siteUrl}/de/bordell/pascha-koln`,
     brand: companyName,
     sku: 'LAUF-KOELN-001',
     mpn: 'PASCHA-001',
@@ -36,9 +38,10 @@ const productListings = [
   {
     id: '3',
     name: 'Café del Sol Hamburg',
+    slug: 'cafe-del-sol-hamburg',
     description: 'Exklusives Bordell in Hamburg mit diskreter Atmosphäre, privaten Zimmern und einer gemütlichen Bar.',
     image: `${siteUrl}/covers/cafe-del-sol-bg.jpg`,
-    url: `${siteUrl}/de/search?category=bordell`,
+    url: `${siteUrl}/de/bordell/cafe-del-sol-hamburg`,
     brand: companyName,
     sku: 'BORD-HAMBURG-001',
     mpn: 'CAFE-001',
@@ -51,9 +54,10 @@ const productListings = [
   {
     id: '4',
     name: 'Paradise Stuttgart',
+    slug: 'paradise-stuttgart',
     description: 'Premium FKK Club in Stuttgart mit großzügigem Außenbereich, Pool und entspannter Gartenlandschaft.',
     image: `${siteUrl}/covers/paradise-bg.jpg`,
-    url: `${siteUrl}/de/search?category=fkk`,
+    url: `${siteUrl}/de/bordell/paradise-stuttgart`,
     brand: companyName,
     sku: 'FKK-STUTTGART-001',
     mpn: 'PARADISE-001',
@@ -66,9 +70,10 @@ const productListings = [
   {
     id: '5',
     name: 'Royal München',
+    slug: 'royal-munchen',
     description: 'Zentrales Laufhaus in München mit 3 Etagen und einer einladenden Bar.',
     image: `${siteUrl}/covers/royal-bg.jpg`,
-    url: `${siteUrl}/de/search?category=laufhaus`,
+    url: `${siteUrl}/de/bordell/royal-munchen`,
     brand: companyName,
     sku: 'LAUF-MUENCHEN-001',
     mpn: 'ROYAL-001',
@@ -81,9 +86,10 @@ const productListings = [
   {
     id: '6',
     name: 'Diamond Frankfurt',
+    slug: 'diamond-frankfurt',
     description: 'Exklusives Ambiente im Herzen von Frankfurt. VIP Suiten mit höchstem Komfort und absoluter Diskretion.',
     image: `${siteUrl}/covers/diamond-bg.jpg`,
-    url: `${siteUrl}/de/search?category=bordell`,
+    url: `${siteUrl}/de/bordell/diamond-frankfurt`,
     brand: companyName,
     sku: 'BORD-FRANKFURT-001',
     mpn: 'DIAMOND-001',
