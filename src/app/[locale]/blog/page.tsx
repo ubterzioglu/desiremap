@@ -12,8 +12,8 @@ export async function generateMetadata({
   const siteUrl = 'https://desiremap.de'
 
   return {
-    title: 'Blog | DesireMap - Premium Erotik Hizmetler Pazar Yeri',
-    description: 'DesireMap blogunda erotik sektörü hakkında makaleler, rehberler ve ipuçları bulabilirsiniz. FKK Club, Laufhaus ve Bordell mekanları hakkında detaylı bilgiler.',
+    title: 'Blog | DesireMap - Premium Erotik Guide',
+    description: 'Der DesireMap Blog bietet Guides, Tipps und Informationen zu FKK Clubs, Laufhäusern und Bordellen in Deutschland. Entdecken Sie verifizierte Premium-Betriebe.',
     alternates: {
       canonical: `${siteUrl}/${locale}/blog`,
       languages: {
@@ -27,7 +27,7 @@ export async function generateMetadata({
       type: 'website',
       url: `${siteUrl}/${locale}/blog`,
       title: 'Blog | DesireMap',
-      description: 'DesireMap blogunda erotik sektörü hakkında makaleler, rehberler ve ipuçları.',
+      description: 'Guides und Tipps zu erotischen Dienstleistungen in Deutschland.',
       siteName: 'DesireMap'
     }
   }
@@ -44,12 +44,13 @@ export default async function BlogPage({
     <div className="min-h-screen bg-gradient-to-b from-[#0a0a12] to-[#1a1a24]">
       {/* Hero Section */}
       <section className="relative py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#8b1a4a]/10 to-transparent" />
+        <div className="max-w-4xl mx-auto text-center relative z-10">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
             DesireMap Blog
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Erotik sektörü hakkında rehberler, incelemeler ve en güncel bilgiler
+            Guides, Tipps und Einblicke zu FKK Clubs, Laufhäusern und Bordellen in Deutschland
           </p>
         </div>
       </section>
@@ -105,7 +106,7 @@ export default async function BlogPage({
                     </div>
                     <div className="flex items-center gap-1">
                       <Clock className="w-4 h-4" />
-                      <span>{Math.ceil(post.wordCount / 200)} dk</span>
+                      <span>{Math.ceil(post.wordCount / 200)} Min.</span>
                     </div>
                   </div>
 
@@ -116,7 +117,7 @@ export default async function BlogPage({
                         key={tag}
                         className="px-2 py-1 bg-white/5 text-gray-400 text-xs rounded"
                       >
-                        {tag}
+                        #{tag}
                       </span>
                     ))}
                   </div>
@@ -124,6 +125,24 @@ export default async function BlogPage({
               </article>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 px-4 border-t border-white/10">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-2xl font-bold text-white mb-4">
+            Betriebe entdecken
+          </h2>
+          <p className="text-gray-400 mb-8">
+            Stöbern Sie durch 847+ verifizierte Premium-Betriebe in ganz Deutschland
+          </p>
+          <Link
+            href={`/${locale}`}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#8b1a4a] to-[#6b3fa0] text-white font-medium rounded-xl hover:from-[#a8255c] hover:to-[#7d4fb5] transition-all"
+          >
+            Jetzt stöbern →
+          </Link>
         </div>
       </section>
     </div>
