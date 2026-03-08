@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useSession } from 'next-auth/react'
+import { useAuth } from '@/components/providers/SessionProvider'
 import { ArrowRight, Bell, Calendar, Check, Crown, Loader2, Shield } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -298,7 +298,7 @@ type ReservationModalProps = {
 }
 
 export function ReservationModal({ open, onOpenChange, bordell }: ReservationModalProps) {
-  const { data: session } = useSession()
+  const { user, isAuthenticated } = useAuth()
   const createBooking = useCreateBooking()
   
   const [step, setStep] = useState(1)
@@ -312,15 +312,14 @@ export function ReservationModal({ open, onOpenChange, bordell }: ReservationMod
   const [notes, setNotes] = useState('')
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
-  
+
   const isPremium = false
-  const isAuthenticated = !!session?.user
 
   // Pre-fill user data if authenticated
   useState(() => {
-    if (session?.user) {
-      setName(session.user.name || '')
-      setEmail(session.user.email || '')
+    if (user) {
+      setName(user.name || '')
+      setEmail(user.email || '')
     }
   })
 

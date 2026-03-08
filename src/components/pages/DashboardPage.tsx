@@ -1,25 +1,25 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useSession, signOut } from 'next-auth/react'
+import { useAuth } from '@/components/providers/SessionProvider'
 import { useRouter } from 'next/navigation'
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar'
 import { DashboardTabs } from '@/components/dashboard/DashboardTabs'
 import type { DashboardTab } from '@/types'
 
 export function DashboardPage() {
-  const { data: session, status } = useSession()
+  const { user, isAuthenticated, isLoading, logout } = useAuth()
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<DashboardTab>('dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(true)
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
+    if (!isLoading && !isAuthenticated) {
       router.push('/de/login')
     }
-  }, [status, router])
+  }, [isLoading, isAuthenticated, router])
 
-  if (status === 'loading') {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
         <div className="text-white">Laden...</div>
@@ -27,12 +27,12 @@ export function DashboardPage() {
     )
   }
 
-  if (!session?.user) {
+  if (!user) {
     return null
   }
 
   const handleLogout = async () => {
-    await signOut({ redirect: false })
+    await logout()
     router.push('/de')
   }
 
@@ -42,9 +42,9 @@ export function DashboardPage() {
         activeTab={activeTab}
         sidebarOpen={sidebarOpen}
         user={{
-          id: session.user.id,
-          name: session.user.name ?? null,
-          email: session.user.email || ''
+          id: user.id,
+          name: user.name ?? null,
+          email: user.email || ''
         }}
         onTabChange={setActiveTab}
         onLogout={handleLogout}

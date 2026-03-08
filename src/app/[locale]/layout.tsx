@@ -16,16 +16,16 @@ const locales = ['de', 'en', 'ar', 'tr']
 export const viewport: Viewport = { width: 'device-width', initialScale: 1, themeColor: '#0a0a0f' }
 
 const localeTitles: Record<string, string> = {
-  de: 'DesireMap - Premium Erotik Guide Deutschland',
-  en: 'DesireMap - Premium Erotic Guide Germany',
-  tr: 'DesireMap - Almanya Erotik Rehberi',
-  ar: 'DesireMap - دليل الإروتيك الألماني'
+  de: 'Bordellmarkt | FKK, Laufhaus, Studio, Privat - DesireMap',
+  en: 'Bordellmarkt | FKK, Laufhaus, Studio, Privat - DesireMap',
+  tr: 'Bordellmarkt | FKK, Laufhaus, Studio, Privat - DesireMap',
+  ar: 'Bordellmarkt | FKK, Laufhaus, Studio, Privat - DesireMap'
 }
 const localeDescriptions: Record<string, string> = {
-  de: 'Exklusive FKK Clubs, Bordelle und Laufhäuser in Deutschland. Diskrete, verifizierte Adressen.',
-  en: 'Exclusive FKK clubs, brothels and laufhaus in Germany. Discreet, verified addresses.',
-  tr: 'Almanya\'da özel FKK kulüpleri, genelevler ve laufhaus. Gizli, doğrulanmış adresler.',
-  ar: 'أندية FKK حصرية وبيوت الدعارة في ألمانيا. عناوين سرية وموثقة.'
+  de: 'Bordellmarkt - Deutschlands größter Erotik-Guide. FKK Clubs, Laufhäuser, Bordelle und Studios in Berlin, Hamburg, München. Verifizierte Adressen, Bewertungen.',
+  en: 'Bordellmarkt - Germany\'s largest erotic guide. FKK clubs, laufhaus, brothels and studios in Berlin, Hamburg, Munich. Verified addresses, reviews.',
+  tr: 'Bordellmarkt - Almanya\'nın en büyük erotik rehberi. Berlin, Hamburg, Münih\'te FKK kulüpleri, laufhaus, bordell ve stüdyolar. Doğrulanmış adresler.',
+  ar: 'Bordellmarkt - أكبر دليل إروتيكي في ألمانيا. أندية FKK وبيوت الدعارة في برلين وهامبورغ وميونخ. عناوين موثقة وتقييمات.'
 }
 const ogLocales: Record<string, string> = { de: 'de_DE', en: 'en_US', ar: 'ar_SA', tr: 'tr_TR' }
 

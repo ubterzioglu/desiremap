@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ====================
@@ -74,12 +75,14 @@ enum PremiumPlan {
 model User {
   id            String      @id @default(cuid())
   email         String      @unique
-  password      String
+  password      String?     // Optional for OAuth users
+  googleId      String?     @unique // Google OAuth ID
   name          String?
   phone         String?
   avatar        String?
   role          UserRole    @default(CUSTOMER)
   status        CustomerStatus @default(ACTIVE)
+  emailVerified DateTime?   // null = not verified
   memberSince   DateTime    @default(now())
   lastLogin     DateTime?
   notes         String?

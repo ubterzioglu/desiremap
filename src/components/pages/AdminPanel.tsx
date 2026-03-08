@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { useSession, signOut } from 'next-auth/react'
+import { useAuth } from '@/components/providers/SessionProvider'
 import { useRouter } from 'next/navigation'
 import { 
   BadgeEuro, Building2, Calendar, Check, ChevronRight, Crown, Eye, LogIn, 
@@ -513,21 +513,21 @@ function AdminDashboardContent({
 }
 
 export function AdminPanel() {
-  const { data: session, status } = useSession()
+  const { user, isAuthenticated, isLoading, logout } = useAuth()
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<AdminTab>('dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
+    if (!isLoading && !isAuthenticated) {
       router.push('/de/login')
-    } else if (session?.user?.role !== 'admin') {
+    } else if (user && user.role !== 'admin') {
       router.push('/de')
     }
-  }, [status, session, router])
+  }, [isLoading, isAuthenticated, user, router])
 
-  if (status === 'loading') {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
         <div className="text-white">Laden...</div>
@@ -535,12 +535,12 @@ export function AdminPanel() {
     )
   }
 
-  if (!session?.user || session.user.role !== 'admin') {
+  if (!user || user.role !== 'admin') {
     return null
   }
 
   const handleLogout = async () => {
-    await signOut({ redirect: false })
+    await logout()
     router.push('/de')
   }
 

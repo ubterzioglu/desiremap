@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
+import Image from 'next/image'
 import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Header } from '@/components/layout/Header'
@@ -45,7 +46,7 @@ export function SearchPageContent({ locale, initialQuery, initialCity, initialCa
         {/* Search Page Üst kısım */}
         <section className="relative py-16 overflow-hidden">
           <div className="absolute inset-0">
-            <img src="/search-bg.jpg" alt="" className="w-full h-full object-cover" />
+            <Image src="/search-bg.jpg" alt="" fill className="w-full h-full object-cover" />
             <div className="absolute inset-0 backdrop-blur-sm bg-black/5" />
             <div className="absolute inset-0 bg-linear-to-b from-[#8b1a4a]/5 to-transparent" />
           </div>

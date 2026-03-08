@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import Image from 'next/image'
 import { ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -20,8 +21,7 @@ export function ListingsSection({ bordells, onBordellClick }: ListingsSectionPro
   return (
     <section className="relative py-24 overflow-hidden">
       <div className="absolute inset-0">
-        {/* <img src="https://images.unsplash.com/photo-1515630278258-407f66498911?w=1920&q=80" alt="" className="w-full h-full object-cover opacity-10" /> */}
-        <img src="listing-bg.jpg" alt="" className="w-full h-full object-cover opacity-40" />
+        <Image src="/listing-bg.jpg" alt="" fill className="w-full h-full object-cover opacity-40" />
         <div className="absolute inset-0 bg-linear-to-b from-black via-[#0a0810]/10 to-black/5" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/10" />
       </div>

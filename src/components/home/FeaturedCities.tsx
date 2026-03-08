@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { ChevronRight, MapPin } from 'lucide-react'
 import { germanCities } from '@/data/mock-data'
@@ -14,8 +15,7 @@ export function FeaturedCities({ onCityClick, translations }: FeaturedCitiesProp
   return (
     <section className="relative py-12 sm:py-16 md:py-24 overflow-hidden">
       <div className="absolute inset-0">
-        {/* <img src="https://images.unsplash.com/photo-1543237437-2b1d5e1c4b5d?w=1920&q=80" alt="" className="w-full h-full object-cover opacity-15" /> */}
-        <img src="featured-bg.jpg" alt="" className="w-full h-full object-cover opacity-15" />
+        <Image src="/featured-bg.jpg" alt="" fill className="w-full h-full object-cover opacity-15" />
         <div className="absolute inset-0 bg-linear-to-r from-black via-black/30 to-black/5" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20" />
       </div>

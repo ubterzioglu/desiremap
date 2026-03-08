@@ -5,7 +5,10 @@ node_modules
 .env*
 !.env.example
 examples/
-prisma/
+prisma/*.db
+prisma/*.db-journal
+prisma/*.db-wal
+prisma/*.db-shm
 db/
 download/
 upload/

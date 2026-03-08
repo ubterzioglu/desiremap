@@ -45,15 +45,11 @@ export function Header({ locale, onLoginClick, isLoggedIn, onDashboardClick, tra
           <div className="flex items-center gap-2 sm:gap-3">
             <LanguageSelector />
             {isLoggedIn ? (
-              <>
-                <Button variant="ghost" size="sm" onClick={onDashboardClick} className="text-gray-300 hover:text-white"><User className="w-4 h-4 mr-2" />{translations.myAccount}</Button>
-                <Button size="sm" onClick={() => onLoginClick('register')} className="bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] hover:from-[#a8255c] hover:to-[#7d4fb5] text-white border-0 rounded-full px-5">{translations.register}</Button>
-              </>
+              <Button variant="ghost" size="sm" onClick={onDashboardClick} className="text-gray-300 hover:text-white"><User className="w-4 h-4 mr-2" />{translations.myAccount}</Button>
             ) : (
-              <>
-                <Button variant="ghost" size="sm" onClick={() => onLoginClick()} className="hidden sm:flex text-gray-300 hover:text-white"><LogIn className="w-4 h-4 mr-2" />{translations.login}</Button>
-                <Button size="sm" onClick={() => onLoginClick('register')} className="bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] hover:from-[#a8255c] hover:to-[#7d4fb5] text-white border-0 rounded-full px-5">{translations.register}</Button>
-              </>
+              <Button variant="ghost" size="sm" asChild className="hidden sm:flex text-gray-300 hover:text-white">
+              <Link href={`/${locale}/login`}><LogIn className="w-4 h-4 mr-2" />{translations.login}</Link>
+            </Button>
             )}
             <Button variant="ghost" size="icon" className="md:hidden text-white" onClick={() => setMobileMenuOpen((v) => !v)}>
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

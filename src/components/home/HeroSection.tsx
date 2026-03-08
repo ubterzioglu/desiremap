@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Building2, MapPin, Search, Shield, Star, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -41,7 +42,7 @@ export function HeroSection({ translations, stats, locale }: HeroProps) {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
-      <div className="absolute inset-0 z-0"><img src="/hero-bg.jpg" alt="Atmospheric background" loading="eager" fetchPriority="high" decoding="async" className="absolute inset-0 w-full h-full object-cover" /><div className="absolute inset-0 bg-black/40" /><div className="absolute inset-0 bg-linear-to-r from-black/70 via-black/30 to-transparent" /><div className="absolute inset-0 bg-linear-to-b from-black/50 via-transparent to-black/60" /></div>
+      <div className="absolute inset-0 z-0"><Image src="/hero-bg.jpg" alt="Atmospheric background" fill priority className="absolute inset-0 w-full h-full object-cover" /><div className="absolute inset-0 bg-black/40" /><div className="absolute inset-0 bg-linear-to-r from-black/70 via-black/30 to-transparent" /><div className="absolute inset-0 bg-linear-to-b from-black/50 via-transparent to-black/60" /></div>
       <div className="absolute inset-0 overflow-hidden">{starPositions.map((pos, index) => <motion.div key={index} className="absolute w-1 h-1 bg-white rounded-full" style={{ left: `${pos.left}%`, top: `${pos.top}%` }} animate={{ opacity: [0.2, 0.8, 0.2], scale: [1, 1.5, 1] }} transition={{ duration: 2 + (index % 4), repeat: Infinity, delay: (index % 5) * 0.4 }} />)}</div>
       <div className="relative z-10 text-center px-6 max-w-5xl mx-auto space-y-8">
         <motion.h1 initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white tracking-wider">{translations.title}</motion.h1>
