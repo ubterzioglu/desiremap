@@ -62,9 +62,19 @@ export function Footer({ locale }: FooterProps) {
         </div>
         <div className="border-t border-white/5 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-gray-600 text-sm">© 2024 DesireMap.de - 18+ only</p>
-          <div className="flex items-center gap-2 text-gray-600 text-sm">
-            <Shield className="w-4 h-4 text-[#b76e79]" />
-            SSL-gesichert
+          <div className="flex items-center gap-4">
+            <a 
+              href="https://www.spindorai.com/en" 
+              target="_blank" 
+              rel="dofollow"
+              className="text-gray-500 hover:text-[#b76e79] transition-colors text-sm"
+            >
+              AI SEO Tool
+            </a> AI Powered Seo Analysis Tool
+            <div className="flex items-center gap-2 text-gray-600 text-sm">
+              <Shield className="w-4 h-4 text-[#b76e79]" />
+              SSL-gesichert
+            </div>
           </div>
         </div>
       </div>
