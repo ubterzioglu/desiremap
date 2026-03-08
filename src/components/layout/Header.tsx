@@ -39,6 +39,7 @@ export function Header({ locale, onLoginClick, isLoggedIn, onDashboardClick, tra
           <nav className="hidden md:flex items-center gap-8">
             <Link href={`/${locale}`} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{translations.discover}</Link>
             <Link href={`/${locale}#cities`} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{translations.cities}</Link>
+            <Link href={`/${locale}/blog`} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">Blog</Link>
             <button onClick={() => onLoginClick('premium')} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{translations.premium}</button>
             <button onClick={() => onLoginClick('advertise')} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{translations.advertise}</button>
           </nav>
