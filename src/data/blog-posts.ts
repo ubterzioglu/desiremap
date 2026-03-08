@@ -36,8 +36,8 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
-    id: 'premium-erotik-pazar-yeri',
-    slug: 'premium-erotik-pazar-yeri',
+    id: 'premium-erotik-plattform',
+    slug: 'premium-erotik-plattform',
     title: 'Premium Erotik Plattform - DesireMap',
     headline: 'DesireMap: Deutschlands Premium-Plattform für Erotik',
     description: 'DesireMap verbindet Sie mit den besten FKK Clubs, Laufhäusern und Bordellen in Deutschland. Entdecken Sie verifizierte Betriebe mit höchsten Qualitätsstandards.',

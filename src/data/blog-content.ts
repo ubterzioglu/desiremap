@@ -1,8 +1,8 @@
-// Blog yazısı içeriği - Premium Erotik Hizmetler Pazar Yeri (ALMANCA)
+// Blog yazısı içeriği - Premium Erotik Plattform (ALMANCA)
 // Ana kelime: DesireMap (%7)
 // Yan kelimeler: FKK Club, Laufhaus, Bordell, Berlin, Hamburg, München (%3)
 
-export const premiumErotikPazarYeriContent = `
+export const premiumErotikPlattformContent = `
 <p class="blog-intro"><strong>DesireMap</strong> ist Deutschlands führende Plattform für Premium-Erotik. Wir verbinden anspruchsvolle Gäste mit den besten <strong>FKK Clubs</strong>, <strong>Laufhäusern</strong> und <strong>Bordellen</strong> in ganz Deutschland. Auf <strong>DesireMap</strong> finden Sie ausschließlich verifizierte Betriebe mit höchsten Qualitätsstandards.</p>
 
 <h2>Was ist DesireMap?</h2>
@@ -225,7 +225,7 @@ export const premiumErotikPazarYeriContent = `
 `
 
 // FAQ içeriği ayrı tutuluyor (schema için)
-export const premiumErotikPazarYeriFAQ = [
+export const premiumErotikPlattformFAQ = [
   {
     question: 'Ist DesireMap kostenlos?',
     answer: 'Ja, die grundlegende Nutzung von DesireMap ist komplett kostenlos. Sie können suchen, vergleichen und Kontakt aufnehmen ohne zu zahlen. Die Premium-Mitgliedschaft bietet zusätzliche Vorteile wie Prioritätsreservierungen und exklusive Rabatte.'

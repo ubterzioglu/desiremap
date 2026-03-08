@@ -3,16 +3,16 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Calendar, Clock, User, ArrowLeft, Check, MapPin, Building2, Star, Shield } from 'lucide-react'
 import { blogPosts, getBlogPostBySlug, getAllBlogPostSlugs } from '@/data/blog-posts'
-import { premiumErotikPazarYeriContent, premiumErotikPazarYeriFAQ } from '@/data/blog-content'
+import { premiumErotikPlattformContent, premiumErotikPlattformFAQ } from '@/data/blog-content'
 import { getBlogPostStructuredData, getBlogPostMetadata, BlogPostData } from '@/lib/structuredData'
 
 // Blog slug'ına göre içerik eşleştirmesi
 const blogContentMap: Record<string, string> = {
-  'premium-erotik-pazar-yeri': premiumErotikPazarYeriContent
+  'premium-erotik-plattform': premiumErotikPlattformContent
 }
 
 const blogFAQMap: Record<string, Array<{ question: string; answer: string }>> = {
-  'premium-erotik-pazar-yeri': premiumErotikPazarYeriFAQ
+  'premium-erotik-plattform': premiumErotikPlattformFAQ
 }
 
 export async function generateStaticParams() {
