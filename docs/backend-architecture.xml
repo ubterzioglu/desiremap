@@ -1,0 +1,1933 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<backend-architecture>
+  <meta>
+    <title>DesireMap Backend Architecture Documentation</title>
+    <version>1.0</version>
+    <framework>Next.js 16 App Router + React 19 + TypeScript</framework>
+    <runtime>Bun</runtime>
+    <database>PostgreSQL + Prisma ORM</database>
+    <auth>NextAuth.js (session) + PASETO (API tokens)</auth>
+    <last-updated>2026-03-29</last-updated>
+  </meta>
+
+  <!-- ============================================================ -->
+  <!-- 1. DATABASE LAYER -->
+  <!-- ============================================================ -->
+  <section id="database">
+    <title>Database Layer</title>
+
+    <subsection id="prisma-client">
+      <title>Prisma Client Singleton</title>
+      <description>Connection pooling via global singleton pattern</description>
+      <code language="typescript"><![CDATA[
+// src/lib/db.ts
+import { PrismaClient } from '@prisma/client'
+
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined
+}
+
+export const db =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    log: ['query'],  // SQL query logging in development
+  })
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = db
+}]]></code>
+      <notes>
+        <note>Global singleton prevents connection pool exhaustion in dev hot-reload</note>
+        <note>Query logging enabled by default in non-production</note>
+      </notes>
+    </subsection>
+
+    <subsection id="schema-models">
+      <title>Database Models</title>
+
+      <model name="User">
+        <fields>
+          <field name="id" type="String" constraints="@id @default(cuid())"/>
+          <field name="email" type="String" constraints="@unique"/>
+          <field name="password" type="String" constraints="nullable (OAuth users)"/>
+          <field name="googleId" type="String" constraints="@unique"/>
+          <field name="role" type="UserRole" constraints="@default(CUSTOMER)"/>
+          <field name="status" type="CustomerStatus" constraints="@default(ACTIVE)"/>
+          <field name="emailVerified" type="DateTime"/>
+          <field name="memberSince" type="DateTime" constraints="@default(now())"/>
+          <field name="lastLogin" type="DateTime"/>
+        </fields>
+        <relations>
+          <relation model="Address" type="hasMany"/>
+          <relation model="Visit" type="hasMany"/>
+          <relation model="Booking" type="hasMany" alias="CustomerBookings"/>
+          <relation model="Review" type="hasMany"/>
+          <relation model="Bordell" type="hasMany" alias="OwnerBordells"/>
+          <relation model="UserBadge" type="hasMany"/>
+          <relation model="Invoice" type="hasMany"/>
+        </relations>
+      </model>
+
+      <model name="Bordell">
+        <fields>
+          <field name="id" type="String" constraints="@id @default(cuid())"/>
+          <field name="name" type="String"/>
+          <field name="type" type="BordellType" constraints="@default(BORDELL)"/>
+          <field name="city" type="String"/>
+          <field name="location" type="String"/>
+          <field name="rating" type="Float" constraints="@default(0)"/>
+          <field name="reviewCount" type="Int" constraints="@default(0)"/>
+          <field name="minPrice" type="Float"/>
+          <field name="maxPrice" type="Float"/>
+          <field name="services" type="String" constraints="JSON array as string"/>
+          <field name="images" type="String" constraints="JSON array as string"/>
+          <field name="verified" type="Boolean" constraints="@default(false)"/>
+          <field name="premium" type="Boolean" constraints="@default(false)"/>
+          <field name="premiumExpiry" type="DateTime"/>
+          <field name="premiumPlan" type="PremiumPlan"/>
+          <field name="sponsored" type="Boolean" constraints="@default(false)"/>
+          <field name="sponsoredExpiry" type="DateTime"/>
+          <field name="status" type="BordellStatus" constraints="@default(PENDING)"/>
+          <field name="views" type="Int" constraints="@default(0)"/>
+          <field name="bookings" type="Int" constraints="@default(0)"/>
+          <field name="revenue" type="Float" constraints="@default(0)"/>
+          <field name="ownerId" type="String" constraints="nullable"/>
+        </fields>
+        <relations>
+          <relation model="Visit" type="hasMany"/>
+          <relation model="Booking" type="hasMany"/>
+          <relation model="Review" type="hasMany"/>
+          <relation model="User" type="belongsTo" alias="Owner"/>
+        </relations>
+      </model>
+
+      <model name="Booking">
+        <fields>
+          <field name="id" type="String" constraints="@id @default(cuid())"/>
+          <field name="customerId" type="String"/>
+          <field name="bordellId" type="String"/>
+          <field name="date" type="DateTime"/>
+          <field name="time" type="String"/>
+          <field name="duration" type="Int" constraints="minutes"/>
+          <field name="price" type="Float"/>
+          <field name="status" type="BookingStatus" constraints="@default(PENDING)"/>
+          <field name="paymentStatus" type="PaymentStatus" constraints="@default(PENDING)"/>
+          <field name="notes" type="String" constraints="nullable"/>
+          <field name="rating" type="Int" constraints="nullable"/>
+          <field name="review" type="String" constraints="nullable"/>
+        </fields>
+        <relations>
+          <relation model="User" type="belongsTo" alias="Customer"/>
+          <relation model="Bordell" type="belongsTo"/>
+          <relation model="Invoice" type="hasOne"/>
+        </relations>
+      </model>
+
+      <model name="Review">
+        <fields>
+          <field name="id" type="String" constraints="@id @default(cuid())"/>
+          <field name="customerId" type="String"/>
+          <field name="bordellId" type="String"/>
+          <field name="rating" type="Int"/>
+          <field name="title" type="String"/>
+          <field name="content" type="String"/>
+          <field name="status" type="ReviewStatus" constraints="@default(PENDING)"/>
+          <field name="response" type="String" constraints="nullable"/>
+          <field name="respondedAt" type="DateTime" constraints="nullable"/>
+        </fields>
+        <relations>
+          <relation model="User" type="belongsTo" alias="Customer"/>
+          <relation model="Bordell" type="belongsTo"/>
+        </relations>
+      </model>
+
+      <model name="Invoice">
+        <fields>
+          <field name="id" type="String" constraints="@id @default(cuid())"/>
+          <field name="bookingId" type="String" constraints="@unique"/>
+          <field name="userId" type="String"/>
+          <field name="amount" type="Float"/>
+          <field name="status" type="PaymentStatus" constraints="@default(PENDING)"/>
+          <field name="paidAt" type="DateTime" constraints="nullable"/>
+        </fields>
+        <relations>
+          <relation model="Booking" type="belongsTo"/>
+          <relation model="User" type="belongsTo"/>
+        </relations>
+      </model>
+
+      <model name="Visit">
+        <fields>
+          <field name="id" type="String" constraints="@id @default(cuid())"/>
+          <field name="userId" type="String"/>
+          <field name="bordellId" type="String"/>
+          <field name="date" type="DateTime"/>
+          <field name="duration" type="Int" constraints="minutes"/>
+          <field name="price" type="Float"/>
+          <field name="rating" type="Int" constraints="nullable"/>
+          <field name="notes" type="String" constraints="nullable"/>
+        </fields>
+      </model>
+
+      <model name="Address">
+        <fields>
+          <field name="id" type="String" constraints="@id @default(cuid())"/>
+          <field name="userId" type="String"/>
+          <field name="label" type="String"/>
+          <field name="street" type="String"/>
+          <field name="city" type="String"/>
+          <field name="zip" type="String"/>
+          <field name="country" type="String" constraints="@default('Deutschland')"/>
+          <field name="isDefault" type="Boolean" constraints="@default(false)"/>
+        </fields>
+      </model>
+
+      <model name="Badge">
+        <fields>
+          <field name="id" type="String" constraints="@id @default(cuid())"/>
+          <field name="name" type="String" constraints="@unique"/>
+          <field name="description" type="String"/>
+          <field name="icon" type="String"/>
+          <field name="color" type="String"/>
+        </fields>
+        <relations>
+          <relation model="UserBadge" type="hasMany"/>
+        </relations>
+      </model>
+
+      <model name="UserBadge">
+        <fields>
+          <field name="id" type="String" constraints="@id @default(cuid())"/>
+          <field name="userId" type="String"/>
+          <field name="badgeId" type="String"/>
+          <field name="earnedAt" type="DateTime" constraints="@default(now())"/>
+        </fields>
+        <constraints>
+          <constraint name="unique" fields="[userId, badgeId]"/>
+        </constraints>
+      </model>
+
+    </subsection>
+
+    <subsection id="enums">
+      <title>Database Enums</title>
+      <enum name="UserRole">
+        <value>CUSTOMER</value>
+        <value>OWNER</value>
+        <value>ADMIN</value>
+      </enum>
+      <enum name="BordellType">
+        <value>LAUFHAUS</value>
+        <value>BORDELL</value>
+        <value>FKK</value>
+        <value>STUDIO</value>
+        <value>PRIVAT</value>
+      </enum>
+      <enum name="BordellStatus">
+        <value>ACTIVE</value>
+        <value>INACTIVE</value>
+        <value>PENDING</value>
+        <value>SUSPENDED</value>
+      </enum>
+      <enum name="BookingStatus">
+        <value>PENDING</value>
+        <value>CONFIRMED</value>
+        <value>COMPLETED</value>
+        <value>CANCELLED</value>
+        <value>NO_SHOW</value>
+      </enum>
+      <enum name="PaymentStatus">
+        <value>PENDING</value>
+        <value>PAID</value>
+        <value>REFUNDED</value>
+      </enum>
+      <enum name="ReviewStatus">
+        <value>PENDING</value>
+        <value>APPROVED</value>
+        <value>REJECTED</value>
+      </enum>
+      <enum name="PremiumPlan">
+        <value>BASIC</value>
+        <value>PREMIUM</value>
+        <value>SPONSORED</value>
+      </enum>
+    </subsection>
+
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 2. AUTHENTICATION SYSTEM -->
+  <!-- ============================================================ -->
+  <section id="authentication">
+    <title>Authentication System</title>
+
+    <subsection id="dual-auth-strategy">
+      <title>Dual Authentication Strategy</title>
+      <description>Application uses two separate authentication mechanisms for different use cases</description>
+      <comparison>
+        <auth-type name="NextAuth.js">
+          <purpose>Session-based auth for web UI</purpose>
+          <storage>Server-side session with JWT stored as cookie</storage>
+          <use-case>Browser requests, page navigation</use-case>
+        </auth-type>
+        <auth-type name="PASETO">
+          <purpose>Stateless API authentication</purpose>
+          <storage>Token in Authorization header or cookie</storage>
+          <use-case>API routes, mobile apps, SPA backends</use-case>
+        </auth-type>
+      </comparison>
+    </subsection>
+
+    <subsection id="nextauth-config">
+      <title>NextAuth Configuration</title>
+      <code language="typescript"><![CDATA[
+// src/lib/auth.ts
+import { NextAuthOptions } from 'next-auth'
+import CredentialsProvider from 'next-auth/providers/credentials'
+import { db } from './db'
+import bcrypt from 'bcryptjs'
+
+export const authOptions: NextAuthOptions = {
+  providers: [
+    CredentialsProvider({
+      name: 'credentials',
+      credentials: {
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' }
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null
+        }
+
+        const user = await db.user.findUnique({
+          where: { email: credentials.email }
+        })
+
+        if (!user || !user.password) {
+          return null
+        }
+
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          user.password
+        )
+
+        if (!isPasswordValid) {
+          return null
+        }
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role.toLowerCase(),
+          status: user.status.toLowerCase(),
+          avatar: user.avatar
+        }
+      }
+    })
+  ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id
+        token.role = user.role
+        token.status = user.status
+        token.avatar = user.avatar
+      }
+      return token
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string
+        session.user.role = token.role as string
+        session.user.status = token.status as string
+        session.user.avatar = token.avatar as string | null
+      }
+      return session
+    }
+  },
+  pages: {
+    signIn: '/de/login',
+    error: '/de/login'
+  },
+  session: {
+    strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60 // 30 days
+  },
+  secret: process.env.NEXTAUTH_SECRET
+}]]></code>
+      <type-extensions><![CDATA[
+declare module 'next-auth' {
+  interface User {
+    id: string
+    role: string
+    status: string
+    avatar: string | null
+  }
+  interface Session {
+    user: User & {
+      email: string
+      name?: string | null
+    }
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    id: string
+    role: string
+    status: string
+    avatar: string | null
+  }
+}]]></type-extensions>
+    </subsection>
+
+    <subsection id="paseto-implementation">
+      <title>PASETO Token Service</title>
+      <description>PASETO v4 with Ed25519 asymmetric keys for maximum security</description>
+      <code language="typescript"><![CDATA[
+// src/lib/auth/paseto.ts
+import { V4 } from 'paseto'
+import { randomUUID } from 'crypto'
+import { createPublicKey, createPrivateKey, KeyObject } from 'crypto'
+
+const TOKEN_EXPIRY = '7d'
+const COOKIE_MAX_AGE = 7 * 24 * 60 * 60
+
+export interface TokenPayload {
+  sub: string      // User ID
+  role: string     // customer | owner | admin
+  email: string    // User email
+  jti?: string     // Unique token ID (auto-generated)
+}
+
+export interface DecodedToken extends TokenPayload {
+  jti: string
+  iat: string
+  exp: string
+}
+
+function getPrivateKey(): KeyObject {
+  const key = process.env.PASETO_PRIVATE_KEY
+  if (!key) {
+    throw new Error('PASETO_PRIVATE_KEY environment variable is not set')
+  }
+  const pem = `-----BEGIN PRIVATE KEY-----\n${key}\n-----END PRIVATE KEY-----`
+  return createPrivateKey(pem)
+}
+
+function getPublicKey(): KeyObject {
+  const key = process.env.PASETO_PUBLIC_KEY
+  if (!key) {
+    throw new Error('PASETO_PUBLIC_KEY environment variable is not set')
+  }
+  const pem = `-----BEGIN PUBLIC KEY-----\n${key}\n-----END PUBLIC KEY-----`
+  return createPublicKey(pem)
+}
+
+export async function generateToken(payload: TokenPayload): Promise<string> {
+  const key = getPrivateKey()
+  const jti = payload.jti || randomUUID()
+
+  const token = await V4.sign(
+    {
+      sub: payload.sub,
+      role: payload.role,
+      email: payload.email,
+      jti,
+      iat: new Date().toISOString()
+    },
+    key,
+    {
+      expiresIn: TOKEN_EXPIRY,
+      issuer: 'desiremap.de',
+      audience: 'desiremap.de'
+    }
+  )
+
+  return token
+}
+
+export async function verifyToken(token: string): Promise<DecodedToken> {
+  const key = getPublicKey()
+
+  try {
+    const payload = await V4.verify(token, key, {
+      issuer: 'desiremap.de',
+      audience: 'desiremap.de',
+      clockTolerance: '1m'
+    })
+
+    return payload as unknown as DecodedToken
+  } catch (error) {
+    if (error instanceof Error) {
+      if (error.message.includes('expired')) {
+        throw new Error('Token expired')
+      }
+      if (error.message.includes('invalid')) {
+        throw new Error('Invalid token')
+      }
+    }
+    throw new Error('Token verification failed')
+  }
+}
+
+export function extractToken(request: Request): string | null {
+  // Check Authorization header first
+  const authHeader = request.headers.get('authorization')
+  if (authHeader?.startsWith('Bearer ')) {
+    return authHeader.slice(7)
+  }
+
+  // Check cookie
+  const cookie = request.headers.get('cookie')
+  if (cookie) {
+    const match = cookie.match(/auth_token=([^;]+)/)
+    if (match) {
+      return match[1]
+    }
+  }
+
+  return null
+}
+
+export function getCookieOptions() {
+  return {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict' as const,
+    path: '/',
+    maxAge: COOKIE_MAX_AGE
+  }
+}]]></code>
+    </subsection>
+
+    <subsection id="token-blacklist">
+      <title>Token Blacklist</title>
+      <description>In-memory JTI-based revocation (MVP)</description>
+      <code language="typescript"><![CDATA[
+// src/lib/auth/blacklist.ts
+
+// In-memory blacklist for MVP
+const blacklist = new Set<string>()
+
+export function revokeToken(jti: string): void {
+  blacklist.add(jti)
+}
+
+export function isRevoked(jti: string): boolean {
+  return blacklist.has(jti)
+}
+
+export function cleanup(): void {
+  // In production with Redis, this would be handled by TTL
+  // For MVP, no-op
+}]]></code>
+      <notes>
+        <note>MVP: In-memory Set resets on server restart</note>
+        <note>Production: Use Redis with TTL matching token expiry</note>
+      </notes>
+    </subsection>
+
+    <subsection id="auth-guards">
+      <title>Authentication Guards</title>
+      <description>Reusable middleware functions for route protection</description>
+      <code language="typescript"><![CDATA[
+// src/lib/auth/guards.ts
+import { NextRequest, NextResponse } from 'next/server'
+import { verifyToken, extractToken, DecodedToken } from './paseto'
+import { isRevoked } from './blacklist'
+
+export interface AuthResult {
+  success: true
+  user: DecodedToken
+}
+
+export interface AuthError {
+  success: false
+  error: string
+  status: number
+}
+
+export async function requireAuth(
+  request: NextRequest
+): Promise<AuthResult | AuthError> {
+  const token = extractToken(request)
+
+  if (!token) {
+    return {
+      success: false,
+      error: 'Authentication required',
+      status: 401
+    }
+  }
+
+  try {
+    const payload = await verifyToken(token)
+
+    if (isRevoked(payload.jti)) {
+      return {
+        success: false,
+        error: 'Token has been revoked',
+        status: 401
+      }
+    }
+
+    return {
+      success: true,
+      user: payload
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Invalid token'
+    return {
+      success: false,
+      error: message,
+      status: 401
+    }
+  }
+}
+
+export async function requireRole(
+  request: NextRequest,
+  allowedRoles: string[]
+): Promise<AuthResult | AuthError> {
+  const authResult = await requireAuth(request)
+
+  if (!authResult.success) {
+    return authResult
+  }
+
+  if (!allowedRoles.includes(authResult.user.role)) {
+    return {
+      success: false,
+      error: 'Insufficient permissions',
+      status: 403
+    }
+  }
+
+  return authResult
+}
+
+export async function requireAdmin(
+  request: NextRequest
+): Promise<AuthResult | AuthError> {
+  return requireRole(request, ['admin'])
+}
+
+export async function requireOwnerOrAdmin(
+  request: NextRequest
+): Promise<AuthResult | AuthError> {
+  return requireRole(request, ['owner', 'admin'])
+}
+
+export function unauthorizedResponse(
+  message = 'Authentication required'
+): NextResponse {
+  return NextResponse.json({ error: message }, { status: 401 })
+}
+
+export function forbiddenResponse(
+  message = 'Insufficient permissions'
+): NextResponse {
+  return NextResponse.json({ error: message }, { status: 403 })
+}
+
+export function isOwner(userId: string, resourceUserId: string): boolean {
+  return userId === resourceUserId
+}]]></code>
+    </subsection>
+
+    <subsection id="password-hashing">
+      <title>Password Hashing</title>
+      <description>bcrypt with cost factor 12 (OWASP recommended)</description>
+      <code language="typescript"><![CDATA[
+// src/lib/auth/password.ts
+import bcrypt from 'bcryptjs'
+
+const SALT_ROUNDS = 12
+
+export async function hash(password: string): Promise<string> {
+  if (!password || password.length < 8) {
+    throw new Error('Password must be at least 8 characters')
+  }
+  if (password.length > 128) {
+    throw new Error('Password must be at most 128 characters')
+  }
+  return bcrypt.hash(password, SALT_ROUNDS)
+}
+
+export async function verify(password: string, hash: string): Promise<boolean> {
+  if (!password || !hash) {
+    return false
+  }
+  return bcrypt.compare(password, hash)
+}
+
+export async function needsRehash(hash: string): Promise<boolean> {
+  const rounds = bcrypt.getRounds(hash)
+  return rounds < SALT_ROUNDS
+}]]></code>
+    </subsection>
+
+    <subsection id="google-oauth">
+      <title>Google OAuth 2.0</title>
+      <description>PKCE-enhanced OAuth flow for secure authentication</description>
+      <code language="typescript"><![CDATA[
+// src/lib/auth/oauth/google.ts
+import { randomUUID, randomBytes, createHash } from 'crypto'
+
+export interface GoogleUser {
+  id: string
+  email: string
+  emailVerified: boolean
+  name?: string
+  picture?: string
+}
+
+export interface OAuthState {
+  state: string
+  codeVerifier: string
+  codeChallenge: string
+}
+
+function generateCodeVerifier(): string {
+  return randomBytes(32)
+    .toString('base64url')
+    .slice(0, 43)
+}
+
+function generateCodeChallenge(verifier: string): string {
+  return createHash('sha256')
+    .update(verifier)
+    .digest('base64url')
+}
+
+export function generateOAuthState(): OAuthState {
+  const state = randomUUID()
+  const codeVerifier = generateCodeVerifier()
+  const codeChallenge = generateCodeChallenge(codeVerifier)
+
+  return { state, codeVerifier, codeChallenge }
+}
+
+export function getAuthUrl(state: OAuthState): string {
+  const clientId = process.env.GOOGLE_CLIENT_ID
+  const redirectUri = process.env.GOOGLE_REDIRECT_URI
+
+  if (!clientId || !redirectUri) {
+    throw new Error('Google OAuth credentials not configured')
+  }
+
+  const params = new URLSearchParams({
+    client_id: clientId,
+    redirect_uri: redirectUri,
+    response_type: 'code',
+    scope: 'openid email profile',
+    state: state.state,
+    code_challenge: state.codeChallenge,
+    code_challenge_method: 'S256',
+    access_type: 'offline',
+    prompt: 'consent'
+  })
+
+  return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
+}
+
+export async function exchangeCode(
+  code: string,
+  codeVerifier: string
+): Promise<{ accessToken: string; refreshToken?: string }> {
+  const clientId = process.env.GOOGLE_CLIENT_ID
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET
+  const redirectUri = process.env.GOOGLE_REDIRECT_URI
+
+  const response = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams({
+      client_id: clientId!,
+      client_secret: clientSecret!,
+      code,
+      code_verifier: codeVerifier,
+      redirect_uri: redirectUri!,
+      grant_type: 'authorization_code'
+    }).toString()
+  })
+
+  const data = await response.json()
+  return {
+    accessToken: data.access_token,
+    refreshToken: data.refresh_token
+  }
+}
+
+export async function getUserInfo(accessToken: string): Promise<GoogleUser> {
+  const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  })
+
+  const data = await response.json()
+  return {
+    id: data.sub,
+    email: data.email,
+    emailVerified: data.email_verified === true,
+    name: data.name,
+    picture: data.picture
+  }
+}]]></code>
+    </subsection>
+
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 3. API ROUTES -->
+  <!-- ============================================================ -->
+  <section id="api-routes">
+    <title>API Routes</title>
+
+    <subsection id="route-overview">
+      <title>Route Structure</title>
+      <tree>
+        <node name="/api">
+          <node name="auth">
+            <node name="login" methods="POST"/>
+            <node name="register" methods="POST"/>
+            <node name="logout" methods="POST"/>
+            <node name="me" methods="GET"/>
+            <node name="config" methods="GET"/>
+            <node name="google" methods="GET"/>
+            <node name="google/callback" methods="GET"/>
+            <node name="[...nextauth]" methods="GET/POST"/>
+          </node>
+          <node name="bookings">
+            <node name="route.ts" methods="POST"/>
+            <node name="[id]">
+              <node name="route.ts" methods="GET/PUT/DELETE"/>
+            </node>
+          </node>
+          <node name="establishments" methods="GET" auth="None"/>
+          <node name="admin">
+            <node name="stats" methods="GET"/>
+            <node name="establishments" methods="GET/POST/PUT/DELETE"/>
+            <node name="customers" methods="GET/PUT/DELETE"/>
+            <node name="bookings" methods="GET/PUT"/>
+            <node name="reviews" methods="GET/PUT/DELETE"/>
+          </node>
+          <node name="customer">
+            <node name="route.ts" methods="GET/PUT"/>
+            <node name="bookings" methods="GET"/>
+            <node name="visits" methods="GET"/>
+            <node name="addresses" methods="GET/POST/PUT/DELETE"/>
+            <node name="badges" methods="GET"/>
+          </node>
+          <node name="seed" methods="POST" auth="DevOnly"/>
+        </node>
+      </tree>
+    </subsection>
+
+    <subsection id="route-patterns">
+      <title>Common Route Patterns</title>
+
+      <pattern name="Admin Route Protection">
+        <code language="typescript"><![CDATA[
+async function checkAdminAccess() {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id || session.user.role !== 'admin') {
+    return null
+  }
+  return session
+}
+
+export async function GET(request: NextRequest) {
+  const session = await checkAdminAccess()
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+  // ... handler logic
+}]]></code>
+      </pattern>
+
+      <pattern name="Session-Based Auth">
+        <code language="typescript"><![CDATA[
+export async function GET() {
+  const session = await getServerSession(authOptions)
+  
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const user = await db.user.findUnique({
+    where: { id: session.user.id },
+    include: { addresses: true, badges: { include: { badge: true } } }
+  })
+
+  return NextResponse.json(user)
+}]]></code>
+      </pattern>
+
+      <pattern name="Zod Validation">
+        <code language="typescript"><![CDATA[
+const schema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters')
+})
+
+export async function POST(request: NextRequest) {
+  const body = await request.json()
+  const result = schema.safeParse(body)
+  
+  if (!result.success) {
+    return NextResponse.json(
+      { error: 'Invalid input', details: result.error.flatten() },
+      { status: 400 }
+    )
+  }
+  
+  const { email, password } = result.data
+  // ... handler logic
+}]]></code>
+      </pattern>
+
+      <pattern name="Role-Based Access Control">
+        <code language="typescript"><![CDATA[
+export async function PUT(request: NextRequest, { params }) {
+  const session = await getServerSession(authOptions)
+  const { id } = await params
+  const body = await request.json()
+
+  const booking = await db.booking.findUnique({ where: { id } })
+
+  const isAdmin = session.user.role === 'admin'
+  const isOwner = booking.customerId === session.user.id
+
+  if (!isAdmin && !isOwner) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+
+  // Owner can only cancel, admin can update status
+  if (isOwner && !isAdmin) {
+    if (body.status === 'cancelled') {
+      data.status = 'CANCELLED'
+    }
+    // ... owner updates
+  }
+
+  if (isAdmin) {
+    // ... admin can update everything
+  }
+}]]></code>
+      </pattern>
+
+    </subsection>
+
+    <subsection id="booking-routes">
+      <title>Booking Routes</title>
+
+      <route path="/api/bookings" method="POST">
+        <description>Create a new booking</description>
+        <auth>Session required</auth>
+        <code language="typescript"><![CDATA[
+export async function POST(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions)
+    
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const body = await request.json()
+    const { bordellId, date, time, duration, price, notes } = body
+
+    if (!bordellId || !date || !time || !duration || !price) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      )
+    }
+
+    // Verify bordell exists and is active
+    const bordell = await db.bordell.findUnique({
+      where: { id: bordellId }
+    })
+
+    if (!bordell || bordell.status !== 'ACTIVE') {
+      return NextResponse.json(
+        { error: 'Establishment not available' },
+        { status: 400 }
+      )
+    }
+
+    const booking = await db.booking.create({
+      data: {
+        customerId: session.user.id,
+        bordellId,
+        date: new Date(date),
+        time,
+        duration,
+        price,
+        notes: notes || null,
+        status: 'PENDING',
+        paymentStatus: 'PENDING'
+      },
+      include: {
+        bordell: { select: { name: true } }
+      }
+    })
+
+    // Update bordell booking count
+    await db.bordell.update({
+      where: { id: bordellId },
+      data: { bookings: { increment: 1 } }
+    })
+
+    return NextResponse.json({
+      id: booking.id,
+      bordellId: booking.bordellId,
+      bordellName: booking.bordell.name,
+      date: booking.date.toISOString(),
+      time: booking.time,
+      duration: booking.duration,
+      price: booking.price,
+      status: booking.status.toLowerCase(),
+      paymentStatus: booking.paymentStatus.toLowerCase(),
+      createdAt: booking.createdAt.toISOString()
+    }, { status: 201 })
+  } catch (error) {
+    console.error('Create booking error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}]]></code>
+      </route>
+
+      <route path="/api/bookings/[id]" method="GET">
+        <description>Get booking by ID with access control</description>
+        <code language="typescript"><![CDATA[
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await getServerSession(authOptions)
+  const { id } = await params
+
+  const booking = await db.booking.findUnique({
+    where: { id },
+    include: {
+      customer: { select: { id: true, name: true, email: true } },
+      bordell: { select: { id: true, name: true } }
+    }
+  })
+
+  if (!booking) {
+    return NextResponse.json({ error: 'Booking not found' }, { status: 404 })
+  }
+
+  const isAdmin = session.user.role === 'admin'
+  const isOwner = booking.customerId === session.user.id
+
+  if (!isAdmin && !isOwner) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+
+  return NextResponse.json({ /* booking data */ })
+}]]></code>
+      </route>
+
+      <route path="/api/bookings/[id]" method="DELETE">
+        <description>Cancel booking (soft delete by status change)</description>
+        <code language="typescript"><![CDATA[
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await getServerSession(authOptions)
+  const { id } = await params
+
+  const booking = await db.booking.findUnique({ where: { id } })
+
+  if (!booking) {
+    return NextResponse.json({ error: 'Booking not found' }, { status: 404 })
+  }
+
+  const isAdmin = session.user.role === 'admin'
+  const isOwner = booking.customerId === session.user.id
+
+  if (!isAdmin && !isOwner) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+
+  // Only allow cancellation if pending
+  if (booking.status !== 'PENDING' && !isAdmin) {
+    return NextResponse.json(
+      { error: 'Cannot cancel this booking' },
+      { status: 400 }
+    )
+  }
+
+  await db.booking.update({
+    where: { id },
+    data: { status: 'CANCELLED' }
+  })
+
+  return NextResponse.json({ success: true })
+}]]></code>
+      </route>
+
+    </subsection>
+
+    <subsection id="admin-stats-route">
+      <title>Admin Stats Route</title>
+      <route path="/api/admin/stats" method="GET">
+        <description>Dashboard statistics aggregation</description>
+        <code language="typescript"><![CDATA[
+export async function GET() {
+  try {
+    const session = await checkAdminAccess()
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Parallel count queries for performance
+    const [
+      totalEstablishments,
+      activeEstablishments,
+      pendingEstablishments,
+      totalCustomers,
+      activeCustomers,
+      totalBookings,
+      pendingBookings,
+      completedBookings,
+      totalReviews,
+      pendingReviews
+    ] = await Promise.all([
+      db.bordell.count(),
+      db.bordell.count({ where: { status: 'ACTIVE' } }),
+      db.bordell.count({ where: { status: 'PENDING' } }),
+      db.user.count({ where: { role: 'CUSTOMER' } }),
+      db.user.count({ where: { role: 'CUSTOMER', status: 'ACTIVE' } }),
+      db.booking.count(),
+      db.booking.count({ where: { status: 'PENDING' } }),
+      db.booking.count({ where: { status: 'COMPLETED' } }),
+      db.review.count(),
+      db.review.count({ where: { status: 'PENDING' } })
+    ])
+
+    // Calculate revenue from completed + paid bookings
+    const completedBookingsData = await db.booking.findMany({
+      where: { status: 'COMPLETED', paymentStatus: 'PAID' },
+      select: { price: true }
+    })
+    const totalRevenue = completedBookingsData.reduce((sum, b) => sum + b.price, 0)
+
+    // Monthly stats (last 6 months)
+    const sixMonthsAgo = new Date()
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
+
+    const recentBookings = await db.booking.findMany({
+      where: { createdAt: { gte: sixMonthsAgo } },
+      select: { price: true, createdAt: true, status: true }
+    })
+
+    const monthlyStats: { [key: string]: { bookings: number; revenue: number } } = {}
+    recentBookings.forEach(b => {
+      const month = b.createdAt.toISOString().slice(0, 7)
+      if (!monthlyStats[month]) {
+        monthlyStats[month] = { bookings: 0, revenue: 0 }
+      }
+      monthlyStats[month].bookings++
+      if (b.status === 'COMPLETED') {
+        monthlyStats[month].revenue += b.price
+      }
+    })
+
+    // Top establishments
+    const topEstablishments = await db.bordell.findMany({
+      where: { status: 'ACTIVE' },
+      orderBy: { bookings: 'desc' },
+      take: 5,
+      select: { id: true, name: true, city: true, bookings: true, revenue: true }
+    })
+
+    return NextResponse.json({
+      overview: {
+        totalEstablishments,
+        activeEstablishments,
+        pendingEstablishments,
+        totalCustomers,
+        activeCustomers,
+        totalBookings,
+        pendingBookings,
+        completedBookings,
+        totalReviews,
+        pendingReviews,
+        totalRevenue
+      },
+      monthlyStats: Object.entries(monthlyStats).map(([month, data]) => ({
+        month,
+        bookings: data.bookings,
+        revenue: data.revenue
+      })),
+      topEstablishments
+    })
+  } catch (error) {
+    console.error('Get admin stats error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}]]></code>
+      </route>
+    </subsection>
+
+    <subsection id="establishments-route">
+      <title>Public Establishments Search</title>
+      <route path="/api/establishments" method="GET">
+        <description>Public search without authentication</description>
+        <code language="typescript"><![CDATA[
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const query = searchParams.get('q') || ''
+    const city = searchParams.get('city') || ''
+    const type = searchParams.get('type') || ''
+    const minPrice = searchParams.get('minPrice')
+    const maxPrice = searchParams.get('maxPrice')
+    const limit = parseInt(searchParams.get('limit') || '20')
+    const offset = parseInt(searchParams.get('offset') || '0')
+
+    const where: any = { status: 'ACTIVE' }
+
+    if (query) {
+      where.OR = [
+        { name: { contains: query } },
+        { description: { contains: query } },
+        { location: { contains: query } }
+      ]
+    }
+
+    if (city) {
+      where.city = { contains: city }
+    }
+
+    if (type) {
+      where.type = type.toUpperCase()
+    }
+
+    if (minPrice || maxPrice) {
+      where.minPrice = {}
+      if (minPrice) where.minPrice.gte = parseFloat(minPrice)
+      if (maxPrice) where.minPrice.lte = parseFloat(maxPrice)
+    }
+
+    const [establishments, total] = await Promise.all([
+      db.bordell.findMany({
+        where,
+        take: limit,
+        skip: offset,
+        orderBy: [
+          { sponsored: 'desc' },
+          { premium: 'desc' },
+          { rating: 'desc' }
+        ]
+      }),
+      db.bordell.count({ where })
+    ])
+
+    return NextResponse.json({
+      results: establishments.map(e => ({
+        id: e.id,
+        name: e.name,
+        type: e.type.toLowerCase(),
+        city: e.city,
+        rating: e.rating,
+        reviewCount: e.reviewCount,
+        minPrice: e.minPrice,
+        maxPrice: e.maxPrice,
+        services: e.services ? JSON.parse(e.services) : [],
+        images: e.images ? JSON.parse(e.images) : [],
+        verified: e.verified,
+        premium: e.premium,
+        sponsored: e.sponsored
+      })),
+      total,
+      limit,
+      offset
+    })
+  } catch (error) {
+    console.error('Search establishments error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}]]></code>
+      </route>
+    </subsection>
+
+    <subsection id="review-moderation">
+      <title>Review Moderation</title>
+      <route path="/api/admin/reviews" method="PUT">
+        <description>Approve/reject reviews and update bordell ratings</description>
+        <code language="typescript"><![CDATA[
+export async function PUT(request: NextRequest) {
+  const body = await request.json()
+  const { id, status, response } = body
+
+  const data: any = {}
+  if (status) data.status = status.toUpperCase()
+  if (response !== undefined) {
+    data.response = response
+    data.respondedAt = new Date()
+  }
+
+  const review = await db.review.update({
+    where: { id },
+    data
+  })
+
+  // If approved, recalculate bordell rating
+  if (status === 'APPROVED') {
+    const bordellReviews = await db.review.findMany({
+      where: { bordellId: review.bordellId, status: 'APPROVED' },
+      select: { rating: true }
+    })
+    
+    if (bordellReviews.length > 0) {
+      const avgRating = bordellReviews.reduce((sum, r) => sum + r.rating, 0) 
+                        / bordellReviews.length
+      await db.bordell.update({
+        where: { id: review.bordellId },
+        data: {
+          rating: Math.round(avgRating * 10) / 10,
+          reviewCount: bordellReviews.length
+        }
+      })
+    }
+  }
+
+  return NextResponse.json({
+    id: review.id,
+    status: review.status.toLowerCase()
+  })
+}]]></code>
+      </route>
+    </subsection>
+
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 4. CLIENT API LAYER -->
+  <!-- ============================================================ -->
+  <section id="client-api">
+    <title>Client API Layer</title>
+    <description>Typed fetch wrapper in src/lib/api.ts</description>
+
+    <code language="typescript"><![CDATA[
+// src/lib/api.ts
+const API_BASE = '/api'
+
+async function apiCall<T>(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<T> {
+  const url = `${API_BASE}${endpoint}`
+  
+  const config: RequestInit = {
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers
+    },
+    ...options
+  }
+
+  const response = await fetch(url, config)
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ error: 'Unknown error' }))
+    throw new Error(error.error || `HTTP ${response.status}`)
+  }
+
+  return response.json()
+}
+
+export const authApi = {
+  register: async (data: { email: string; password: string; name?: string; phone?: string }) => {
+    return apiCall<{ id: string; email: string; name: string; role: string }>(
+      '/register',
+      { method: 'POST', body: JSON.stringify(data) }
+    )
+  }
+}
+
+export const customerApi = {
+  getProfile: async () => apiCall<any>('/customer'),
+  updateProfile: async (data: { name?: string; phone?: string; avatar?: string }) => {
+    return apiCall<any>('/customer', { method: 'PUT', body: JSON.stringify(data) })
+  },
+  getVisits: async () => apiCall<any[]>('/customer/visits'),
+  getAddresses: async () => apiCall<any[]>('/customer/addresses'),
+  createAddress: async (data: {
+    label: string; street: string; city: string; zip: string;
+    country?: string; isDefault?: boolean
+  }) => {
+    return apiCall<any>('/customer/addresses', {
+      method: 'POST', body: JSON.stringify(data)
+    })
+  },
+  deleteAddress: async (id: string) => {
+    return apiCall<{ success: boolean }>(
+      `/customer/addresses?id=${id}`,
+      { method: 'DELETE' }
+    )
+  },
+  getBookings: async () => apiCall<any[]>('/customer/bookings')
+}
+
+export const bookingApi = {
+  create: async (data: {
+    bordellId: string; date: string; time: string;
+    duration: number; price: number; notes?: string
+  }) => {
+    return apiCall<any>('/bookings', {
+      method: 'POST', body: JSON.stringify(data)
+    })
+  },
+  getById: async (id: string) => apiCall<any>(`/bookings/${id}`),
+  update: async (id: string, data: any) => {
+    return apiCall<any>(`/bookings/${id}`, {
+      method: 'PUT', body: JSON.stringify(data)
+    })
+  },
+  cancel: async (id: string) => {
+    return apiCall<{ success: boolean }>(`/bookings/${id}`, { method: 'DELETE' })
+  }
+}
+
+export const establishmentsApi = {
+  search: async (params: {
+    q?: string; city?: string; type?: string;
+    minPrice?: string; maxPrice?: string; limit?: number; offset?: number
+  }) => {
+    const searchParams = new URLSearchParams()
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== '') {
+        searchParams.append(key, String(value))
+      }
+    })
+    return apiCall<{ results: any[]; total: number; limit: number; offset: number }>(
+      `/establishments?${searchParams.toString()}`
+    )
+  }
+}
+
+export const adminApi = {
+  getStats: async () => apiCall<any>('/admin/stats'),
+  getEstablishments: async (params?: { status?: string; type?: string; search?: string }) => {
+    const searchParams = new URLSearchParams()
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value) searchParams.append(key, value)
+      })
+    }
+    return apiCall<any[]>(`/admin/establishments?${searchParams.toString()}`)
+  },
+  createEstablishment: async (data: any) => {
+    return apiCall<any>('/admin/establishments', {
+      method: 'POST', body: JSON.stringify(data)
+    })
+  },
+  updateEstablishment: async (data: any) => {
+    return apiCall<any>('/admin/establishments', {
+      method: 'PUT', body: JSON.stringify(data)
+    })
+  },
+  deleteEstablishment: async (id: string) => {
+    return apiCall<{ success: boolean }>(
+      `/admin/establishments?id=${id}`,
+      { method: 'DELETE' }
+    )
+  },
+  getCustomers: async (params?: { status?: string; search?: string }) => { /* ... */ },
+  updateCustomer: async (data: any) => { /* ... */ },
+  deleteCustomer: async (id: string) => { /* ... */ },
+  getBookings: async (params?: { status?: string; bordellId?: string }) => { /* ... */ },
+  updateBooking: async (data: any) => { /* ... */ },
+  getReviews: async (params?: { status?: string }) => { /* ... */ },
+  updateReview: async (data: any) => { /* ... */ },
+  deleteReview: async (id: string) => { /* ... */ }
+}
+
+export const seedApi = {
+  seed: async () => {
+    return apiCall<{ success: boolean; message: string; data: any }>(
+      '/seed',
+      { method: 'POST' }
+    )
+  }
+}]]></code>
+
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 5. STATE MANAGEMENT -->
+  <!-- ============================================================ -->
+  <section id="state-management">
+    <title>State Management (Zustand)</title>
+
+    <subsection id="auth-store">
+      <title>Auth Store</title>
+      <description>Persistent auth state with localStorage</description>
+      <code language="typescript"><![CDATA[
+// src/stores/authStore.ts
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
+
+interface User {
+  id: string
+  email: string
+  name?: string
+  role: string
+  status: string
+  avatar?: string
+}
+
+interface AuthState {
+  user: User | null
+  isAuthenticated: boolean
+  isLoading: boolean
+  setUser: (user: User | null) => void
+  setLoading: (isLoading: boolean) => void
+  logout: () => void
+}
+
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      isAuthenticated: false,
+      isLoading: true,
+      setUser: (user) => set({ 
+        user, 
+        isAuthenticated: !!user,
+        isLoading: false 
+      }),
+      setLoading: (isLoading) => set({ isLoading }),
+      logout: () => set({ 
+        user: null, 
+        isAuthenticated: false,
+        isLoading: false 
+      })
+    }),
+    {
+      name: 'auth-storage',
+      partialize: (state) => ({ 
+        user: state.user,
+        isAuthenticated: state.isAuthenticated 
+      })
+    }
+  )
+)]]></code>
+    </subsection>
+
+    <subsection id="admin-store">
+      <title>Admin Store</title>
+      <code language="typescript"><![CDATA[
+// src/stores/adminStore.ts
+interface AdminState {
+  activeTab: string
+  stats: any | null
+  isLoading: boolean
+  searchQuery: string
+  setActiveTab: (tab: string) => void
+  setStats: (stats: any) => void
+  setLoading: (loading: boolean) => void
+  setSearchQuery: (query: string) => void
+}
+
+export const useAdminStore = create<AdminState>((set) => ({
+  activeTab: 'dashboard',
+  stats: null,
+  isLoading: false,
+  searchQuery: '',
+  setActiveTab: (activeTab) => set({ activeTab }),
+  setStats: (stats) => set({ stats }),
+  setLoading: (isLoading) => set({ isLoading }),
+  setSearchQuery: (searchQuery) => set({ searchQuery })
+}))]]></code>
+    </subsection>
+
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 6. MIDDLEWARE -->
+  <!-- ============================================================ -->
+  <section id="middleware">
+    <title>Middleware</title>
+    <description>Route protection with role-based access control</description>
+
+    <code language="typescript"><![CDATA[
+// src/middleware.ts
+import { NextRequest, NextResponse } from 'next/server'
+import { verifyToken } from './lib/auth/paseto'
+import { isRevoked } from './lib/auth/blacklist'
+
+const protectedRoutes = {
+  admin: {
+    paths: ['/de/admin', '/en/admin', '/tr/admin', '/ar/admin'],
+    roles: ['admin']
+  },
+  dashboard: {
+    paths: ['/de/dashboard', '/en/dashboard', '/tr/dashboard', '/ar/dashboard'],
+    roles: ['customer', 'owner', 'admin']
+  },
+  owner: {
+    paths: ['/de/owner', '/en/owner', '/tr/owner', '/ar/owner'],
+    roles: ['owner', 'admin']
+  }
+}
+
+const authRoutes = [
+  '/de/login', '/en/login', '/tr/login', '/ar/login',
+  '/de/register', '/en/register', '/tr/register', '/ar/register'
+]
+
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+  const token = request.cookies.get('auth_token')?.value
+
+  // Redirect authenticated users away from auth pages
+  const isAuthRoute = authRoutes.some(route => pathname.startsWith(route))
+  if (token && isAuthRoute) {
+    try {
+      const payload = await verifyToken(token)
+      if (!isRevoked(payload.jti)) {
+        const locale = pathname.split('/')[1] || 'de'
+        return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url))
+      }
+    } catch { /* invalid token, proceed */ }
+  }
+
+  // Check route protection
+  let requiredRoles: string[] | null = null
+  for (const [, config] of Object.entries(protectedRoutes)) {
+    if (config.paths.some(path => pathname.startsWith(path))) {
+      requiredRoles = config.roles
+      break
+    }
+  }
+
+  if (!requiredRoles) {
+    return NextResponse.next()
+  }
+
+  // No token - redirect to login
+  if (!token) {
+    const locale = pathname.split('/')[1] || 'de'
+    const loginUrl = new URL(`/${locale}/login`, request.url)
+    loginUrl.searchParams.set('redirect', pathname)
+    return NextResponse.redirect(loginUrl)
+  }
+
+  // Verify token
+  let payload
+  try {
+    payload = await verifyToken(token)
+  } catch {
+    const locale = pathname.split('/')[1] || 'de'
+    const loginUrl = new URL(`/${locale}/login`, request.url)
+    loginUrl.searchParams.set('error', 'session_expired')
+    return NextResponse.redirect(loginUrl)
+  }
+
+  // Check revocation
+  if (isRevoked(payload.jti)) {
+    const locale = pathname.split('/')[1] || 'de'
+    const loginUrl = new URL(`/${locale}/login`, request.url)
+    loginUrl.searchParams.set('error', 'session_revoked')
+    return NextResponse.redirect(loginUrl)
+  }
+
+  // Check role
+  if (!requiredRoles.includes(payload.role)) {
+    const locale = pathname.split('/')[1] || 'de'
+    return NextResponse.redirect(new URL(`/${locale}?error=unauthorized`, request.url))
+  }
+
+  // Set user headers for API routes
+  const response = NextResponse.next()
+  response.headers.set('x-user-id', payload.sub)
+  response.headers.set('x-user-role', payload.role)
+  response.headers.set('x-user-email', payload.email)
+
+  return response
+}
+
+export const config = {
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|icon.svg|images|covers|.*\\.(?:jpg|jpeg|png|webp|svg|gif|ico|woff|woff2)).*)'
+  ]
+}]]></code>
+
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 7. SEED DATA -->
+  <!-- ============================================================ -->
+  <section id="seed-data">
+    <title>Seed Data</title>
+
+    <code language="typescript"><![CDATA[
+// src/lib/seedData.ts
+import { db } from './db'
+import bcrypt from 'bcryptjs'
+
+export async function seedDatabase() {
+  // Clear existing data
+  await db.invoice.deleteMany()
+  await db.review.deleteMany()
+  await db.booking.deleteMany()
+  await db.visit.deleteMany()
+  await db.userBadge.deleteMany()
+  await db.address.deleteMany()
+  await db.bordell.deleteMany()
+  await db.badge.deleteMany()
+  await db.user.deleteMany()
+
+  // Create badges
+  const badges = await Promise.all([
+    db.badge.create({
+      data: { name: 'Premium', description: 'Premium üyelik', icon: 'crown', color: '#FFD700' }
+    }),
+    db.badge.create({
+      data: { name: 'Early Adopter', description: 'İlk kullanıcılar', icon: 'star', color: '#4CAF50' }
+    }),
+    db.badge.create({
+      data: { name: 'Active Member', description: 'Aktif üye', icon: 'zap', color: '#2196F3' }
+    }),
+    db.badge.create({
+      data: { name: 'Top Reviewer', description: 'En çok yorum', icon: 'message-circle', color: '#9C27B0' }
+    })
+  ])
+
+  // Create admin
+  const admin = await db.user.create({
+    data: {
+      email: 'admin@desiremap.de',
+      password: await bcrypt.hash('admin123', 12),
+      name: 'Admin User',
+      role: 'ADMIN',
+      status: 'ACTIVE'
+    }
+  })
+
+  // Create customers
+  const customers = await Promise.all([
+    db.user.create({
+      data: {
+        email: 'max@example.com',
+        password: await bcrypt.hash('password123', 12),
+        name: 'Max Mustermann',
+        role: 'CUSTOMER',
+        status: 'ACTIVE'
+      }
+    }),
+    // ... more customers
+  ])
+
+  return { badges, admin, customers }
+}
+
+export async function seedBordells() {
+  return Promise.all([
+    db.bordell.create({
+      data: {
+        name: 'FKK Oase',
+        type: 'FKK',
+        city: 'Berlin',
+        rating: 4.8,
+        reviewCount: 156,
+        minPrice: 80,
+        maxPrice: 150,
+        services: JSON.stringify(['Sauna', 'Pool', 'Bar', 'Massage']),
+        verified: true,
+        premium: true,
+        status: 'ACTIVE'
+      }
+    }),
+    // ... more bordells
+  ])
+}
+
+// API route protection
+export async function POST() {
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Seeding not allowed in production' }, { status: 403 })
+  }
+  // ... seeding logic
+}]]></code>
+
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 8. ERROR HANDLING -->
+  <!-- ============================================================ -->
+  <section id="error-handling">
+    <title>Error Handling Patterns</title>
+
+    <subsection id="status-codes">
+      <title>HTTP Status Codes</title>
+      <codes>
+        <code value="200">Successful GET/PUT</code>
+        <code value="201">Resource created (POST)</code>
+        <code value="400">Validation failed / Bad request</code>
+        <code value="401">Not authenticated</code>
+        <code value="403">Not authorized / Banned / Forbidden</code>
+        <code value="404">Resource not found</code>
+        <code value="429">Rate limit exceeded</code>
+        <code value="500">Internal server error</code>
+      </codes>
+    </subsection>
+
+    <subsection id="error-responses">
+      <title>Error Response Format</title>
+      <variants>
+        <variant name="Validation Error">
+          <code><![CDATA[{ "error": "Invalid input", "details": { "fieldErrors": [...] } }]]></code>
+        </variant>
+        <variant name="Auth Error">
+          <code><![CDATA[{ "error": "Unauthorized" }]]></code>
+        </variant>
+        <variant name="Server Error">
+          <code><![CDATA[{ "error": "Internal server error" }]]></code>
+        </variant>
+      </variants>
+    </subsection>
+
+    <subsection id="try-catch-pattern">
+      <title>Standard Try-Catch Pattern</title>
+      <code language="typescript"><![CDATA[
+export async function handler(request: NextRequest) {
+  try {
+    // ... logic
+    return NextResponse.json({ /* success data */ }, { status: 201 })
+  } catch (error) {
+    console.error('Handler error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}]]></code>
+    </subsection>
+
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 9. ENVIRONMENT VARIABLES -->
+  <!-- ============================================================ -->
+  <section id="environment">
+    <title>Environment Variables</title>
+
+    <subsection id="required-vars">
+      <title>Required</title>
+      <vars>
+        <var name="DATABASE_URL" description="PostgreSQL connection string"/>
+        <var name="DIRECT_URL" description="Direct PostgreSQL connection (for Prisma)"/>
+        <var name="NEXTAUTH_SECRET" description="NextAuth session secret"/>
+        <var name="NEXTAUTH_URL" description="Application URL (e.g., http://localhost:3000)"/>
+      </vars>
+    </subsection>
+
+    <subsection id="paseto-vars">
+      <title>PASETO Authentication</title>
+      <vars>
+        <var name="PASETO_PRIVATE_KEY" description="Base64-encoded Ed25519 private key"/>
+        <var name="PASETO_PUBLIC_KEY" description="Base64-encoded Ed25519 public key"/>
+      </vars>
+    </subsection>
+
+    <subsection id="oauth-vars">
+      <title>Google OAuth</title>
+      <vars>
+        <var name="GOOGLE_CLIENT_ID" description="Google OAuth client ID"/>
+        <var name="GOOGLE_CLIENT_SECRET" description="Google OAuth client secret"/>
+        <var name="GOOGLE_REDIRECT_URI" description="OAuth callback URL"/>
+      </vars>
+    </subsection>
+
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 10. TESTING -->
+  <!-- ============================================================ -->
+  <section id="testing">
+    <title>Testing</title>
+
+    <subsection id="test-runner">
+      <title>Bun Test Runner</title>
+      <commands>
+        <command description="Run all tests">bun test</command>
+        <command description="Run single test file">bun test path/to/file.test.ts</command>
+        <command description="Run tests matching pattern">bun test -t "should create booking"</command>
+      </commands>
+    </subsection>
+
+    <subsection id="test-example">
+      <title>Test Example</title>
+      <code language="typescript"><![CDATA[
+// src/lib/seo/home.test.ts
+import { describe, expect, test } from 'bun:test'
+import { getHomeSeoExperience, getHomeSeoMetadata } from './home'
+
+describe('home SEO content model', () => {
+  test('builds category and city routes for the localized homepage', () => {
+    const seo = getHomeSeoExperience('de')
+
+    expect(seo.clusters).toHaveLength(4)
+    expect(seo.clusters.map((item) => item.href)).toEqual([
+      '/de/search?category=fkk',
+      '/de/search?category=laufhaus',
+      '/de/search?category=studio',
+      '/de/search?category=privat'
+    ])
+
+    expect(seo.cityLinks.some((item) => item.href === '/de/search?city=Berlin')).toBe(true)
+    expect(seo.faq).toHaveLength(4)
+  })
+
+  test('returns homepage metadata tuned for the German market', () => {
+    const metadata = getHomeSeoMetadata('de')
+
+    expect(metadata.title).toContain('DesireMap')
+    expect(metadata.title).toContain('Deutschland')
+    expect(metadata.description).toContain('verifizierte')
+  })
+})]]></code>
+    </subsection>
+
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 11. KEY FILES REFERENCE -->
+  <!-- ============================================================ -->
+  <section id="key-files">
+    <title>Key Files Reference</title>
+
+    <file-list>
+      <file path="prisma/schema.prisma" description="Database schema with all models and enums"/>
+      <file path="src/lib/db.ts" description="Prisma client singleton"/>
+      <file path="src/lib/auth.ts" description="NextAuth configuration"/>
+      <file path="src/lib/auth/paseto.ts" description="PASETO token generation/verification"/>
+      <file path="src/lib/auth/guards.ts" description="Auth middleware helpers"/>
+      <file path="src/lib/auth/password.ts" description="bcrypt password hashing"/>
+      <file path="src/lib/auth/oauth/google.ts" description="Google OAuth implementation"/>
+      <file path="src/lib/auth/blacklist.ts" description="Token blacklist"/>
+      <file path="src/lib/api.ts" description="Client API wrapper"/>
+      <file path="src/stores/authStore.ts" description="Auth state (Zustand)"/>
+      <file path="src/stores/adminStore.ts" description="Admin state (Zustand)"/>
+      <file path="src/middleware.ts" description="Route protection middleware"/>
+      <file path="src/lib/seedData.ts" description="Database seeding functions"/>
+      <file path="src/types/index.ts" description="Core TypeScript types"/>
+      <file path="src/types/admin.ts" description="Admin-specific types"/>
+    </file-list>
+
+  </section>
+
+</backend-architecture>

@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation'
 import { Toaster } from '@/components/ui/toaster'
 import { SessionProvider } from '@/components/providers/SessionProvider'
 import { QueryProvider } from '@/components/providers/QueryProvider'
+import { getHomeSeoMetadata } from '@/lib/seo/home'
 import { getStructuredData } from '@/lib/structuredData'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'], display: 'swap' })
@@ -15,24 +16,14 @@ const locales = ['de', 'en', 'ar', 'tr']
 
 export const viewport: Viewport = { width: 'device-width', initialScale: 1, themeColor: '#0a0a0f' }
 
-const localeTitles: Record<string, string> = {
-  de: 'Bordellmarkt | FKK, Laufhaus, Studio, Privat - DesireMap',
-  en: 'Bordellmarkt | FKK, Laufhaus, Studio, Privat - DesireMap',
-  tr: 'Bordellmarkt | FKK, Laufhaus, Studio, Privat - DesireMap',
-  ar: 'Bordellmarkt | FKK, Laufhaus, Studio, Privat - DesireMap'
-}
-const localeDescriptions: Record<string, string> = {
-  de: 'Bordellmarkt - Deutschlands größter Erotik-Guide. FKK Clubs, Laufhäuser, Bordelle und Studios in Berlin, Hamburg, München. Verifizierte Adressen, Bewertungen.',
-  en: 'Bordellmarkt - Germany\'s largest erotic guide. FKK clubs, laufhaus, brothels and studios in Berlin, Hamburg, Munich. Verified addresses, reviews.',
-  tr: 'Bordellmarkt - Almanya\'nın en büyük erotik rehberi. Berlin, Hamburg, Münih\'te FKK kulüpleri, laufhaus, bordell ve stüdyolar. Doğrulanmış adresler.',
-  ar: 'Bordellmarkt - أكبر دليل إروتيكي في ألمانيا. أندية FKK وبيوت الدعارة في برلين وهامبورغ وميونخ. عناوين موثقة وتقييمات.'
-}
 const ogLocales: Record<string, string> = { de: 'de_DE', en: 'en_US', ar: 'ar_SA', tr: 'tr_TR' }
 
 function getLocaleData(locale: string) {
+  const homeMetadata = getHomeSeoMetadata(locale)
+
   return {
-    title: localeTitles[locale] || localeTitles.de,
-    description: localeDescriptions[locale] || localeDescriptions.de,
+    title: homeMetadata.title,
+    description: homeMetadata.description,
     ogLocale: ogLocales[locale] || ogLocales.de
   }
 }

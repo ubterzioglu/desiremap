@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PROJECT_PRD version="1.0" project="desiremap-cms-platform" status="draft-ready" repository="desiremap">
+  <DOCUMENT_CONTROL>
+    <TITLE>DesireMap CMS Platform PRD</TITLE>
+    <PURPOSE>Single-source product requirements document for converting the current DesireMap repository into a production-grade, content-managed discovery platform with editorial workflows.</PURPOSE>
+    <AUTHORING_MODE>Repository-grounded, deterministic defaults, implementation-oriented.</AUTHORING_MODE>
+    <GENERATED_ON>2026-03-28</GENERATED_ON>
+    <WORKSPACE>/Users/admin/Desktop/dev/desiremap</WORKSPACE>
+  </DOCUMENT_CONTROL>
+
+  <SYSTEM_CONTEXT>
+    The current repository is not a greenfield startup CMS. It is a Next.js marketplace/discovery application for Germany-focused adult venue listings with customer bookings, reviews, admin operations, blog content, SEO pages, and multilingual routing.
+    This PRD treats the existing repository as the implementation baseline and defines the target state as a CMS-backed content and operations platform rather than a disposable rewrite.
+    The working goal is to evolve the repo into a maintainable CMS platform that can manage public pages, editorial content, listing content, structured SEO surfaces, and role-based backoffice workflows from one codebase.
+  </SYSTEM_CONTEXT>
+
+  <COMPACT_SYSTEM>
+    Build against the current repo, not against an imagined blank project.
+    Prefer the existing stack unless it creates material delivery risk.
+    Unify inconsistent auth and data ownership before adding major CMS features.
+    Use typed content models, explicit publish states, preview capability, and verifiable admin workflows.
+    Treat testing, SEO, accessibility, responsive behavior, and operational maintainability as release gates.
+  </COMPACT_SYSTEM>
+
+  <ROLE>
+    <PRIMARY_ROLE>Autonomous Staff+ engineer shipping a CMS-backed product platform inside the current DesireMap repository</PRIMARY_ROLE>
+    <SECONDARY_ROLES>
+      <ROLE_ITEM priority="1">Systems architect making explicit technical decisions from real code constraints</ROLE_ITEM>
+      <ROLE_ITEM priority="2">Product architect aligning current marketplace behavior with a CMS target state</ROLE_ITEM>
+      <ROLE_ITEM priority="3">Backend/platform engineer reducing model and auth inconsistency before expansion</ROLE_ITEM>
+      <ROLE_ITEM priority="4">QA owner enforcing TDD, regression coverage, and verification evidence</ROLE_ITEM>
+    </SECONDARY_ROLES>
+  </ROLE>
+
+  <REPOSITORY_SCAN>
+    <STACK>
+      <FRONTEND>Next.js 16 App Router + React 19 + TypeScript</FRONTEND>
+      <BACKEND>Route handlers under src/app/api plus Prisma data access</BACKEND>
+      <DATABASE>PostgreSQL via Prisma</DATABASE>
+      <STYLING>Tailwind CSS v4 with shadcn-style UI primitives and custom gradients</STYLING>
+      <STATE>React Query + Zustand</STATE>
+      <I18N>next-intl with locales de, en, ar, tr</I18N>
+      <AUTH>Mixed NextAuth session usage and custom PASETO cookie auth</AUTH>
+      <TESTING>Bundled Bun runner available, but no committed automated test suite</TESTING>
+    </STACK>
+
+    <CURRENT_PRODUCT_SURFACE>
+      <PUBLIC_PAGES>
+        <PAGE>Localized landing route, currently client-side view switching in src/app/[locale]/page.tsx</PAGE>
+        <PAGE>Search listing flow in src/app/[locale]/search/page.tsx and related search components</PAGE>
+        <PAGE>Static-ish listing detail SEO pages in src/app/[locale]/bordell/[slug]/page.tsx</PAGE>
+        <PAGE>Blog index and article pages backed by in-repo content files under src/data</PAGE>
+        <PAGE>Login, registration, dashboard, and admin entry routes</PAGE>
+      </PUBLIC_PAGES>
+
+      <BACKOFFICE_AND_MEMBER_SURFACES>
+        <SURFACE>Customer dashboard with profile, visits, addresses, badges, and bookings</SURFACE>
+        <SURFACE>Admin panel for stats, establishments, customers, bookings, reviews, and settings</SURFACE>
+      </BACKOFFICE_AND_MEMBER_SURFACES>
+
+      <API_DOMAINS>
+        <DOMAIN>Auth: register, login, logout, me, OAuth routes</DOMAIN>
+        <DOMAIN>Customer: profile, visits, addresses, badges, bookings</DOMAIN>
+        <DOMAIN>Listings: establishment search and admin CRUD</DOMAIN>
+        <DOMAIN>Commerce: booking creation and invoice-adjacent models</DOMAIN>
+        <DOMAIN>Moderation: reviews and status management</DOMAIN>
+        <DOMAIN>Bootstrap: seed route</DOMAIN>
+      </API_DOMAINS>
+
+      <DATA_MODEL_BASELINE>
+        <ENTITY>User with roles CUSTOMER, OWNER, ADMIN</ENTITY>
+        <ENTITY>Address, Visit, Badge, UserBadge</ENTITY>
+        <ENTITY>Bordell listing model with ranking and monetization fields</ENTITY>
+        <ENTITY>Booking, Review, Invoice</ENTITY>
+      </DATA_MODEL_BASELINE>
+    </CURRENT_PRODUCT_SURFACE>
+
+    <CODEBASE_EVIDENCE>
+      <ITEM>src/app/[locale]/page.tsx imports mock listing data and switches between home, city, detail, login, dashboard, and admin views inside one client page.</ITEM>
+      <ITEM>src/data/mock-data.ts contains hardcoded listings, dashboard, and admin records, proving the UI still depends heavily on mocked domain data.</ITEM>
+      <ITEM>src/app/[locale]/blog/page.tsx and src/app/[locale]/blog/[slug]/page.tsx implement editorial surfaces using static in-repo data rather than CMS-managed records.</ITEM>
+      <ITEM>src/app/api/admin/establishments/route.ts, src/app/api/admin/customers/route.ts, and src/app/api/admin/reviews/route.ts expose admin CRUD/status flows over Prisma models.</ITEM>
+      <ITEM>src/app/api/auth/login/route.ts and src/app/api/auth/me/route.ts use custom PASETO auth, while src/lib/auth.ts and some admin routes still rely on NextAuth session patterns.</ITEM>
+      <ITEM>src/lib/structuredData.ts, src/app/sitemap.ts, and src/app/robots.ts show an SEO-oriented architecture already exists but is mostly static and partial.</ITEM>
+      <ITEM>package.json contains lint/build/db scripts but no test script, and the repository has no committed test files.</ITEM>
+    </CODEBASE_EVIDENCE>
+
+    <CRITICAL_FINDINGS>
+      <FINDING priority="1">Auth is split across two incompatible approaches. CMS work must not proceed on top of dual session systems.</FINDING>
+      <FINDING priority="2">Public and admin UI still depend on mock data for major flows, so the current product is only partially database-backed.</FINDING>
+      <FINDING priority="3">The Prisma schema is marketplace-specific and lacks generic CMS entities such as pages, posts, authorship workflow, media assets, content blocks, preview tokens, and publish states.</FINDING>
+      <FINDING priority="4">The current locale landing experience is implemented as a single large client page rather than route-native server-first information architecture.</FINDING>
+      <FINDING priority="5">Testing infrastructure is effectively absent, so TDD and regression protection must be added before substantial refactors.</FINDING>
+    </CRITICAL_FINDINGS>
+  </REPOSITORY_SCAN>
+
+  <PRODUCT_OBJECTIVE>
+    Build a production-ready CMS platform inside the current DesireMap codebase that supports:
+    public marketing and discovery pages,
+    editorial content management,
+    listing content management,
+    draft/preview/publish workflows,
+    SEO-managed content,
+    multilingual delivery,
+    role-based administration,
+    media management,
+    and maintainable operational workflows.
+  </PRODUCT_OBJECTIVE>
+
+  <PRODUCT_DIRECTION>
+    <POSITIONING>CMS-backed discovery marketplace rather than a generic brochure CMS</POSITIONING>
+    <WHY>This preserves the repository's real strengths: listings, search, admin operations, reviews, and SEO, while adding the missing content platform capabilities required for serious product development.</WHY>
+    <PRIMARY_OUTCOME>Editors and admins can manage structured content and listing experiences without code changes.</PRIMARY_OUTCOME>
+    <SECONDARY_OUTCOME>Public routes become server-first, SEO-safe, typed, and backed by persistent content rather than mocks.</SECONDARY_OUTCOME>
+  </PRODUCT_DIRECTION>
+
+  <DETERMINISTIC_DEFAULTS>
+    <DEFAULT id="D01">Keep the existing Next.js App Router + Prisma + PostgreSQL stack.</DEFAULT>
+    <DEFAULT id="D02">Unify authentication on one first-party role/session system and remove split-brain auth behavior.</DEFAULT>
+    <DEFAULT id="D03">Introduce CMS entities in Prisma instead of embedding all content inside static files.</DEFAULT>
+    <DEFAULT id="D04">Model content with explicit status transitions: draft, in_review, scheduled, published, archived.</DEFAULT>
+    <DEFAULT id="D05">Use modular section/block composition for editorial pages, but keep the block set finite and typed.</DEFAULT>
+    <DEFAULT id="D06">Treat listings as a managed content type, not as an exception outside the CMS.</DEFAULT>
+    <DEFAULT id="D07">Require test coverage for every new behavior slice before claiming completion.</DEFAULT>
+  </DETERMINISTIC_DEFAULTS>
+
+  <USERS_AND_ROLES>
+    <PUBLIC_USERS>
+      <ROLE>Anonymous visitor discovering listings and editorial content</ROLE>
+      <ROLE>Registered member managing bookings, profile, and saved interactions</ROLE>
+    </PUBLIC_USERS>
+    <CMS_USERS>
+      <ROLE>Admin: full platform control, schema-level operations, moderation, publishing, settings</ROLE>
+      <ROLE>Editor: manages pages, posts, SEO fields, content scheduling, and approvals</ROLE>
+      <ROLE>Author: drafts and updates assigned editorial content only</ROLE>
+      <ROLE>Listing Manager: optional evolution of the current OWNER role for establishment-specific editing</ROLE>
+    </CMS_USERS>
+    <ROLE_MIGRATION>
+      <MAP from="CUSTOMER" to="member">Preserve as frontoffice account role</MAP>
+      <MAP from="OWNER" to="listing_manager">Retain as domain-specific content operator if marketplace workflows remain in scope</MAP>
+      <MAP from="ADMIN" to="admin">Preserve as top-level operator</MAP>
+      <MAP from="new" to="editor_and_author">Add editorial roles required by the target CMS</MAP>
+    </ROLE_MIGRATION>
+  </USERS_AND_ROLES>
+
+  <PROBLEM_STATEMENT>
+    The repository already exposes public pages, listings, SEO surfaces, dashboards, and APIs, but product content is fragmented across mocks, static files, and inconsistent auth boundaries.
+    Without a real CMS layer, every content change requires code edits, publish workflow is nonexistent, admin operations are incomplete, and future refactors will compound risk.
+  </PROBLEM_STATEMENT>
+
+  <GOALS>
+    <GOAL priority="1">Replace mock-driven public and admin experiences with persistent CMS-backed content and listing records.</GOAL>
+    <GOAL priority="2">Unify auth, permissions, and server-side guards for all admin/editor/member flows.</GOAL>
+    <GOAL priority="3">Deliver a typed CMS domain model for pages, posts, categories, authorship, media, SEO, and listing content.</GOAL>
+    <GOAL priority="4">Support multilingual editorial workflows across de, en, ar, and tr.</GOAL>
+    <GOAL priority="5">Provide draft, preview, scheduled publish, and moderation states.</GOAL>
+    <GOAL priority="6">Preserve and improve SEO through route-native metadata, structured data, sitemap generation, and controlled canonical logic.</GOAL>
+    <GOAL priority="7">Establish real verification discipline through unit, integration, and selective end-to-end coverage.</GOAL>
+  </GOALS>
+
+  <NON_GOALS>
+    <ITEM>Do not introduce microservices or a second repository.</ITEM>
+    <ITEM>Do not add a freeform page builder with arbitrary JSON blobs and no type boundaries.</ITEM>
+    <ITEM>Do not preserve the current dual-auth setup for backward compatibility.</ITEM>
+    <ITEM>Do not claim production readiness while content creation, preview, or moderation still depend on static files or mocks.</ITEM>
+  </NON_GOALS>
+
+  <FUNCTIONAL_REQUIREMENTS>
+    <PUBLIC_EXPERIENCE>
+      <REQ id="PUB-01">Public landing, search, city, listing detail, blog, and informational pages must render from database-backed content or derived read models.</REQ>
+      <REQ id="PUB-02">Listing pages must support structured sections: hero, summary facts, galleries, amenities/services, trust badges, FAQs, reviews, related listings, and SEO body content.</REQ>
+      <REQ id="PUB-03">Editorial pages must support a typed section set suitable for startup content: hero, logo cloud, feature grid, metrics, testimonials, FAQ, CTA, rich text, media split, comparison, timeline.</REQ>
+      <REQ id="PUB-04">Blog/changelog/case-study style content must be manageable in the CMS with author, tags, cover image, body blocks, schema fields, and publish metadata.</REQ>
+      <REQ id="PUB-05">Search and listing browse surfaces must continue to expose ranking, filtering, city, type, and monetization-aware ordering.</REQ>
+      <REQ id="PUB-06">All public routes must be locale-aware and indexable when published.</REQ>
+    </PUBLIC_EXPERIENCE>
+
+    <CMS_AUTHORING>
+      <REQ id="CMS-01">Editors and authors must create, edit, duplicate, archive, and preview content entries without code changes.</REQ>
+      <REQ id="CMS-02">Each managed entity must expose status workflow, owner, last editor, scheduled publish time, and revision timestamps.</REQ>
+      <REQ id="CMS-03">Preview must support unpublished content with role-aware secure preview access.</REQ>
+      <REQ id="CMS-04">Content entities must store SEO metadata: title, description, canonical, robots, OG image, schema hints, and alternate language links.</REQ>
+      <REQ id="CMS-05">Media handling must include upload metadata, alt text, focal point, usage references, and asset replacement safety.</REQ>
+      <REQ id="CMS-06">The admin UX must provide filters, saved views, validation feedback, and obvious publish state visibility.</REQ>
+    </CMS_AUTHORING>
+
+    <OPERATIONS_AND_MODERATION>
+      <REQ id="OPS-01">Admin must manage listings, customers/members, bookings, reviews, invoices, content, and publishing queues from one coherent console.</REQ>
+      <REQ id="OPS-02">Review moderation must remain available and update public aggregates safely.</REQ>
+      <REQ id="OPS-03">Listing verification, premium flags, sponsorship, and operational status must remain editable through guarded admin workflows.</REQ>
+      <REQ id="OPS-04">Member-facing dashboard flows must be preserved where still relevant, but use the unified auth and API boundary.</REQ>
+    </OPERATIONS_AND_MODERATION>
+
+    <PLATFORM_AND_DEVELOPER_REQUIREMENTS>
+      <REQ id="PLAT-01">CMS schema and route contracts must be explicit, typed, and validated at the boundary.</REQ>
+      <REQ id="PLAT-02">The implementation must avoid placeholder TODO paths for claimed-complete features.</REQ>
+      <REQ id="PLAT-03">Server and client concerns must be separated so public rendering can remain server-first where appropriate.</REQ>
+      <REQ id="PLAT-04">Seed/dev data must support CMS entities without forcing production behavior to depend on mock files.</REQ>
+    </PLATFORM_AND_DEVELOPER_REQUIREMENTS>
+  </FUNCTIONAL_REQUIREMENTS>
+
+  <CONTENT_MODEL>
+    <CORE_ENTITIES>
+      <ENTITY name="CmsUser">role, profile, locale preferences, audit fields</ENTITY>
+      <ENTITY name="Listing">current Bordell successor; operational and marketing attributes, monetization flags, SEO fields, content blocks</ENTITY>
+      <ENTITY name="Page">slug, locale, template, section blocks, SEO, publish state</ENTITY>
+      <ENTITY name="Post">blog/changelog/case study/news style content with taxonomy, author, cover media, body blocks</ENTITY>
+      <ENTITY name="Taxonomy">categories, tags, topics, use-case collections</ENTITY>
+      <ENTITY name="MediaAsset">file metadata, alt text, crop/focal data, usage references</ENTITY>
+      <ENTITY name="Revision">snapshot metadata for content recovery and publish auditability</ENTITY>
+      <ENTITY name="PreviewSession">secure preview token and expiry data</ENTITY>
+      <ENTITY name="SeoOverride">entity-level override fields where generic defaults are insufficient</ENTITY>
+    </CORE_ENTITIES>
+
+    <PUBLISHING_STATES>
+      <STATE>draft</STATE>
+      <STATE>in_review</STATE>
+      <STATE>scheduled</STATE>
+      <STATE>published</STATE>
+      <STATE>archived</STATE>
+    </PUBLISHING_STATES>
+
+    <BLOCK_SYSTEM>
+      <RULE>Blocks must be finite, typed, and versioned.</RULE>
+      <RULE>Rich text may exist, but page structure may not be represented as opaque HTML blobs.</RULE>
+      <RULE>Listing-specific blocks and general editorial blocks must share rendering conventions without becoming interchangeable noise.</RULE>
+    </BLOCK_SYSTEM>
+  </CONTENT_MODEL>
+
+  <ARCHITECTURE_BASELINE>
+    <APP_SHAPE>
+      <DECISION>Keep a single Next.js codebase with App Router, Prisma, route handlers, and structured admin/public domains.</DECISION>
+      <DECISION>Move from static/mock content composition toward server-backed content services and read models.</DECISION>
+      <DECISION>Refactor oversized client pages into route-native server components with isolated client interactivity where needed.</DECISION>
+    </APP_SHAPE>
+
+    <AUTH_AND_PERMISSIONS>
+      <DECISION>Unify to one session model and one source of truth for roles/guards before expanding CMS scope.</DECISION>
+      <DECISION>All admin/editor/author/listing-manager access must use shared server helpers, not route-specific one-offs.</DECISION>
+      <DECISION>Preview access must be separate from general session auth and must be revocable.</DECISION>
+    </AUTH_AND_PERMISSIONS>
+
+    <DATA_AND_SERVICES>
+      <DECISION>Prisma remains the persistence layer.</DECISION>
+      <DECISION>Introduce service modules for CMS read/write operations instead of letting route handlers absorb all domain logic.</DECISION>
+      <DECISION>Preserve search/ranking capabilities, but isolate them from UI mocks and expose them through typed query services.</DECISION>
+    </DATA_AND_SERVICES>
+
+    <SEO_AND_DISCOVERY>
+      <DECISION>Keep route-level metadata generation, sitemap generation, robots policy, and structured data as first-class concerns.</DECISION>
+      <DECISION>Generate SEO from CMS entities and listing read models rather than hardcoded arrays.</DECISION>
+    </SEO_AND_DISCOVERY>
+  </ARCHITECTURE_BASELINE>
+
+  <QUALITY_BARS>
+    <RULE>TDD first whenever a real executable surface exists.</RULE>
+    <RULE>No new feature slice is complete without at least one concrete verification path.</RULE>
+    <RULE>Accessibility is mandatory for public and admin surfaces.</RULE>
+    <RULE>Responsive behavior is required on mobile and desktop.</RULE>
+    <RULE>All publish-state transitions must be testable.</RULE>
+    <RULE>Auth and permission checks must have explicit coverage.</RULE>
+  </QUALITY_BARS>
+
+  <PHASED_DELIVERY_PLAN>
+    <PHASE id="P1" title="Foundation and Auth Unification">
+      <OBJECTIVE>Stabilize the repo before CMS expansion.</OBJECTIVE>
+      <SCOPE>
+        <ITEM>Choose and implement one auth/session strategy.</ITEM>
+        <ITEM>Create shared role/permission helpers for admin, editor, author, member, and optional listing manager.</ITEM>
+        <ITEM>Add initial test harness and first auth/guard tests.</ITEM>
+        <ITEM>Document migration away from mock-dependent session assumptions.</ITEM>
+      </SCOPE>
+    </PHASE>
+
+    <PHASE id="P2" title="CMS Data Model and Admin Skeleton">
+      <OBJECTIVE>Add Prisma entities and admin navigation for CMS-managed content.</OBJECTIVE>
+      <SCOPE>
+        <ITEM>Create CMS entities, enums, relations, and migration plan.</ITEM>
+        <ITEM>Add content list/detail/create/edit flows in admin.</ITEM>
+        <ITEM>Introduce status workflow, SEO fields, and media references.</ITEM>
+      </SCOPE>
+    </PHASE>
+
+    <PHASE id="P3" title="Public Route Refactor and Content Rendering">
+      <OBJECTIVE>Move public pages from mock/static composition to CMS-backed rendering.</OBJECTIVE>
+      <SCOPE>
+        <ITEM>Refactor landing and informational pages into route-native server-first rendering.</ITEM>
+        <ITEM>Back blog and longform content with CMS entities.</ITEM>
+        <ITEM>Back listing detail SEO content with persistent content fields and blocks.</ITEM>
+      </SCOPE>
+    </PHASE>
+
+    <PHASE id="P4" title="Preview, Scheduling, and Publishing Operations">
+      <OBJECTIVE>Complete true CMS workflow functionality.</OBJECTIVE>
+      <SCOPE>
+        <ITEM>Preview tokens and unpublished rendering.</ITEM>
+        <ITEM>Scheduled publishing and archived states.</ITEM>
+        <ITEM>Revision metadata and publish audit trail.</ITEM>
+      </SCOPE>
+    </PHASE>
+
+    <PHASE id="P5" title="Operational Hardening">
+      <OBJECTIVE>Raise the platform to releasable quality.</OBJECTIVE>
+      <SCOPE>
+        <ITEM>Testing expansion across critical paths.</ITEM>
+        <ITEM>SEO validation, sitemap enrichment, metadata verification.</ITEM>
+        <ITEM>Accessibility pass, responsive QA, and performance cleanup.</ITEM>
+        <ITEM>Developer and operator documentation.</ITEM>
+      </SCOPE>
+    </PHASE>
+  </PHASED_DELIVERY_PLAN>
+
+  <RISKS_AND_MITIGATIONS>
+    <RISK severity="high">Dual auth causes broken role enforcement and inconsistent session semantics.</RISK>
+    <MITIGATION>Resolve auth before content migration and do not add CMS permissions on top of both systems.</MITIGATION>
+
+    <RISK severity="high">Mock data usage hides missing backend behavior and can create false completion signals.</RISK>
+    <MITIGATION>Track every mock-backed surface and replace it with persistent read/write paths phase by phase.</MITIGATION>
+
+    <RISK severity="high">Marketplace-specific schema may resist generic CMS growth if expanded ad hoc.</RISK>
+    <MITIGATION>Introduce CMS entities intentionally, keep listing as a first-class content type, and avoid overloading existing tables with unrelated semantics.</MITIGATION>
+
+    <RISK severity="medium">Large client components may make preview, SEO, and testability harder.</RISK>
+    <MITIGATION>Refactor route by route toward server-first data loading and smaller interactive islands.</MITIGATION>
+
+    <RISK severity="medium">No current automated tests increase refactor risk.</RISK>
+    <MITIGATION>Establish a test baseline in the foundation phase and block major migrations without executable coverage.</MITIGATION>
+  </RISKS_AND_MITIGATIONS>
+
+  <VERIFICATION_STRATEGY>
+    <CODE_QUALITY>
+      <STEP>Run lint on every meaningful slice.</STEP>
+      <STEP>Run build after structural or route changes.</STEP>
+      <STEP>Run targeted Bun tests as coverage is added.</STEP>
+    </CODE_QUALITY>
+    <PRODUCT_VERIFICATION>
+      <STEP>Verify role-based access for admin/editor/author/member/listing-manager paths.</STEP>
+      <STEP>Verify preview and publish-state transitions.</STEP>
+      <STEP>Verify multilingual route behavior and metadata.</STEP>
+      <STEP>Verify listing search, detail rendering, and editorial rendering against persistent data.</STEP>
+      <STEP>Verify review moderation and operational status changes still update derived public data correctly.</STEP>
+    </PRODUCT_VERIFICATION>
+    <RELEASE_GATES>
+      <GATE>Zero mock dependency in claimed-complete CMS flows.</GATE>
+      <GATE>Single auth system only.</GATE>
+      <GATE>Publish workflow demonstrably functional.</GATE>
+      <GATE>Critical admin and public routes pass lint, build, and targeted tests.</GATE>
+    </RELEASE_GATES>
+  </VERIFICATION_STRATEGY>
+
+  <OPEN_DECISIONS>
+    <DECISION id="OD-01">Should the current adult-marketplace domain remain the long-term product domain, or is the repo only a technical scaffold for a broader startup CMS?</DECISION>
+    <DECISION id="OD-02">Should the OWNER role remain a first-class operator role in v1 CMS, or be deferred until editorial/admin flows are stable?</DECISION>
+    <DECISION id="OD-03">Should blog, changelog, and case studies share one generic post model with typed subtypes, or separate models with shared rendering primitives?</DECISION>
+  </OPEN_DECISIONS>
+
+  <IMMEDIATE_NEXT_ACTIONS>
+    <ACTION priority="1">Create an implementation plan derived from this PRD, starting with auth unification and test harness setup.</ACTION>
+    <ACTION priority="2">Inventory every mock-backed UI surface and map each one to a target persistent data source.</ACTION>
+    <ACTION priority="3">Design the first Prisma migration for CMS entities and publish states before editing public routes.</ACTION>
+  </IMMEDIATE_NEXT_ACTIONS>
+</PROJECT_PRD>

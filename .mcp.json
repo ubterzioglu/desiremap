@@ -3,6 +3,19 @@
     "supabase": {
       "type": "http",
       "url": "https://mcp.supabase.com/mcp?project_ref=cprhehsqsggwlodmxlcz"
+    },
+    "minimax": {
+      "command": "uvx",
+      "args": [
+        "minimax-mcp",
+        "-y"
+      ],
+      "env": {
+        "MINIMAX_API_KEY": "YOUR_API_KEY_HERE",
+        "MINIMAX_MCP_BASE_PATH": "/Users/admin/Desktop/dev/desiremap/downloads",
+        "MINIMAX_API_HOST": "https://api.minimax.io",
+        "MINIMAX_API_RESOURCE_MODE": "local"
+      }
     }
   }
 }

@@ -1,3 +1,5 @@
+import { getHomeSeoExperience, getHomeSeoMetadata } from './seo/home'
+
 const siteUrl = 'https://desiremap.de'
 const companyName = 'DesireMap'
 
@@ -138,7 +140,7 @@ function getWebSiteSchema(locales: string[]) {
     '@id': `${siteUrl}/#website`,
     url: siteUrl,
     name: companyName,
-    description: 'Deutschlands führender Bordellmarkt für exklusive Erotik-Clubs, Bordelle und FKK-Saunen',
+    description: 'Verifizierte FKK Clubs, Laufhauser, Studios und Privat-Adressen in Deutschland entdecken.',
     publisher: { '@id': `${siteUrl}/#organization` },
     inLanguage: locales,
     potentialAction: {
@@ -196,8 +198,8 @@ function getItemListSchema() {
   return {
     '@type': 'ItemList' as const,
     '@id': `${siteUrl}/#featured-listings`,
-    name: 'Featured Listings auf dem Bordellmarkt',
-    description: 'Die besten Erotik-Etablissements in Deutschland',
+    name: 'Featured Listings auf DesireMap',
+    description: 'Verifizierte und stark nachgefragte Adressen in Deutschland',
     numberOfItems: productListings.length,
     itemListElement: productListings.map((product, index) => ({
       '@type': 'ListItem' as const,
@@ -279,43 +281,19 @@ function getItemListSchema() {
 }
 
 // 24. FAQPage Schema
-function getFAQPageSchema() {
+function getFAQPageSchema(locale: string) {
+  const faq = getHomeSeoExperience(locale).faq
+
   return {
     '@type': 'FAQPage' as const,
-    mainEntity: [
-      {
-        '@type': 'Question' as const,
-        name: 'Was kostet die Nutzung des Bordellmarkt?',
-        acceptedAnswer: {
-          '@type': 'Answer' as const,
-          text: 'Die grundlegende Nutzung des Bordellmarkt ist kostenlos. Premium-Funktionen wie Prioritäts-Reservierung und exklusive Rabatte erfordern eine Mitgliedschaft.'
-        }
-      },
-      {
-        '@type': 'Question' as const,
-        name: 'Wie werden Betriebe auf dem Bordellmarkt verifiziert?',
-        acceptedAnswer: {
-          '@type': 'Answer' as const,
-          text: 'Jeder Betrieb durchläuft einen mehrstufigen Verifizierungsprozess. Das Team prüft Existenz, Aktualität und Qualität der angebotenen Services.'
-        }
-      },
-      {
-        '@type': 'Question' as const,
-        name: 'Kann ich anonym bleiben?',
-        acceptedAnswer: {
-          '@type': 'Answer' as const,
-          text: 'Ja, der Bordellmarkt schützt Ihre Privatsphäre. Sie können diskret nach Adressen suchen und Reservierungen tätigen ohne persönliche Daten preiszugeben.'
-        }
-      },
-      {
-        '@type': 'Question' as const,
-        name: 'Welche Städte deckt der Bordellmarkt ab?',
-        acceptedAnswer: {
-          '@type': 'Answer' as const,
-          text: 'Der Bordellmarkt ist in allen wichtigen deutschen Städten vertreten: Berlin, Hamburg, München, Köln, Frankfurt, Düsseldorf, Stuttgart und Nürnberg mit über 847 gelisteten Betrieben.'
-        }
+    mainEntity: faq.map((item) => ({
+      '@type': 'Question' as const,
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer' as const,
+        text: item.answer
       }
-    ]
+    }))
   }
 }
 
@@ -333,15 +311,17 @@ function getOpeningHoursSchema() {
 
 // Main export function for Homepage
 export function getStructuredData(locale: string, title: string, description: string, locales: string[]) {
+  const homeMetadata = getHomeSeoMetadata(locale)
+
   return {
     '@context': 'https://schema.org',
     '@graph': [
       getOrganizationSchema(),
       getWebSiteSchema(locales),
-      getWebPageSchema(locale, title, description),
+      getWebPageSchema(locale, title || homeMetadata.title, description || homeMetadata.description),
       getBreadcrumbSchema(locale),
       getItemListSchema(),
-      getFAQPageSchema(),
+      getFAQPageSchema(locale),
       getOpeningHoursSchema()
     ]
   }
