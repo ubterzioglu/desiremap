@@ -6,7 +6,7 @@ Mode: Repair, not redesign
 
 ## Objective
 
-Restore homepage rendering and close the known technical indexing gaps before submitting the site to Google.
+Restore homepage rendering and close the known technical indexing gaps before submitting the site to Google and AI-driven discovery systems.
 
 This repair must ensure:
 
@@ -16,6 +16,7 @@ This repair must ensure:
 - `og:site_name` is present and set to `DesireMap`
 - `robots.txt`, `sitemap.xml`, `llms.txt`, robots meta, and `X-Robots-Tag` are present and aligned
 - no blanket indexing rule accidentally deindexes valid content
+- brand and entity signals remain consistent for GEO surfaces
 
 ## Verified Findings
 
@@ -208,6 +209,25 @@ The file should stay simple and include:
 - important public URLs
 - brief crawler guidance
 
+### 10. GEO Policy
+
+Public pages must expose consistent machine-readable brand and page identity signals for generative search systems.
+
+Required GEO signals:
+
+- consistent brand naming as `DesireMap`
+- canonical URL and `og:url` alignment
+- `og:site_name=DesireMap`
+- stable locale alternates
+- existing structured data must continue to reference the same site entity and canonical URLs
+- `llms.txt` must describe the site and point to high-value public entry points
+
+Rules:
+
+- do not introduce a second brand form like `desiremap`, `Desiremap`, or legacy names in metadata surfaces
+- do not let structured data, canonical tags, and OG tags disagree on the page URL or site identity
+- GEO additions must stay factual and technical, not marketing-copy heavy
+
 ## Planned File Surface
 
 Expected primary files:
@@ -271,6 +291,7 @@ The helper is limited to absolute URL, canonical, and hreflang generation. It is
 - `llms.txt` is reachable
 - API/auth/admin surfaces return `X-Robots-Tag: noindex, nofollow`
 - search pages keep `noindex, follow`
+- metadata and structured data surfaces use the same `DesireMap` site identity
 
 ## Validation Plan
 
