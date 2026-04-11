@@ -31,19 +31,20 @@ function getLocaleData(locale: string) {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const { title, description, ogLocale } = getLocaleData(locale)
+  const canonical = locale === 'de' ? '/' : `/${locale}`
   return {
     metadataBase: new URL(siteUrl),
     title: { default: title, template: '%s | DesireMap' },
     description,
     icons: { icon: '/icon.svg', apple: '/icon.svg' },
     alternates: {
-      canonical: `/${locale}`,
-      languages: { de: '/de', en: '/en', tr: '/tr', ar: '/ar', 'x-default': '/de' }
+      canonical,
+      languages: { de: '/', en: '/en', tr: '/tr', ar: '/ar', 'x-default': '/' }
     },
     openGraph: {
       type: 'website',
       locale: ogLocale,
-      url: `${siteUrl}/${locale}`,
+      url: `${siteUrl}${canonical}`,
       siteName: 'DesireMap',
       title,
       description,

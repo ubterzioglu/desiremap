@@ -7,13 +7,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date()
   
   const localePages = locales.map((locale) => ({
-    url: `${siteUrl}/${locale}`,
+    url: locale === 'de' ? siteUrl : `${siteUrl}/${locale}`,
     lastModified: now,
     changeFrequency: 'daily' as const,
-    priority: 1,
+    priority: locale === 'de' ? 1 : 0.8,
     alternates: {
       languages: locales.reduce((acc, lang) => {
-        acc[lang] = `${siteUrl}/${lang}`
+        acc[lang] = lang === 'de' ? siteUrl : `${siteUrl}/${lang}`
         return acc
       }, {} as Record<string, string>)
     }
