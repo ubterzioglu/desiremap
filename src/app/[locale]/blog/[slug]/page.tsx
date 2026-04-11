@@ -5,6 +5,7 @@ import { Calendar, Clock, User, ArrowLeft, Check, MapPin, Building2, Star, Shiel
 import { blogPosts, getBlogPostBySlug, getAllBlogPostSlugs } from '@/data/blog-posts'
 import { premiumErotikPlattformContent, premiumErotikPlattformFAQ } from '@/data/blog-content'
 import { getBlogPostStructuredData, getBlogPostMetadata, BlogPostData } from '@/lib/structuredData'
+import { getSearchPath } from '@/lib/navigation'
 
 // Blog slug'ına göre içerik eşleştirmesi
 const blogContentMap: Record<string, string> = {
@@ -247,28 +248,28 @@ export default async function BlogPostPage({
             <h2 className="text-xl font-bold text-white mb-6">Beliebte Kategorien</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <Link
-                href={`/${locale}/search?category=fkk`}
+                href={getSearchPath(locale, { category: 'fkk' })}
                 className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-4 hover:border-[#b76e79]/50 transition-all"
               >
                 <Building2 className="w-5 h-5 text-[#b76e79]" />
                 <span className="text-white text-sm">FKK Clubs</span>
               </Link>
               <Link
-                href={`/${locale}/search?category=laufhaus`}
+                href={getSearchPath(locale, { category: 'laufhaus' })}
                 className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-4 hover:border-[#b76e79]/50 transition-all"
               >
                 <Building2 className="w-5 h-5 text-[#b76e79]" />
                 <span className="text-white text-sm">Laufhäuser</span>
               </Link>
               <Link
-                href={`/${locale}/search?category=bordell`}
+                href={getSearchPath(locale, { category: 'bordell' })}
                 className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-4 hover:border-[#b76e79]/50 transition-all"
               >
                 <Building2 className="w-5 h-5 text-[#b76e79]" />
                 <span className="text-white text-sm">Bordelle</span>
               </Link>
               <Link
-                href={`/${locale}/search?city=Berlin`}
+                href={getSearchPath(locale, { city: 'Berlin' })}
                 className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-4 hover:border-[#b76e79]/50 transition-all"
               >
                 <MapPin className="w-5 h-5 text-[#b76e79]" />

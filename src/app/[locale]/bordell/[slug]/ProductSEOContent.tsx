@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import type { ProductDetailData } from '@/lib/structuredData'
+import { getSearchPath, getLocalizedPath } from '@/lib/navigation'
 
 type ProductSEOContentProps = {
   productData: ProductDetailData
@@ -29,13 +30,13 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
           <p className="leading-relaxed">
             {productData.name} ist ein renommierter {typeLabels[productData.type]} im {productData.city}er Rotlichtviertel.
             Als Teil des größten{' '}
-            <Link href={`/${locale}`} className="text-primary hover:underline">
+            <Link href={getLocalizedPath(locale, '/')} className="text-primary hover:underline">
               Bordellmarkt
             </Link>{' '}
             in Deutschland bietet dieser Betrieb höchste Standards in Diskretion und Servicequalität.
             Mit über {productData.ladiesCount} Damen und einer Bewertung von {productData.ratingValue} Sternen
             gehört {productData.name} zu den Top-Adressen auf dem{' '}
-            <Link href={`/${locale}/search?category=${productData.type}`} className="text-primary hover:underline">
+            <Link href={getSearchPath(locale, { category: productData.type })} className="text-primary hover:underline">
               {typeLabels[productData.type]}-Markt
             </Link>.
           </p>
@@ -57,7 +58,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
             Der {typeLabels[productData.type]} {productData.name} bietet ein umfangreiches Serviceportfolio.
             Zu den Hauptleistungen gehören: {productData.services.join(', ')}. Alle Services werden
             professionell und diskret auf dem{' '}
-            <Link href={`/${locale}`} className="text-primary hover:underline">
+            <Link href={getLocalizedPath(locale, '/')} className="text-primary hover:underline">
               Bordellmarkt
             </Link>{' '}
             angeboten.
@@ -73,7 +74,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
             Die Preise in {productData.name} beginnen bei {productData.price.toFixed(2)}€.
             Für detaillierte Preisinformationen empfehlen wir einen Besuch oder Anruf.
             Auf dem{' '}
-            <Link href={`/${locale}`} className="text-primary hover:underline">
+            <Link href={getLocalizedPath(locale, '/')} className="text-primary hover:underline">
               Bordellmarkt
             </Link>{' '}
             finden Sie transparente Preisvergleiche aller Betriebe in {productData.city}.
@@ -96,7 +97,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
             {productData.name} befindet sich in {productData.address}. Der {typeLabels[productData.type]}
             ist zentral gelegen und gut mit öffentlichen Verkehrsmitteln erreichbar.
             Weitere {typeLabels[productData.type]} in{' '}
-            <Link href={`/${locale}/search?city=${productData.city}`} className="text-primary hover:underline">
+            <Link href={getSearchPath(locale, { city: productData.city })} className="text-primary hover:underline">
               {productData.city}
             </Link>{' '}
             finden Sie auf dem Bordellmarkt.
@@ -112,7 +113,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
             {productData.name} hat folgende Öffnungszeiten: {productData.openingHours.opens} bis {productData.openingHours.closes} Uhr.
             Der Betrieb ist {productData.openingHours.days.length} Tage die Woche geöffnet.
             Aktuelle Öffnungszeiten finden Sie immer auf dem{' '}
-            <Link href={`/${locale}`} className="text-primary hover:underline">
+            <Link href={getLocalizedPath(locale, '/')} className="text-primary hover:underline">
               Bordellmarkt
             </Link>.
           </p>
@@ -134,7 +135,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
             In {productData.name} arbeiten derzeit {productData.ladiesCount} Damen.
             Die Auswahl umfasst verschiedene Nationalitäten und Serviceprofile.
             Der {typeLabels[productData.type]} auf dem{' '}
-            <Link href={`/${locale}`} className="text-primary hover:underline">
+            <Link href={getLocalizedPath(locale, '/')} className="text-primary hover:underline">
               Bordellmarkt
             </Link>{' '}
             bietet detaillierte Profile und Bewertungen.
@@ -151,7 +152,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
             Die Räumlichkeiten sind gepflegt und bieten privaten Rückzugsort.
             {productData.verified && (
               <> Als verifizierter Betrieb auf dem{' '}
-                <Link href={`/${locale}`} className="text-primary hover:underline">
+                <Link href={getLocalizedPath(locale, '/')} className="text-primary hover:underline">
                   Bordellmarkt
                 </Link>{' '}
                 erfüllt {productData.name} höchste Hygienestandards.</>
@@ -174,7 +175,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
           <p className="leading-relaxed">
             {productData.name} hat eine durchschnittliche Bewertung von {productData.ratingValue} Sternen
             basierend auf {productData.reviewCount} Bewertungen auf dem{' '}
-            <Link href={`/${locale}`} className="text-primary hover:underline">
+            <Link href={getLocalizedPath(locale, '/')} className="text-primary hover:underline">
               Bordellmarkt
             </Link>.
             Kunden loben besonders die Professionalität und Diskretion.
@@ -224,7 +225,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
         <div className="prose prose-invert max-w-none">
           <p className="leading-relaxed">
             Auf dem{' '}
-            <Link href={`/${locale}`} className="text-primary hover:underline">
+            <Link href={getLocalizedPath(locale, '/')} className="text-primary hover:underline">
               Bordellmarkt
             </Link>{' '}
             finden Sie weitere {typeLabels[productData.type]} in {productData.city} und Umgebung.
@@ -234,7 +235,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
             {productData.relatedProducts.map((related) => (
               <li key={related.id}>
                 <Link
-                  href={`/${locale}/bordell/${related.slug}`}
+                  href={getLocalizedPath(locale, `/bordell/${related.slug}`)}
                   className="text-primary hover:underline"
                 >
                   {related.name} - {typeLabels[related.type]} in {related.city}
@@ -261,7 +262,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
             unter {productData.phone}
             {productData.email && <> oder per E-Mail an {productData.email}</>}.
             Alternativ nutzen Sie die Reservierungsfunktion auf dem{' '}
-            <Link href={`/${locale}`} className="text-primary hover:underline">
+            <Link href={getLocalizedPath(locale, '/')} className="text-primary hover:underline">
               Bordellmarkt
             </Link>.
           </p>
@@ -274,7 +275,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
         <div className="prose prose-invert max-w-none">
           <p className="leading-relaxed">
             Die Online-Reservierung über den{' '}
-            <Link href={`/${locale}`} className="text-primary hover:underline">
+            <Link href={getLocalizedPath(locale, '/')} className="text-primary hover:underline">
               Bordellmarkt
             </Link>{' '}
             bietet folgende Vorteile: Diskrete Buchung, automatische Bestätigung,

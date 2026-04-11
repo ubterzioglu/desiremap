@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { germanCities } from '@/data/mock-data'
 import type { Translations } from '@/types'
+import { getSearchPath } from '@/lib/navigation'
 
 const starPositions = [{ left: 12, top: 15 }, { left: 25, top: 8 }, { left: 38, top: 22 }, { left: 52, top: 5 }, { left: 67, top: 18 }, { left: 80, top: 12 }, { left: 92, top: 25 }, { left: 8, top: 42 }, { left: 22, top: 55 }, { left: 35, top: 38 }, { left: 48, top: 62 }, { left: 62, top: 45 }, { left: 75, top: 58 }, { left: 88, top: 35 }, { left: 5, top: 72 }, { left: 18, top: 85 }, { left: 32, top: 68 }, { left: 45, top: 92 }, { left: 58, top: 75 }, { left: 72, top: 88 }]
 
@@ -26,12 +27,8 @@ export function HeroSection({ translations, stats, locale }: HeroProps) {
   const statItems = [{ icon: <Building2 />, value: '847+', label: stats.establishments }, { icon: <Users />, value: '12.000+', label: stats.ladies }, { icon: <Star />, value: '4.6', label: stats.rating }, { icon: <Shield />, value: '100%', label: stats.verified }]
 
   const handleSearch = () => {
-    const params = new URLSearchParams()
-    if (searchQuery) params.set('q', searchQuery)
-    if (location) params.set('city', location)
-    
-    const searchString = params.toString()
-    router.push(`/${locale}/search${searchString ? `?${searchString}` : ''}`)
+    const path = getSearchPath(locale, { q: searchQuery, city: location })
+    router.push(path)
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

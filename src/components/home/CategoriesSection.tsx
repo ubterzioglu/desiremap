@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { ChevronRight } from 'lucide-react'
 import { categories } from '@/data/mock-data'
 import type { Translations } from '@/types'
+import { getSearchPath } from '@/lib/navigation'
 
 type CategoriesProps = { translations: Translations['categories']; locale: string }
 
@@ -37,7 +38,7 @@ export function CategoriesSection({ translations, locale }: CategoriesProps) {
           {categories.map((category, index) => (
             <motion.a
               key={category.id}
-              href={`/${locale}/search?category=${category.id}`}
+              href={getSearchPath(locale, { category: category.id })}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

@@ -9,6 +9,7 @@ import { ReservationModal } from '@/components/listings/ReservationModal'
 import { ProductSEOContent } from './ProductSEOContent'
 import type { Bordell } from '@/types'
 import type { ProductDetailData } from '@/lib/structuredData'
+import { getSearchPath, getLocalizedPath } from '@/lib/navigation'
 
 type ProductDetailPageContentProps = {
   bordell: Bordell
@@ -43,11 +44,11 @@ export function ProductDetailPageContent({
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
           {/* Breadcrumb */}
           <nav className="text-sm text-white/70 mb-4">
-            <Link href={`/${locale}`} className="hover:text-white">Home</Link>
+            <Link href={getLocalizedPath(locale, '/')} className="hover:text-white">Home</Link>
             {' / '}
-            <Link href={`/${locale}/search?city=${bordell.city}`} className="hover:text-white">{bordell.city}</Link>
+            <Link href={getSearchPath(locale, { city: bordell.city })} className="hover:text-white">{bordell.city}</Link>
             {' / '}
-            <Link href={`/${locale}/search?category=${bordell.type}`} className="hover:text-white">{typeLabels[bordell.type]}</Link>
+            <Link href={getSearchPath(locale, { category: bordell.type })} className="hover:text-white">{typeLabels[bordell.type]}</Link>
             {' / '}
             <span className="text-white">{bordell.name}</span>
           </nav>
@@ -222,7 +223,7 @@ export function ProductDetailPageContent({
             {productData.relatedProducts.map((related) => (
               <Link
                 key={related.id}
-                href={`/${locale}/bordell/${related.slug}`}
+                href={getLocalizedPath(locale, `/bordell/${related.slug}`)}
                 className="group block p-4 bg-card rounded-lg border hover:border-primary/50 transition-colors"
               >
                 <h3 className="font-semibold group-hover:text-primary transition-colors">
