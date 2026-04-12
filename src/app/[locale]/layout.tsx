@@ -32,11 +32,23 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const { title, description, ogLocale } = getLocaleData(locale)
   const canonical = locale === 'de' ? '/' : `/${locale}`
+
   return {
     metadataBase: new URL(siteUrl),
     title: { default: title, template: '%s | DesireMap' },
     description,
     icons: { icon: '/icon.svg', apple: '/icon.svg' },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+        'max-video-preview': -1
+      }
+    },
     alternates: {
       canonical,
       languages: { de: '/', en: '/en', tr: '/tr', ar: '/ar', 'x-default': '/' }
