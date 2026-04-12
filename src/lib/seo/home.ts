@@ -57,7 +57,7 @@ export type HomeSeoExperience = {
 
 const HOME_SEO_METADATA: Record<HomeSeoLocale, HomeSeoMetadata> = {
   de: {
-    title: 'DesireMap | Verifizierte FKK Clubs, Laufhäuser und Studios in Deutschland',
+    title: 'DesireMap | Bordell ,FKK Clubs, Puffs und Studios in Deutschland',
     description:
       'DesireMap hilft Ihnen, verifizierte FKK Clubs, Laufhäuser, Studios und Privat-Adressen in Deutschland nach Stadt, Kategorie, Bewertung und Verfügbarkeit zu entdecken.'
   },
@@ -78,6 +78,10 @@ const HOME_SEO_METADATA: Record<HomeSeoLocale, HomeSeoMetadata> = {
   }
 }
 
+/**
+ * Bu kısım admin panelinde seo kısmından beslenir hale getirilecek
+ * 
+ */
 const BASE_CITY_LINKS = [
   {
     name: 'Berlin',

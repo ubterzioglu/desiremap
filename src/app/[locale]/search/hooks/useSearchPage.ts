@@ -1,6 +1,7 @@
 import { useMemo, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { bordells } from '@/data/mock-data'
+import { getSearchPath } from '@/lib/navigation'
 import { searchBordells } from '@/lib/search'
 
 export function useSearchPage(locale: string, initialQuery: string, initialCity: string, initialCategory: string) {
@@ -11,12 +12,11 @@ export function useSearchPage(locale: string, initialQuery: string, initialCity:
   const [selectedCategory, setSelectedCategory] = useState(initialCategory)
 
   const updateUrl = useCallback((newQuery: string, newCity: string, newCategory: string) => {
-    const params = new URLSearchParams()
-    if (newQuery) params.set('q', newQuery)
-    if (newCity) params.set('city', newCity)
-    if (newCategory) params.set('category', newCategory)
-    const search = params.toString()
-    router.push(`/${locale}/search${search ? `?${search}` : ''}`, { scroll: false })
+    router.push(getSearchPath(locale, {
+      q: newQuery || undefined,
+      city: newCity || undefined,
+      category: newCategory || undefined
+    }), { scroll: false })
   }, [locale, router])
 
   const handleSearch = useCallback(() => {
@@ -38,7 +38,7 @@ export function useSearchPage(locale: string, initialQuery: string, initialCity:
     setQuery('')
     setSelectedCity('')
     setSelectedCategory('')
-    router.push(`/${locale}/search`)
+    router.push(getSearchPath(locale))
   }, [locale, router])
 
   const handleBordellClick = useCallback((bordell: { id: string }) => {
