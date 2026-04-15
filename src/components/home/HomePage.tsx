@@ -5,19 +5,17 @@ import { CategoriesSection } from './CategoriesSection'
 import { FeaturedCities } from './FeaturedCities'
 import { HeroSection } from './HeroSection'
 import { ListingsSection } from '@/components/listings/ListingsSection'
-import { PromoSections } from './PromoSections'
 import { SEOContentSection } from './SEOContentSection'
 import { bordells } from '@/data/mock-data'
 import type { Bordell } from '@/types'
 
 type HomePageProps = {
   locale: string
-  onCityClick: (city: string) => void
+  onCityClick?: (city: string) => void
   onBordellClick: (bordell: Bordell) => void
-  onLoginRequired: (message?: string) => void
 }
 
-export function HomePage({ locale, onCityClick, onBordellClick, onLoginRequired }: HomePageProps) {
+export function HomePage({ locale, onBordellClick }: HomePageProps) {
   const hero = useTranslations('hero')
   const stats = useTranslations('stats')
   const categories = useTranslations('categories')
@@ -30,9 +28,8 @@ export function HomePage({ locale, onCityClick, onBordellClick, onLoginRequired 
         stats={{ establishments: stats('establishments'), ladies: stats('ladies'), rating: stats('rating'), verified: stats('verified') }}
       />
       <CategoriesSection locale={locale} translations={{ title: categories('title'), subtitle: categories('subtitle') }} />
-      <FeaturedCities onCityClick={onCityClick} translations={{ title: cities('title'), subtitle: cities('subtitle') }} />
+      <FeaturedCities translations={{ title: cities('title'), subtitle: cities('subtitle') }} />
       <ListingsSection bordells={bordells} onBordellClick={onBordellClick} />
-      <PromoSections onLoginRequired={onLoginRequired} />
       <SEOContentSection locale={locale} />
     </>
   )

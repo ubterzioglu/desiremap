@@ -12,7 +12,7 @@ type MobileMenuProps = {
     premium: string
     advertise: string
   }
-  onLoginClick: (message: string) => void
+  onLoginClick?: (message: string) => void
   onClose: () => void
 }
 
@@ -33,10 +33,10 @@ export function MobileMenu({ isOpen, locale, translations, onLoginClick, onClose
         <Link href={`/${locale}#cities`} onClick={onClose} className="text-gray-300 hover:text-white transition-colors py-2">
           {translations.cities}
         </Link>
-        <button onClick={() => { onClose(); onLoginClick('premium') }} className="text-left text-gray-300 hover:text-white transition-colors py-2">
+        <button onClick={() => { onClose(); onLoginClick?.('premium') }} className="text-left text-gray-300 hover:text-white transition-colors py-2">
           {translations.premium}
         </button>
-        <button onClick={() => { onClose(); onLoginClick('advertise') }} className="text-left text-gray-300 hover:text-white transition-colors py-2">
+        <button onClick={() => { onClose(); onLoginClick?.('advertise') }} className="text-left text-gray-300 hover:text-white transition-colors py-2">
           {translations.advertise}
         </button>
       </nav>

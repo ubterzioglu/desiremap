@@ -1,6 +1,7 @@
 import Link from 'next/link'
-import { Flame, Shield } from 'lucide-react'
-import { germanCities } from '@/data/mock-data'
+import { Flame, Shield, MapPin } from 'lucide-react'
+import { citiesData } from '@/data/cities'
+import { getCityPath } from '@/lib/navigation'
 
 type FooterProps = {
   locale: string
@@ -28,7 +29,7 @@ export function Footer({ locale }: FooterProps) {
             <ul className="space-y-2">
               {['FKK Clubs', 'Laufhaeuser', 'Bordelle', 'Studios'].map((link) => (
                 <li key={link}>
-                  <Link href={`/${locale}`} className="text-gray-500 hover:text-[#b76e79] transition-colors text-sm">
+                  <Link href={getCityPath(locale, 'berlin')} className="text-gray-500 hover:text-[#b76e79] transition-colors text-sm">
                     {link}
                   </Link>
                 </li>
@@ -38,9 +39,10 @@ export function Footer({ locale }: FooterProps) {
           <div>
             <h4 className="text-white font-medium mb-4">Staedte</h4>
             <ul className="space-y-2">
-              {germanCities.slice(0, 4).map((city) => (
-                <li key={city.name}>
-                  <Link href={`/${locale}?city=${city.name.toLowerCase()}`} className="text-gray-500 hover:text-[#b76e79] transition-colors text-sm">
+              {citiesData.slice(0, 4).map((city) => (
+                <li key={city.slug}>
+                  <Link href={getCityPath(locale, city.slug)} className="text-gray-500 hover:text-[#b76e79] transition-colors text-sm flex items-center gap-1">
+                    <MapPin className="w-3 h-3" />
                     {city.name}
                   </Link>
                 </li>
@@ -63,9 +65,9 @@ export function Footer({ locale }: FooterProps) {
         <div className="border-t border-white/5 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-gray-600 text-sm">© 2024 DesireMap.de - 18+ only</p>
           <div className="flex items-center gap-4">
-            <a 
-              href="https://www.spindorai.com/en" 
-              target="_blank" 
+            <a
+              href="https://www.spindorai.com/en"
+              target="_blank"
               rel="dofollow"
               className="text-gray-500 hover:text-[#b76e79] transition-colors text-sm"
             >

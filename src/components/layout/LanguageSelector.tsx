@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { useLocale } from 'next-intl'
 import { useRouter, usePathname } from 'next/navigation'
 import { Globe } from 'lucide-react'
@@ -14,24 +15,41 @@ const languages = [
 ]
 
 export function LanguageSelector() {
+  const [mounted, setMounted] = useState(false)
   const localeFromHook = useLocale()
   const router = useRouter()
   const pathname = usePathname()
-  
+
+  useEffect(() => { setMounted(true) }, [])
+
   const segments = pathname.split('/').filter(Boolean)
   const localeFromPath = segments[0]
   const validLocales = ['de', 'en', 'ar', 'tr']
   const currentLocale = validLocales.includes(localeFromPath) ? localeFromPath : localeFromHook
-  
+
   const currentLang = languages.find((lang) => lang.code === currentLocale) ?? languages[0]
-  
+
   const changeLocale = (newLocale: string) => {
+    if (newLocale === 'de') {
+      const remaining = validLocales.includes(segments[0]) ? segments.slice(1) : segments
+      router.push('/' + remaining.join('/'))
+      return
+    }
     if (segments.length > 0 && validLocales.includes(segments[0])) {
       segments[0] = newLocale
     } else {
       segments.unshift(newLocale)
     }
     router.push('/' + segments.join('/'))
+  }
+
+  if (!mounted) {
+    return (
+      <Button variant="ghost" size="sm" className="gap-2 text-gray-300 hover:text-white">
+        <Globe className="w-4 h-4" />
+        <span className="hidden sm:inline">{currentLang.flag}</span>
+      </Button>
+    )
   }
 
   return (

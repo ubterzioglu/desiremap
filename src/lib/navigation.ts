@@ -14,6 +14,29 @@ export function getSearchPath(locale: string, params?: { q?: string; city?: stri
 }
 
 /**
+ * Get localized venue detail path - handles localePrefix: 'as-needed' for German
+ */
+export function getVenuePath(locale: string, slug: string): string {
+  const basePath = `/venue/${slug}`
+
+  if (locale === 'de') {
+    return basePath
+  }
+
+  return `/${locale}${basePath}`
+}
+
+export function getCityPath(locale: string, slug: string): string {
+  const basePath = `/stadt/${slug}`
+
+  if (locale === 'de') {
+    return basePath
+  }
+
+  return `/${locale}${basePath}`
+}
+
+/**
  * Get localized path - handles localePrefix: 'as-needed' for German
  */
 export function getLocalizedPath(locale: string, path: string): string {

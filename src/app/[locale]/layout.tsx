@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
@@ -9,8 +8,6 @@ import { QueryProvider } from '@/components/providers/QueryProvider'
 import { getHomeSeoMetadata } from '@/lib/seo/home'
 import { getStructuredData } from '@/lib/structuredData'
 
-const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'], display: 'swap' })
-const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'], display: 'swap', preload: false })
 const siteUrl = 'https://desiremap.de'
 const locales = ['de', 'en', 'ar', 'tr']
 
@@ -88,18 +85,17 @@ export default async function LocaleLayout({
   const structuredData = getStructuredData(locale, title, description, locales)
 
   return (
-    <html lang={locale} className="dark" suppressHydrationWarning dir={locale === 'ar' ? 'rtl' : 'ltr'}>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`} suppressHydrationWarning>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
-        <SessionProvider>
-          <QueryProvider>
-            <NextIntlClientProvider messages={messages}>
-              {children}
-              <Toaster />
-            </NextIntlClientProvider>
-          </QueryProvider>
-        </SessionProvider>
-      </body>
-    </html>
+    <>
+      <script dangerouslySetInnerHTML={{ __html: `document.documentElement.lang='${locale}';document.documentElement.dir='${locale === 'ar' ? 'rtl' : 'ltr'}'` }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <SessionProvider>
+        <QueryProvider>
+          <NextIntlClientProvider messages={messages}>
+            {children}
+            <Toaster />
+          </NextIntlClientProvider>
+        </QueryProvider>
+      </SessionProvider>
+    </>
   )
 }

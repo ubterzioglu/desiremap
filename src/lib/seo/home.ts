@@ -1,3 +1,6 @@
+import { getSearchPath, getCityPath } from '@/lib/navigation'
+import { citiesData } from '@/data/cities'
+
 export type HomeSeoLocale = 'de' | 'en' | 'tr' | 'ar'
 
 export type HomeSeoMetadata = {
@@ -57,7 +60,7 @@ export type HomeSeoExperience = {
 
 const HOME_SEO_METADATA: Record<HomeSeoLocale, HomeSeoMetadata> = {
   de: {
-    title: 'DesireMap | Bordell ,FKK Clubs, Puffs und Studios in Deutschland',
+    title: 'DesireMap | Bordell, FKK Clubs, Puffs,Studios in Deutschland',
     description:
       'DesireMap hilft Ihnen, verifizierte FKK Clubs, Laufhäuser, Studios und Privat-Adressen in Deutschland nach Stadt, Kategorie, Bewertung und Verfügbarkeit zu entdecken.'
   },
@@ -138,7 +141,6 @@ export function getHomeSeoMetadata(locale: string): HomeSeoMetadata {
 
 export function getHomeSeoExperience(locale: string): HomeSeoExperience {
   const currentLocale = (locale as HomeSeoLocale) || 'de'
-  const prefix = `/${currentLocale}`
 
   return {
     eyebrow: 'Verifizierte Orientierung für Deutschlands diskrete Suche',
@@ -168,7 +170,7 @@ export function getHomeSeoExperience(locale: string): HomeSeoExperience {
         title: 'Wellness, Tagesbesuch und Club-Atmosphäre',
         description:
           'Ideal für Nutzer, die größere Clubs, Spa-Atmosphäre, Tagesplanung und verifizierte Rahmenbedingungen vergleichen möchten.',
-        href: `${prefix}/search?category=fkk`,
+        href: getSearchPath(currentLocale, { category: 'fkk' }),
         highlights: ['Sauna und Wellness-Fokus', 'Beliebt in großen Städten', 'Gut für planbare Besuche']
       },
       {
@@ -177,7 +179,7 @@ export function getHomeSeoExperience(locale: string): HomeSeoExperience {
         title: 'Große Auswahl in starken Stadtlagen',
         description:
           'Besonders relevant für Suchanfragen aus Köln, Frankfurt und anderen urbanen Märkten mit klarer Vergleichsabsicht.',
-        href: `${prefix}/search?category=laufhaus`,
+        href: getSearchPath(currentLocale, { category: 'laufhaus' }),
         highlights: ['Hohe Nachfrage in Metropolen', 'Gut für direkte Vergleiche', 'Starker Stadtbezug']
       },
       {
@@ -186,7 +188,7 @@ export function getHomeSeoExperience(locale: string): HomeSeoExperience {
         title: 'Diskret, planbar und persönlicher',
         description:
           'Studios sind oft lokaler, diskreter und persönlicher. Dieser Einstieg passt zu Nutzern, die gezielt und ohne Umwege suchen möchten.',
-        href: `${prefix}/search?category=studio`,
+        href: getSearchPath(currentLocale, { category: 'studio' }),
         highlights: ['Hoher Diskretionsbedarf', 'Klarer lokaler Intent', 'Geeignet für konkrete Terminplanung']
       },
       {
@@ -195,13 +197,14 @@ export function getHomeSeoExperience(locale: string): HomeSeoExperience {
         title: 'Persönliche Adressen im privaten Rahmen',
         description:
           'Der Privat-Bereich richtet sich an Nutzer, die bewusst kleinere, persönlichere und weniger clubartige Angebote suchen.',
-        href: `${prefix}/search?category=privat`,
+        href: getSearchPath(currentLocale, { category: 'privat' }),
         highlights: ['Klare persönliche Ausrichtung', 'Besonders vertrauensabhängig', 'Gut für intent-getriebene Filterung']
       }
     ],
-    cityLinks: BASE_CITY_LINKS.map((item) => ({
-      ...item,
-      href: `${prefix}/search?city=${encodeURIComponent(item.name)}`
+    cityLinks: citiesData.slice(0, 6).map((item) => ({
+      name: item.name,
+      hint: item.subtitles[currentLocale] || item.subtitles.de,
+      href: getCityPath(currentLocale, item.slug),
     })),
     trustPoints: [
       {
@@ -230,6 +233,6 @@ export function getHomeSeoExperience(locale: string): HomeSeoExperience {
     ctaBody:
       'Von Berlin bis Stuttgart, von FKK Club bis Privat-Adresse: Die Startseite führt direkt in die wichtigsten Suchpfade und hält den Einstieg klar, diskret und lesbar.',
     ctaLabel: 'Alle Adressen durchsuchen',
-    ctaHref: `${prefix}/search`
+    ctaHref: getSearchPath(currentLocale)
   }
 }

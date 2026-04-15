@@ -16,19 +16,29 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   reactStrictMode: false,
   typedRoutes: true,
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: 'website.inodin.de' },
+      { protocol: 'https', hostname: 'ittech.ditsolution.net' },
+    ],
+  },
   async headers() {
     const publicSources = [
       '/',
       '/blog',
       '/blog/:slug',
+      '/venue/:slug',
       '/bordell/:slug',
+      '/stadt/:city',
       '/:locale(en|tr|ar)',
       '/:locale(en|tr|ar)/blog',
       '/:locale(en|tr|ar)/blog/:slug',
-      '/:locale(en|tr|ar)/bordell/:slug'
+      '/:locale(en|tr|ar)/venue/:slug',
+      '/:locale(en|tr|ar)/bordell/:slug',
+      '/:locale(en|tr|ar)/stadt/:city'
     ]
     const restrictedSources = [
-      '/api/:path*',
       '/search',
       '/login',
       '/register',

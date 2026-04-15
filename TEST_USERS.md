@@ -1,5 +1,7 @@
 # Test Users
 
+These accounts must exist on the external API. Frontend no longer seeds or manages them locally.
+
 ## Admin
 - Email: `admin@desiremap.de`
 - Password: `admin123`

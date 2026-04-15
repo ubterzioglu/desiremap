@@ -9,13 +9,14 @@ import { cn } from '@/lib/utils'
 import { LanguageSelector } from '@/components/layout/LanguageSelector'
 import { MobileMenu } from '@/components/layout/MobileMenu'
 import { useScrollHeader } from '@/components/layout/hooks/useScrollHeader'
+import { getLocalizedPath } from '@/lib/navigation'
 import type { Translations } from '@/types'
 
 type HeaderProps = {
   locale: string
-  onLoginClick: (message?: string) => void
-  isLoggedIn: boolean
-  onDashboardClick: () => void
+  onLoginClick?: (message?: string) => void
+  isLoggedIn?: boolean
+  onDashboardClick?: () => void
   translations: Translations['nav']
 }
 
@@ -27,7 +28,7 @@ export function Header({ locale, onLoginClick, isLoggedIn, onDashboardClick, tra
     <motion.header initial={{ y: -100 }} animate={{ y: 0 }} className={cn('fixed top-0 left-0 right-0 z-50 transition-all duration-500', isScrolled ? 'bg-black/90 backdrop-blur-xl py-3 sm:py-4' : 'bg-transparent py-4 sm:py-6')}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between">
-          <Link href={`/${locale}`} className="flex items-center gap-2 sm:gap-3">
+          <Link href={getLocalizedPath(locale, '/')} className="flex items-center gap-2 sm:gap-3">
             <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-linear-to-br from-[#8b1a4a] to-[#6b3fa0] flex items-center justify-center">
               <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
@@ -37,11 +38,11 @@ export function Header({ locale, onLoginClick, isLoggedIn, onDashboardClick, tra
             </div>
           </Link>
           <nav className="hidden md:flex items-center gap-8">
-            <Link href={`/${locale}`} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{translations.discover}</Link>
-            <Link href={`/${locale}#cities`} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{translations.cities}</Link>
-            <Link href={`/${locale}/blog`} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">Blog</Link>
-            <button onClick={() => onLoginClick('premium')} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{translations.premium}</button>
-            <button onClick={() => onLoginClick('advertise')} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{translations.advertise}</button>
+            <Link href={getLocalizedPath(locale, '/')} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{translations.discover}</Link>
+            <Link href={`${getLocalizedPath(locale, '/')}#cities`} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{translations.cities}</Link>
+            <Link href={getLocalizedPath(locale, '/blog')} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">Blog</Link>
+            <button onClick={() => onLoginClick ? onLoginClick('premium') : undefined} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{translations.premium}</button>
+            <button onClick={() => onLoginClick ? onLoginClick('advertise') : undefined} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{translations.advertise}</button>
           </nav>
           <div className="flex items-center gap-2 sm:gap-3">
             <LanguageSelector />
@@ -49,7 +50,7 @@ export function Header({ locale, onLoginClick, isLoggedIn, onDashboardClick, tra
               <Button variant="ghost" size="sm" onClick={onDashboardClick} className="text-gray-300 hover:text-white"><User className="w-4 h-4 mr-2" />{translations.myAccount}</Button>
             ) : (
               <Button variant="ghost" size="sm" asChild className="hidden sm:flex text-gray-300 hover:text-white">
-              <Link href={`/${locale}/login`}><LogIn className="w-4 h-4 mr-2" />{translations.login}</Link>
+              <Link href={getLocalizedPath(locale, '/login')}><LogIn className="w-4 h-4 mr-2" />{translations.login}</Link>
             </Button>
             )}
             <Button variant="ghost" size="icon" className="md:hidden text-white" onClick={() => setMobileMenuOpen((v) => !v)}>

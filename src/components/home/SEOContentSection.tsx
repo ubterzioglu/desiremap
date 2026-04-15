@@ -28,7 +28,7 @@ function SeoIntro({ seo }: { seo: HomeSeoExperience }) {
       viewport={{ once: true, amount: 0.2 }}
       className="grid gap-8 lg:grid-cols-[1.35fr_0.95fr]"
     >
-      <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-8 shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:p-10">
+      <div className="rounded-4xl border border-white/10 bg-white/[0.035] p-8 shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:p-10">
         <span className="inline-flex rounded-full border border-[#b76e79]/35 bg-[#b76e79]/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-[#f0bec6]">
           {seo.eyebrow}
         </span>
@@ -77,7 +77,7 @@ function SeoClusterCard({ cluster }: { cluster: HomeSeoCluster }) {
   return (
     <Link
       href={cluster.href}
-      className="group rounded-[1.75rem] border border-white/10 bg-white/[0.03] p-6 transition-all hover:-translate-y-1 hover:border-[#b76e79]/40 hover:bg-white/[0.045]"
+      className="group rounded-[1.75rem] border border-white/10 bg-white/3 p-6 transition-all hover:-translate-y-1 hover:border-[#b76e79]/40 hover:bg-white/4.5"
     >
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -151,7 +151,7 @@ function SeoTrustAndCities({ seo }: { seo: HomeSeoExperience }) {
       viewport={{ once: true, amount: 0.2 }}
       className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]"
     >
-      <div className="rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(183,110,121,0.12),rgba(255,255,255,0.03))] p-8 sm:p-10">
+      <div className="rounded-4xl border border-white/10 bg-[linear-gradient(180deg,rgba(183,110,121,0.12),rgba(255,255,255,0.03))] p-8 sm:p-10">
         <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#f0bec6]">
           Warum DesireMap
         </p>
@@ -164,7 +164,7 @@ function SeoTrustAndCities({ seo }: { seo: HomeSeoExperience }) {
 
         <div className="mt-8 grid gap-4 md:grid-cols-2">
           {seo.trustPoints.map((item) => (
-            <div key={item.title} className="rounded-[1.5rem] border border-white/10 bg-black/20 p-5">
+            <div key={item.title} className="rounded-3xl border border-white/10 bg-black/20 p-5">
               <h4 className="text-lg font-semibold text-white">{item.title}</h4>
               <p className="mt-3 text-sm leading-7 text-gray-400">{item.description}</p>
             </div>
@@ -172,7 +172,7 @@ function SeoTrustAndCities({ seo }: { seo: HomeSeoExperience }) {
         </div>
       </div>
 
-      <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-8 sm:p-10">
+      <div className="rounded-4xl border border-white/10 bg-white/3 p-8 sm:p-10">
         <div className="flex items-center gap-3 text-[#f0bec6]">
           <MapPin className="h-5 w-5" />
           <span className="text-sm font-semibold uppercase tracking-[0.28em]">Stadtcluster</span>
@@ -231,7 +231,7 @@ function SeoFaqAndCta({ seo }: { seo: HomeSeoExperience }) {
           {seo.faq.map((item) => (
             <details
               key={item.question}
-              className="group rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-6"
+              className="group rounded-3xl border border-white/10 bg-white/3 p-6"
             >
               <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
                 <h4 className="text-lg font-semibold text-white">{item.question}</h4>
@@ -247,7 +247,7 @@ function SeoFaqAndCta({ seo }: { seo: HomeSeoExperience }) {
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
-        className="rounded-[2rem] border border-[#b76e79]/20 bg-[linear-gradient(135deg,rgba(183,110,121,0.18),rgba(90,63,126,0.12),rgba(0,0,0,0.4))] p-8 sm:p-10"
+        className="rounded-4xl border border-[#b76e79]/20 bg-[linear-gradient(135deg,rgba(183,110,121,0.18),rgba(90,63,126,0.12),rgba(0,0,0,0.4))] p-8 sm:p-10"
       >
         <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
           <div>
@@ -282,8 +282,8 @@ export function SEOContentSection({ locale }: SEOContentSectionProps) {
 
   return (
     <section className="relative overflow-hidden bg-[#050507] py-24">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(183,110,121,0.18),_transparent_32%),radial-gradient(circle_at_80%_20%,_rgba(102,74,144,0.16),_transparent_26%),linear-gradient(180deg,_rgba(255,255,255,0.02),_rgba(255,255,255,0))]" />
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(183,110,121,0.18),transparent_32%),radial-gradient(circle_at_80%_20%,rgba(102,74,144,0.16),transparent_26%),linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0))]" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/20 to-transparent" />
 
       <div className="relative z-10 mx-auto flex max-w-7xl flex-col gap-16 px-6">
         <SeoIntro seo={seo} />

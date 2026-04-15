@@ -44,11 +44,20 @@ describe('crawl controls contracts', () => {
           ])
         }),
         expect.objectContaining({
-          source: '/api/:path*',
+          source: '/venue/:slug',
           headers: expect.arrayContaining([
             expect.objectContaining({
               key: 'X-Robots-Tag',
-              value: 'noindex, nofollow'
+              value: expect.stringContaining('index, follow')
+            })
+          ])
+        }),
+        expect.objectContaining({
+          source: '/:locale(en|tr|ar)/venue/:slug',
+          headers: expect.arrayContaining([
+            expect.objectContaining({
+              key: 'X-Robots-Tag',
+              value: expect.stringContaining('index, follow')
             })
           ])
         }),

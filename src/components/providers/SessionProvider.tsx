@@ -1,19 +1,12 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react'
-import { useAuthStore } from '@/stores/authStore'
-
-interface User {
-  id: string
-  email: string
-  name: string | null
-  role: string
-  status: string
-  avatar: string | null
-}
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import type { ReactNode } from 'react'
+import { authApi } from '@/lib/api'
+import { useAuthStore, type AuthUser } from '@/stores/authStore'
 
 interface AuthContextType {
-  user: User | null
+  user: AuthUser | null
   isAuthenticated: boolean
   isLoading: boolean
   refreshUser: () => Promise<void>
@@ -27,31 +20,43 @@ interface SessionProviderProps {
 }
 
 export function SessionProvider({ children }: SessionProviderProps) {
-  const { user, isAuthenticated, isLoading, setUser, setLoading, logout: storeLogout } = useAuthStore()
+  const {
+    user,
+    token,
+    isAuthenticated,
+    isLoading,
+    setUser,
+    setLoading,
+    logout: storeLogout
+  } = useAuthStore()
   const [initialized, setInitialized] = useState(false)
 
   const refreshUser = useCallback(async () => {
-    try {
-      const response = await fetch('/api/auth/me')
-      if (response.ok) {
-        const data = await response.json()
-        setUser(data.user)
-      } else {
-        setUser(null)
-      }
-    } catch {
+    if (!token) {
       setUser(null)
+      return
     }
-  }, [setUser])
+
+    setLoading(true)
+
+    try {
+      const nextUser = await authApi.me()
+      setUser(nextUser)
+    } catch {
+      storeLogout()
+    }
+  }, [setLoading, setUser, storeLogout, token])
 
   const logout = useCallback(async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' })
+      if (token) {
+        await authApi.logout()
+      }
     } catch {
-      // Ignore errors
+      // Ignore remote logout errors. Local session still cleared.
     }
     storeLogout()
-  }, [storeLogout])
+  }, [storeLogout, token])
 
   useEffect(() => {
     if (!initialized) {

@@ -13,6 +13,7 @@ import { DashboardPage } from '@/components/pages/DashboardPage'
 import { DetailPage } from '@/components/pages/DetailPage'
 import { LoginPage } from '@/components/pages/LoginPage'
 import { AdminPanel } from '@/components/pages/AdminPanel'
+import { getLocalizedPath, getVenuePath } from '@/lib/navigation'
 import type { Bordell, View } from '@/types'
 
 function useNavTranslations() {
@@ -22,7 +23,7 @@ function useNavTranslations() {
 
 type Handlers = { onCityClick: (city: string) => void; onBordellClick: (bordell: Bordell) => void; onBackHome: () => void; onBackCity: () => void; onLogin: () => void; onAdminLogin: () => void; onLogout: () => void; onRegister: () => void }
 
-function ViewHome(props: { locale: string; onCityClick: (city: string) => void; onBordellClick: (bordell: Bordell) => void; onLoginRequired: (message?: string) => void }) {
+function ViewHome(props: { locale: string; onBordellClick: (bordell: Bordell) => void }) {
   return <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><HomePage {...props} /></motion.div>
 }
 
@@ -60,17 +61,17 @@ export default function Home() {
   const showLayout = view !== 'dashboard' && view !== 'admin'
   const handlers: Handlers = {
     onCityClick: (city) => { setSelectedCity(city); setView('city'); toTop() },
-    onBordellClick: (bordell) => { setSelectedBordell(bordell); setView('detail'); toTop() },
+    onBordellClick: (bordell) => { router.push(getVenuePath(locale, bordell.id)); toTop() },
     onBackHome: () => { setView('home'); setSelectedCity(null); setSelectedBordell(null); setLoginMessage(undefined); toTop() },
     onBackCity: () => { setView('city'); setSelectedBordell(null); toTop() },
     onLogin: () => { setIsLoggedIn(true); setLoginMessage(undefined); setView('dashboard'); toTop() },
     onAdminLogin: () => { setIsAdmin(true); setView('admin'); toTop() },
     onLogout: () => { setIsLoggedIn(false); setIsAdmin(false); setView('home'); toTop() },
-    onRegister: () => { router.push('/de/register') }
+    onRegister: () => { router.push(getLocalizedPath(locale, '/register')) }
   }
   const renderView = () => {
     const viewMap: Record<View, React.ReactNode> = {
-      home: <ViewHome locale={locale} onCityClick={handlers.onCityClick} onBordellClick={handlers.onBordellClick} onLoginRequired={(msg) => { setLoginMessage(msg); setView('login'); toTop() }} />,
+      home: <ViewHome locale={locale} onBordellClick={handlers.onBordellClick} />,
       city: selectedCity ? <ViewCity city={selectedCity} handlers={handlers} /> : null,
       detail: selectedBordell ? <ViewDetail bordell={selectedBordell} hasCity={!!selectedCity} handlers={handlers} /> : null,
       login: <ViewLogin loginMessage={loginMessage} handlers={handlers} />,

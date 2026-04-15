@@ -26,9 +26,9 @@ This scaffold provides a robust foundation built with:
 - **🔄 TanStack Query** - Powerful data synchronization for React
 - **🌐 Fetch** - Promise-based HTTP request
 
-### 🗄️ Database & Backend
-- **🗄️ Prisma** - Next-generation TypeScript ORM
-- **🔐 NextAuth.js** - Complete open-source authentication solution
+### 🌐 External API Integration
+- **🌐 External REST API** - Next.js app works as frontend-only client
+- **🔐 Token-Based Auth** - Session state handled in frontend store and API client
 
 ### 🎨 Advanced UI Features
 - **📊 TanStack Table** - Headless UI for building tables and datagrids
@@ -47,8 +47,8 @@ This scaffold provides a robust foundation built with:
 - **🎨 Beautiful UI** - Complete shadcn/ui component library with advanced interactions
 - **🔒 Type Safety** - Full TypeScript configuration with Zod validation
 - **📱 Responsive** - Mobile-first design principles with smooth animations
-- **🗄️ Database Ready** - Prisma ORM configured for rapid backend development
-- **🔐 Auth Included** - NextAuth.js for secure authentication flows
+- **🌐 API Ready** - External backend URL is configured with `NEXT_PUBLIC_API_URL`
+- **🔐 Frontend Auth Flow** - Login/session handled against external API endpoints
 - **📊 Data Visualization** - Charts, tables, and drag-and-drop functionality
 - **🌍 i18n Ready** - Multi-language support with Next Intl
 - **🚀 Production Ready** - Optimized build and deployment settings
@@ -59,6 +59,9 @@ This scaffold provides a robust foundation built with:
 ```bash
 # Install dependencies
 bun install
+
+# Point frontend to external API
+cp .env.example .env
 
 # Start development server
 bun run dev
@@ -118,8 +121,8 @@ This scaffold includes a comprehensive set of modern web development tools:
 - **Theme Switching**: Built-in dark/light mode support
 
 ### 🔐 Backend Integration
-- **Authentication**: Ready-to-use auth flows with NextAuth.js
-- **Database**: Type-safe database operations with Prisma
+- **Authentication**: External API login/logout/me endpoints
+- **Backend**: No internal Next.js API routes required
 - **API Client**: HTTP requests with Fetch + TanStack Query
 - **State Management**: Simple and scalable with Zustand
 
