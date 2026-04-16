@@ -22,7 +22,6 @@ interface SessionProviderProps {
 export function SessionProvider({ children }: SessionProviderProps) {
   const {
     user,
-    token,
     isAuthenticated,
     isLoading,
     setUser,
@@ -32,7 +31,8 @@ export function SessionProvider({ children }: SessionProviderProps) {
   const [initialized, setInitialized] = useState(false)
 
   const refreshUser = useCallback(async () => {
-    if (!token) {
+    const currentToken = useAuthStore.getState().token
+    if (!currentToken) {
       setUser(null)
       return
     }
@@ -45,23 +45,34 @@ export function SessionProvider({ children }: SessionProviderProps) {
     } catch {
       storeLogout()
     }
-  }, [setLoading, setUser, storeLogout, token])
+  }, [setLoading, setUser, storeLogout])
 
   const logout = useCallback(async () => {
     try {
-      if (token) {
+      const currentToken = useAuthStore.getState().token
+      if (currentToken) {
         await authApi.logout()
       }
     } catch {
       // Ignore remote logout errors. Local session still cleared.
     }
     storeLogout()
-  }, [storeLogout, token])
+  }, [storeLogout])
 
   useEffect(() => {
-    if (!initialized) {
+    if (initialized) return
+
+    const doRefresh = () => {
       refreshUser().finally(() => setInitialized(true))
     }
+
+    if (useAuthStore.persist.hasHydrated()) {
+      doRefresh()
+      return
+    }
+
+    const unsub = useAuthStore.persist.onFinishHydration(doRefresh)
+    return unsub
   }, [initialized, refreshUser])
 
   return (

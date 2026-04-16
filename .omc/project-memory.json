@@ -1,0 +1,352 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1776342581307,
+  "projectRoot": "/Users/admin/Desktop/dev/desiremap/frontend",
+  "techStack": {
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      },
+      {
+        "name": "TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "tsconfig.json"
+        ]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "next",
+        "version": "16.1.1",
+        "category": "fullstack"
+      },
+      {
+        "name": "react",
+        "version": "19.0.0",
+        "category": "frontend"
+      },
+      {
+        "name": "react-dom",
+        "version": "19.0.0",
+        "category": "frontend"
+      },
+      {
+        "name": "playwright",
+        "version": "1.59.1",
+        "category": "testing"
+      }
+    ],
+    "packageManager": "npm",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": "npm run build",
+    "testCommand": "npm test",
+    "lintCommand": "npm run lint",
+    "devCommand": "npm run dev",
+    "scripts": {
+      "dev": "next dev -p 3000 2>&1 | tee dev.log",
+      "build": "next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/",
+      "start": "NODE_ENV=production bun .next/standalone/server.js 2>&1 | tee server.log",
+      "lint": "eslint .",
+      "test": "bun test"
+    }
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": "type-based"
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "docs",
+      "examples",
+      "public",
+      "src"
+    ],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "docs": {
+      "path": "docs",
+      "purpose": "Documentation",
+      "fileCount": 9,
+      "lastAccessed": 1776342581262,
+      "keyFiles": [
+        "anasayfa-seo.md",
+        "backend-architecture.md",
+        "backend-architecture.xml",
+        "blog-seo.md",
+        "desiremap-cms-prd.xml"
+      ]
+    },
+    "examples": {
+      "path": "examples",
+      "purpose": "Example code",
+      "fileCount": 0,
+      "lastAccessed": 1776342581262,
+      "keyFiles": []
+    },
+    "graphify-out": {
+      "path": "graphify-out",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1776342581263,
+      "keyFiles": []
+    },
+    "messages": {
+      "path": "messages",
+      "purpose": null,
+      "fileCount": 5,
+      "lastAccessed": 1776342581268,
+      "keyFiles": [
+        "AGENTS.md",
+        "ar.json",
+        "de.json",
+        "en.json",
+        "tr.json"
+      ]
+    },
+    "mini-services": {
+      "path": "mini-services",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1776342581269,
+      "keyFiles": []
+    },
+    "public": {
+      "path": "public",
+      "purpose": "Public files",
+      "fileCount": 10,
+      "lastAccessed": 1776342581269,
+      "keyFiles": [
+        "AGENTS.md",
+        "categories-bg.jpg",
+        "featured-bg.jpg",
+        "hero-bg.jpg",
+        "hero-woman.png"
+      ]
+    },
+    "src": {
+      "path": "src",
+      "purpose": "Source code",
+      "fileCount": 2,
+      "lastAccessed": 1776342581269,
+      "keyFiles": [
+        "proxy.ts"
+      ]
+    },
+    "upload": {
+      "path": "upload",
+      "purpose": null,
+      "fileCount": 5,
+      "lastAccessed": 1776342581269,
+      "keyFiles": [
+        "Ekran Resmi 2026-02-21 23.37.46.png",
+        "Ekran Resmi 2026-02-22 00.11.25.png",
+        "Ekran Resmi 2026-02-22 00.25.18.png",
+        "Ekran Resmi 2026-02-22 00.26.26.png",
+        "desiremap_hero.jpg"
+      ]
+    },
+    "src/app": {
+      "path": "src/app",
+      "purpose": "Application code",
+      "fileCount": 5,
+      "lastAccessed": 1776342581271,
+      "keyFiles": [
+        "AGENTS.md",
+        "globals.css",
+        "layout.tsx"
+      ]
+    },
+    "src/components": {
+      "path": "src/components",
+      "purpose": "UI components",
+      "fileCount": 1,
+      "lastAccessed": 1776342581273,
+      "keyFiles": [
+        "LanguageSelector.tsx"
+      ]
+    },
+    "src/data": {
+      "path": "src/data",
+      "purpose": "Data files",
+      "fileCount": 6,
+      "lastAccessed": 1776342581273,
+      "keyFiles": [
+        "AGENTS.md",
+        "blog-content.ts",
+        "blog-posts.ts"
+      ]
+    },
+    "src/lib": {
+      "path": "src/lib",
+      "purpose": "Library code",
+      "fileCount": 6,
+      "lastAccessed": 1776342581274,
+      "keyFiles": [
+        "api.ts",
+        "backend-client.ts",
+        "navigation.ts"
+      ]
+    },
+    "src/types": {
+      "path": "src/types",
+      "purpose": "Type definitions",
+      "fileCount": 3,
+      "lastAccessed": 1776342581274,
+      "keyFiles": [
+        "AGENTS.md",
+        "admin.ts",
+        "index.ts"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "src/components/providers/SessionProvider.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1776342840049,
+      "type": "file"
+    },
+    {
+      "path": "src",
+      "accessCount": 2,
+      "lastAccessed": 1776342773512,
+      "type": "directory"
+    },
+    {
+      "path": "",
+      "accessCount": 2,
+      "lastAccessed": 1776349466072,
+      "type": "directory"
+    },
+    {
+      "path": "src/hooks/useQueries.ts",
+      "accessCount": 2,
+      "lastAccessed": 1776350217239,
+      "type": "directory"
+    },
+    {
+      "path": "src/components/pages/AdminPanel.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1776350243639,
+      "type": "directory"
+    },
+    {
+      "path": "src/app/api/auth/me/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1776342595978,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/api.ts",
+      "accessCount": 1,
+      "lastAccessed": 1776342639186,
+      "type": "file"
+    },
+    {
+      "path": "src/stores/authStore.ts",
+      "accessCount": 1,
+      "lastAccessed": 1776342665937,
+      "type": "file"
+    },
+    {
+      "path": "src/components/pages/DashboardPage.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1776349897652,
+      "type": "file"
+    },
+    {
+      "path": "src/components/dashboard/DashboardTabs.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1776349912230,
+      "type": "file"
+    },
+    {
+      "path": "src/hooks",
+      "accessCount": 1,
+      "lastAccessed": 1776349939276,
+      "type": "directory"
+    },
+    {
+      "path": "src/app/api/customer/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1776350044595,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/customer/visits/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1776350048163,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/customer/addresses/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1776350050722,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/customer/badges/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1776350054277,
+      "type": "file"
+    },
+    {
+      "path": "test-login.mjs",
+      "accessCount": 1,
+      "lastAccessed": 1776350091602,
+      "type": "file"
+    },
+    {
+      "path": "test-dashboard.mjs",
+      "accessCount": 1,
+      "lastAccessed": 1776350148057,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/admin/stats/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1776350358238,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/admin/establishments/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1776350361415,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/admin/customers/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1776350364027,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/admin/bookings/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1776350366600,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/admin/reviews/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1776350369791,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}
