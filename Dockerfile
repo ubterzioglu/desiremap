@@ -1,20 +1,15 @@
 FROM oven/bun:1-slim AS base
 
-# Install OpenSSL for Prisma
-RUN apt-get update -qq && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update -qq && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 
 FROM base AS deps
 WORKDIR /app
 
 # Copy package management files
 COPY package.json bun.lock ./
-COPY prisma ./prisma/
 
 # Install dependencies
 RUN bun install --frozen-lockfile
-
-# Generate Prisma Client
-RUN bunx prisma generate
 
 FROM base AS builder
 WORKDIR /app
@@ -44,8 +39,6 @@ RUN useradd --system --uid 1001 --gid nodejs nextjs
 # The build script in package.json copies static and public to standalone
 # So we can just copy the entire standalone directory
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-# Also copy prisma for migrations if needed
-COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 
 USER nextjs
 
