@@ -1,4 +1,4 @@
-export type CitySlug = 'berlin' | 'hamburg' | 'muenchen' | 'koeln' | 'frankfurt' | 'duesseldorf' | 'stuttgart' | 'nuernberg'
+export type CitySlug = 'berlin' | 'hamburg' | 'muenchen' | 'koeln' | 'frankfurt' | 'duesseldorf' | 'stuttgart' | 'nuernberg' | 'karlsruhe'
 
 export type CityData = {
   slug: CitySlug
@@ -170,6 +170,26 @@ export const citiesData: CityData[] = [
       en: 'Manageable selection with quality',
       tr: 'Kaliteli ve yönetilebilir seçki',
       ar: 'اختيار مع جودة',
+    },
+  },
+  {
+    slug: 'karlsruhe',
+    name: 'Karlsruhe',
+    count: 1,
+    image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1920&q=80',
+    lat: 49.0069,
+    lng: 8.4037,
+    descriptions: {
+      de: 'Karlsruhe und das nahe Ettlingen bieten eine diskrete FKK- und Wellness-Option mit guter Erreichbarkeit aus Süddeutschland und dem Grenzraum zu Frankreich.',
+      en: 'Karlsruhe and nearby Ettlingen offer a discreet FKK and wellness option with strong accessibility from southern Germany and the French border region.',
+      tr: 'Karlsruhe ve yakın Ettlingen, Güney Almanya ve Fransa sınır bölgesinden kolay erişilen, gizlilik odaklı bir FKK ve wellness seçeneği sunar.',
+      ar: 'كارلسروه وإتلينغن القريبة توفران خيارًا يجمع بين الخصوصية وبيئة FKK والعافية مع سهولة وصول من جنوب ألمانيا ومنطقة الحدود الفرنسية.',
+    },
+    subtitles: {
+      de: 'Diskreter FKK-Standort im Süden',
+      en: 'Discreet FKK destination in the south',
+      tr: 'Güneyde gizli ve rahat FKK noktası',
+      ar: 'وجهة FKK هادئة في الجنوب',
     },
   },
 ]

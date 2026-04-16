@@ -100,6 +100,22 @@ const productListings = [
     availability: 'https://schema.org/InStock',
     ratingValue: 4.6,
     reviewCount: 534
+  },
+  {
+    id: '7',
+    name: 'Flamingo FKK Club Karlsruhe',
+    slug: 'flamingo-fkk-club-karlsruhe',
+    description: 'Premium FKK Saunaclub in Ettlingen bei Karlsruhe mit über 4.000 m², Sauna- und Wellnessbereich, Innen- und Außenpools, Restaurant sowie großer Lounge & Bar.',
+    image: `${siteUrl}/listing-bg.jpg`,
+    url: `${siteUrl}/de/bordell/flamingo-fkk-club-karlsruhe`,
+    brand: companyName,
+    sku: 'FKK-KARLSRUHE-001',
+    mpn: 'FLAMINGO-001',
+    price: '54.00',
+    priceCurrency: 'EUR',
+    availability: 'https://schema.org/InStock',
+    ratingValue: 4.6,
+    reviewCount: 39
   }
 ]
 
