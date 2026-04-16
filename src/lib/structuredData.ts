@@ -1,7 +1,16 @@
+import { getVenuePath } from './navigation'
 import { getHomeSeoExperience, getHomeSeoMetadata } from './seo/home'
 
 const siteUrl = 'https://desiremap.de'
 const companyName = 'DesireMap'
+
+function getVenueRelativePath(locale: string, slug: string) {
+  return getVenuePath(locale, slug)
+}
+
+function getVenueAbsoluteUrl(locale: string, slug: string) {
+  return `${siteUrl}${getVenueRelativePath(locale, slug)}`
+}
 
 // Product Listings für Homepage - URLs point to actual product detail pages
 const productListings = [
@@ -11,7 +20,7 @@ const productListings = [
     slug: 'artemis-berlin',
     description: 'Berlins größtes FKK Club mit exklusivem Wellness-Bereich, mehreren Saunen und einer eleganten Bar. Diskretes Ambiente mit höchsten Standards.',
     image: `${siteUrl}/covers/artemis-bg.jpg`,
-    url: `${siteUrl}/de/bordell/artemis-berlin`,
+    url: getVenueAbsoluteUrl('de', 'artemis-berlin'),
     brand: companyName,
     sku: 'FKK-BERLIN-001',
     mpn: 'ARTEMIS-001',
@@ -27,7 +36,7 @@ const productListings = [
     slug: 'pascha-koln',
     description: 'Europas größtes Laufhaus mit 7 Etagen und über 120 Damen. 24 Stunden geöffnet, perfekte Erreichbarkeit im Zentrum von Köln.',
     image: `${siteUrl}/covers/pascha-bg.jpg`,
-    url: `${siteUrl}/de/bordell/pascha-koln`,
+    url: getVenueAbsoluteUrl('de', 'pascha-koln'),
     brand: companyName,
     sku: 'LAUF-KOELN-001',
     mpn: 'PASCHA-001',
@@ -43,7 +52,7 @@ const productListings = [
     slug: 'cafe-del-sol-hamburg',
     description: 'Exklusives Bordell in Hamburg mit diskreter Atmosphäre, privaten Zimmern und einer gemütlichen Bar.',
     image: `${siteUrl}/covers/cafe-del-sol-bg.jpg`,
-    url: `${siteUrl}/de/bordell/cafe-del-sol-hamburg`,
+    url: getVenueAbsoluteUrl('de', 'cafe-del-sol-hamburg'),
     brand: companyName,
     sku: 'BORD-HAMBURG-001',
     mpn: 'CAFE-001',
@@ -59,7 +68,7 @@ const productListings = [
     slug: 'paradise-stuttgart',
     description: 'Premium FKK Club in Stuttgart mit großzügigem Außenbereich, Pool und entspannter Gartenlandschaft.',
     image: `${siteUrl}/covers/paradise-bg.jpg`,
-    url: `${siteUrl}/de/bordell/paradise-stuttgart`,
+    url: getVenueAbsoluteUrl('de', 'paradise-stuttgart'),
     brand: companyName,
     sku: 'FKK-STUTTGART-001',
     mpn: 'PARADISE-001',
@@ -75,7 +84,7 @@ const productListings = [
     slug: 'royal-munchen',
     description: 'Zentrales Laufhaus in München mit 3 Etagen und einer einladenden Bar.',
     image: `${siteUrl}/covers/royal-bg.jpg`,
-    url: `${siteUrl}/de/bordell/royal-munchen`,
+    url: getVenueAbsoluteUrl('de', 'royal-munchen'),
     brand: companyName,
     sku: 'LAUF-MUENCHEN-001',
     mpn: 'ROYAL-001',
@@ -91,7 +100,7 @@ const productListings = [
     slug: 'diamond-frankfurt',
     description: 'Exklusives Ambiente im Herzen von Frankfurt. VIP Suiten mit höchstem Komfort und absoluter Diskretion.',
     image: `${siteUrl}/covers/diamond-bg.jpg`,
-    url: `${siteUrl}/de/bordell/diamond-frankfurt`,
+    url: getVenueAbsoluteUrl('de', 'diamond-frankfurt'),
     brand: companyName,
     sku: 'BORD-FRANKFURT-001',
     mpn: 'DIAMOND-001',
@@ -107,7 +116,7 @@ const productListings = [
     slug: 'flamingo-fkk-club-karlsruhe',
     description: 'Premium FKK Saunaclub in Ettlingen bei Karlsruhe mit über 4.000 m², Sauna- und Wellnessbereich, Innen- und Außenpools, Restaurant sowie großer Lounge & Bar.',
     image: `${siteUrl}/listing-bg.jpg`,
-    url: `${siteUrl}/de/bordell/flamingo-fkk-club-karlsruhe`,
+    url: getVenueAbsoluteUrl('de', 'flamingo-fkk-club-karlsruhe'),
     brand: companyName,
     sku: 'FKK-KARLSRUHE-001',
     mpn: 'FLAMINGO-001',
@@ -418,7 +427,7 @@ function getReviewSchemas(reviews: ProductDetailData['reviews'], productUrl: str
 
 // Product Schema for Detail Page (7)
 function getProductDetailSchema(product: ProductDetailData) {
-  const productUrl = `${siteUrl}/de/bordell/${product.slug}`
+  const productUrl = getVenueAbsoluteUrl('de', product.slug)
   return {
     '@type': 'Product' as const,
     '@id': `${productUrl}/#product`,
@@ -496,7 +505,7 @@ function getProductDetailSchema(product: ProductDetailData) {
 
 // WebPage Schema for Detail Page (22)
 function getProductWebPageSchema(product: ProductDetailData, locale: string) {
-  const productUrl = `${siteUrl}/${locale}/bordell/${product.slug}`
+  const productUrl = getVenueAbsoluteUrl(locale, product.slug)
   return {
     '@type': 'WebPage' as const,
     '@id': `${productUrl}/#webpage`,
@@ -525,7 +534,7 @@ function getProductWebPageSchema(product: ProductDetailData, locale: string) {
 
 // BreadcrumbList Schema for Detail Page (24-25)
 function getProductBreadcrumbSchema(product: ProductDetailData, locale: string) {
-  const productUrl = `${siteUrl}/${locale}/bordell/${product.slug}`
+  const productUrl = getVenueAbsoluteUrl(locale, product.slug)
   return {
     '@type': 'BreadcrumbList' as const,
     '@id': `${productUrl}/#breadcrumb`,
@@ -559,7 +568,7 @@ function getProductBreadcrumbSchema(product: ProductDetailData, locale: string) 
 
 // FAQPage Schema for Detail Page (26-28)
 function getProductFAQSchema(product: ProductDetailData) {
-  const productUrl = `${siteUrl}/de/bordell/${product.slug}`
+  const productUrl = getVenueAbsoluteUrl('de', product.slug)
   return {
     '@type': 'FAQPage' as const,
     '@id': `${productUrl}/#faq`,
@@ -586,7 +595,7 @@ function getProductOpeningHoursSchema(product: ProductDetailData) {
 
 // LocalBusiness Schema (additional for product pages)
 function getLocalBusinessSchema(product: ProductDetailData) {
-  const productUrl = `${siteUrl}/de/bordell/${product.slug}`
+  const productUrl = getVenueAbsoluteUrl('de', product.slug)
   return {
     '@type': 'LocalBusiness' as const,
     '@id': `${productUrl}/#localbusiness`,
@@ -620,7 +629,7 @@ function getLocalBusinessSchema(product: ProductDetailData) {
 
 // Related Products ItemList Schema
 function getRelatedProductsSchema(product: ProductDetailData, locale: string) {
-  const productUrl = `${siteUrl}/${locale}/bordell/${product.slug}`
+  const productUrl = getVenueAbsoluteUrl(locale, product.slug)
   return {
     '@type': 'ItemList' as const,
     '@id': `${productUrl}/#related-products`,
@@ -630,7 +639,7 @@ function getRelatedProductsSchema(product: ProductDetailData, locale: string) {
       '@type': 'ListItem' as const,
       position: index + 1,
       name: related.name,
-      url: `${siteUrl}/${locale}/bordell/${related.slug}`
+      url: getVenueAbsoluteUrl(locale, related.slug)
     }))
   }
 }
@@ -1017,7 +1026,7 @@ export function getBlogPostMetadata(post: BlogPostData, locale: string) {
 
 // Helper function to generate metadata for product pages
 export function getProductMetadata(product: ProductDetailData, locale: string) {
-  const productUrl = `${siteUrl}/${locale}/bordell/${product.slug}`
+  const productUrl = getVenueAbsoluteUrl(locale, product.slug)
   const title = `${product.name} - ${product.type} in ${product.city} | Bordellmarkt`
   const description = `${product.name} in ${product.city}. ${product.description.substring(0, 120)}... Verifiziert auf dem Bordellmarkt.`
 
@@ -1027,10 +1036,10 @@ export function getProductMetadata(product: ProductDetailData, locale: string) {
     alternates: {
       canonical: productUrl,
       languages: {
-        de: `/de/bordell/${product.slug}`,
-        en: `/en/bordell/${product.slug}`,
-        tr: `/tr/bordell/${product.slug}`,
-        ar: `/ar/bordell/${product.slug}`
+        de: getVenueRelativePath('de', product.slug),
+        en: getVenueRelativePath('en', product.slug),
+        tr: getVenueRelativePath('tr', product.slug),
+        ar: getVenueRelativePath('ar', product.slug)
       }
     },
     openGraph: {

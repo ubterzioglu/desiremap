@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import type { ProductDetailData } from '@/lib/structuredData'
-import { getSearchPath, getLocalizedPath } from '@/lib/navigation'
+import { getSearchPath, getLocalizedPath, getVenuePath } from '@/lib/navigation'
 
 type ProductSEOContentProps = {
   productData: ProductDetailData
@@ -235,7 +235,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
             {productData.relatedProducts.map((related) => (
               <li key={related.id}>
                 <Link
-                  href={getLocalizedPath(locale, `/bordell/${related.slug}`)}
+                  href={getVenuePath(locale, related.slug)}
                   className="text-primary hover:underline"
                 >
                   {related.name} - {typeLabels[related.type]} in {related.city}
