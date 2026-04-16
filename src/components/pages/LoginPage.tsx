@@ -14,11 +14,10 @@ import { Label } from '@/components/ui/label'
 type LoginPageProps = {
   onBack: () => void
   loginMessage?: string
-  onAdminLogin: () => void
   onRegister: () => void
 }
 
-export function LoginPage({ onBack, loginMessage, onAdminLogin, onRegister }: LoginPageProps) {
+export function LoginPage({ onBack, loginMessage, onRegister }: LoginPageProps) {
   const router = useRouter()
   const setSession = useAuthStore((state) => state.setSession)
   const [showPassword, setShowPassword] = useState(false)
@@ -36,7 +35,7 @@ export function LoginPage({ onBack, loginMessage, onAdminLogin, onRegister }: Lo
     }
     setIsLoading(true)
     try {
-      const session = await authApi.login({ email, password })
+      const session = await authApi.login({ email, password }, 'public')
       setSession(session)
       router.push('/de/dashboard')
     } catch (error) {
@@ -147,14 +146,6 @@ export function LoginPage({ onBack, loginMessage, onAdminLogin, onRegister }: Lo
                 className="text-[#b76e79] hover:text-[#d48a9a] transition-colors font-medium"
               >
                 Registrieren
-              </button>
-            </p>
-            <p className="text-center">
-              <button
-                onClick={onAdminLogin}
-                className="text-gray-600 hover:text-gray-500 transition-colors text-xs"
-              >
-                Admin
               </button>
             </p>
           </div>

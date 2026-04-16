@@ -17,7 +17,11 @@ export function DashboardPage() {
     if (!isLoading && !isAuthenticated) {
       router.push('/de/login')
     }
-  }, [isLoading, isAuthenticated, router])
+
+    if (!isLoading && user?.workspace === 'admin') {
+      router.push('/dashboard')
+    }
+  }, [isLoading, isAuthenticated, router, user?.workspace])
 
   if (isLoading) {
     return (

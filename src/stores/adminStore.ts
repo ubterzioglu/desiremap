@@ -1,39 +1,32 @@
 import { create } from 'zustand'
 
-type AdminTab = 'dashboard' | 'establishments' | 'customers' | 'bookings' | 'reviews' | 'badges' | 'invoices' | 'settings'
+type AdminTab = 'dashboard' | 'venues' | 'events' | 'operators' | 'settings'
 
 interface AdminStats {
-  totalEstablishments: number
-  activeEstablishments: number
-  pendingEstablishments: number
-  totalCustomers: number
-  activeCustomers: number
-  totalBookings: number
-  pendingBookings: number
-  completedBookings: number
-  totalReviews: number
-  pendingReviews: number
-  totalRevenue: number
+  venues: number
+  publishedEvents: number
+  draftEvents: number
+  operators: number
 }
 
 interface AdminState {
   activeTab: AdminTab
   stats: AdminStats | null
   isLoading: boolean
-  searchQuery: string
+  selectedVenuePublicId: string | null
   setActiveTab: (tab: AdminTab) => void
   setStats: (stats: AdminStats | null) => void
   setLoading: (loading: boolean) => void
-  setSearchQuery: (query: string) => void
+  setSelectedVenuePublicId: (venuePublicId: string | null) => void
 }
 
 export const useAdminStore = create<AdminState>((set) => ({
   activeTab: 'dashboard',
   stats: null,
   isLoading: false,
-  searchQuery: '',
+  selectedVenuePublicId: null,
   setActiveTab: (activeTab) => set({ activeTab }),
   setStats: (stats) => set({ stats }),
   setLoading: (isLoading) => set({ isLoading }),
-  setSearchQuery: (searchQuery) => set({ searchQuery })
+  setSelectedVenuePublicId: (selectedVenuePublicId) => set({ selectedVenuePublicId })
 }))

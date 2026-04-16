@@ -17,6 +17,8 @@ interface AuthConfig {
   googleOAuthUrl?: string
 }
 
+type WorkspaceType = 'public' | 'admin'
+
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/+$/, '')
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -118,7 +120,11 @@ function normalizeUser(payload: unknown): AuthUser {
     name: typeof payload.name === 'string' ? payload.name : null,
     role: String(payload.role ?? 'customer').toLowerCase(),
     status: String(payload.status ?? 'active').toLowerCase(),
-    avatar: typeof payload.avatar === 'string' ? payload.avatar : null
+    avatar: typeof payload.avatar === 'string' ? payload.avatar : null,
+    workspace: payload.workspace === 'admin' ? 'admin' : 'public',
+    operatorPublicId: typeof payload.operatorPublicId === 'string' ? payload.operatorPublicId : undefined,
+    businessAccountPublicId: typeof payload.businessAccountPublicId === 'string' ? payload.businessAccountPublicId : null,
+    requirePasswordReset: payload.requirePasswordReset === true
   }
 }
 
@@ -174,10 +180,16 @@ function getFallbackGoogleOAuthUrl() {
 }
 
 export const authApi = {
-  login: async (data: { email: string; password: string }) => {
+  login: async (
+    data: { email: string; password: string },
+    workspace: WorkspaceType = 'public'
+  ) => {
     const payload = await apiCall<unknown>('/auth/login', {
       method: 'POST',
       auth: false,
+      headers: {
+        'X-Desiremap-Workspace': workspace
+      },
       body: JSON.stringify(data)
     })
 
@@ -344,112 +356,77 @@ export const establishmentsApi = {
 }
 
 export const adminApi = {
-  getStats: async () => {
+  getDashboardSnapshot: async () => {
     return apiCall<any>('/admin/stats')
   },
 
-  getEstablishments: async (params?: { status?: string; type?: string; search?: string }) => {
-    const searchParams = new URLSearchParams()
-    if (params) {
-      Object.entries(params).forEach(([key, value]) => {
-        if (value) {
-          searchParams.append(key, value)
-        }
-      })
-    }
-
-    const suffix = searchParams.toString()
-    return apiCall<any[]>(suffix ? `/admin/establishments?${suffix}` : '/admin/establishments')
+  getVenues: async () => {
+    return apiCall<any[]>('/admin/venues')
   },
 
-  createEstablishment: async (data: any) => {
-    return apiCall<any>('/admin/establishments', {
+  createVenue: async (data: any) => {
+    return apiCall<any>('/admin/venues', {
       method: 'POST',
       body: JSON.stringify(data)
     })
   },
 
-  updateEstablishment: async (data: any) => {
-    return apiCall<any>('/admin/establishments', {
-      method: 'PUT',
-      body: JSON.stringify(data)
-    })
-  },
-
-  deleteEstablishment: async (id: string) => {
-    return apiCall<{ success: boolean }>(`/admin/establishments?id=${id}`, {
-      method: 'DELETE'
-    })
-  },
-
-  getCustomers: async (params?: { status?: string; search?: string }) => {
+  getVenueEvents: async (venuePublicId: string) => {
     const searchParams = new URLSearchParams()
-    if (params) {
-      Object.entries(params).forEach(([key, value]) => {
-        if (value) {
-          searchParams.append(key, value)
-        }
-      })
-    }
-
-    const suffix = searchParams.toString()
-    return apiCall<any[]>(suffix ? `/admin/customers?${suffix}` : '/admin/customers')
+    searchParams.set('venuePublicId', venuePublicId)
+    return apiCall<any[]>(`/admin/events?${searchParams.toString()}`)
   },
 
-  updateCustomer: async (data: any) => {
-    return apiCall<any>('/admin/customers', {
-      method: 'PUT',
-      body: JSON.stringify(data)
-    })
-  },
-
-  deleteCustomer: async (id: string) => {
-    return apiCall<{ success: boolean }>(`/admin/customers?id=${id}`, {
-      method: 'DELETE'
-    })
-  },
-
-  getBookings: async (params?: { status?: string; bordellId?: string }) => {
+  getEventDetail: async (venuePublicId: string, eventPublicId: string) => {
     const searchParams = new URLSearchParams()
-    if (params) {
-      Object.entries(params).forEach(([key, value]) => {
-        if (value) {
-          searchParams.append(key, value)
-        }
-      })
-    }
-
-    const suffix = searchParams.toString()
-    return apiCall<any[]>(suffix ? `/admin/bookings?${suffix}` : '/admin/bookings')
+    searchParams.set('venuePublicId', venuePublicId)
+    searchParams.set('eventPublicId', eventPublicId)
+    return apiCall<any>(`/admin/event-detail?${searchParams.toString()}`)
   },
 
-  updateBooking: async (data: any) => {
-    return apiCall<any>('/admin/bookings', {
+  createEvent: async (data: any) => {
+    return apiCall<any>('/admin/events', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  },
+
+  publishEvent: async (data: any) => {
+    return apiCall<any>('/admin/events', {
       method: 'PUT',
       body: JSON.stringify(data)
     })
   },
 
-  getReviews: async (params?: { status?: string }) => {
-    const searchParams = new URLSearchParams()
-    if (params?.status) {
-      searchParams.append('status', params.status)
-    }
-
-    const suffix = searchParams.toString()
-    return apiCall<any[]>(suffix ? `/admin/reviews?${suffix}` : '/admin/reviews')
-  },
-
-  updateReview: async (data: any) => {
-    return apiCall<any>('/admin/reviews', {
+  cancelEvent: async (data: any) => {
+    return apiCall<any>('/admin/events', {
       method: 'PUT',
       body: JSON.stringify(data)
     })
   },
 
-  deleteReview: async (id: string) => {
-    return apiCall<{ success: boolean }>(`/admin/reviews?id=${id}`, {
-      method: 'DELETE'
+  getBusinessOperators: async () => {
+    return apiCall<any[]>('/admin/operators')
+  },
+
+  disableBusinessOperator: async (data: any) => {
+    return apiCall<any>('/admin/operators', {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  },
+
+  reactivateBusinessOperator: async (data: any) => {
+    return apiCall<any>('/admin/operators', {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  },
+
+  deprovisionBusinessOperator: async (data: any) => {
+    return apiCall<any>('/admin/operators', {
+      method: 'PUT',
+      body: JSON.stringify(data)
     })
   }
 }

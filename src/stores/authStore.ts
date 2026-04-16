@@ -8,6 +8,10 @@ export interface AuthUser {
   role: string
   status: string
   avatar: string | null
+  workspace?: 'public' | 'admin'
+  operatorPublicId?: string
+  businessAccountPublicId?: string | null
+  requirePasswordReset?: boolean
 }
 
 export interface AuthSession {

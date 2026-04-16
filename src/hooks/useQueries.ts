@@ -155,127 +155,113 @@ export function useSearchEstablishments(params: {
 export function useAdminStats() {
   return useQuery({
     queryKey: ['admin', 'stats'],
-    queryFn: adminApi.getStats,
+    queryFn: adminApi.getDashboardSnapshot,
     staleTime: 30 * 1000 // 30 seconds
   })
 }
 
-export function useAdminEstablishments(params?: { status?: string; type?: string; search?: string }) {
+export function useAdminVenues() {
   return useQuery({
-    queryKey: ['admin', 'establishments', params],
-    queryFn: () => adminApi.getEstablishments(params)
+    queryKey: ['admin', 'venues'],
+    queryFn: adminApi.getVenues
   })
 }
 
-export function useCreateEstablishment() {
+export function useCreateVenue() {
   const queryClient = useQueryClient()
   
   return useMutation({
-    mutationFn: adminApi.createEstablishment,
+    mutationFn: adminApi.createVenue,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'establishments'] })
-    }
-  })
-}
-
-export function useUpdateEstablishment() {
-  const queryClient = useQueryClient()
-  
-  return useMutation({
-    mutationFn: adminApi.updateEstablishment,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'establishments'] })
+      queryClient.invalidateQueries({ queryKey: ['admin', 'venues'] })
       queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] })
     }
   })
 }
 
-export function useDeleteEstablishment() {
+export function useAdminEvents(venuePublicId: string | null) {
+  return useQuery({
+    queryKey: ['admin', 'events', venuePublicId],
+    queryFn: () => adminApi.getVenueEvents(venuePublicId || ''),
+    enabled: Boolean(venuePublicId)
+  })
+}
+
+export function useCreateEvent() {
   const queryClient = useQueryClient()
   
   return useMutation({
-    mutationFn: adminApi.deleteEstablishment,
+    mutationFn: adminApi.createEvent,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'establishments'] })
+      queryClient.invalidateQueries({ queryKey: ['admin', 'events'] })
       queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] })
     }
   })
 }
 
-export function useAdminCustomers(params?: { status?: string; search?: string }) {
-  return useQuery({
-    queryKey: ['admin', 'customers', params],
-    queryFn: () => adminApi.getCustomers(params)
-  })
-}
-
-export function useUpdateCustomer() {
+export function usePublishEvent() {
   const queryClient = useQueryClient()
   
   return useMutation({
-    mutationFn: adminApi.updateCustomer,
+    mutationFn: adminApi.publishEvent,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'customers'] })
-    }
-  })
-}
-
-export function useDeleteCustomer() {
-  const queryClient = useQueryClient()
-  
-  return useMutation({
-    mutationFn: adminApi.deleteCustomer,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'customers'] })
+      queryClient.invalidateQueries({ queryKey: ['admin', 'events'] })
       queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] })
     }
   })
 }
 
-export function useAdminBookings(params?: { status?: string; bordellId?: string }) {
-  return useQuery({
-    queryKey: ['admin', 'bookings', params],
-    queryFn: () => adminApi.getBookings(params)
-  })
-}
-
-export function useAdminUpdateBooking() {
+export function useCancelEvent() {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
-    mutationFn: adminApi.updateBooking,
+    mutationFn: adminApi.cancelEvent,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'bookings'] })
+      queryClient.invalidateQueries({ queryKey: ['admin', 'events'] })
       queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] })
     }
   })
 }
 
-export function useAdminReviews(params?: { status?: string }) {
+export function useAdminOperators() {
   return useQuery({
-    queryKey: ['admin', 'reviews', params],
-    queryFn: () => adminApi.getReviews(params)
+    queryKey: ['admin', 'operators'],
+    queryFn: adminApi.getBusinessOperators
   })
 }
 
-export function useAdminUpdateReview() {
+export function useDisableBusinessOperator() {
   const queryClient = useQueryClient()
   
   return useMutation({
-    mutationFn: adminApi.updateReview,
+    mutationFn: adminApi.disableBusinessOperator,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'reviews'] })
+      queryClient.invalidateQueries({ queryKey: ['admin', 'operators'] })
+      queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] })
     }
   })
 }
 
-export function useAdminDeleteReview() {
+export function useReactivateBusinessOperator() {
   const queryClient = useQueryClient()
   
   return useMutation({
-    mutationFn: adminApi.deleteReview,
+    mutationFn: adminApi.reactivateBusinessOperator,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'reviews'] })
+      queryClient.invalidateQueries({ queryKey: ['admin', 'operators'] })
+      queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] })
+    }
+  })
+}
+
+export function useDeprovisionBusinessOperator() {
+  const queryClient = useQueryClient()
+  
+  return useMutation({
+    mutationFn: adminApi.deprovisionBusinessOperator,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'operators'] })
+      queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] })
     }
   })
 }

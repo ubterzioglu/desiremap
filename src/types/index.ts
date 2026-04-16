@@ -1,11 +1,11 @@
-export type View = 'home' | 'city' | 'detail' | 'login' | 'dashboard' | 'admin'
+export type View = 'home' | 'city' | 'detail' | 'login' | 'dashboard'
 
 export interface SearchParams {
   query: string
   city?: string
 }
 export type DashboardTab = 'dashboard' | 'visits' | 'addresses' | 'badges'
-export type AdminTab = 'dashboard' | 'establishments' | 'customers' | 'bookings' | 'reviews' | 'badges' | 'invoices' | 'settings'
+export type AdminTab = 'dashboard' | 'venues' | 'events' | 'operators' | 'settings'
 
 export type BordellType = 'laufhaus' | 'bordell' | 'fkk' | 'studio' | 'privat'
 export type BordellStatus = 'active' | 'inactive' | 'pending' | 'suspended'

@@ -1,5 +1,5 @@
-import { AdminPanel } from '@/components/pages/AdminPanel'
+import { redirect } from 'next/navigation'
 
 export default function Admin() {
-  return <AdminPanel />
+  redirect('/de')
 }

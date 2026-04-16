@@ -48,6 +48,44 @@ export interface OperatorLoginResponse {
   requirePasswordReset: boolean
 }
 
+export interface OperatorVenuePayload {
+  cityId: number
+  name: string
+  addressLine: string
+  website?: string
+  publicEmail?: string
+  publicPhone?: string
+  generalNote?: string
+  reservationNote?: string
+  checkinNote?: string
+  serviceTypeIds: number[]
+  policy?: {
+    maxActivePendingPerMember?: number
+    maxActiveTotalPerMember?: number
+    maxOverlappingActiveReservations?: number
+    requireVerifiedPhoneForReservation?: boolean
+    requireVerifiedPhoneForCheckin?: boolean
+    pendingReviewTtlHours?: number
+    lateCancelThresholdMinutes?: number
+    note?: string
+  }
+}
+
+export interface OperatorEventPayload {
+  title: string
+  description?: string
+  startAt: string
+  endAt: string
+  reservationMode?: string
+  requiresForm?: boolean
+  capacityTotal?: number
+  generalNote?: string
+  visibility?: string
+  customerCancellationAllowed?: boolean
+  customerCancellationCutoffMinutes?: number
+  checkinOtpPolicy?: string
+}
+
 export const backendApi = {
   operatorLogin: (email: string, password: string) =>
     backendFetch<OperatorLoginResponse>('/operator-auth/login', {
@@ -89,4 +127,90 @@ export const backendApi = {
 
   listBusinessOperators: (businessPublicId: string, token: string) =>
     backendFetch<unknown[]>(`/operator/businesses/${businessPublicId}/operators`, { token }),
+
+  createVenue: (businessPublicId: string, token: string, data: OperatorVenuePayload) =>
+    backendFetch<unknown>(`/operator/businesses/${businessPublicId}/venues`, {
+      method: 'POST',
+      token,
+      body: data,
+    }),
+
+  createEvent: (businessPublicId: string, venuePublicId: string, token: string, data: OperatorEventPayload) =>
+    backendFetch<unknown>(`/operator/businesses/${businessPublicId}/venues/${venuePublicId}/events`, {
+      method: 'POST',
+      token,
+      body: data,
+    }),
+
+  getOperatorEventDetail: (
+    businessPublicId: string,
+    venuePublicId: string,
+    eventPublicId: string,
+    token: string
+  ) =>
+    backendFetch<unknown>(`/operator/businesses/${businessPublicId}/venues/${venuePublicId}/events/${eventPublicId}`, {
+      token,
+    }),
+
+  publishEvent: (
+    businessPublicId: string,
+    venuePublicId: string,
+    eventPublicId: string,
+    token: string,
+    data: { expectedLockVersion: number; reasonCode?: string; note?: string }
+  ) =>
+    backendFetch<unknown>(`/operator/businesses/${businessPublicId}/venues/${venuePublicId}/events/${eventPublicId}/publish`, {
+      method: 'POST',
+      token,
+      body: data,
+    }),
+
+  cancelEvent: (
+    businessPublicId: string,
+    venuePublicId: string,
+    eventPublicId: string,
+    token: string,
+    data: { expectedLockVersion: number; reasonCode?: string; note?: string }
+  ) =>
+    backendFetch<unknown>(`/operator/businesses/${businessPublicId}/venues/${venuePublicId}/events/${eventPublicId}/cancel`, {
+      method: 'POST',
+      token,
+      body: data,
+    }),
+
+  disableBusinessOperator: (
+    businessPublicId: string,
+    operatorPublicId: string,
+    token: string,
+    data: { reason?: string }
+  ) =>
+    backendFetch<unknown>(`/operator/businesses/${businessPublicId}/operators/${operatorPublicId}/disable`, {
+      method: 'POST',
+      token,
+      body: data,
+    }),
+
+  reactivateBusinessOperator: (
+    businessPublicId: string,
+    operatorPublicId: string,
+    token: string,
+    data: { venuePublicId: string; roleCode: string }
+  ) =>
+    backendFetch<unknown>(`/operator/businesses/${businessPublicId}/operators/${operatorPublicId}/reactivate`, {
+      method: 'POST',
+      token,
+      body: data,
+    }),
+
+  deprovisionBusinessOperator: (
+    businessPublicId: string,
+    operatorPublicId: string,
+    token: string,
+    data: { reason?: string }
+  ) =>
+    backendFetch<unknown>(`/operator/businesses/${businessPublicId}/operators/${operatorPublicId}/deprovision`, {
+      method: 'POST',
+      token,
+      body: data,
+    }),
 }

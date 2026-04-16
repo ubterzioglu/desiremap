@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { backendApi } from '@/lib/backend-client'
+import { getConfiguredBusinessAccountPublicId } from '@/lib/admin-config'
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { email, password } = body
+    const workspaceHeader = request.headers.get('x-desiremap-workspace')
+    const workspace = workspaceHeader === 'admin' ? 'admin' : 'public'
 
     if (!email || !password) {
       return NextResponse.json(
@@ -14,6 +17,7 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await backendApi.operatorLogin(email, password)
+    const businessAccountPublicId = getConfiguredBusinessAccountPublicId()
 
     const user = {
       id: result.operatorPublicId,
@@ -22,6 +26,10 @@ export async function POST(request: NextRequest) {
       role: 'admin',
       status: 'active',
       avatar: null,
+      workspace,
+      operatorPublicId: result.operatorPublicId,
+      businessAccountPublicId,
+      requirePasswordReset: result.requirePasswordReset,
     }
 
     const response = NextResponse.json({
@@ -29,6 +37,7 @@ export async function POST(request: NextRequest) {
       data: {
         accessToken: result.sessionToken,
         user,
+        requirePasswordReset: result.requirePasswordReset,
       },
     })
 

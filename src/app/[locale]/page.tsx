@@ -12,7 +12,6 @@ import { CityPage } from '@/components/pages/CityPage'
 import { DashboardPage } from '@/components/pages/DashboardPage'
 import { DetailPage } from '@/components/pages/DetailPage'
 import { LoginPage } from '@/components/pages/LoginPage'
-import { AdminPanel } from '@/components/pages/AdminPanel'
 import { getLocalizedPath, getVenuePath } from '@/lib/navigation'
 import type { Bordell, View } from '@/types'
 
@@ -21,7 +20,7 @@ function useNavTranslations() {
   return { discover: t('discover'), cities: t('cities'), premium: t('premium'), advertise: t('advertise'), login: t('login'), register: t('register'), myAccount: t('myAccount') }
 }
 
-type Handlers = { onCityClick: (city: string) => void; onBordellClick: (bordell: Bordell) => void; onBackHome: () => void; onBackCity: () => void; onLogin: () => void; onAdminLogin: () => void; onLogout: () => void; onRegister: () => void }
+type Handlers = { onCityClick: (city: string) => void; onBordellClick: (bordell: Bordell) => void; onBackHome: () => void; onBackCity: () => void; onLogin: () => void; onLogout: () => void; onRegister: () => void }
 
 function ViewHome(props: { locale: string; onBordellClick: (bordell: Bordell) => void }) {
   return <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><HomePage {...props} /></motion.div>
@@ -36,15 +35,11 @@ function ViewDetail(props: { bordell: Bordell; hasCity: boolean; handlers: Handl
 }
 
 function ViewLogin(props: { loginMessage?: string; handlers: Handlers }) {
-  return <LoginPage key="login" onBack={props.handlers.onBackHome} loginMessage={props.loginMessage} onAdminLogin={props.handlers.onAdminLogin} onRegister={props.handlers.onRegister} />
+  return <LoginPage key="login" onBack={props.handlers.onBackHome} loginMessage={props.loginMessage} onRegister={props.handlers.onRegister} />
 }
 
 function ViewDashboard() {
   return <DashboardPage key="dashboard" />
-}
-
-function ViewAdmin() {
-  return <AdminPanel key="admin" />
 }
 
 export default function Home() {
@@ -55,18 +50,16 @@ export default function Home() {
   const [selectedBordell, setSelectedBordell] = useState<Bordell | null>(null)
   const [loginMessage, setLoginMessage] = useState<string | undefined>()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [isAdmin, setIsAdmin] = useState(false)
   const navTranslations = useNavTranslations()
   const toTop = () => window.scrollTo(0, 0)
-  const showLayout = view !== 'dashboard' && view !== 'admin'
+  const showLayout = view !== 'dashboard'
   const handlers: Handlers = {
     onCityClick: (city) => { setSelectedCity(city); setView('city'); toTop() },
     onBordellClick: (bordell) => { router.push(getVenuePath(locale, bordell.id)); toTop() },
     onBackHome: () => { setView('home'); setSelectedCity(null); setSelectedBordell(null); setLoginMessage(undefined); toTop() },
     onBackCity: () => { setView('city'); setSelectedBordell(null); toTop() },
     onLogin: () => { setIsLoggedIn(true); setLoginMessage(undefined); setView('dashboard'); toTop() },
-    onAdminLogin: () => { setIsAdmin(true); setView('admin'); toTop() },
-    onLogout: () => { setIsLoggedIn(false); setIsAdmin(false); setView('home'); toTop() },
+    onLogout: () => { setIsLoggedIn(false); setView('home'); toTop() },
     onRegister: () => { router.push(getLocalizedPath(locale, '/register')) }
   }
   const renderView = () => {
@@ -75,8 +68,7 @@ export default function Home() {
       city: selectedCity ? <ViewCity city={selectedCity} handlers={handlers} /> : null,
       detail: selectedBordell ? <ViewDetail bordell={selectedBordell} hasCity={!!selectedCity} handlers={handlers} /> : null,
       login: <ViewLogin loginMessage={loginMessage} handlers={handlers} />,
-      dashboard: <ViewDashboard />,
-      admin: <ViewAdmin />
+      dashboard: <ViewDashboard />
     }
     return viewMap[view]
   }
