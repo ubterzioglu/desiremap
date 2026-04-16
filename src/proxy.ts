@@ -19,6 +19,8 @@ const PUBLIC_PATHS = [
   '/icon.svg',
 ]
 
+const ADMIN_CLEAN_ROUTES = ['login', 'dashboard', 'venues', 'events', 'operators', 'settings']
+
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   const host = request.headers.get('host')
@@ -27,15 +29,23 @@ export function proxy(request: NextRequest) {
     const segment = pathname.split('/')[1]
     const hasLocalePrefix = (locales as readonly string[]).includes(segment)
 
-    if (pathname === '/') {
-      return NextResponse.next()
-    }
-
     if (hasLocalePrefix) {
       const url = request.nextUrl.clone()
       const strippedPath = pathname.replace(`/${segment}`, '') || '/'
       url.pathname = strippedPath
       return NextResponse.redirect(url, 308)
+    }
+
+    if (pathname === '/') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/login'
+      return NextResponse.redirect(url, 308)
+    }
+
+    if (ADMIN_CLEAN_ROUTES.includes(segment)) {
+      const url = request.nextUrl.clone()
+      url.pathname = `/auth${pathname}`
+      return NextResponse.rewrite(url)
     }
 
     return NextResponse.next()

@@ -217,45 +217,27 @@
   "hotPaths": [
     {
       "path": "",
-      "accessCount": 18,
-      "lastAccessed": 1776373323214,
+      "accessCount": 17,
+      "lastAccessed": 1776372437683,
+      "type": "directory"
+    },
+    {
+      "path": "src",
+      "accessCount": 7,
+      "lastAccessed": 1776370784443,
       "type": "directory"
     },
     {
       "path": "src/lib/api.ts",
-      "accessCount": 11,
-      "lastAccessed": 1776372744867,
-      "type": "file"
-    },
-    {
-      "path": "src",
-      "accessCount": 11,
-      "lastAccessed": 1776375133977,
-      "type": "directory"
-    },
-    {
-      "path": "src/components/admin/AdminShell.tsx",
-      "accessCount": 10,
-      "lastAccessed": 1776375235540,
-      "type": "file"
-    },
-    {
-      "path": "src/components/admin/AdminLoginPage.tsx",
-      "accessCount": 10,
-      "lastAccessed": 1776375236430,
+      "accessCount": 6,
+      "lastAccessed": 1776372382389,
       "type": "file"
     },
     {
       "path": "src/components/providers/SessionProvider.tsx",
-      "accessCount": 7,
-      "lastAccessed": 1776372604358,
+      "accessCount": 6,
+      "lastAccessed": 1776372403252,
       "type": "file"
-    },
-    {
-      "path": "src/components/pages/AdminPanel.tsx",
-      "accessCount": 7,
-      "lastAccessed": 1776375300923,
-      "type": "directory"
     },
     {
       "path": "PLAN.md",
@@ -265,50 +247,32 @@
     },
     {
       "path": "src/hooks/useQueries.ts",
-      "accessCount": 5,
-      "lastAccessed": 1776372691204,
+      "accessCount": 4,
+      "lastAccessed": 1776372447018,
       "type": "directory"
     },
     {
-      "path": "src/lib/admin-config.ts",
-      "accessCount": 5,
-      "lastAccessed": 1776375083509,
-      "type": "file"
+      "path": "src/components/pages/AdminPanel.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1776351946219,
+      "type": "directory"
     },
     {
       "path": "src/stores/authStore.ts",
-      "accessCount": 4,
-      "lastAccessed": 1776372601648,
-      "type": "file"
-    },
-    {
-      "path": "src/proxy.ts",
-      "accessCount": 4,
-      "lastAccessed": 1776375220046,
-      "type": "file"
-    },
-    {
-      "path": "src/types/index.ts",
       "accessCount": 3,
-      "lastAccessed": 1776372637117,
+      "lastAccessed": 1776372445745,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/admin-config.ts",
+      "accessCount": 3,
+      "lastAccessed": 1776372445979,
       "type": "file"
     },
     {
       "path": "src/types/admin.ts",
       "accessCount": 3,
-      "lastAccessed": 1776372744325,
-      "type": "file"
-    },
-    {
-      "path": "src/app/auth/layout.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1776373482701,
-      "type": "file"
-    },
-    {
-      "path": "src/app/auth/page.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1776373716163,
+      "lastAccessed": 1776372447803,
       "type": "file"
     },
     {
@@ -324,45 +288,21 @@
       "type": "file"
     },
     {
-      "path": "src/app/auth/dashboard/page.tsx",
+      "path": "src/types/index.ts",
       "accessCount": 2,
-      "lastAccessed": 1776372653447,
-      "type": "file"
-    },
-    {
-      "path": "src/app/auth/login/page.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1776372654752,
-      "type": "file"
-    },
-    {
-      "path": "src/app/auth/settings/page.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1776372655906,
-      "type": "file"
-    },
-    {
-      "path": "src/app/auth/operators/page.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1776372656544,
-      "type": "file"
-    },
-    {
-      "path": "src/components/admin/AdminSettingsWorkspace.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1776372758925,
-      "type": "file"
-    },
-    {
-      "path": "src/components/pages/DashboardPage.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1776375268667,
+      "lastAccessed": 1776372447208,
       "type": "file"
     },
     {
       "path": "src/app/api/auth/me/route.ts",
       "accessCount": 1,
       "lastAccessed": 1776342595978,
+      "type": "file"
+    },
+    {
+      "path": "src/components/pages/DashboardPage.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1776349897652,
       "type": "file"
     },
     {
@@ -480,39 +420,75 @@
       "type": "file"
     },
     {
+      "path": "src/proxy.ts",
+      "accessCount": 1,
+      "lastAccessed": 1776371031260,
+      "type": "file"
+    },
+    {
       "path": "src/app/api/auth/login/route.ts",
       "accessCount": 1,
       "lastAccessed": 1776371387948,
       "type": "file"
     },
     {
+      "path": "src/app/auth/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1776371955319,
+      "type": "file"
+    },
+    {
+      "path": "src/app/auth/login/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1776371955594,
+      "type": "file"
+    },
+    {
+      "path": "src/app/auth/layout.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1776371956833,
+      "type": "file"
+    },
+    {
+      "path": "src/components/admin/AdminLoginPage.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1776371972727,
+      "type": "file"
+    },
+    {
+      "path": "src/components/admin/AdminShell.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1776372402064,
+      "type": "file"
+    },
+    {
+      "path": "src/app/auth/operators/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1776372429839,
+      "type": "file"
+    },
+    {
+      "path": "src/components/admin/AdminSettingsWorkspace.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1776372430111,
+      "type": "file"
+    },
+    {
+      "path": "src/app/auth/dashboard/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1776372430380,
+      "type": "file"
+    },
+    {
+      "path": "src/app/auth/settings/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1776372433264,
+      "type": "file"
+    },
+    {
       "path": ".env.example",
       "accessCount": 1,
       "lastAccessed": 1776372437540,
-      "type": "file"
-    },
-    {
-      "path": "src/stores/adminStore.ts",
-      "accessCount": 1,
-      "lastAccessed": 1776372602376,
-      "type": "file"
-    },
-    {
-      "path": "src/components/providers/QueryProvider.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1776372617610,
-      "type": "file"
-    },
-    {
-      "path": "src/app/auth/venues/page.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1776372654917,
-      "type": "file"
-    },
-    {
-      "path": "src/app/auth/events/page.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1776372655400,
       "type": "file"
     }
   ],

@@ -29,7 +29,7 @@ export function AdminLoginPage() {
 
     try {
       await adminLogin(email, password)
-      router.replace('/auth/dashboard')
+      router.replace('/dashboard')
     } catch (loginError) {
       const message = loginError instanceof Error ? loginError.message : 'Login fehlgeschlagen'
       setError(message)

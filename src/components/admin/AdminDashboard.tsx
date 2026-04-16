@@ -53,11 +53,11 @@ export function AdminDashboard() {
               Events ueberwachen und Mitgliedsdaten einsehen — alles aus einem Workspace.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button className="rounded-2xl bg-teal-400 text-slate-950 hover:bg-teal-300" onClick={() => router.push('/auth/venues')}>
+              <Button className="rounded-2xl bg-teal-400 text-slate-950 hover:bg-teal-300" onClick={() => router.push('/venues')}>
                 <Plus className="mr-2 h-4 w-4" />
                 Venue erstellen
               </Button>
-              <Button variant="outline" className="rounded-2xl border-white/10 bg-transparent hover:bg-white/5" onClick={() => router.push('/auth/events')}>
+              <Button variant="outline" className="rounded-2xl border-white/10 bg-transparent hover:bg-white/5" onClick={() => router.push('/events')}>
                 <CalendarRange className="mr-2 h-4 w-4" />
                 Events verwalten
               </Button>
@@ -115,17 +115,17 @@ export function AdminDashboard() {
               {
                 title: 'Betrieb verwalten',
                 text: 'Betriebe und deren Venues ueberpruefen, neue Locations anlegen.',
-                href: '/auth/venues',
+                href: '/venues',
               },
               {
                 title: 'Event steuern',
                 text: 'Events plattformweit ueberwachen, Entwuerfe bearbeiten und Lifecycles steuern.',
-                href: '/auth/events',
+                href: '/events',
               },
               {
                 title: 'Team verwalten',
                 text: 'Operatoren aller Betriebe pruefen, deaktivieren oder reaktivieren.',
-                href: '/auth/operators',
+                href: '/operators',
               },
             ].map((item) => (
               <button

@@ -1,144 +1,118 @@
-# 🚀 Welcome to Z.ai Code Scaffold
+# DesireMap
 
-A modern, production-ready web application scaffold powered by cutting-edge technologies, designed to accelerate your development with [Z.ai](https://chat.z.ai)'s AI-powered coding assistance.
+Deutschlands führendes Verzeichnis für FKK Clubs, Laufhäuser, Bordelle,
+Studios und Privat-Adressen.
 
-## ✨ Technology Stack
-
-This scaffold provides a robust foundation built with:
-
-### 🎯 Core Framework
-- **⚡ Next.js 16** - The React framework for production with App Router
-- **📘 TypeScript 5** - Type-safe JavaScript for better developer experience
-- **🎨 Tailwind CSS 4** - Utility-first CSS framework for rapid UI development
-
-### 🧩 UI Components & Styling
-- **🧩 shadcn/ui** - High-quality, accessible components built on Radix UI
-- **🎯 Lucide React** - Beautiful & consistent icon library
-- **🌈 Framer Motion** - Production-ready motion library for React
-- **🎨 Next Themes** - Perfect dark mode in 2 lines of code
-
-### 📋 Forms & Validation
-- **🎣 React Hook Form** - Performant forms with easy validation
-- **✅ Zod** - TypeScript-first schema validation
-
-### 🔄 State Management & Data Fetching
-- **🐻 Zustand** - Simple, scalable state management
-- **🔄 TanStack Query** - Powerful data synchronization for React
-- **🌐 Fetch** - Promise-based HTTP request
-
-### 🌐 External API Integration
-- **🌐 External REST API** - Next.js app works as frontend-only client
-- **🔐 Token-Based Auth** - Session state handled in frontend store and API client
-
-### 🎨 Advanced UI Features
-- **📊 TanStack Table** - Headless UI for building tables and datagrids
-- **🖱️ DND Kit** - Modern drag and drop toolkit for React
-- **📊 Recharts** - Redefined chart library built with React and D3
-- **🖼️ Sharp** - High performance image processing
-
-### 🌍 Internationalization & Utilities
-- **🌍 Next Intl** - Internationalization library for Next.js
-- **📅 Date-fns** - Modern JavaScript date utility library
-- **🪝 ReactUse** - Collection of essential React hooks for modern development
-
-## 🎯 Why This Scaffold?
-
-- **🏎️ Fast Development** - Pre-configured tooling and best practices
-- **🎨 Beautiful UI** - Complete shadcn/ui component library with advanced interactions
-- **🔒 Type Safety** - Full TypeScript configuration with Zod validation
-- **📱 Responsive** - Mobile-first design principles with smooth animations
-- **🌐 API Ready** - External backend URL is configured with `NEXT_PUBLIC_API_URL`
-- **🔐 Frontend Auth Flow** - Login/session handled against external API endpoints
-- **📊 Data Visualization** - Charts, tables, and drag-and-drop functionality
-- **🌍 i18n Ready** - Multi-language support with Next Intl
-- **🚀 Production Ready** - Optimized build and deployment settings
-- **🤖 AI-Friendly** - Structured codebase perfect for AI assistance
-
-## 🚀 Quick Start
-
-```bash
-# Install dependencies
-bun install
-
-# Point frontend to external API
-cp .env.example .env
-
-# Start development server
-bun run dev
-
-# Build for production
-bun run build
-
-# Start production server
-bun start
-```
-
-Open [http://localhost:3000](http://localhost:3000) to see your application running.
-
-## 🤖 Powered by Z.ai
-
-This scaffold is optimized for use with [Z.ai](https://chat.z.ai) - your AI assistant for:
-
-- **💻 Code Generation** - Generate components, pages, and features instantly
-- **🎨 UI Development** - Create beautiful interfaces with AI assistance  
-- **🔧 Bug Fixing** - Identify and resolve issues with intelligent suggestions
-- **📝 Documentation** - Auto-generate comprehensive documentation
-- **🚀 Optimization** - Performance improvements and best practices
-
-Ready to build something amazing? Start chatting with Z.ai at [chat.z.ai](https://chat.z.ai) and experience the future of AI-powered development!
-
-## 📁 Project Structure
-
-```
-src/
-├── app/                 # Next.js App Router pages
-├── components/          # Reusable React components
-│   └── ui/             # shadcn/ui components
-├── hooks/              # Custom React hooks
-└── lib/                # Utility functions and configurations
-```
-
-## 🎨 Available Features & Components
-
-This scaffold includes a comprehensive set of modern web development tools:
-
-### 🧩 UI Components (shadcn/ui)
-- **Layout**: Card, Separator, Aspect Ratio, Resizable Panels
-- **Forms**: Input, Textarea, Select, Checkbox, Radio Group, Switch
-- **Feedback**: Alert, Toast (Sonner), Progress, Skeleton
-- **Navigation**: Breadcrumb, Menubar, Navigation Menu, Pagination
-- **Overlay**: Dialog, Sheet, Popover, Tooltip, Hover Card
-- **Data Display**: Badge, Avatar, Calendar
-
-### 📊 Advanced Data Features
-- **Tables**: Powerful data tables with sorting, filtering, pagination (TanStack Table)
-- **Charts**: Beautiful visualizations with Recharts
-- **Forms**: Type-safe forms with React Hook Form + Zod validation
-
-### 🎨 Interactive Features
-- **Animations**: Smooth micro-interactions with Framer Motion
-- **Drag & Drop**: Modern drag-and-drop functionality with DND Kit
-- **Theme Switching**: Built-in dark/light mode support
-
-### 🔐 Backend Integration
-- **Authentication**: External API login/logout/me endpoints
-- **Backend**: No internal Next.js API routes required
-- **API Client**: HTTP requests with Fetch + TanStack Query
-- **State Management**: Simple and scalable with Zustand
-
-### 🌍 Production Features
-- **Internationalization**: Multi-language support with Next Intl
-- **Image Optimization**: Automatic image processing with Sharp
-- **Type Safety**: End-to-end TypeScript with Zod validation
-- **Essential Hooks**: 100+ useful React hooks with ReactUse for common patterns
-
-## 🤝 Get Started with Z.ai
-
-1. **Clone this scaffold** to jumpstart your project
-2. **Visit [chat.z.ai](https://chat.z.ai)** to access your AI coding assistant
-3. **Start building** with intelligent code generation and assistance
-4. **Deploy with confidence** using the production-ready setup
+**Production:** https://desiremap.de
 
 ---
 
-Built with ❤️ for the developer community. Supercharged by [Z.ai](https://chat.z.ai) 🚀
+## Stack
+
+- **Framework:** Next.js 16 (App Router) + React 19
+- **Language:** TypeScript 5 (strict)
+- **Styling:** Tailwind CSS 4 + shadcn/ui
+- **State:** Zustand (client) + TanStack Query (server)
+- **Forms:** React Hook Form + Zod
+- **i18n:** next-intl (de, en)
+- **Runtime:** Bun
+- **Deployment:** Coolify (self-hosted, Docker)
+
+## Anforderungen
+
+- Bun >= 1.3
+- Node >= 20 (`.nvmrc` vorhanden)
+- Läuft auf Linux, macOS, WSL2
+
+## Setup
+
+~~~bash
+# Dependencies installieren
+bun install
+
+# Environment konfigurieren
+cp .env.example .env
+# .env bearbeiten, NEXT_PUBLIC_API_URL setzen
+
+# Dev-Server starten
+bun run dev
+~~~
+
+Öffne http://localhost:3000
+
+## Scripts
+
+| Befehl | Zweck |
+|---|---|
+| `bun run dev` | Dev-Server (Port 3000, Log: `dev.log`) |
+| `bun run build` | Production Build (Standalone für Docker) |
+| `bun run start` | Production Server lokal |
+| `bun run lint` | ESLint |
+| `bun run typecheck` | TypeScript Check (tsc --noEmit) |
+| `bun test` | Unit Tests (Bun runner) |
+
+## Projektstruktur
+
+~~~
+src/
+  app/              Next.js App Router (Pages, Layouts)
+  components/       React Components
+    ui/             shadcn/ui (generated, nicht manuell editieren)
+  hooks/            Custom Hooks
+  lib/              Utils, API Client, Zustand Stores
+    stores/         Zustand Stores
+
+messages/           i18n JSON (de.json, en.json)
+public/             Statische Assets
+docs/               Projekt-Dokumentation
+Dockerfile          Coolify Build Target
+~~~
+
+## Backend
+
+Backend ist ein separates Repo:
+**[desiremap_core_backend](https://github.com/ozbakirsahincan/desiremap_core_backend)**
+
+REST API, Token-basierte Auth. Base URL wird über `NEXT_PUBLIC_API_URL`
+konfiguriert.
+
+## Deployment
+
+Automatisches Deployment über **Coolify** (self-hosted auf unserem VPS):
+
+1. Push auf `main` -> Coolify Webhook triggert Build
+2. Build via `Dockerfile` (Next.js Standalone Output)
+3. Coolify deployt Container, Caddy als Reverse Proxy
+
+**Environment Variables** werden im Coolify Panel verwaltet
+(siehe `.env.example` für Referenz).
+
+Details: siehe `DEPLOY.md`.
+
+## Entwicklung
+
+- **Branching:** `feat/xxx`, `fix/xxx`, `chore/xxx`
+- **Commits:** [Conventional Commits](https://www.conventionalcommits.org/)
+- **Vor jedem PR:** `bun run typecheck && bun run lint` müssen sauber sein
+- **shadcn/ui:** `src/components/ui/` ist generiert — nicht manuell bearbeiten
+
+## KI-unterstützte Entwicklung
+
+Dieses Projekt wird mit KI-Tools entwickelt (Claude Code, Codex, GLM).
+Der gesamte Projektkontext für KI-Tools ist in **`AGENTS.md`** zentralisiert.
+
+Neue Team-Mitglieder: bitte vor dem ersten KI-Task `AGENTS.md` lesen.
+
+## Team
+
+- **Frontend:** Shahindzhan
+- **Backend:** siehe Backend Repo
+- **QA + Marketing:** siehe `PROJECT.md`
+
+## Lizenz
+
+Proprietär — (c) 2026 DesireMap. Alle Rechte vorbehalten.
+
+---
+
+**Status:** MVP in Entwicklung. Roadmap und Scope: siehe `PROJECT.md`.

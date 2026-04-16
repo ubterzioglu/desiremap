@@ -25,11 +25,11 @@ const navigationItems: Array<{
   href: string
   icon: typeof Building2
 }> = [
-  { id: 'dashboard', label: 'Dashboard', href: '/auth/dashboard', icon: Activity },
-  { id: 'venues', label: 'Venues', href: '/auth/venues', icon: Building2 },
-  { id: 'events', label: 'Events', href: '/auth/events', icon: CalendarRange },
-  { id: 'operators', label: 'Operators', href: '/auth/operators', icon: Users2 },
-  { id: 'settings', label: 'Settings', href: '/auth/settings', icon: Settings },
+  { id: 'dashboard', label: 'Dashboard', href: '/dashboard', icon: Activity },
+  { id: 'venues', label: 'Venues', href: '/venues', icon: Building2 },
+  { id: 'events', label: 'Events', href: '/events', icon: CalendarRange },
+  { id: 'operators', label: 'Operators', href: '/operators', icon: Users2 },
+  { id: 'settings', label: 'Settings', href: '/settings', icon: Settings },
 ]
 
 export function AdminShell({
@@ -50,7 +50,7 @@ export function AdminShell({
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.replace('/auth/login')
+      router.replace('/login')
     }
   }, [isAuthenticated, isLoading, router, user?.workspace])
 
