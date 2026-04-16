@@ -1,190 +1,166 @@
-# AGENTS.md
+# DesireMap.de — AGENTS.md
 
-## Mandatory LSP Bootstrap (Run First)
-- Load and follow `/Users/admin/.claude/lsp-commands.md` at the very start of every task.
-- Execute the startup sequence in that file before any grep/glob-based code discovery.
-- Keep LSP/symbolic commands as the default path for discovery, references, and edits.
+Bu dosya tüm AI tool'ları için tek context kaynağıdır.
+Claude Code, Codex CLI, GLM, Cursor — hangisi olursa olsun ÖNCE BUNU OKU.
 
-This file is for agentic coding assistants operating in this repository.
+## Proje
+Almanya yetişkin sektör directory sitesi (FKK, Laufhaus, Bordell, Studio, Privat).
+Kullanıcı şehir + kategori ile arar, Betrieb (işletme) detayını görür.
 
-## Project Snapshot
-- **App type**: Next.js marketplace app (Germany-focused domain content).
-- **Framework**: Next.js 16 App Router + React 19 + TypeScript.
-- **Runtime**: Bun package manager/runtime.
-- **Styling**: Tailwind CSS v4 + shadcn/ui style components.
-- **State**: Zustand + TanStack Query.
-- **Data**: Prisma ORM (`@prisma/client`, `prisma/` schema + migrations).
-- **Auth**: NextAuth.js + PASETO tokens.
-- **i18n**: `next-intl` with locale routing (de, en, ar, tr; default: de).
+Production: https://desiremap.de (Coolify self-hosted, VPS)
+Deployment: Dockerfile üzerinden, Coolify otomatik build
+Staging: yok (doğrudan production, MVP aşamasında)
 
-## Repository Rules Source Check
-- `.cursor/rules/`: not found.
-- `.cursorrules`: not found.
-- `.github/copilot-instructions.md`: not found.
-- If these files are added later, treat them as higher-priority behavioral rules.
+## Takım
+- Frontend: Shahindzhan (bu repo)
+- Backend: ayrı repo (desiremap_core_backend), REST API
+- Test + Marketing: 1 kişi
 
-## Core Commands
+## Aşama: MVP
+Şu an MVP'yi bitirmeye odaklıyız. MVP KAPSAMI DIŞI hiçbir şey yapılmaz.
 
-### Setup / Installation
-```bash
-bun install
-```
+### MVP içinde (aktif geliştirme)
+- Arama (şehir + kategori filtreleri)
+- Betrieb detay sayfası
+- Şehir sayfaları (SEO)
+- Kategori sayfaları (SEO)
+- Login/register (token-based auth)
+- Basit admin (işletme CRUD)
+- Blog okuma sayfaları (SEO için backlink yapısı — içerik sonradan girilecek)
 
-### Development
-```bash
-bun run dev        # Start Next dev server on port 3000 (logs to dev.log)
-bun run build      # Production build: runs prisma generate first, builds standalone
-bun run start      # Start production server from .next/standalone/server.js
-```
+### MVP DIŞI (yapma, önerme, kod yazma)
+- Socket.io / realtime canlı görüntü verification (post-MVP)
+- OTP akışları — rezervasyon doğrulama, işletme doğrulama (post-MVP)
+- Blog admin panel / markdown editör (post-MVP, şimdilik blog statik)
+- Rezervasyon sistemi (post-MVP)
 
-### Lint
-```bash
-bun run lint       # Uses eslint.config.mjs (flat config with @typescript-eslint rules)
-```
+## Stack (KESIN, değiştirme)
+- Next.js 16 App Router, React 19
+- TypeScript 5 strict
+- Tailwind 4 + shadcn/ui (src/components/ui/)
+- Zustand (client state) + persist middleware (localStorage YERİNE)
+- TanStack Query (server state)
+- React Hook Form + Zod (TÜM formlar)
+- next-intl (i18n, messages/ — de + en)
+- Bun (npm/yarn DEĞİL)
 
-### Database (Prisma)
-```bash
-bun run db:generate   # Generate Prisma client
-bun run db:push       # Push schema to database
-bun run db:migrate    # Run migrations
-bun run db:reset      # Reset database
-```
+## Klasör yapısı
+src/app/           — Next.js sayfalar (App Router, server components default)
+src/components/    — React component'leri
+src/components/ui/ — shadcn/ui, KESINLIKLE DOKUNMA
+src/hooks/         — custom hook'lar (use* prefix)
+src/lib/           — util, api client, Zustand store'ları
+src/lib/stores/    — Zustand store'ları (her store kendi dosyası)
+messages/          — i18n JSON (de.json, en.json)
+public/            — statik asset
+Dockerfile         — Coolify build hedefi, DİKKATLE değiştir
 
-### Tests
-Tests use Bun's built-in test runner with `bun:test`. Test files use `.test.ts` extension.
+## Script'ler
+bun run dev        — dev server (port 3000)
+bun run build      — production build (standalone, Docker için)
+bun run lint       — eslint
+bun run typecheck  — tsc --noEmit (EKLENECEK)
+bun test           — bun test runner
 
-```bash
-bun test                        # Run all tests
-bun test path/to/file.test.ts   # Run single test file
-bun test -t "should create"     # Run tests matching pattern
-```
+## Her task sonunda KESINLIKLE
+1. bun run typecheck — 0 hata
+2. bun run lint — 0 hata
+3. Değiştirilen dosya listesi
+4. Build kırıldıysa DUR, bana bildir
+5. Yeni paket EKLEME — sor önce
 
-Example test structure:
-```typescript
-import { describe, expect, test } from 'bun:test'
-import { functionName } from './module'
+## Kod kuralları
+- Server Component default, 'use client' SADECE useState/useEffect/onClick için
+- Form = React Hook Form + Zod, istisna yok
+- API çağrısı = TanStack Query + lib/api.ts helper (inline fetch YOK)
+- Zustand store = lib/stores/ altında, her store kendi dosyasında
+- shadcn/ui component'i varsa custom yazma — önce ui/ klasörüne bak
+- Tailwind utility-first, custom CSS YOK
+- localStorage doğrudan KULLANMA — Zustand persist middleware
+- any YASAK, unknown kullan ve narrow et
+- Default export yerine named export (component'ler hariç)
 
-describe('feature description', () => {
-  test('should do something specific', () => {
-    const result = functionName(input)
-    expect(result).toBe(expected)
-  })
-})
-```
+## i18n kuralı
+- Hardcoded metin YASAK (özellikle SEO etkiler)
+- Tüm kullanıcı-facing metin messages/de.json + messages/en.json
+- Component'te: const t = useTranslations('namespace')
+- de birincil dil (Alman pazarı), en ikincil
 
-## Codebase Layout
+## SEO kuralı (kritik, bu siteden para SEO üzerinden geliyor)
+- Her sayfa: metadata export (title, description, openGraph)
+- Şehir/kategori sayfaları: generateStaticParams + dynamic metadata
+- Yapısal veri (JSON-LD): Betrieb detay, LocalBusiness schema
+- Image: next/image zorunlu, alt text boş bırakma
+- URL: kebab-case, Almanca slug (örn. /stadt/muenchen, /kategorie/fkk-club)
 
-```
-src/
-├── app/
-│   ├── [locale]/           # Locale routing (de, en, ar, tr)
-│   │   ├── page.tsx        # Homepage
-│   │   ├── layout.tsx      # Locale layout with metadata
-│   │   └── search/         # Search page
-│   ├── api/                # API route handlers
-│   ├── sitemap.ts          # Dynamic sitemap
-│   └── robots.ts           # Robots.txt
-├── components/
-│   ├── ui/                 # shadcn/ui primitives (lint-ignored)
-│   ├── home/               # Homepage sections (Hero, Categories, Cities, Promo)
-│   ├── layout/             # Header, Footer, LanguageSelector, MobileMenu
-│   ├── listings/           # ListingCard, ListingsSection, ReservationModal
-│   └── pages/              # Admin, Dashboard, City, Detail, Login pages
-├── hooks/                  # Custom hooks (use-mobile, use-toast, useScrollHeader)
-├── lib/                    # Utilities (utils, db, api, structuredData, auth, seo)
-├── stores/                 # Zustand stores (authStore, adminStore, bookingStore)
-├── types/                  # TypeScript types (index.ts, admin.ts)
-├── i18n/                   # next-intl configuration
-└── data/                   # Mock data
-messages/                   # Translation files (de.json, en.json, ar.json, tr.json)
-prisma/                     # Database schema and migrations
-```
+## Backend API
+- Base URL: NEXT_PUBLIC_API_URL env
+- Auth: token-based, lib/stores/auth.ts (Zustand + persist)
+- Hata: TanStack Query + sonner toast
+- Endpoint listesi: backend repo README
 
-## TypeScript Conventions
-- `strict: true` enabled; keep types explicit for public interfaces and API payloads.
-- Path alias: `@/*` maps to `./src/*` (use for all internal imports).
-- Import order:
-  1. framework/library imports (`next`, `react`)
-  2. third-party packages
-  3. `@/` internal imports
-  4. relative imports
-- Prefer type-only imports: `import type { ... } from '...'`
-- Use interfaces for object shapes, type for unions/primitives.
+## Deployment
+- Coolify self-hosted (bizim VPS)
+- Dockerfile üzerinden build
+- Otomatik deploy: main branch push → Coolify webhook
+- .env Coolify panelinden (repo'da .env.example referans)
 
-## Formatting & Style
-- **Single quotes**, no semicolons, trailing commas optional, concise arrow functions.
-- **Do not reformat unrelated files in broad sweeps.**
-- Match existing style in touched files before enforcing new style.
+## Yapma
+- README.md güncelleme (ayrı iş, istenirse)
+- Yeni paket ekleme (sor önce)
+- src/components/ui/ düzenleme (shadcn generated)
+- Vercel referansı (artık Coolify'dayız)
+- "İyileştirme" niyetiyle dokunulmayan dosyayı değiştirme
+- MVP dışı feature'a kod yazma (socket.io, otp, reservation vb.)
 
-## ESLint Reality (What's Enforced)
-- Many strict rules disabled (including `no-explicit-any`, `no-unused-vars`, `prefer-const`).
-- **Warning-level rules (guide refactors, don't block):**
-  - `max-lines`: 400
-  - `max-lines-per-function`: 150
-  - `complexity`: 15
-  - `max-statements`: 40
-  - `max-depth`: 3
-- **Ignored:** `src/components/ui/**`
+## Git kuralı
+- Branch: feat/xxx, fix/xxx, chore/xxx
+- Commit: conventional (feat:, fix:, chore:, refactor:, docs:)
+- PR AÇMA, sadece branch + push (insan açar)
+- Yarım işte commit atma
 
-## Naming Conventions
-| Type | Convention | Examples |
-|------|------------|----------|
-| Components | PascalCase | `LoginPage`, `DashboardTabs`, `ListingCard` |
-| Hooks | camelCase with `use` prefix | `useScrollHeader`, `useToast`, `useQueries` |
-| Stores | camelCase | `authStore`, `adminStore`, `bookingStore` |
-| Utility functions | camelCase | `apiCall`, `generateToken`, `formatDate` |
-| API modules | camelCase | `authApi`, `customerApi`, `bookingApi`, `adminApi` |
-| Route handlers | uppercase HTTP exports | `GET`, `POST`, `PUT`, `DELETE` |
-| Constants | UPPER_SNAKE_CASE (true constants only) | `MAX_RETRY_COUNT`, otherwise camelCase |
-| Types/Interfaces | PascalCase | `Bordell`, `Customer`, `Booking` |
-| Enums | PascalCase with enum values as lowercase | `BordellType`, `BookingStatus` |
+## Model-spesifik notlar
 
-## API & Error Handling Patterns
-API handlers follow this pattern:
-```typescript
-import { NextResponse } from 'next/server'
-import { z } from 'zod'
+### Claude Code / GLM 5.1 (Claude Code üzerinden)
+- TodoWrite ile plan çıkar, onay bekle
+- Her TODO sonunda typecheck çalıştır
 
-const schema = z.object({ field: z.string() })
+### Codex CLI
+- Task öncesi plan yaz, onay bekle
+- Commit conventional format
 
-export async function POST(request: Request) {
-  try {
-    const body = schema.parse(await request.json())
-    const result = await someOperation(body)
-    return NextResponse.json(result, { status: 201 })
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Validation failed', details: error.errors }, { status: 400 })
-    }
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
-  }
-}
-```
+## Codex için ek
+- Her task'tan önce plan çıkar, onay bekle
+- Commit mesajı: "type(scope): description" (conventional)
+- Otomatik PR açma, sadece branch oluştur
+  
+## Guidelines
 
-Client API wrapper (`src/lib/api.ts`) throws `Error` on non-OK response.
-Error shape: `{ error: string, ...details }`. Do not swallow errors silently.
+### Code Navigation (ALWAYS use LSP/Serena)
+**Prefer LSP-based tools over grep for code exploration:**
 
-## React/Next.js Patterns
-- Respect client/server boundaries: client components use `'use client'` when using hooks/browser APIs.
-- Server route logic remains in `src/app/api`.
-- Use `next-intl` patterns for locale-aware rendering.
-- Locale routing via `[locale]` dynamic segment.
-- Avoid adding global state when local state/context is sufficient.
+**LSP Tool Operations:**
+- `goToDefinition` - Jump to symbol definition
+- `findReferences` - Find all usages
+- `hover` - Get type info and docs
+- `documentSymbol` - List symbols in a file
+- `workspaceSymbol` - Search symbols project-wide
+- `goToImplementation` - Find implementations
+- `incomingCalls` / `outgoingCalls` - Call hierarchy
 
-## Agent Workflow Expectations
-1. **Before edits**: Inspect nearby files and follow local conventions.
-2. **Discovery**: Prefer LSP/symbolic tools over plain text search.
-3. **After edits**: Run targeted checks first, then broader checks.
-4. **Minimum verification**:
-   - `bun run lint`
-   - `bun run build` (for route/type/runtime safety)
-   - `bun test` if tests exist
-5. **Do not claim tests passed unless commands were actually executed.**
+**Serena MCP (LSP-backed):**
+- `find_symbol` - Find and read symbol bodies
+- `get_symbols_overview` - File structure overview
+- `find_referencing_symbols` - Find where symbols are used
+- `replace_symbol_body` - Edit symbol definitions
+- `insert_before_symbol` / `insert_after_symbol` - Add code
 
-## Key Files Reference
-- `src/lib/api.ts`: Reusable `apiCall` wrapper + `authApi`, `customerApi`, `bookingApi`, `establishmentsApi`, `adminApi`, `seedApi`
-- `src/lib/db.ts`: Prisma client singleton
-- `src/lib/auth.ts`: Authentication utilities
-- `src/types/index.ts`: Core business types (Bordell, Customer, Booking, Review, Badge)
-- `src/types/admin.ts`: Admin-specific types (Invoice, DashboardUser, Activity)
-- `src/middleware.ts`: Locale detection and routing
+**Only use Grep/Glob for:**
+- String/text searches in code
+- File name patterns
+- Non-code files (config, markdown, etc.)
+
+### LSP Setup Status
+- **TypeScript LSP**: Configured via Serena (`.serena/project.yml` — `languages: [typescript]`). Works with `tsconfig.json`.
+- **ESLint**: Flat config (`eslint.config.mjs`), runs via `bun lint`. No separate ESLint LSP needed.
+- **Serena**: Active at both root and `frontend/` levels with TypeScript language server.

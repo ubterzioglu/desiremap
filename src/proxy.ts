@@ -45,6 +45,10 @@ export function proxy(request: NextRequest) {
     return NextResponse.next()
   }
 
+  if (pathname.startsWith('/auth/')) {
+    return NextResponse.next()
+  }
+
   const segment = pathname.split('/')[1]
   const hasLocalePrefix = (locales as readonly string[]).includes(segment)
 

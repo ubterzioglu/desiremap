@@ -15,11 +15,11 @@ export function DashboardPage() {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.push('/de/login')
+      router.push('/auth/login')
     }
 
     if (!isLoading && user?.workspace === 'admin') {
-      router.push('/dashboard')
+      router.push('/auth/dashboard')
     }
   }, [isLoading, isAuthenticated, router, user?.workspace])
 

@@ -3,15 +3,14 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowRight, Eye, EyeOff, Loader2, ShieldCheck } from 'lucide-react'
-import { authApi } from '@/lib/api'
-import { useAuthStore } from '@/stores/authStore'
+import { useAdminAuth } from '@/components/providers/AdminAuthProvider'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
 export function AdminLoginPage() {
   const router = useRouter()
-  const setSession = useAuthStore((state) => state.setSession)
+  const { login: adminLogin } = useAdminAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -29,15 +28,8 @@ export function AdminLoginPage() {
     setIsLoading(true)
 
     try {
-      const session = await authApi.login({ email, password }, 'admin')
-
-      if (session.user.requirePasswordReset) {
-        setError('Dieses Konto verlangt zuerst einen Passwort-Reset. Der Reset-Flow wird im naechsten Schritt angebunden.')
-        return
-      }
-
-      setSession(session)
-      router.replace('/dashboard')
+      await adminLogin(email, password)
+      router.replace('/auth/dashboard')
     } catch (loginError) {
       const message = loginError instanceof Error ? loginError.message : 'Login fehlgeschlagen'
       setError(message)
@@ -56,9 +48,9 @@ export function AdminLoginPage() {
               <ShieldCheck className="h-3.5 w-3.5" />
               admin.desiremap.de
             </div>
-            <h1 className="mt-6 max-w-[12ch] text-5xl font-semibold tracking-tight text-white">Operator Login fuer ein ruhiges, klares Daily Control Center.</h1>
+            <h1 className="mt-6 max-w-[12ch] text-5xl font-semibold tracking-tight text-white">Super Admin Login fuer die gesamte Plattformsteuerung.</h1>
             <p className="mt-5 max-w-[62ch] text-base leading-8 text-slate-300">
-              Ein separater Einstieg fuer Admins und Operatoren. Keine Vermischung mehr mit Customer-Flows, keine Locale-Pfade, keine alten Review- oder Booking-Sektionen im Hauptscreen.
+              Zentraler Zugang zur Verwaltung aller Betriebe, Operatoren, Venues und Events. Kein Operator-Login — das ist die Super-Admin-Ebene.
             </p>
           </section>
 
@@ -66,7 +58,7 @@ export function AdminLoginPage() {
             <div className="mb-8">
               <div className="text-xs uppercase tracking-[0.24em] text-slate-500">Secure Sign In</div>
               <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white">Willkommen zurueck</h2>
-              <p className="mt-2 text-sm text-slate-400">Melde dich an, um direkt in das Operator Dashboard zu wechseln.</p>
+              <p className="mt-2 text-sm text-slate-400">Melde dich an, um direkt in das Super Admin Dashboard zu wechseln.</p>
             </div>
 
             <div className="space-y-5">
@@ -74,7 +66,7 @@ export function AdminLoginPage() {
                 <Label className="mb-2 block text-sm text-slate-300">E-Mail</Label>
                 <Input
                   type="email"
-                  placeholder="operator@desiremap.de"
+                  placeholder="admin@desiremap.de"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                   className="h-12 border-white/10 bg-white/5 text-white"

@@ -1,5 +1,5 @@
 import { QueryProvider } from '@/components/providers/QueryProvider'
-import { SessionProvider } from '@/components/providers/SessionProvider'
+import { AdminAuthProvider } from '@/components/providers/AdminAuthProvider'
 import { Toaster } from '@/components/ui/toaster'
 
 export default function AdminLayout({
@@ -8,11 +8,11 @@ export default function AdminLayout({
   children: React.ReactNode
 }) {
   return (
-    <SessionProvider>
+    <AdminAuthProvider>
       <QueryProvider>
         {children}
         <Toaster />
       </QueryProvider>
-    </SessionProvider>
+    </AdminAuthProvider>
   )
 }

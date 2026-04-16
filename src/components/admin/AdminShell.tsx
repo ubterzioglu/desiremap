@@ -14,7 +14,7 @@ import {
   ShieldCheck,
   Users2,
 } from 'lucide-react'
-import { useAuth } from '@/components/providers/SessionProvider'
+import { useAdminAuth } from '@/components/providers/AdminAuthProvider'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import type { AdminTab } from '@/types'
@@ -25,11 +25,11 @@ const navigationItems: Array<{
   href: string
   icon: typeof Building2
 }> = [
-  { id: 'dashboard', label: 'Dashboard', href: '/dashboard', icon: Activity },
-  { id: 'venues', label: 'Venues', href: '/venues', icon: Building2 },
-  { id: 'events', label: 'Events', href: '/events', icon: CalendarRange },
-  { id: 'operators', label: 'Operators', href: '/operators', icon: Users2 },
-  { id: 'settings', label: 'Settings', href: '/settings', icon: Settings },
+  { id: 'dashboard', label: 'Dashboard', href: '/auth/dashboard', icon: Activity },
+  { id: 'venues', label: 'Venues', href: '/auth/venues', icon: Building2 },
+  { id: 'events', label: 'Events', href: '/auth/events', icon: CalendarRange },
+  { id: 'operators', label: 'Operators', href: '/auth/operators', icon: Users2 },
+  { id: 'settings', label: 'Settings', href: '/auth/settings', icon: Settings },
 ]
 
 export function AdminShell({
@@ -43,14 +43,14 @@ export function AdminShell({
   title: string
   subtitle: string
 }) {
-  const { user, isAuthenticated, isLoading, logout } = useAuth()
+  const { user, isAuthenticated, isLoading, logout } = useAdminAuth()
   const router = useRouter()
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(true)
 
   useEffect(() => {
-    if (!isLoading && (!isAuthenticated || user?.workspace !== 'admin')) {
-      router.replace('/login')
+    if (!isLoading && !isAuthenticated) {
+      router.replace('/auth/login')
     }
   }, [isAuthenticated, isLoading, router, user?.workspace])
 
@@ -59,12 +59,12 @@ export function AdminShell({
     return parts.slice(0, 2).map((part) => part[0]?.toUpperCase()).join('')
   }, [user?.email, user?.name])
 
-  const handleLogout = async () => {
-    await logout()
-    router.replace('/login')
+  const handleLogout = () => {
+    logout()
+    router.replace('/auth/login')
   }
 
-  if (isLoading || !user || user.workspace !== 'admin') {
+  if (isLoading || !user) {
     return (
       <div className="min-h-[100dvh] bg-[#07111f] flex items-center justify-center text-slate-200">
         Admin workspace wird geladen...
@@ -161,7 +161,7 @@ export function AdminShell({
           <header className="border-b border-white/10 bg-slate-950/55 px-6 py-5 backdrop-blur-xl">
             <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6">
               <div>
-                <div className="text-xs uppercase tracking-[0.26em] text-slate-500">Operator Workspace</div>
+                <div className="text-xs uppercase tracking-[0.26em] text-slate-500">Super Admin</div>
                 <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white">{title}</h1>
                 <p className="mt-1 text-sm text-slate-400">{subtitle}</p>
               </div>

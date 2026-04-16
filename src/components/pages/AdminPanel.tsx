@@ -10,31 +10,31 @@ import { AdminVenuesWorkspace } from '@/components/admin/AdminVenuesWorkspace'
 import type { AdminTab } from '@/types'
 
 const pageConfig: Record<string, { tab: AdminTab; title: string; subtitle: string; content: React.ReactNode }> = {
-  '/dashboard': {
+  '/auth/dashboard': {
     tab: 'dashboard',
     title: 'Corporate Admin Dashboard',
     subtitle: 'Kompakter Ueberblick ueber Business-Kontext, Event-Lifecycle und Teamsteuerung.',
     content: <AdminDashboard />,
   },
-  '/venues': {
+  '/auth/venues': {
     tab: 'venues',
     title: 'Venue Workspace',
     subtitle: 'Neue Locations anlegen, Kontext setzen und die manuelle Fallback-Auswahl kontrollieren.',
     content: <AdminVenuesWorkspace />,
   },
-  '/events': {
+  '/auth/events': {
     tab: 'events',
     title: 'Event Workspace',
     subtitle: 'Events erstellen, publizieren und absagen. Optimiert fuer den taeglichen Operator-Ablauf.',
     content: <AdminEventsWorkspace />,
   },
-  '/operators': {
+  '/auth/operators': {
     tab: 'operators',
     title: 'Operator Workspace',
     subtitle: 'Business-Operatoren pruefen und Lifecycle-Aktionen sicher ausfuehren.',
     content: <AdminOperatorsWorkspace />,
   },
-  '/settings': {
+  '/auth/settings': {
     tab: 'settings',
     title: 'Admin Settings',
     subtitle: 'Technische Rahmenbedingungen und naechste Ausbaustufen fuer das Operator-UI.',
@@ -44,7 +44,7 @@ const pageConfig: Record<string, { tab: AdminTab; title: string; subtitle: strin
 
 export function AdminPanel() {
   const pathname = usePathname()
-  const currentPage = pageConfig[pathname] || pageConfig['/dashboard']
+  const currentPage = pageConfig[pathname] || pageConfig['/auth/dashboard']
 
   return (
     <AdminShell
