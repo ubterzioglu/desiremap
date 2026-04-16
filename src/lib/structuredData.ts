@@ -1033,6 +1033,10 @@ export function getProductMetadata(product: ProductDetailData, locale: string) {
   return {
     title,
     description,
+    other: {
+      'article:published_time': product.datePublished,
+      'article:modified_time': product.dateModified
+    },
     alternates: {
       canonical: productUrl,
       languages: {
@@ -1043,12 +1047,14 @@ export function getProductMetadata(product: ProductDetailData, locale: string) {
       }
     },
     openGraph: {
-      type: 'website',
+      type: 'article',
       url: productUrl,
       title,
       description,
       images: [{ url: product.image, width: 1200, height: 630 }],
-      siteName: 'DesireMap'
+      siteName: 'DesireMap',
+      publishedTime: product.datePublished,
+      modifiedTime: product.dateModified
     },
     twitter: {
       card: 'summary_large_image',

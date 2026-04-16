@@ -96,8 +96,8 @@ function bordellToProductData(bordell: typeof bordells[0]): ProductDetailData {
         answer: `${bordell.name} bietet folgende Services: ${bordell.services.join(', ')}.`
       }
     ],
-    datePublished: '2024-01-01',
-    dateModified: new Date().toISOString().split('T')[0]
+    datePublished: bordell.createdAt,
+    dateModified: bordell.updatedAt
   }
 }
 
