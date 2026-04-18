@@ -1,11 +1,13 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { useTranslations } from 'next-intl'
 import { CategoriesSection } from './CategoriesSection'
 import { FeaturedCities } from './FeaturedCities'
 import { HeroSection } from './HeroSection'
-import { ListingsSection } from '@/components/listings/ListingsSection'
 import { SEOContentSection } from './SEOContentSection'
+
+const ListingsSection = dynamic(() => import('@/components/listings/ListingsSection').then(m => m.ListingsSection), { ssr: false })
 
 type HomePageProps = { locale: string }
 
