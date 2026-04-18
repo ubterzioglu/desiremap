@@ -51,7 +51,7 @@ export function ListingsSection() {
 
   if (typeof window !== 'undefined') {
     // eslint-disable-next-line no-console
-    console.log('LISTINGS_STATE', JSON.stringify({ isLoading, isError, errorMsg: String(error), itemCount: result?.items?.length, total: result?.total }))
+    console.log('LISTINGS_STATE', JSON.stringify({ isLoading, isError, errorMsg: String(error), result: result ? { itemCount: result.items?.length, total: result.total, firstItem: result.items?.[0]?.name } : 'undefined' }))
   }
 
   return (

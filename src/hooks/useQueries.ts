@@ -160,7 +160,10 @@ export function usePublicEstablishments(params?: {
 }) {
   return useQuery({
     queryKey: ['public', 'establishments', params],
-    queryFn: () => publicApi.getEstablishments(params).then((r) => ({ items: r.data ?? [], total: r.total ?? 0 })),
+    queryFn: () => publicApi.getEstablishments(params).then((r) => {
+      if (typeof window !== 'undefined') console.log('QUERY_FN_R', JSON.stringify({ success: (r as any).success, dataType: typeof (r as any).data, dataLen: Array.isArray((r as any).data) ? (r as any).data.length : 'not-array', total: (r as any).total, rKeys: Object.keys(r as any) }))
+      return { items: r.data ?? [], total: r.total ?? 0 }
+    }),
     staleTime: 2 * 60 * 1000,
   })
 }
