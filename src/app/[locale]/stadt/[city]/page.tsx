@@ -5,7 +5,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowLeft, MapPin, Building2, Star, Shield } from 'lucide-react'
 import { getCityBySlug, citySlugs } from '@/data/cities'
-import { bordells } from '@/data/mock-data'
+import { backendApi } from '@/lib/backend-client'
+import type { PublicEstablishment } from '@/types'
 import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
 import { getSearchPath, getCityPath } from '@/lib/navigation'
@@ -73,7 +74,8 @@ export default async function CityPage({
   }
 
   const t = await getTranslations({ locale, namespace: 'nav' })
-  const cityBordells = bordells.filter((b) => b.city === cityData.name)
+  const cityResult = await backendApi.getPublicEstablishments({ city: cityData.name, limit: 12 }).catch(() => ({ items: [] as PublicEstablishment[] }))
+  const cityBordells = cityResult.items
   const description = cityData.descriptions[locale] || cityData.descriptions.de
   const subtitle = cityData.subtitles[locale] || cityData.subtitles.de
 
@@ -158,28 +160,30 @@ export default async function CityPage({
                 Top Adressen in {cityData.name}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {cityBordells.map((bordell) => (
+                {cityBordells.map((est) => (
                   <Link
-                    key={bordell.id}
-                    href={getSearchPath(locale, { q: bordell.name, city: bordell.city })}
+                    key={est.slug}
+                    href={getSearchPath(locale, { q: est.name, city: est.city })}
                     className="group rounded-2xl border border-white/10 bg-white/3 p-5 transition-all hover:-translate-y-1 hover:border-[#b76e79]/40 hover:bg-white/5"
                   >
                     <div className="flex items-center justify-between mb-3">
                       <span className="inline-flex rounded-full bg-[#8b1a4a]/20 px-3 py-1 text-xs font-medium text-[#f0bec6]">
-                        {bordell.type.toUpperCase()}
+                        {est.type.toUpperCase()}
                       </span>
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 text-yellow-400" />
-                        <span className="text-white text-sm font-semibold">{bordell.rating}</span>
-                      </div>
+                      {est.rating != null && (
+                        <div className="flex items-center gap-1">
+                          <Star className="w-4 h-4 text-yellow-400" />
+                          <span className="text-white text-sm font-semibold">{est.rating}</span>
+                        </div>
+                      )}
                     </div>
                     <h3 className="text-white font-semibold text-lg group-hover:text-[#b76e79] transition-colors">
-                      {bordell.name}
+                      {est.name}
                     </h3>
-                    <p className="text-gray-400 text-sm mt-1">{bordell.location}</p>
                     <div className="flex items-center justify-between mt-4">
-                      <span className="text-gray-500 text-sm">{bordell.priceRange}</span>
-                      <span className="text-gray-500 text-sm">{bordell.ladiesCount} Damen</span>
+                      <span className="text-gray-500 text-sm">
+                        {est.priceMin != null ? `ab €${est.priceMin}` : 'Auf Anfrage'}
+                      </span>
                     </div>
                   </Link>
                 ))}

@@ -5,7 +5,8 @@ export interface SearchParams {
   city?: string
 }
 export type DashboardTab = 'dashboard' | 'visits' | 'addresses' | 'badges'
-export type AdminTab = 'dashboard' | 'venues' | 'events' | 'operators' | 'settings'
+export type AdminTab = 'dashboard' | 'venues' | 'events' | 'operators' | 'settings' | 'discovery'
+export type OperatorTab = 'dashboard' | 'venues' | 'events'
 
 export type BordellType = 'laufhaus' | 'bordell' | 'fkk' | 'studio' | 'privat'
 export type BordellStatus = 'active' | 'inactive' | 'pending' | 'suspended'
@@ -63,3 +64,33 @@ export interface Translations {
 }
 
 export * from './admin'
+
+export interface PublicEstablishment {
+  slug: string
+  name: string
+  city: string
+  type: string
+  description: string | null
+  images: string[]
+  rating: number | null
+  reviewCount: number
+  priceMin: number | null
+  priceMax: number | null
+  tags: string[]
+  verified: boolean
+  lat: number | null
+  lng: number | null
+  openingHours: Record<string, string>
+}
+
+export interface PublicCity {
+  id: number
+  slug: string
+  name: string
+}
+
+export interface PublicServiceType {
+  id: number
+  slug: string
+  name: string
+}

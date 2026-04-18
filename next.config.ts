@@ -51,6 +51,8 @@ const nextConfig: NextConfig = {
       '/auth/:path*',
       '/admin',
       '/admin/:path*',
+      '/business',
+      '/business/:path*',
       '/:locale(en|tr|ar)/search',
       '/:locale(en|tr|ar)/login',
       '/:locale(en|tr|ar)/register',

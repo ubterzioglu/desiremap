@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { customerApi, bookingApi, establishmentsApi, adminApi, authApi } from '@/lib/api'
+import { customerApi, bookingApi, establishmentsApi, adminApi, authApi, publicApi, seedApi } from '@/lib/api'
 
 // ============ AUTH HOOKS ============
 export function useRegister() {
@@ -134,6 +134,46 @@ export function useCancelBooking() {
   })
 }
 
+// ============ PUBLIC HOOKS ============
+export function usePublicCities() {
+  return useQuery({
+    queryKey: ['public', 'cities'],
+    queryFn: () => publicApi.getCities().then((r) => r.data ?? []),
+    staleTime: 10 * 60 * 1000,
+  })
+}
+
+export function usePublicServiceTypes() {
+  return useQuery({
+    queryKey: ['public', 'service-types'],
+    queryFn: () => publicApi.getServiceTypes().then((r) => r.data ?? []),
+    staleTime: 10 * 60 * 1000,
+  })
+}
+
+export function usePublicEstablishments(params?: {
+  city?: string
+  type?: string
+  q?: string
+  limit?: number
+  offset?: number
+}) {
+  return useQuery({
+    queryKey: ['public', 'establishments', params],
+    queryFn: () => publicApi.getEstablishments(params).then((r) => ({ items: r.data ?? [], total: r.total ?? 0 })),
+    staleTime: 2 * 60 * 1000,
+  })
+}
+
+export function usePublicEstablishmentDetail(slug: string) {
+  return useQuery({
+    queryKey: ['public', 'establishment', slug],
+    queryFn: () => publicApi.getEstablishmentDetail(slug).then((r) => r.data),
+    enabled: !!slug,
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
 // ============ SEARCH HOOKS ============
 export function useSearchEstablishments(params: {
   q?: string
@@ -251,6 +291,17 @@ export function useReactivateBusinessOperator() {
       queryClient.invalidateQueries({ queryKey: ['admin', 'operators'] })
       queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] })
     }
+  })
+}
+
+export function useAdminSeed() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: seedApi.seed,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['public'] })
+      queryClient.invalidateQueries({ queryKey: ['admin'] })
+    },
   })
 }
 

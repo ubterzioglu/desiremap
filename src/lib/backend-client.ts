@@ -1,3 +1,5 @@
+import type { PublicCity, PublicEstablishment, PublicServiceType } from '@/types'
+
 const BACKEND_URL = (process.env.BACKEND_API_URL || 'https://api.desiremap.de/api').replace(/\/+$/, '')
 
 export async function backendFetch<T>(
@@ -104,6 +106,34 @@ export const backendApi = {
       '/member-auth/verify-otp',
       { method: 'POST', body: { contactType, contactValue, code, purpose } }
     ),
+
+  getPublicCities: () =>
+    backendFetch<{ items: PublicCity[] }>('/public/cities'),
+
+  getPublicServiceTypes: () =>
+    backendFetch<{ items: PublicServiceType[] }>('/public/service-types'),
+
+  getPublicEstablishments: (params?: {
+    city?: string
+    type?: string
+    q?: string
+    limit?: number
+    offset?: number
+  }) => {
+    const qs = new URLSearchParams()
+    if (params) {
+      Object.entries(params).forEach(([k, v]) => {
+        if (v !== undefined) qs.append(k, String(v))
+      })
+    }
+    const suffix = qs.toString()
+    return backendFetch<{ items: PublicEstablishment[]; total: number }>(
+      suffix ? `/public/establishments?${suffix}` : '/public/establishments'
+    )
+  },
+
+  getPublicEstablishmentDetail: (slug: string) =>
+    backendFetch<PublicEstablishment>(`/public/establishments/${slug}`),
 
   getPublicVenueEvents: (venuePublicId: string) =>
     backendFetch<{

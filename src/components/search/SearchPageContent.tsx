@@ -59,7 +59,7 @@ export function SearchPageContent({ locale, initialQuery, initialCity, initialCa
         {/* Search page arama sonuçları kısım */}
         <section className="py-12">
           <div className="max-w-7xl mx-auto px-6">
-            <SearchResults sponsoredResults={searchState.sponsoredResults} regularResults={searchState.regularResults} totalCount={searchState.searchResults.length} translations={resultsTranslations} onBordellClick={searchState.handleBordellClick} onClearFilters={searchState.clearFilters} />
+            <SearchResults sponsoredResults={searchState.sponsoredResults} regularResults={searchState.regularResults} totalCount={searchState.searchResults.length} isLoading={searchState.isLoading} translations={resultsTranslations} onBordellClick={searchState.handleBordellClick} onClearFilters={searchState.clearFilters} />
           </div>
         </section>
       </div>

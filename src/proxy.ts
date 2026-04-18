@@ -55,8 +55,14 @@ export function proxy(request: NextRequest) {
     return NextResponse.next()
   }
 
-  if (pathname.startsWith('/auth/')) {
+  if (pathname.startsWith('/auth/') || pathname.startsWith('/business/')) {
     return NextResponse.next()
+  }
+
+  if (pathname.startsWith('/operator/')) {
+    const url = request.nextUrl.clone()
+    url.pathname = pathname.replace('/operator/', '/business/')
+    return NextResponse.redirect(url, 308)
   }
 
   const segment = pathname.split('/')[1]

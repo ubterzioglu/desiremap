@@ -5,8 +5,8 @@ import { notFound } from 'next/navigation'
 import { Toaster } from '@/components/ui/toaster'
 import { SessionProvider } from '@/components/providers/SessionProvider'
 import { QueryProvider } from '@/components/providers/QueryProvider'
+import { LocaleInit } from '@/components/layout/LocaleInit'
 import { getHomeSeoMetadata } from '@/lib/seo/home'
-import { getStructuredData } from '@/lib/structuredData'
 
 const siteUrl = 'https://desiremap.de'
 const locales = ['de', 'en', 'ar', 'tr']
@@ -81,13 +81,10 @@ export default async function LocaleLayout({
   }
 
   const messages = await getMessages({ locale })
-  const { title, description } = getLocaleData(locale)
-  const structuredData = getStructuredData(locale, title, description, locales)
 
   return (
     <>
-      <script dangerouslySetInnerHTML={{ __html: `document.documentElement.lang='${locale}';document.documentElement.dir='${locale === 'ar' ? 'rtl' : 'ltr'}'` }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <LocaleInit locale={locale} />
       <SessionProvider>
         <QueryProvider>
           <NextIntlClientProvider messages={messages}>

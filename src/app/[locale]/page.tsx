@@ -22,7 +22,7 @@ function useNavTranslations() {
 
 type Handlers = { onCityClick: (city: string) => void; onBordellClick: (bordell: Bordell) => void; onBackHome: () => void; onBackCity: () => void; onLogin: () => void; onLogout: () => void; onRegister: () => void }
 
-function ViewHome(props: { locale: string; onBordellClick: (bordell: Bordell) => void }) {
+function ViewHome(props: { locale: string }) {
   return <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><HomePage {...props} /></motion.div>
 }
 
@@ -64,7 +64,7 @@ export default function Home() {
   }
   const renderView = () => {
     const viewMap: Record<View, React.ReactNode> = {
-      home: <ViewHome locale={locale} onBordellClick={handlers.onBordellClick} />,
+      home: <ViewHome locale={locale} />,
       city: selectedCity ? <ViewCity city={selectedCity} handlers={handlers} /> : null,
       detail: selectedBordell ? <ViewDetail bordell={selectedBordell} hasCity={!!selectedCity} handlers={handlers} /> : null,
       login: <ViewLogin loginMessage={loginMessage} handlers={handlers} />,

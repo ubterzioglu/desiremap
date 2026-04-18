@@ -59,7 +59,7 @@ Dockerfile         — Coolify build hedefi, DİKKATLE değiştir
 bun run dev        — dev server (port 3000)
 bun run build      — production build (standalone, Docker için)
 bun run lint       — eslint
-bun run typecheck  — tsc --noEmit (EKLENECEK)
+bun run typecheck  — tsc --noEmit
 bun test           — bun test runner
 
 ## Her task sonunda KESINLIKLE

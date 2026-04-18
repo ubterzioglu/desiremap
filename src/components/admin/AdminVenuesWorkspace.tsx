@@ -2,11 +2,12 @@
 
 import { useMemo, useState } from 'react'
 import { Check, Plus } from 'lucide-react'
-import { useAdminVenues, useCreateVenue } from '@/hooks/useQueries'
+import { useAdminVenues, useCreateVenue, usePublicCities, usePublicServiceTypes } from '@/hooks/useQueries'
 import { useAdminStore } from '@/stores/adminStore'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 const initialForm = {
   name: '',
@@ -25,15 +26,15 @@ export function AdminVenuesWorkspace() {
   const setSelectedVenuePublicId = useAdminStore((state) => state.setSelectedVenuePublicId)
   const selectedVenuePublicId = useAdminStore((state) => state.selectedVenuePublicId)
   const [form, setForm] = useState(initialForm)
+  const { data: cities = [] } = usePublicCities()
+  const { data: serviceTypes = [] } = usePublicServiceTypes()
+  const [selectedServiceTypeIds, setSelectedServiceTypeIds] = useState<number[]>([])
 
   const normalizedVenues = useMemo(() => Array.isArray(venues) ? venues : [], [venues])
 
   const handleSubmit = async () => {
     const cityId = Number(form.cityId)
-    const serviceTypeIds = form.serviceTypeIds
-      .split(',')
-      .map((value) => Number(value.trim()))
-      .filter((value) => Number.isFinite(value) && value > 0)
+    const serviceTypeIds = selectedServiceTypeIds
 
     const result = await createVenue.mutateAsync({
       name: form.name,
@@ -51,6 +52,7 @@ export function AdminVenuesWorkspace() {
     }
 
     setForm(initialForm)
+    setSelectedServiceTypeIds([])
   }
 
   return (
@@ -95,14 +97,38 @@ export function AdminVenuesWorkspace() {
       <section className="rounded-[32px] border border-white/10 bg-slate-950/70 p-6">
         <div className="text-xs uppercase tracking-[0.24em] text-slate-500">Create Venue</div>
         <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">Neue Location anlegen</h2>
-        <p className="mt-2 text-sm text-slate-400">City- und Service-Typen werden vorerst als manuelle IDs eingegeben, bis die oeffentlichen Referenzendpunkte verfuegbar sind.</p>
-
         <div className="mt-6 space-y-4">
           <Input placeholder="Venue Name" value={form.name} onChange={(event) => setForm((state) => ({ ...state, name: event.target.value }))} className="h-12 border-white/10 bg-white/5 text-white" />
           <Input placeholder="Address Line" value={form.addressLine} onChange={(event) => setForm((state) => ({ ...state, addressLine: event.target.value }))} className="h-12 border-white/10 bg-white/5 text-white" />
           <div className="grid gap-4 md:grid-cols-2">
-            <Input placeholder="City ID" value={form.cityId} onChange={(event) => setForm((state) => ({ ...state, cityId: event.target.value }))} className="h-12 border-white/10 bg-white/5 text-white" />
-            <Input placeholder="Service Type IDs (1,2,3)" value={form.serviceTypeIds} onChange={(event) => setForm((state) => ({ ...state, serviceTypeIds: event.target.value }))} className="h-12 border-white/10 bg-white/5 text-white" />
+            <Select value={form.cityId} onValueChange={(v) => setForm((s) => ({ ...s, cityId: v }))}>
+              <SelectTrigger className="h-12 border-white/10 bg-white/5 text-white">
+                <SelectValue placeholder="Stadt auswählen *" />
+              </SelectTrigger>
+              <SelectContent className="bg-[#1a1a24] border-[#8b1a4a]/20">
+                {cities.map((c) => (
+                  <SelectItem key={c.id} value={String(c.id)} className="text-gray-300">{c.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <div className="space-y-2">
+              <div className="text-xs text-slate-500 uppercase tracking-widest">Service-Typen</div>
+              <div className="flex flex-wrap gap-2">
+                {serviceTypes.map((st) => {
+                  const selected = selectedServiceTypeIds.includes(st.id)
+                  return (
+                    <button
+                      key={st.id}
+                      type="button"
+                      onClick={() => setSelectedServiceTypeIds((prev) => selected ? prev.filter((id) => id !== st.id) : [...prev, st.id])}
+                      className={`rounded-full px-3 py-1 text-xs border transition ${selected ? 'bg-teal-400/20 border-teal-400/40 text-teal-200' : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20'}`}
+                    >
+                      {st.name}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             <Input placeholder="Public Email" value={form.publicEmail} onChange={(event) => setForm((state) => ({ ...state, publicEmail: event.target.value }))} className="h-12 border-white/10 bg-white/5 text-white" />

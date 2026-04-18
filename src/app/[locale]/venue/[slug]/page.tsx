@@ -1,1 +1,1 @@
-export { default, generateMetadata, generateStaticParams } from '../../bordell/[slug]/page'
+export { default, generateMetadata } from '../../bordell/[slug]/page'

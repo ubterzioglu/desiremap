@@ -1,8 +1,24 @@
-import { useMemo, useState, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { bordells } from '@/data/mock-data'
 import { getSearchPath, getVenuePath } from '@/lib/navigation'
-import { searchBordells } from '@/lib/search'
+import { usePublicEstablishments } from '@/hooks/useQueries'
+import type { Bordell, BordellType, PublicEstablishment } from '@/types'
+
+function toListingCardBordell(e: PublicEstablishment): Bordell {
+  return {
+    id: e.slug, name: e.name, type: e.type as BordellType,
+    location: e.city, city: e.city, distance: '',
+    rating: e.rating ?? 0, reviewCount: e.reviewCount,
+    priceRange: e.priceMin != null ? `€${e.priceMin}${e.priceMax ? ` - €${e.priceMax}` : ''}` : 'Auf Anfrage',
+    minPrice: e.priceMin ?? 0, maxPrice: e.priceMax ?? undefined,
+    ladiesCount: 0, services: e.tags,
+    isOpen: false, openHours: '',
+    verified: e.verified, premium: false, sponsored: false,
+    phone: '', description: e.description ?? '',
+    coverImage: e.images?.[0], images: e.images,
+    createdAt: '', updatedAt: '', views: 0, bookings: 0, revenue: 0, status: 'active',
+  }
+}
 
 export function useSearchPage(locale: string, initialQuery: string, initialCity: string, initialCategory: string) {
   const router = useRouter()
@@ -11,11 +27,22 @@ export function useSearchPage(locale: string, initialQuery: string, initialCity:
   const [selectedCity, setSelectedCity] = useState(initialCity)
   const [selectedCategory, setSelectedCategory] = useState(initialCategory)
 
+  const { data: result, isLoading } = usePublicEstablishments({
+    q: initialQuery || undefined,
+    city: initialCity || undefined,
+    type: initialCategory || undefined,
+    limit: 50,
+  })
+
+  const allResults = (result?.items ?? []).map(toListingCardBordell)
+  const sponsoredResults = allResults.filter((b) => b.sponsored)
+  const regularResults = allResults.filter((b) => !b.sponsored)
+
   const updateUrl = useCallback((newQuery: string, newCity: string, newCategory: string) => {
     router.push(getSearchPath(locale, {
       q: newQuery || undefined,
       city: newCity || undefined,
-      category: newCategory || undefined
+      category: newCategory || undefined,
     }), { scroll: false })
   }, [locale, router])
 
@@ -45,29 +72,12 @@ export function useSearchPage(locale: string, initialQuery: string, initialCity:
     router.push(getVenuePath(locale, bordell.id))
   }, [locale, router])
 
-  const searchResults = useMemo(() => {
-    let results = searchBordells(bordells, initialQuery, initialCity || undefined)
-    if (initialCategory) {
-      results = results.filter(item => item.type === initialCategory)
-    }
-    return results
-  }, [initialQuery, initialCity, initialCategory])
-
-  const sponsoredResults = useMemo(() => searchResults.filter(b => b.sponsored), [searchResults])
-  const regularResults = useMemo(() => searchResults.filter(b => !b.sponsored), [searchResults])
-
   return {
-    query,
-    selectedCity,
-    selectedCategory,
-    setQuery,
-    handleSearch,
-    handleCityChange,
-    handleCategoryChange,
-    clearFilters,
-    handleBordellClick,
-    searchResults,
+    query, selectedCity, selectedCategory,
+    setQuery, handleSearch, handleCityChange, handleCategoryChange, clearFilters, handleBordellClick,
+    searchResults: allResults,
     sponsoredResults,
-    regularResults
+    regularResults,
+    isLoading,
   }
 }

@@ -2,14 +2,22 @@
 
 import { useRouter } from 'next/navigation'
 import { LoginPage } from '@/components/pages/LoginPage'
+import { getLocalizedPath } from '@/lib/navigation'
+import { use } from 'react'
 
-export default function Login() {
+export default function CustomerLoginPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = use(params)
   const router = useRouter()
 
   return (
     <LoginPage
-      onBack={() => router.push('/de')}
-      onRegister={() => router.push('/de/register')}
+      locale={locale}
+      onBack={() => router.push(getLocalizedPath(locale, '/'))}
+      onRegister={() => router.push(getLocalizedPath(locale, '/register'))}
     />
   )
 }

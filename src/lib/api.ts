@@ -1,3 +1,4 @@
+import type { PublicCity, PublicEstablishment, PublicServiceType } from '@/types'
 import type { AuthSession, AuthUser } from '@/stores/authStore'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -329,6 +330,36 @@ export const bookingApi = {
       method: 'DELETE'
     })
   }
+}
+
+export const publicApi = {
+  getCities: () =>
+    apiCall<{ success: boolean; data: PublicCity[] }>('/api/public/cities'),
+
+  getServiceTypes: () =>
+    apiCall<{ success: boolean; data: PublicServiceType[] }>('/api/public/service-types'),
+
+  getEstablishments: (params?: {
+    city?: string
+    type?: string
+    q?: string
+    limit?: number
+    offset?: number
+  }) => {
+    const qs = new URLSearchParams()
+    if (params) {
+      Object.entries(params).forEach(([k, v]) => {
+        if (v !== undefined && v !== '') qs.append(k, String(v))
+      })
+    }
+    const suffix = qs.toString()
+    return apiCall<{ success: boolean; data: PublicEstablishment[]; total: number }>(
+      suffix ? `/api/public/establishments?${suffix}` : '/api/public/establishments'
+    )
+  },
+
+  getEstablishmentDetail: (slug: string) =>
+    apiCall<{ success: boolean; data: PublicEstablishment }>(`/api/public/establishments/${slug}`),
 }
 
 export const establishmentsApi = {

@@ -6,16 +6,10 @@ import { FeaturedCities } from './FeaturedCities'
 import { HeroSection } from './HeroSection'
 import { ListingsSection } from '@/components/listings/ListingsSection'
 import { SEOContentSection } from './SEOContentSection'
-import { bordells } from '@/data/mock-data'
-import type { Bordell } from '@/types'
 
-type HomePageProps = {
-  locale: string
-  onCityClick?: (city: string) => void
-  onBordellClick: (bordell: Bordell) => void
-}
+type HomePageProps = { locale: string }
 
-export function HomePage({ locale, onBordellClick }: HomePageProps) {
+export function HomePage({ locale }: HomePageProps) {
   const hero = useTranslations('hero')
   const stats = useTranslations('stats')
   const categories = useTranslations('categories')
@@ -29,7 +23,7 @@ export function HomePage({ locale, onBordellClick }: HomePageProps) {
       />
       <CategoriesSection locale={locale} translations={{ title: categories('title'), subtitle: categories('subtitle') }} />
       <FeaturedCities translations={{ title: cities('title'), subtitle: cities('subtitle') }} />
-      <ListingsSection bordells={bordells} onBordellClick={onBordellClick} />
+      <ListingsSection />
       <SEOContentSection locale={locale} />
     </>
   )

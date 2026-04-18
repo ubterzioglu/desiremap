@@ -5,18 +5,49 @@ import Image from 'next/image'
 import { ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { categories } from '@/data/mock-data'
 import { ListingCard } from '@/components/listings/ListingCard'
-import type { Bordell } from '@/types'
+import { usePublicEstablishments, usePublicServiceTypes } from '@/hooks/useQueries'
+import type { Bordell, BordellType, PublicEstablishment } from '@/types'
 
-type ListingsSectionProps = { bordells: Bordell[]; onBordellClick: (bordell: Bordell) => void }
+function toListingCardBordell(e: PublicEstablishment): Bordell {
+  return {
+    id: e.slug,
+    name: e.name,
+    type: e.type as BordellType,
+    location: e.city,
+    city: e.city,
+    distance: '',
+    rating: e.rating ?? 0,
+    reviewCount: e.reviewCount,
+    priceRange: e.priceMin != null ? `€${e.priceMin}${e.priceMax ? ` - €${e.priceMax}` : ''}` : 'Auf Anfrage',
+    minPrice: e.priceMin ?? 0,
+    maxPrice: e.priceMax ?? undefined,
+    ladiesCount: 0,
+    services: e.tags,
+    isOpen: false,
+    openHours: '',
+    verified: e.verified,
+    premium: false,
+    sponsored: false,
+    phone: '',
+    description: e.description ?? '',
+    coverImage: e.images?.[0],
+    images: e.images,
+    createdAt: '',
+    updatedAt: '',
+    views: 0,
+    bookings: 0,
+    revenue: 0,
+    status: 'active',
+  }
+}
 
-export function ListingsSection({ bordells, onBordellClick }: ListingsSectionProps) {
+export function ListingsSection() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const sortedBordells = useMemo(() => {
-    const filtered = selectedCategory ? bordells.filter((item) => item.type === selectedCategory) : bordells
-    return [...filtered].sort((a, b) => Number(b.sponsored) - Number(a.sponsored) || Number(b.premium) - Number(a.premium))
-  }, [bordells, selectedCategory])
+  const { data: result, isLoading } = usePublicEstablishments({ limit: 12, type: selectedCategory ?? undefined })
+  const { data: serviceTypes = [] } = usePublicServiceTypes()
+
+  const bordells = useMemo(() => (result?.items ?? []).map(toListingCardBordell), [result])
 
   return (
     <section className="relative py-24 overflow-hidden">
@@ -31,13 +62,27 @@ export function ListingsSection({ bordells, onBordellClick }: ListingsSectionPro
         <div className="text-center mb-12">
           <span className="inline-block text-[#b76e79] text-sm font-medium tracking-widest uppercase mb-3">Empfehlungen</span>
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">Ausgewaehlte Betriebe</h2>
-          <p className="text-gray-400 text-lg">{sortedBordells.length} verifizierte Betriebe</p>
+          <p className="text-gray-400 text-lg">{isLoading ? '...' : `${result?.total ?? bordells.length} verifizierte Betriebe`}</p>
         </div>
         <div className="flex flex-wrap justify-center gap-3 mb-12">
           <Button onClick={() => setSelectedCategory(null)} size="sm" variant={selectedCategory === null ? 'default' : 'outline'} className={cn('rounded-full px-5', selectedCategory === null ? 'bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] text-white border-0' : 'border-white/20 text-gray-300 hover:bg-white/10 hover:text-white backdrop-blur-sm')}>Alle</Button>
-          {categories.map((cat) => <Button key={cat.id} onClick={() => setSelectedCategory(cat.id)} size="sm" variant={selectedCategory === cat.id ? 'default' : 'outline'} className={cn('rounded-full px-5', selectedCategory === cat.id ? 'bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] text-white border-0' : 'border-white/20 text-gray-300 hover:bg-white/10 hover:text-white backdrop-blur-sm')}>{cat.name}</Button>)}
+          {serviceTypes.map((cat) => <Button key={cat.id} onClick={() => setSelectedCategory(cat.slug)} size="sm" variant={selectedCategory === cat.slug ? 'default' : 'outline'} className={cn('rounded-full px-5', selectedCategory === cat.slug ? 'bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] text-white border-0' : 'border-white/20 text-gray-300 hover:bg-white/10 hover:text-white backdrop-blur-sm')}>{cat.name}</Button>)}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">{sortedBordells.map((bordell, index) => <ListingCard key={bordell.id} bordell={bordell} index={index} onDetailClick={onBordellClick} />)}</div>
+        {isLoading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="rounded-2xl bg-white/5 border border-white/10 h-72 animate-pulse" />
+            ))}
+          </div>
+        )}
+        {!isLoading && bordells.length === 0 && (
+          <div className="text-center text-gray-500 py-16">Noch keine Betriebe vorhanden.</div>
+        )}
+        {!isLoading && bordells.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {bordells.map((bordell, index) => <ListingCard key={bordell.id} bordell={bordell} index={index} onDetailClick={() => {}} />)}
+          </div>
+        )}
         <div className="flex justify-center mt-16"><Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 px-10 rounded-full group backdrop-blur-sm">Mehr anzeigen<ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" /></Button></div>
       </div>
     </section>

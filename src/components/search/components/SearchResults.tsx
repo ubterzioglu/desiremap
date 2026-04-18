@@ -10,6 +10,7 @@ type SearchResultsProps = {
   sponsoredResults: Bordell[]
   regularResults: Bordell[]
   totalCount: number
+  isLoading?: boolean
   translations: {
     found: string
     sponsored: string
@@ -26,10 +27,20 @@ export function SearchResults({
   sponsoredResults,
   regularResults,
   totalCount,
+  isLoading,
   translations,
   onBordellClick,
   onClearFilters
 }: SearchResultsProps) {
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="rounded-2xl bg-white/5 border border-white/10 h-72 animate-pulse" />
+        ))}
+      </div>
+    )
+  }
   if (totalCount === 0) {
     return (
       <div className="text-center py-20">

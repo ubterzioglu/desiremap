@@ -8,6 +8,7 @@ import {
   CalendarRange,
   ChevronRight,
   DoorOpen,
+  Globe,
   LogOut,
   Menu,
   Settings,
@@ -29,6 +30,7 @@ const navigationItems: Array<{
   { id: 'venues', label: 'Venues', href: '/venues', icon: Building2 },
   { id: 'events', label: 'Events', href: '/events', icon: CalendarRange },
   { id: 'operators', label: 'Operators', href: '/operators', icon: Users2 },
+  { id: 'discovery', label: 'Discovery', href: '/discovery', icon: Globe },
   { id: 'settings', label: 'Settings', href: '/settings', icon: Settings },
 ]
 

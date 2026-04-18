@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, ArrowRight, Crown, Eye, EyeOff, Loader2, Shield } from 'lucide-react'
 import { authApi } from '@/lib/api'
+import { getLocalizedPath } from '@/lib/navigation'
 import { GoogleOAuthButton } from '@/components/auth/GoogleOAuthButton'
 import { useGoogleOAuth } from '@/hooks/useGoogleOAuth'
 import { useAuthStore } from '@/stores/authStore'
@@ -12,12 +13,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
 type LoginPageProps = {
+  locale?: string
   onBack: () => void
   loginMessage?: string
   onRegister: () => void
 }
 
-export function LoginPage({ onBack, loginMessage, onRegister }: LoginPageProps) {
+export function LoginPage({ locale = 'de', onBack, loginMessage, onRegister }: LoginPageProps) {
   const router = useRouter()
   const setSession = useAuthStore((state) => state.setSession)
   const [showPassword, setShowPassword] = useState(false)
@@ -37,7 +39,7 @@ export function LoginPage({ onBack, loginMessage, onRegister }: LoginPageProps) 
     try {
       const session = await authApi.login({ email, password }, 'public')
       setSession(session)
-      router.push('/de/dashboard')
+      router.push(getLocalizedPath(locale, '/dashboard'))
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Ein Fehler ist aufgetreten'
       setError(message || 'Ungueltige Anmeldedaten')

@@ -3,7 +3,7 @@
 import { MapPin, Search, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { germanCities } from '@/data/mock-data'
+import { usePublicCities } from '@/hooks/useQueries'
 import { CategoryButtons } from './CategoryButtons'
 
 type SearchFiltersProps = {
@@ -35,6 +35,8 @@ export function SearchFilters({
   onCategoryChange,
   onClearFilters
 }: SearchFiltersProps) {
+  const { data: cities = [] } = usePublicCities()
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') onSearch()
   }
@@ -72,9 +74,9 @@ export function SearchFilters({
             </SelectTrigger>
             <SelectContent className="bg-[#1a1a24] border-[#8b1a4a]/20">
               <SelectItem value="_all" className="text-gray-300">{translations.allCities}</SelectItem>
-              {germanCities.map((city) => (
-                <SelectItem key={city.name} value={city.name} className="text-gray-300 focus:bg-[#8b1a4a]/20 focus:text-white">
-                  {city.name} ({city.count})
+              {cities.map((city) => (
+                <SelectItem key={city.slug} value={city.name} className="text-gray-300 focus:bg-[#8b1a4a]/20 focus:text-white">
+                  {city.name}
                 </SelectItem>
               ))}
             </SelectContent>

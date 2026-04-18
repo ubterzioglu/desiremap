@@ -3,17 +3,8 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useAdminAuthStore, type AdminAuthUser } from '@/stores/adminAuthStore'
-
-const ADMIN_EMAIL = 'admin@desiremap.de'
-const ADMIN_PASSWORD = 'Admin123!'
-
-const STATIC_ADMIN_USER: AdminAuthUser = {
-  id: 'super-admin-001',
-  email: ADMIN_EMAIL,
-  name: 'Super Admin',
-  role: 'super_admin',
-  workspace: 'admin',
-}
+import { useAuthStore } from '@/stores/authStore'
+import { authApi } from '@/lib/api'
 
 interface AdminAuthContextType {
   user: AdminAuthUser | null
@@ -48,16 +39,22 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   }, [initialized])
 
   const login = useCallback(async (email: string, password: string) => {
-    await new Promise((resolve) => setTimeout(resolve, 200))
+    const session = await authApi.login({ email, password }, 'admin')
 
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-      setAdminSession(STATIC_ADMIN_USER)
-    } else {
-      throw new Error('Ungueltige Anmeldedaten.')
-    }
+    useAuthStore.getState().setSession(session)
+
+    setAdminSession({
+      id: session.user.id,
+      email: session.user.email,
+      name: session.user.name ?? email.split('@')[0],
+      role: 'super_admin',
+      workspace: 'admin',
+    })
   }, [setAdminSession])
 
   const logout = useCallback(() => {
+    authApi.logout().catch(() => undefined)
+    useAuthStore.getState().logout()
     clearAdminSession()
   }, [clearAdminSession])
 

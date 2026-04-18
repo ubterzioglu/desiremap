@@ -85,6 +85,7 @@ export function AdminLoginPage() {
                   />
                   <button
                     type="button"
+                    data-testid="password-toggle"
                     onClick={() => setShowPassword((value) => !value)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 transition hover:text-slate-200"
                   >
