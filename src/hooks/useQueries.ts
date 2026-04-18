@@ -146,7 +146,7 @@ export function usePublicCities() {
   const mounted = useIsMounted()
   return useQuery({
     queryKey: ['public', 'cities'],
-    queryFn: () => publicApi.getCities().then((r) => r.data ?? []),
+    queryFn: () => publicApi.getCities().then((r) => r.items ?? []),
     staleTime: 10 * 60 * 1000,
     enabled: mounted,
   })
@@ -156,7 +156,7 @@ export function usePublicServiceTypes() {
   const mounted = useIsMounted()
   return useQuery({
     queryKey: ['public', 'service-types'],
-    queryFn: () => publicApi.getServiceTypes().then((r) => r.data ?? []),
+    queryFn: () => publicApi.getServiceTypes().then((r) => r.items ?? []),
     staleTime: 10 * 60 * 1000,
     enabled: mounted,
   })
@@ -172,7 +172,7 @@ export function usePublicEstablishments(params?: {
   const mounted = useIsMounted()
   return useQuery({
     queryKey: ['public', 'establishments', params],
-    queryFn: () => publicApi.getEstablishments(params).then((r) => ({ items: r.data ?? [], total: r.total ?? 0 })),
+    queryFn: () => publicApi.getEstablishments(params).then((r) => ({ items: r.items ?? [], total: r.total ?? 0 })),
     staleTime: 2 * 60 * 1000,
     enabled: mounted,
   })
@@ -181,7 +181,7 @@ export function usePublicEstablishments(params?: {
 export function usePublicEstablishmentDetail(slug: string) {
   return useQuery({
     queryKey: ['public', 'establishment', slug],
-    queryFn: () => publicApi.getEstablishmentDetail(slug).then((r) => r.data),
+    queryFn: () => publicApi.getEstablishmentDetail(slug),
     enabled: !!slug,
     staleTime: 5 * 60 * 1000,
   })

@@ -8,7 +8,7 @@ export async function GET(
   try {
     const { slug } = await params
     const data = await backendApi.getPublicEstablishmentDetail(slug)
-    return NextResponse.json({ success: true, data })
+    return NextResponse.json(data)
   } catch (err) {
     const message = String(err)
     const status = message.includes('404') || message.includes('not found') ? 404 : 502

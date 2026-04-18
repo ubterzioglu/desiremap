@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     }
     const data = await backendApi.getPublicEstablishments(params)
     const items = (data as any).results ?? data.items ?? []
-    return NextResponse.json({ success: true, data: items, total: (data as any).total ?? items.length })
+    return NextResponse.json({ items, total: (data as any).total ?? items.length })
   } catch (err) {
     return NextResponse.json({ success: false, error: String(err) }, { status: 502 })
   }

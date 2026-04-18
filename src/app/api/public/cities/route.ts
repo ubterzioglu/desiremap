@@ -5,7 +5,7 @@ export async function GET() {
   try {
     const data = await backendApi.getPublicCities()
     const items = (data.items ?? []).map((c: any) => ({ id: c.cityId ?? c.id, slug: c.slug, name: c.name }))
-    return NextResponse.json({ success: true, data: items })
+    return NextResponse.json({ items })
   } catch (err) {
     return NextResponse.json({ success: false, error: String(err) }, { status: 502 })
   }
