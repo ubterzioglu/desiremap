@@ -1,4 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
+
+function useIsMounted() {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  return mounted
+}
 import { customerApi, bookingApi, establishmentsApi, adminApi, authApi, publicApi, seedApi } from '@/lib/api'
 
 // ============ AUTH HOOKS ============
@@ -136,20 +143,22 @@ export function useCancelBooking() {
 
 // ============ PUBLIC HOOKS ============
 export function usePublicCities() {
+  const mounted = useIsMounted()
   return useQuery({
     queryKey: ['public', 'cities'],
     queryFn: () => publicApi.getCities().then((r) => r.data ?? []),
     staleTime: 10 * 60 * 1000,
-    enabled: typeof window !== 'undefined',
+    enabled: mounted,
   })
 }
 
 export function usePublicServiceTypes() {
+  const mounted = useIsMounted()
   return useQuery({
     queryKey: ['public', 'service-types'],
     queryFn: () => publicApi.getServiceTypes().then((r) => r.data ?? []),
     staleTime: 10 * 60 * 1000,
-    enabled: typeof window !== 'undefined',
+    enabled: mounted,
   })
 }
 
@@ -160,11 +169,12 @@ export function usePublicEstablishments(params?: {
   limit?: number
   offset?: number
 }) {
+  const mounted = useIsMounted()
   return useQuery({
     queryKey: ['public', 'establishments', params],
     queryFn: () => publicApi.getEstablishments(params).then((r) => ({ items: r.data ?? [], total: r.total ?? 0 })),
     staleTime: 2 * 60 * 1000,
-    enabled: typeof window !== 'undefined',
+    enabled: mounted,
   })
 }
 
