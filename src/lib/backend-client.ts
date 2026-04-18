@@ -26,6 +26,7 @@ export async function backendFetch<T>(
     method,
     headers,
     body: body ? JSON.stringify(body) : undefined,
+    cache: 'no-store',
   })
 
   const payload = await response.json().catch(() => null)
