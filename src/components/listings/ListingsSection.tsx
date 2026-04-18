@@ -44,10 +44,15 @@ function toListingCardBordell(e: PublicEstablishment): Bordell {
 
 export function ListingsSection() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const { data: result, isLoading } = usePublicEstablishments({ limit: 12, type: selectedCategory ?? undefined })
+  const { data: result, isLoading, isError, error } = usePublicEstablishments({ limit: 12, type: selectedCategory ?? undefined })
   const { data: serviceTypes = [] } = usePublicServiceTypes()
 
   const bordells = useMemo(() => (result?.items ?? []).map(toListingCardBordell), [result])
+
+  if (typeof window !== 'undefined') {
+    // eslint-disable-next-line no-console
+    console.log('LISTINGS_STATE', JSON.stringify({ isLoading, isError, errorMsg: String(error), itemCount: result?.items?.length, total: result?.total }))
+  }
 
   return (
     <section className="relative py-24 overflow-hidden">
