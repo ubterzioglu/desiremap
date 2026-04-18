@@ -334,10 +334,10 @@ export const bookingApi = {
 
 export const publicApi = {
   getCities: () =>
-    apiCall<{ success: boolean; data: PublicCity[] }>('/api/public/cities'),
+    apiCall<{ success: boolean; data: PublicCity[] }>('/public/cities'),
 
   getServiceTypes: () =>
-    apiCall<{ success: boolean; data: PublicServiceType[] }>('/api/public/service-types'),
+    apiCall<{ success: boolean; data: PublicServiceType[] }>('/public/service-types'),
 
   getEstablishments: (params?: {
     city?: string
@@ -354,12 +354,12 @@ export const publicApi = {
     }
     const suffix = qs.toString()
     return apiCall<{ success: boolean; data: PublicEstablishment[]; total: number }>(
-      suffix ? `/api/public/establishments?${suffix}` : '/api/public/establishments'
+      suffix ? `/public/establishments?${suffix}` : '/public/establishments'
     )
   },
 
   getEstablishmentDetail: (slug: string) =>
-    apiCall<{ success: boolean; data: PublicEstablishment }>(`/api/public/establishments/${slug}`),
+    apiCall<{ success: boolean; data: PublicEstablishment }>(`/public/establishments/${slug}`),
 }
 
 export const establishmentsApi = {
