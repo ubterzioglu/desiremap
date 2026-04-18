@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { ListingCard } from '@/components/listings/ListingCard'
 import { usePublicEstablishments, usePublicServiceTypes } from '@/hooks/useQueries'
+import { useParams, useRouter } from 'next/navigation'
 import type { Bordell, BordellType, PublicEstablishment } from '@/types'
 
 function toListingCardBordell(e: PublicEstablishment): Bordell {
@@ -44,6 +45,9 @@ function toListingCardBordell(e: PublicEstablishment): Bordell {
 
 export function ListingsSection() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const params = useParams()
+  const router = useRouter()
+  const locale = (params?.locale as string) || 'de'
   const { data: result, isLoading } = usePublicEstablishments({ limit: 12, type: selectedCategory ?? undefined })
   const { data: serviceTypes = [] } = usePublicServiceTypes()
 
@@ -84,7 +88,7 @@ export function ListingsSection() {
             {bordells.map((bordell, index) => <ListingCard key={bordell.id} bordell={bordell} index={index} onDetailClick={() => {}} />)}
           </div>
         )}
-        <div className="flex justify-center mt-16"><Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 px-10 rounded-full group backdrop-blur-sm">Mehr anzeigen<ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" /></Button></div>
+        <div className="flex justify-center mt-16"><Button onClick={() => router.push(`/${locale}/search`)} size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 px-10 rounded-full group backdrop-blur-sm">Mehr anzeigen<ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" /></Button></div>
       </div>
     </section>
   )
