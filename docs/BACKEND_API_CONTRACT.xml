@@ -1,0 +1,983 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  DesireMap — Backend API Contract
+  Prepared for: Backend Developer
+  Prepared by:  Frontend Team
+  Date:         2026-04-17
+  Version:      1.0
+
+  PURPOSE:
+    This document describes every API endpoint the frontend currently calls or expects.
+    The frontend is a Next.js 16 App Router application. It communicates with the backend
+    through a BFF (Backend For Frontend) layer built into the Next.js server.
+
+  HOW TO READ THIS DOCUMENT:
+    - <backend_api>   → Endpoints the BFF calls directly on your server
+    - <bff_routes>    → Next.js internal routes the browser/frontend calls (already implemented)
+    - <status> tags   → IMPLEMENTED | STUB | MISSING | RETIRED
+    - Priority:       HIGH | MEDIUM | LOW
+-->
+
+<desiremap_api_contract>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       ARCHITECTURE OVERVIEW
+       ═══════════════════════════════════════════════════════════════ -->
+  <architecture>
+    <description>
+      Three-layer stack:
+        [Browser / Next.js Frontend]
+          → calls → [Next.js BFF at /api/*]
+            → calls → [Your Backend at BACKEND_API_URL]
+
+      The BFF is already built. It handles:
+        - Cookie-based session management (httpOnly auth_user cookie)
+        - Token forwarding (Bearer token passed through Authorization header)
+        - Error normalisation and response envelope unwrapping
+
+      The frontend never calls your backend directly.
+      All backend calls are server-to-server via the BFF.
+    </description>
+
+    <base_urls>
+      <backend_api>https://api.desiremap.de/api</backend_api>
+      <bff>https://desiremap.de/api  (or http://localhost:3000/api in dev)</bff>
+    </base_urls>
+
+    <environment_variables>
+      <!-- Variables the BFF server needs set -->
+      <var name="BACKEND_API_URL"
+           example="https://api.desiremap.de/api"
+           required="true"
+           description="Your backend base URL. The BFF appends endpoint paths to this." />
+
+      <var name="BUSINESS_ACCOUNT_PUBLIC_ID"
+           example="biz_abc123"
+           required="true"
+           description="The publicId of the operator's business account. Used as path param in all /operator/businesses/{id}/* calls. Set server-side only." />
+
+      <var name="DEFAULT_OPERATOR_VENUE_PUBLIC_ID"
+           example="venue_xyz456"
+           required="false"
+           description="If set, the admin dashboard uses this venue for stats and event listing before a venue is explicitly selected." />
+
+      <var name="NEXT_PUBLIC_BUSINESS_ACCOUNT_PUBLIC_ID"
+           example="biz_abc123"
+           required="false"
+           description="Same as BUSINESS_ACCOUNT_PUBLIC_ID but exposed to the browser. Needed only if client-side code must reference it." />
+    </environment_variables>
+
+    <response_envelope>
+      <description>
+        ALL backend responses must follow this envelope. The BFF unwraps them before
+        forwarding to the browser. If success=false, the BFF surfaces the error message.
+      </description>
+      <success_shape>
+        <![CDATA[
+        {
+          "success": true,
+          "data": <payload>      // required; can be object, array, or null
+        }
+        ]]>
+      </success_shape>
+      <error_shape>
+        <![CDATA[
+        {
+          "success": false,
+          "error": "Human-readable error message"
+        }
+        ]]>
+      </error_shape>
+      <note>
+        The BFF also accepts a flat payload (no envelope) for backward compatibility,
+        but the enveloped format is preferred and required for new endpoints.
+      </note>
+    </response_envelope>
+
+    <authentication>
+      <operator_auth>
+        <description>
+          Operators log in via POST /operator-auth/login.
+          The BFF receives the sessionToken and:
+            1. Sets it as an httpOnly cookie (auth_user) containing the user object
+            2. Returns the token as accessToken in the response body
+            3. The frontend stores it in localStorage (authStore) for attaching to
+               subsequent BFF calls as Authorization: Bearer {token}
+        </description>
+        <flow>
+          Browser → POST /api/auth/login (BFF)
+                  → POST /operator-auth/login (Your Backend)
+                  ← { operatorPublicId, sessionToken, expiresAt, requirePasswordReset }
+          BFF sets cookie: auth_user = JSON({ id, email, role, workspace, businessAccountPublicId })
+          BFF returns: { success: true, data: { accessToken: sessionToken, user: {...} } }
+          Browser stores token → attaches as: Authorization: Bearer {token} on all BFF calls
+        </flow>
+      </operator_auth>
+
+      <session_check>
+        The BFF checks two things on protected admin routes:
+          1. auth_user httpOnly cookie must exist and workspace === 'admin'
+          2. Authorization: Bearer {token} header must be present (for calls that proxy to your backend)
+        Return 401 if the cookie is missing. The BFF handles this — your backend only needs the Bearer token.
+      </session_check>
+    </authentication>
+  </architecture>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 1 — OPERATOR AUTH ENDPOINTS
+       Base: BACKEND_API_URL
+       ═══════════════════════════════════════════════════════════════ -->
+  <backend_api group="operator_auth">
+
+    <endpoint id="OP-AUTH-1">
+      <method>POST</method>
+      <path>/operator-auth/login</path>
+      <status>IMPLEMENTED</status>
+      <priority>HIGH</priority>
+      <auth>None (public)</auth>
+      <description>
+        Main admin login. Called by the BFF when an operator submits credentials
+        at /auth/login. Returns a session token valid for subsequent operator calls.
+      </description>
+      <request>
+        <![CDATA[
+        {
+          "email":    "operator@example.com",   // string, required
+          "password": "secret"                   // string, required
+        }
+        ]]>
+      </request>
+      <response>
+        <![CDATA[
+        {
+          "operatorPublicId":      "op_abc123",      // string
+          "sessionToken":          "eyJ...",          // JWT string
+          "expiresAt":             "2026-04-24T12:00:00Z",
+          "requirePasswordReset":  false              // boolean
+        }
+        ]]>
+      </response>
+      <error_cases>
+        <case status="401">Invalid credentials</case>
+        <case status="403">Account disabled / deprovisioned</case>
+      </error_cases>
+    </endpoint>
+
+  </backend_api>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 2 — MEMBER AUTH ENDPOINTS
+       Base: BACKEND_API_URL
+       ═══════════════════════════════════════════════════════════════ -->
+  <backend_api group="member_auth">
+
+    <endpoint id="MEM-AUTH-1">
+      <method>POST</method>
+      <path>/member-auth/request-otp</path>
+      <status>IMPLEMENTED</status>
+      <priority>MEDIUM</priority>
+      <auth>None (public)</auth>
+      <description>
+        Sends a one-time password to the member's contact (phone or email).
+        Used in the public-facing member login flow (not admin).
+      </description>
+      <request>
+        <![CDATA[
+        {
+          "contactType":  "phone" | "email",     // required
+          "contactValue": "+49123456789",         // required
+          "purpose":      "login" | "register"   // optional
+        }
+        ]]>
+      </request>
+      <response>
+        <![CDATA[
+        {
+          "maskedContactValue": "+49***789",
+          "purpose":            "login",
+          "expiresAt":          "2026-04-17T12:05:00Z"
+        }
+        ]]>
+      </response>
+    </endpoint>
+
+    <endpoint id="MEM-AUTH-2">
+      <method>POST</method>
+      <path>/member-auth/verify-otp</path>
+      <status>IMPLEMENTED</status>
+      <priority>MEDIUM</priority>
+      <auth>None (public)</auth>
+      <description>
+        Verifies the OTP and returns a member session token.
+      </description>
+      <request>
+        <![CDATA[
+        {
+          "contactType":  "phone" | "email",
+          "contactValue": "+49123456789",
+          "code":         "123456",
+          "purpose":      "login"              // optional
+        }
+        ]]>
+      </request>
+      <response>
+        <![CDATA[
+        {
+          "memberPublicId": "mem_xyz789",
+          "sessionToken":   "eyJ...",
+          "expiresAt":      "2026-04-24T12:00:00Z"
+        }
+        ]]>
+      </response>
+    </endpoint>
+
+  </backend_api>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 3 — PUBLIC ENDPOINTS (no auth)
+       Base: BACKEND_API_URL
+       ═══════════════════════════════════════════════════════════════ -->
+  <backend_api group="public">
+
+    <endpoint id="PUB-1">
+      <method>GET</method>
+      <path>/public/venues/{venuePublicId}/events</path>
+      <status>IMPLEMENTED</status>
+      <priority>HIGH</priority>
+      <auth>None (public)</auth>
+      <description>
+        Returns all published events for a venue. Called by:
+          - The public-facing venue detail page
+          - The admin panel's event listing (via the BFF /api/admin/events)
+        Events with status OPEN or PUBLISHED are shown publicly.
+      </description>
+      <path_params>
+        <param name="venuePublicId" type="string" required="true" />
+      </path_params>
+      <response>
+        <![CDATA[
+        {
+          "items": [
+            {
+              "eventPublicId":                    "evt_abc",
+              "title":                            "Special Night",
+              "description":                      "...",              // nullable
+              "startAt":                          "2026-05-01T20:00:00Z",
+              "endAt":                            "2026-05-02T02:00:00Z",
+              "status":                           "PUBLISHED",        // DRAFT | PUBLISHED | OPEN | CANCELLED
+              "reservationMode":                  "OPEN",
+              "capacityTotal":                    100,                // nullable
+              "reservedCount":                    42,
+              "requiresForm":                     false,
+              "visibility":                       "PUBLIC",
+              "customerCancellationAllowed":      true,
+              "customerCancellationCutoffMinutes": 60,               // nullable
+              "checkinOtpPolicy":                 "REQUIRED"
+            }
+          ]
+        }
+        ]]>
+      </response>
+    </endpoint>
+
+    <endpoint id="PUB-2" priority="HIGH">
+      <method>GET</method>
+      <path>/public/establishments</path>
+      <status>MISSING</status>
+      <priority>HIGH</priority>
+      <auth>None (public)</auth>
+      <description>
+        PUBLIC SEARCH ENDPOINT — This is the main discovery feature of DesireMap.
+        The frontend search page calls this to list/filter venues (FKK clubs, Laufhäuser, studios).
+        Currently not implemented; the search page shows empty results.
+
+        The frontend BFF route /api/establishments needs to proxy to this endpoint.
+        NOTE: The BFF route /api/establishments does not exist yet either — both the
+        backend endpoint AND the BFF route need to be created (backend first).
+      </description>
+      <query_params>
+        <param name="q"        type="string"  required="false" description="Free text search" />
+        <param name="city"     type="string"  required="false" description="City name e.g. Berlin, Hamburg" />
+        <param name="type"     type="string"  required="false" description="Establishment type: fkk_club | laufhaus | studio | other" />
+        <param name="minPrice" type="number"  required="false" description="Minimum price filter" />
+        <param name="maxPrice" type="number"  required="false" description="Maximum price filter" />
+        <param name="limit"    type="number"  required="false" default="20" />
+        <param name="offset"   type="number"  required="false" default="0" />
+      </query_params>
+      <response>
+        <![CDATA[
+        {
+          "success": true,
+          "data": {
+            "results": [
+              {
+                "id":          "venue_abc",
+                "name":        "Club Exklusiv",
+                "slug":        "club-exklusiv",         // used for URL: /venue/{slug} or /bordell/{slug}
+                "city":        "Berlin",
+                "type":        "fkk_club",
+                "description": "...",
+                "image":       "https://...",
+                "rating":      4.7,
+                "reviewCount": 23,
+                "priceMin":    80,
+                "priceMax":    200,
+                "tags":        ["FKK", "Wellness", "Sauna"],
+                "verified":    true,
+                "venuePublicId": "venue_abc"
+              }
+            ],
+            "total":  847,
+            "limit":  20,
+            "offset": 0
+          }
+        }
+        ]]>
+      </response>
+    </endpoint>
+
+    <endpoint id="PUB-3">
+      <method>GET</method>
+      <path>/public/establishments/{slug}</path>
+      <status>MISSING</status>
+      <priority>HIGH</priority>
+      <auth>None (public)</auth>
+      <description>
+        Single venue detail page. Called by /venue/{slug} and /bordell/{slug} routes.
+        Currently the venue detail page uses mock data from a local file.
+      </description>
+      <path_params>
+        <param name="slug" type="string" required="true" description="URL-friendly venue slug" />
+      </path_params>
+      <response>
+        <![CDATA[
+        {
+          "success": true,
+          "data": {
+            "id":             "venue_abc",
+            "venuePublicId":  "venue_abc",
+            "name":           "Club Exklusiv",
+            "slug":           "club-exklusiv",
+            "city":           "Berlin",
+            "citySlug":       "berlin",
+            "type":           "fkk_club",
+            "description":    "...",
+            "address":        "Musterstraße 1, 10115 Berlin",
+            "phone":          "+4930123456",
+            "email":          "info@club-exklusiv.de",
+            "website":        "https://club-exklusiv.de",
+            "images":         ["https://...", "https://..."],
+            "rating":         4.7,
+            "reviewCount":    23,
+            "priceMin":       80,
+            "priceMax":       200,
+            "openingHours":   { "mo": "18:00-06:00", "tu": "18:00-06:00" },
+            "tags":           ["FKK", "Wellness", "Sauna"],
+            "verified":       true,
+            "lat":            52.52,
+            "lng":            13.405
+          }
+        }
+        ]]>
+      </response>
+    </endpoint>
+
+    <endpoint id="PUB-4">
+      <method>GET</method>
+      <path>/public/cities</path>
+      <status>MISSING</status>
+      <priority>MEDIUM</priority>
+      <auth>None (public)</auth>
+      <description>
+        Returns the list of supported cities with their numeric IDs.
+        IMPORTANT: The frontend has a static city list with slugs (berlin, hamburg, etc.)
+        but the venue creation form needs a numeric cityId for the backend.
+        This endpoint provides the mapping.
+
+        The frontend's 9 static cities are:
+          berlin, hamburg, muenchen, koeln, frankfurt, duesseldorf, stuttgart, nuernberg, karlsruhe
+
+        Please ensure these slugs (or the display names) are matchable to the backend cityIds.
+      </description>
+      <response>
+        <![CDATA[
+        {
+          "success": true,
+          "data": [
+            { "id": 1, "name": "Berlin",      "slug": "berlin"      },
+            { "id": 2, "name": "Hamburg",     "slug": "hamburg"     },
+            { "id": 3, "name": "München",     "slug": "muenchen"    },
+            { "id": 4, "name": "Köln",        "slug": "koeln"       },
+            { "id": 5, "name": "Frankfurt",   "slug": "frankfurt"   },
+            { "id": 6, "name": "Düsseldorf",  "slug": "duesseldorf" },
+            { "id": 7, "name": "Stuttgart",   "slug": "stuttgart"   },
+            { "id": 8, "name": "Nürnberg",    "slug": "nuernberg"   },
+            { "id": 9, "name": "Karlsruhe",   "slug": "karlsruhe"   }
+          ]
+        }
+        ]]>
+      </response>
+    </endpoint>
+
+    <endpoint id="PUB-5">
+      <method>GET</method>
+      <path>/public/service-types</path>
+      <status>MISSING</status>
+      <priority>MEDIUM</priority>
+      <auth>None (public)</auth>
+      <description>
+        Returns available service type IDs. The venue creation form currently
+        asks admins to type serviceTypeIds manually as comma-separated numbers.
+        This endpoint allows replacing that with a proper dropdown.
+      </description>
+      <response>
+        <![CDATA[
+        {
+          "success": true,
+          "data": [
+            { "id": 1, "code": "fkk_club",  "label": "FKK Club" },
+            { "id": 2, "code": "laufhaus",   "label": "Laufhaus" },
+            { "id": 3, "code": "studio",     "label": "Studio" },
+            { "id": 4, "code": "wellness",   "label": "Wellness" }
+          ]
+        }
+        ]]>
+      </response>
+    </endpoint>
+
+  </backend_api>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 4 — OPERATOR ENDPOINTS (Bearer token required)
+       Base: BACKEND_API_URL
+       All calls include: Authorization: Bearer {sessionToken}
+       ═══════════════════════════════════════════════════════════════ -->
+  <backend_api group="operator">
+
+    <endpoint id="OP-1">
+      <method>GET</method>
+      <path>/operator/businesses/{businessPublicId}/operators</path>
+      <status>IMPLEMENTED</status>
+      <priority>HIGH</priority>
+      <auth>Bearer token (operator sessionToken)</auth>
+      <description>
+        Lists all operators belonging to the business account.
+        Shown in the Admin Panel → Operators workspace.
+      </description>
+      <path_params>
+        <param name="businessPublicId" type="string" required="true"
+               description="Comes from BUSINESS_ACCOUNT_PUBLIC_ID env var or the session's businessAccountPublicId" />
+      </path_params>
+      <response>
+        <![CDATA[
+        [
+          {
+            "operatorPublicId": "op_abc",
+            "displayName":      "Max Mustermann",      // nullable
+            "invitedEmail":     "max@example.de",
+            "accountStatus":    "ACTIVE",              // ACTIVE | DISABLED | DEPROVISIONED
+            "roleCode":         "VENUE_MANAGER",
+            "venuePublicId":    "venue_xyz"            // nullable
+          }
+        ]
+        ]]>
+      </response>
+    </endpoint>
+
+    <endpoint id="OP-2">
+      <method>POST</method>
+      <path>/operator/businesses/{businessPublicId}/venues</path>
+      <status>IMPLEMENTED</status>
+      <priority>HIGH</priority>
+      <auth>Bearer token</auth>
+      <description>
+        Creates a new venue (Betrieb) under the business account.
+        Called from Admin Panel → Venues workspace → "Neue Location anlegen" form.
+      </description>
+      <request>
+        <![CDATA[
+        {
+          "name":         "Club Exklusiv",         // required
+          "addressLine":  "Musterstraße 1, Berlin", // required
+          "cityId":       1,                        // required — numeric ID from /public/cities
+          "serviceTypeIds": [1, 3],                 // required — array of service type IDs
+          "website":      "https://...",            // optional
+          "publicEmail":  "info@club.de",           // optional
+          "publicPhone":  "+4930123456",            // optional
+          "generalNote":  "Interne Notiz",          // optional
+          "reservationNote": "...",                 // optional
+          "checkinNote":  "...",                    // optional
+          "policy": {                               // optional
+            "maxActivePendingPerMember":       2,
+            "maxActiveTotalPerMember":         5,
+            "maxOverlappingActiveReservations": 10,
+            "requireVerifiedPhoneForReservation": false,
+            "requireVerifiedPhoneForCheckin":     false,
+            "pendingReviewTtlHours":            24,
+            "lateCancelThresholdMinutes":       60,
+            "note":                            "Stornierung bis 1h vorher möglich"
+          }
+        }
+        ]]>
+      </request>
+      <response>
+        <![CDATA[
+        {
+          "success": true,
+          "data": {
+            "venuePublicId": "venue_newxyz",
+            "name":          "Club Exklusiv",
+            "cityId":        1
+          }
+        }
+        ]]>
+      </response>
+    </endpoint>
+
+    <endpoint id="OP-3">
+      <method>GET</method>
+      <path>/operator/businesses/{businessPublicId}/venues</path>
+      <status>MISSING</status>
+      <priority>HIGH</priority>
+      <auth>Bearer token</auth>
+      <description>
+        LIST all venues for the business. CURRENTLY MISSING.
+        The Admin Panel → Venues workspace only shows one hardcoded venue
+        (from the DEFAULT_OPERATOR_VENUE_PUBLIC_ID env var).
+        This endpoint is needed to show the real venue list.
+
+        NOTE: The BFF /api/admin/venues route needs to be updated to call this
+        once it exists. Please notify the frontend team when this is ready.
+      </description>
+      <response>
+        <![CDATA[
+        {
+          "success": true,
+          "data": [
+            {
+              "venuePublicId":          "venue_abc",
+              "name":                   "Club Exklusiv",
+              "addressLine":            "Musterstraße 1",
+              "cityId":                 1,
+              "cityName":               "Berlin",        // optional but helpful
+              "businessAccountPublicId": "biz_abc"
+            }
+          ]
+        }
+        ]]>
+      </response>
+    </endpoint>
+
+    <endpoint id="OP-4">
+      <method>POST</method>
+      <path>/operator/businesses/{businessPublicId}/venues/{venuePublicId}/events</path>
+      <status>IMPLEMENTED</status>
+      <priority>HIGH</priority>
+      <auth>Bearer token</auth>
+      <description>
+        Creates a new event for a venue.
+        Called from Admin Panel → Events workspace → "Event erstellen".
+      </description>
+      <request>
+        <![CDATA[
+        {
+          "title":                            "Themen-Nacht Mai",  // required
+          "startAt":                          "2026-05-01T20:00:00Z",  // required, ISO 8601
+          "endAt":                            "2026-05-02T02:00:00Z",  // required, ISO 8601
+          "description":                      "...",               // optional
+          "reservationMode":                  "OPEN",              // optional: OPEN | FORM | NONE
+          "requiresForm":                     false,               // optional
+          "capacityTotal":                    100,                 // optional
+          "generalNote":                      "Interne Notiz",     // optional
+          "visibility":                       "PUBLIC",            // optional: PUBLIC | PRIVATE
+          "customerCancellationAllowed":      true,                // optional
+          "customerCancellationCutoffMinutes": 60,                 // optional
+          "checkinOtpPolicy":                 "REQUIRED"           // optional: REQUIRED | OPTIONAL | DISABLED
+        }
+        ]]>
+      </request>
+      <response>
+        <![CDATA[
+        {
+          "success": true,
+          "data": {
+            "eventPublicId": "evt_new123",
+            "title":         "Themen-Nacht Mai",
+            "status":        "DRAFT"
+          }
+        }
+        ]]>
+      </response>
+    </endpoint>
+
+    <endpoint id="OP-5">
+      <method>GET</method>
+      <path>/operator/businesses/{businessPublicId}/venues/{venuePublicId}/events/{eventPublicId}</path>
+      <status>IMPLEMENTED</status>
+      <priority>MEDIUM</priority>
+      <auth>Bearer token</auth>
+      <description>
+        Returns full detail for a single event including lockVersion (needed for publish/cancel mutations).
+      </description>
+      <response>
+        <![CDATA[
+        {
+          "success": true,
+          "data": {
+            "eventPublicId":   "evt_abc",
+            "title":           "Themen-Nacht",
+            "status":          "DRAFT",
+            "lockVersion":     1,             // IMPORTANT: required for publish and cancel
+            "startAt":         "2026-05-01T20:00:00Z",
+            "endAt":           "2026-05-02T02:00:00Z",
+            "capacityTotal":   100,
+            "reservedCount":   0,
+            "visibility":      "PUBLIC"
+          }
+        }
+        ]]>
+      </response>
+    </endpoint>
+
+    <endpoint id="OP-6">
+      <method>POST</method>
+      <path>/operator/businesses/{businessPublicId}/venues/{venuePublicId}/events/{eventPublicId}/publish</path>
+      <status>IMPLEMENTED</status>
+      <priority>HIGH</priority>
+      <auth>Bearer token</auth>
+      <description>
+        Publishes a DRAFT event. Requires expectedLockVersion for optimistic concurrency.
+        The lockVersion comes from the event detail endpoint (OP-5).
+      </description>
+      <request>
+        <![CDATA[
+        {
+          "expectedLockVersion": 1,        // required
+          "reasonCode":          "MANUAL", // optional
+          "note":                "..."     // optional
+        }
+        ]]>
+      </request>
+    </endpoint>
+
+    <endpoint id="OP-7">
+      <method>POST</method>
+      <path>/operator/businesses/{businessPublicId}/venues/{venuePublicId}/events/{eventPublicId}/cancel</path>
+      <status>IMPLEMENTED</status>
+      <priority>HIGH</priority>
+      <auth>Bearer token</auth>
+      <description>Cancels a published event. Same payload as publish.</description>
+      <request>
+        <![CDATA[
+        {
+          "expectedLockVersion": 2,
+          "reasonCode":          "OPERATOR_DECISION",
+          "note":                "Veranstaltung muss leider abgesagt werden"
+        }
+        ]]>
+      </request>
+    </endpoint>
+
+    <endpoint id="OP-8">
+      <method>POST</method>
+      <path>/operator/businesses/{businessPublicId}/operators/{operatorPublicId}/disable</path>
+      <status>IMPLEMENTED</status>
+      <priority>MEDIUM</priority>
+      <auth>Bearer token</auth>
+      <description>Disables an active operator account (temporary block).</description>
+      <request>
+        <![CDATA[{ "reason": "Verstoß gegen Nutzungsrichtlinien" }  // optional]]>
+      </request>
+    </endpoint>
+
+    <endpoint id="OP-9">
+      <method>POST</method>
+      <path>/operator/businesses/{businessPublicId}/operators/{operatorPublicId}/reactivate</path>
+      <status>IMPLEMENTED</status>
+      <priority>MEDIUM</priority>
+      <auth>Bearer token</auth>
+      <description>Reactivates a disabled operator.</description>
+      <request>
+        <![CDATA[
+        {
+          "venuePublicId": "venue_abc",      // required
+          "roleCode":      "VENUE_MANAGER"   // required
+        }
+        ]]>
+      </request>
+    </endpoint>
+
+    <endpoint id="OP-10">
+      <method>POST</method>
+      <path>/operator/businesses/{businessPublicId}/operators/{operatorPublicId}/deprovision</path>
+      <status>IMPLEMENTED</status>
+      <priority>MEDIUM</priority>
+      <auth>Bearer token</auth>
+      <description>Permanently removes an operator from the business (cannot be undone).</description>
+      <request>
+        <![CDATA[{ "reason": "Mitarbeiter hat das Unternehmen verlassen" }  // optional]]>
+      </request>
+    </endpoint>
+
+  </backend_api>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 5 — MEMBER / CUSTOMER ENDPOINTS
+       Base: BACKEND_API_URL
+       These are called by members (end-users), not operators.
+       Currently the BFF returns stubs — backend not yet connected.
+       ═══════════════════════════════════════════════════════════════ -->
+  <backend_api group="member_customer">
+
+    <endpoint id="CUS-1">
+      <method>GET</method>
+      <path>/member/profile</path>
+      <status>MISSING</status>
+      <priority>MEDIUM</priority>
+      <auth>Bearer token (member sessionToken)</auth>
+      <description>
+        Returns the logged-in member's profile.
+        The BFF route /api/customer currently returns a stub from the cookie.
+        Please notify frontend team of the actual path so the BFF can be updated.
+      </description>
+      <response>
+        <![CDATA[
+        {
+          "success": true,
+          "data": {
+            "memberPublicId": "mem_abc",
+            "name":           "Max Mustermann",
+            "email":          "max@example.de",
+            "phone":          "+49123456789",
+            "avatar":         "https://...",   // nullable
+            "memberSince":    "2025-01-01T00:00:00Z"
+          }
+        }
+        ]]>
+      </response>
+    </endpoint>
+
+    <endpoint id="CUS-2">
+      <method>GET</method>
+      <path>/member/visits</path>
+      <status>MISSING</status>
+      <priority>LOW</priority>
+      <auth>Bearer token (member)</auth>
+      <description>
+        Returns the member's visit history (checkins).
+        BFF route /api/customer/visits currently returns empty array.
+      </description>
+      <response>
+        <![CDATA[
+        {
+          "success": true,
+          "data": [
+            {
+              "visitId":       "visit_abc",
+              "venueId":       "venue_xyz",
+              "venueName":     "Club Exklusiv",
+              "checkedInAt":   "2026-03-15T21:00:00Z"
+            }
+          ]
+        }
+        ]]>
+      </response>
+    </endpoint>
+
+    <endpoint id="CUS-3">
+      <method>GET</method>
+      <path>/member/badges</path>
+      <status>MISSING</status>
+      <priority>LOW</priority>
+      <auth>Bearer token (member)</auth>
+      <description>
+        Returns gamification badges earned by the member.
+        BFF route /api/customer/badges currently returns empty array.
+      </description>
+    </endpoint>
+
+    <endpoint id="CUS-4">
+      <method>GET</method>
+      <path>/member/reservations</path>
+      <status>MISSING</status>
+      <priority>MEDIUM</priority>
+      <auth>Bearer token (member)</auth>
+      <description>
+        Returns the member's active and past reservations.
+        BFF route /api/customer/bookings expects this.
+      </description>
+    </endpoint>
+
+  </backend_api>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 6 — BFF ROUTES SUMMARY (already implemented in Next.js)
+       These are for documentation only — no action needed from backend.
+       They explain what the frontend calls and what it expects back.
+       ═══════════════════════════════════════════════════════════════ -->
+  <bff_routes>
+    <description>
+      These routes live in the Next.js server at /api/*.
+      They are the ONLY entry points the browser uses.
+      The browser never calls your backend directly.
+    </description>
+
+    <route_group name="Auth">
+      <route method="POST" path="/api/auth/login"
+             proxies_to="POST /operator-auth/login"
+             sets_cookie="auth_user (httpOnly)"
+             returns="{ accessToken, user }" />
+      <route method="POST" path="/api/auth/logout"
+             action="Clears auth_user cookie"
+             returns="{ success: true }" />
+      <route method="GET"  path="/api/auth/me"
+             action="Reads auth_user cookie"
+             returns="{ user }" />
+      <route method="GET"  path="/api/auth/config"
+             returns="{ googleOAuth: false }  (stub — Google OAuth not yet enabled)" />
+    </route_group>
+
+    <route_group name="Admin (requires auth_user cookie + Bearer token)">
+      <route method="GET"  path="/api/admin/stats"
+             proxies_to="GET /operator/businesses/{id}/operators + GET /public/venues/{id}/events"
+             returns="{ venues, publishedEvents, draftEvents, operators }" />
+      <route method="GET"  path="/api/admin/venues"
+             status="STUB — returns only 1 configured venue until OP-3 is implemented"
+             returns="[{ venuePublicId, venueName, businessAccountPublicId }]" />
+      <route method="POST" path="/api/admin/venues"
+             proxies_to="POST /operator/businesses/{id}/venues" />
+      <route method="GET"  path="/api/admin/events?venuePublicId=..."
+             proxies_to="GET /public/venues/{id}/events" />
+      <route method="POST" path="/api/admin/events"
+             proxies_to="POST /operator/businesses/{id}/venues/{id}/events" />
+      <route method="PUT"  path="/api/admin/events"
+             proxies_to="publish or cancel based on body.action"
+             body="{ action: 'publish'|'cancel', venuePublicId, eventPublicId, expectedLockVersion, reasonCode?, note? }" />
+      <route method="GET"  path="/api/admin/operators"
+             proxies_to="GET /operator/businesses/{id}/operators" />
+      <route method="PUT"  path="/api/admin/operators"
+             proxies_to="disable | reactivate | deprovision based on body.action"
+             body="{ action: 'disable'|'reactivate'|'deprovision', operatorPublicId, reason?, roleCode?, venuePublicId? }" />
+      <route method="GET"  path="/api/admin/event-detail?venuePublicId=...&amp;eventPublicId=..."
+             proxies_to="GET /operator/businesses/{id}/venues/{id}/events/{id}" />
+    </route_group>
+
+    <route_group name="Customer (requires auth_user cookie)">
+      <route method="GET"  path="/api/customer"       status="STUB — returns user from cookie only" />
+      <route method="GET"  path="/api/customer/visits" status="STUB — returns empty array" />
+      <route method="GET"  path="/api/customer/badges" status="STUB — returns empty array" />
+      <route method="GET"  path="/api/customer/addresses" status="STUB" />
+    </route_group>
+  </bff_routes>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 7 — CITY ID MAPPING (CRITICAL)
+       ═══════════════════════════════════════════════════════════════ -->
+  <city_mapping>
+    <description>
+      The frontend uses these 9 city slugs throughout all URLs (/stadt/{slug})
+      and as display names. Venue creation requires a numeric cityId.
+      Please confirm the mapping below or provide the correct IDs, then implement
+      the /public/cities endpoint (PUB-4) so the frontend can fetch it dynamically.
+    </description>
+    <cities>
+      <city slug="berlin"      display_name="Berlin"      expected_id="?"  venue_count_frontend="124" />
+      <city slug="hamburg"     display_name="Hamburg"     expected_id="?"  venue_count_frontend="87" />
+      <city slug="muenchen"    display_name="München"     expected_id="?"  venue_count_frontend="54" />
+      <city slug="koeln"       display_name="Köln"        expected_id="?"  venue_count_frontend="92" />
+      <city slug="frankfurt"   display_name="Frankfurt"   expected_id="?"  venue_count_frontend="68" />
+      <city slug="duesseldorf" display_name="Düsseldorf"  expected_id="?"  venue_count_frontend="48" />
+      <city slug="stuttgart"   display_name="Stuttgart"   expected_id="?"  venue_count_frontend="42" />
+      <city slug="nuernberg"   display_name="Nürnberg"    expected_id="?"  venue_count_frontend="35" />
+      <city slug="karlsruhe"   display_name="Karlsruhe"   expected_id="?"  venue_count_frontend="1" />
+    </cities>
+    <action_needed>
+      1. Confirm or correct the display names match your city table
+      2. Fill in the expected_id values and reply to this document
+      3. Implement GET /public/cities (PUB-4) returning slug + id pairs
+    </action_needed>
+  </city_mapping>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 8 — PRIORITY BACKLOG
+       ═══════════════════════════════════════════════════════════════ -->
+  <backlog>
+    <item priority="1" id="PUB-2"  title="GET /public/establishments — Public search endpoint"
+          impact="Main discovery feature, search page shows no results without this" />
+
+    <item priority="2" id="OP-3"   title="GET /operator/businesses/{id}/venues — Venue list"
+          impact="Admin venues workspace shows only 1 env-var configured venue" />
+
+    <item priority="3" id="PUB-3"  title="GET /public/establishments/{slug} — Venue detail"
+          impact="Venue detail pages use mock data, not real backend data" />
+
+    <item priority="4" id="PUB-4"  title="GET /public/cities — City ID mapping"
+          impact="Venue creation form requires manual cityId input; needs a dropdown" />
+
+    <item priority="5" id="PUB-5"  title="GET /public/service-types — Service type list"
+          impact="Venue creation form requires manual serviceTypeIds; needs a dropdown" />
+
+    <item priority="6" id="CUS-4"  title="GET /member/reservations — Member reservations"
+          impact="Reservation/booking flow in the frontend is fully built but returns empty" />
+
+    <item priority="7" id="CUS-1"  title="GET /member/profile — Member profile"
+          impact="Customer dashboard shows data from cookie only, not real profile" />
+
+    <item priority="8" id="CUS-2"  title="GET /member/visits — Visit history"
+          impact="Visit history always empty" />
+  </backlog>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 9 — KNOWN ISSUES / QUESTIONS FOR BACKEND TEAM
+       ═══════════════════════════════════════════════════════════════ -->
+  <open_questions>
+    <question id="Q1">
+      What is the exact path for the member profile endpoint?
+      Frontend assumes /member/profile. Please confirm or correct.
+    </question>
+
+    <question id="Q2">
+      Does the operator sessionToken also authorize member-facing calls,
+      or is there a separate admin token hierarchy?
+    </question>
+
+    <question id="Q3">
+      The /public/venues/{id}/events endpoint is used for both the public
+      event listing AND the admin event listing. Should the admin use
+      a different endpoint (e.g., /operator/.../events) that also returns DRAFT events?
+      Currently draft events are not visible in the admin panel.
+    </question>
+
+    <question id="Q4">
+      What are the valid roleCode values for operator reactivation?
+      Frontend currently sends "VENUE_MANAGER" as default.
+      Please provide the full list.
+    </question>
+
+    <question id="Q5">
+      What are the valid checkinOtpPolicy values?
+      Frontend currently sends "REQUIRED". Please confirm the full enum.
+    </question>
+
+    <question id="Q6">
+      The /public/establishments search endpoint: should venue slugs be
+      generated by the backend, or does the frontend send a slug on creation?
+      The venue detail URL pattern is /bordell/{slug} or /venue/{slug}.
+    </question>
+
+    <question id="Q7">
+      Token expiry: what is the default sessionToken TTL from /operator-auth/login?
+      Should the frontend handle token refresh, or redirect to login on 401?
+    </question>
+  </open_questions>
+
+</desiremap_api_contract>

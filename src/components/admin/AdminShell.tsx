@@ -31,6 +31,7 @@ const navigationItems: Array<{
   { id: 'events', label: 'Events', href: '/events', icon: CalendarRange },
   { id: 'operators', label: 'Operators', href: '/operators', icon: Users2 },
   { id: 'discovery', label: 'Discovery', href: '/discovery', icon: Globe },
+  { id: 'businesses', label: 'Businesses', href: '/auth/businesses', icon: Building2 },
   { id: 'settings', label: 'Settings', href: '/settings', icon: Settings },
 ]
 

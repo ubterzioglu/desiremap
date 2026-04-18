@@ -5,7 +5,7 @@ export interface SearchParams {
   city?: string
 }
 export type DashboardTab = 'dashboard' | 'visits' | 'addresses' | 'badges'
-export type AdminTab = 'dashboard' | 'venues' | 'events' | 'operators' | 'settings' | 'discovery'
+export type AdminTab = 'dashboard' | 'venues' | 'events' | 'operators' | 'settings' | 'discovery' | 'businesses'
 export type OperatorTab = 'dashboard' | 'venues' | 'events'
 
 export type BordellType = 'laufhaus' | 'bordell' | 'fkk' | 'studio' | 'privat'
