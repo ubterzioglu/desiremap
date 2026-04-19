@@ -74,8 +74,15 @@ export default async function CityPage({
   }
 
   const t = await getTranslations({ locale, namespace: 'nav' })
-  const cityResult = await backendApi.getPublicEstablishments({ city: cityData.name, limit: 12 }).catch(() => ({ items: [] as PublicEstablishment[] }))
-  const cityBordells = cityResult.items
+  const cityResult = await backendApi.getPublicEstablishments({ city: cityData.name, limit: 12 }).catch(() => ({ results: [] as PublicEstablishment[], total: 0 }))
+  const cityBordells = (Array.isArray(cityResult?.results) ? cityResult.results : []).map((est, index) => ({
+    key: typeof est?.slug === 'string' && est.slug.length > 0 ? est.slug : `${city}-${index}`,
+    city: typeof est?.city === 'string' && est.city.length > 0 ? est.city : cityData.name,
+    name: typeof est?.name === 'string' && est.name.length > 0 ? est.name : 'Unbekannter Betrieb',
+    priceMin: typeof est?.priceMin === 'number' ? est.priceMin : null,
+    rating: typeof est?.rating === 'number' ? est.rating : null,
+    typeLabel: typeof est?.type === 'string' && est.type.length > 0 ? est.type.toUpperCase() : 'BETRIEB',
+  }))
   const description = cityData.descriptions[locale] || cityData.descriptions.de
   const subtitle = cityData.subtitles[locale] || cityData.subtitles.de
 
@@ -162,13 +169,13 @@ export default async function CityPage({
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {cityBordells.map((est) => (
                   <Link
-                    key={est.slug}
+                    key={est.key}
                     href={getSearchPath(locale, { q: est.name, city: est.city })}
                     className="group rounded-2xl border border-white/10 bg-white/3 p-5 transition-all hover:-translate-y-1 hover:border-[#b76e79]/40 hover:bg-white/5"
                   >
                     <div className="flex items-center justify-between mb-3">
                       <span className="inline-flex rounded-full bg-[#8b1a4a]/20 px-3 py-1 text-xs font-medium text-[#f0bec6]">
-                        {est.type.toUpperCase()}
+                        {est.typeLabel}
                       </span>
                       {est.rating != null && (
                         <div className="flex items-center gap-1">
