@@ -20,7 +20,31 @@ interface AuthConfig {
 
 type WorkspaceType = 'public' | 'admin'
 
-const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || '/api').replace(/\/+$/, '')
+function collapseDuplicatedApiSegments(value: string) {
+  return value.replace(/(?:\/api){2,}(?=\/|$|\?)/g, '/api')
+}
+
+function normalizeApiBaseUrl(value: string) {
+  const trimmedValue = value.replace(/\/+$/, '')
+
+  if (!trimmedValue) {
+    return ''
+  }
+
+  if (!/^https?:\/\//.test(trimmedValue)) {
+    return collapseDuplicatedApiSegments(trimmedValue)
+  }
+
+  try {
+    const url = new URL(trimmedValue)
+    url.pathname = collapseDuplicatedApiSegments(url.pathname)
+    return url.toString().replace(/\/+$/, '')
+  } catch {
+    return collapseDuplicatedApiSegments(trimmedValue)
+  }
+}
+
+const API_BASE_URL = normalizeApiBaseUrl(process.env.NEXT_PUBLIC_API_URL || '/api')
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
@@ -32,7 +56,7 @@ function normalizeEndpoint(endpoint: string) {
   }
 
   const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
-  return API_BASE_URL ? `${API_BASE_URL}${normalizedEndpoint}` : normalizedEndpoint
+  return collapseDuplicatedApiSegments(API_BASE_URL ? `${API_BASE_URL}${normalizedEndpoint}` : normalizedEndpoint)
 }
 
 function createHeaders(options: ApiRequestOptions) {
