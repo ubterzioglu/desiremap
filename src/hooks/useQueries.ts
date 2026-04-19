@@ -7,6 +7,7 @@ function useIsMounted() {
   return mounted
 }
 import { customerApi, bookingApi, establishmentsApi, adminApi, authApi, publicApi, seedApi } from '@/lib/api'
+import { useAuthStore } from '@/stores/authStore'
 
 // ============ AUTH HOOKS ============
 export function useRegister() {
@@ -204,19 +205,28 @@ export function useSearchEstablishments(params: {
   })
 }
 
+function useAdminAuthenticated() {
+  const token = useAuthStore.getState().token
+  return Boolean(token)
+}
+
 // ============ ADMIN HOOKS ============
 export function useAdminStats() {
   return useQuery({
     queryKey: ['admin', 'stats'],
     queryFn: adminApi.getDashboardSnapshot,
-    staleTime: 30 * 1000 // 30 seconds
+    staleTime: 30 * 1000,
+    enabled: useAdminAuthenticated(),
+    retry: false
   })
 }
 
 export function useAdminVenues() {
   return useQuery({
     queryKey: ['admin', 'venues'],
-    queryFn: adminApi.getVenues
+    queryFn: adminApi.getVenues,
+    enabled: useAdminAuthenticated(),
+    retry: false
   })
 }
 
@@ -279,7 +289,9 @@ export function useCancelEvent() {
 export function useAdminOperators() {
   return useQuery({
     queryKey: ['admin', 'operators'],
-    queryFn: adminApi.getBusinessOperators
+    queryFn: adminApi.getBusinessOperators,
+    enabled: useAdminAuthenticated(),
+    retry: false
   })
 }
 

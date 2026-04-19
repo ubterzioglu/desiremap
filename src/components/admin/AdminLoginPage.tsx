@@ -68,6 +68,7 @@ export function AdminLoginPage() {
                 <Label className="mb-2 block text-sm text-slate-300">E-Mail</Label>
                 <Input
                   type="email"
+                  autoComplete="email"
                   placeholder="admin@desiremap.de"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
@@ -80,6 +81,7 @@ export function AdminLoginPage() {
                 <div className="relative">
                   <Input
                     type={showPassword ? 'text' : 'password'}
+                    autoComplete="current-password"
                     placeholder="••••••••"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
