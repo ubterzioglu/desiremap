@@ -105,8 +105,8 @@ export default async function BordellDetailPage({
   }
 
   const bordell = publicEstablishmentToBordell(establishment)
-  const relatedResult = await backendApi.getPublicEstablishments({ city: establishment.city, limit: 4 }).catch(() => ({ items: [] }))
-  const relatedItems = relatedResult.items.filter((e) => e.slug !== slug)
+  const relatedResult = await backendApi.getPublicEstablishments({ city: establishment.city, limit: 4 }).catch(() => ({ results: [], total: 0 }))
+  const relatedItems = relatedResult.results.filter((e) => e.slug !== slug)
 
   const productData = bordellToProductData(bordell, relatedItems)
   const structuredData = getProductDetailStructuredData(productData, locale, locales)

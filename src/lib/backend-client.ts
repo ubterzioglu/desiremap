@@ -128,7 +128,7 @@ export const backendApi = {
       })
     }
     const suffix = qs.toString()
-    return backendFetch<{ items: PublicEstablishment[]; total: number }>(
+    return backendFetch<{ results: PublicEstablishment[]; total: number }>(
       suffix ? `/public/establishments?${suffix}` : '/public/establishments'
     )
   },
