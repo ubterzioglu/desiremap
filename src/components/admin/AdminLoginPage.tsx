@@ -17,7 +17,9 @@ export function AdminLoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault()
+
     setError('')
 
     if (!email || !password) {
@@ -61,7 +63,7 @@ export function AdminLoginPage() {
               <p className="mt-2 text-sm text-slate-400">Melde dich an, um direkt in das Super Admin Dashboard zu wechseln.</p>
             </div>
 
-            <div className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <Label className="mb-2 block text-sm text-slate-300">E-Mail</Label>
                 <Input
@@ -100,7 +102,7 @@ export function AdminLoginPage() {
                 </div>
               )}
 
-              <Button onClick={handleSubmit} disabled={isLoading} className="h-12 w-full rounded-2xl bg-teal-400 text-slate-950 hover:bg-teal-300">
+              <Button type="submit" disabled={isLoading} className="h-12 w-full rounded-2xl bg-teal-400 text-slate-950 hover:bg-teal-300">
                 {isLoading ? (
                   <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
@@ -110,7 +112,7 @@ export function AdminLoginPage() {
                   </>
                 )}
               </Button>
-            </div>
+            </form>
           </section>
         </div>
       </div>
