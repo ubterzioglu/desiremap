@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { ListingCard } from '@/components/listings/ListingCard'
 import { usePublicEstablishments, usePublicServiceTypes } from '@/hooks/useQueries'
 import { useParams, useRouter } from 'next/navigation'
+import { getVenuePath } from '@/lib/navigation'
 import type { Bordell, BordellType, PublicEstablishment } from '@/types'
 
 function toListingCardBordell(e: PublicEstablishment): Bordell {
@@ -85,7 +86,7 @@ export function ListingsSection() {
         )}
         {!isLoading && bordells.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {bordells.map((bordell, index) => <ListingCard key={bordell.id} bordell={bordell} index={index} onDetailClick={() => {}} />)}
+            {bordells.map((bordell, index) => <ListingCard key={bordell.id} bordell={bordell} index={index} onDetailClick={(selectedBordell) => router.push(getVenuePath(locale, selectedBordell.id))} />)}
           </div>
         )}
         <div className="flex justify-center mt-16"><Button onClick={() => router.push(`/${locale}/search`)} size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 px-10 rounded-full group backdrop-blur-sm">Mehr anzeigen<ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" /></Button></div>

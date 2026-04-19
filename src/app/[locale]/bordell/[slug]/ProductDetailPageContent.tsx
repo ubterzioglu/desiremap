@@ -83,7 +83,7 @@ export function ProductDetailPageContent({
       {/* Hero Section */}
       <section
         className="relative h-[50vh] min-h-[400px] flex items-center justify-center bg-cover bg-center"
-        style={{ backgroundImage: `url(${bordell.coverImage || '/covers/default-bg.jpg'})` }}
+        style={{ backgroundImage: `url(${bordell.coverImage || '/listing-bg.jpg'})` }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
         <div className="relative z-10 w-full max-w-6xl mx-auto px-4 pt-28 pb-10">
