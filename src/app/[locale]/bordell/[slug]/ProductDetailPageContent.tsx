@@ -53,24 +53,7 @@ export function ProductDetailPageContent({
   const hasContactInfo = hasPhone || Boolean(bordell.email) || Boolean(bordell.website)
   const featuredServices = bordell.services.slice(0, 6)
   const priceLabel = bordell.minPrice > 0 ? `ab ${bordell.minPrice}€` : bordell.priceRange
-  const overviewItems = [
-    {
-      label: t('price'),
-      value: priceLabel
-    },
-    {
-      label: 'Stadt',
-      value: bordell.city
-    },
-    hasPhone ? {
-      label: 'Kontakt',
-      value: bordell.phone
-    } : null,
-    hasOpeningHours ? {
-      label: 'Öffnungszeiten',
-      value: bordell.openHours
-    } : null
-  ].filter((item): item is { label: string; value: string } => item !== null)
+  const overviewItems: { label: string; value: string }[] = []
   const infoItems = [
     {
       label: 'Typ',
