@@ -1,6 +1,7 @@
 import type { PublicCity, PublicEstablishment, PublicServiceType } from '@/types'
 import type { AuthSession, AuthUser } from '@/stores/authStore'
 import { useAuthStore } from '@/stores/authStore'
+import { normalizePublicServiceTypes } from '@/lib/public-service-types'
 
 interface ApiResponse<T> {
   success: boolean
@@ -358,10 +359,11 @@ export const bookingApi = {
 
 export const publicApi = {
   getCities: () =>
-    apiCall<{ items: PublicCity[] }>('/api/public/cities'),
+    apiCall<{ items: PublicCity[] }>('/public/cities'),
 
-  getServiceTypes: () =>
-    apiCall<{ items: PublicServiceType[] }>('/api/public/service-types'),
+  getServiceTypes: async () => ({
+    items: normalizePublicServiceTypes(await apiCall<unknown>('/public/service-types'))
+  }),
 
   getEstablishments: (params?: {
     city?: string
@@ -378,12 +380,12 @@ export const publicApi = {
     }
     const suffix = qs.toString()
     return apiCall<{ items: PublicEstablishment[]; total: number }>(
-      suffix ? `/api/public/establishments?${suffix}` : '/api/public/establishments'
+      suffix ? `/public/establishments?${suffix}` : '/public/establishments'
     )
   },
 
   getEstablishmentDetail: (slug: string) =>
-    apiCall<PublicEstablishment>(`/api/public/establishments/${slug}`),
+    apiCall<PublicEstablishment>(`/public/establishments/${slug}`),
 }
 
 export const establishmentsApi = {

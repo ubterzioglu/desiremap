@@ -1,4 +1,5 @@
 import type { PublicCity, PublicEstablishment, PublicServiceType } from '@/types'
+import { normalizePublicServiceTypes } from '@/lib/public-service-types'
 
 const BACKEND_URL = (process.env.BACKEND_API_URL || 'https://api.desiremap.de/api').replace(/\/+$/, '')
 
@@ -111,8 +112,9 @@ export const backendApi = {
   getPublicCities: () =>
     backendFetch<{ items: PublicCity[] }>('/public/cities'),
 
-  getPublicServiceTypes: () =>
-    backendFetch<{ items: PublicServiceType[] }>('/public/service-types'),
+  getPublicServiceTypes: async () => ({
+    items: normalizePublicServiceTypes(await backendFetch<unknown>('/public/service-types'))
+  }),
 
   getPublicEstablishments: (params?: {
     city?: string
