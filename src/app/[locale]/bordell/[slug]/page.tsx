@@ -50,6 +50,10 @@ function getIsOpen(hours: Record<string, string>): boolean {
   const currentMinutes = now.getHours() * 60 + now.getMinutes()
   const openMinutes = openH * 60 + openM
   const closeMinutes = closeH * 60 + closeM
+  // Handle past-midnight closing (e.g. 11:00 - 03:00 means open until 3 AM next day)
+  if (closeMinutes < openMinutes) {
+    return currentMinutes >= openMinutes || currentMinutes <= closeMinutes
+  }
   return currentMinutes >= openMinutes && currentMinutes <= closeMinutes
 }
 
