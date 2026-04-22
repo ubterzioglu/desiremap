@@ -8,6 +8,51 @@ import type { Bordell, BordellType, PublicEstablishment } from '@/types'
 const siteUrl = 'https://desiremap.de'
 const locales = ['de', 'en', 'ar', 'tr']
 
+
+// Global fallback — API opening_hours field coming soon (is_open, is_top_venue, is_verified, opening_hours)
+const DEFAULT_OPENING_HOURS: Record<string, string> = {
+  Monday: '11:00 - 03:00',
+  Tuesday: '11:00 - 03:00',
+  Wednesday: '11:00 - 03:00',
+  Thursday: '11:00 - 03:00',
+  Friday: '11:00 - 05:00',
+  Saturday: '11:00 - 05:00',
+  Sunday: '11:00 - 02:00',
+}
+
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+function parseOpeningHoursForSEO(hoursStr: string): { days: string[], opens: string, closes: string } {
+  if (!hoursStr) return { days: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], opens: '00:00', closes: '23:59' }
+  const match = hoursStr.match(/(\d{1,2}:\d{2})\s*[-–]\s*(\d{1,2}:\d{2})/)
+  if (match) return { days: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], opens: match[1], closes: match[2] }
+  return { days: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], opens: '00:00', closes: '23:59' }
+}
+
+function formatOpeningHours(hours: Record<string, string>): string {
+  if (!hours || Object.keys(hours).length === 0) return ''
+  const today = DAY_NAMES[new Date().getDay()]
+  const todayHours = hours[today]
+  if (todayHours) return `Heute: ${todayHours}`
+  const firstDay = Object.keys(hours)[0]
+  return hours[firstDay]
+}
+
+function getIsOpen(hours: Record<string, string>): boolean {
+  if (!hours || Object.keys(hours).length === 0) return false
+  const now = new Date()
+  const today = DAY_NAMES[now.getDay()]
+  const todayHours = hours[today]
+  if (!todayHours) return false
+  const match = todayHours.match(/(\d{1,2}):(\d{2})\s*[-–]\s*(\d{1,2}):(\d{2})/)
+  if (!match) return false
+  const [, openH, openM, closeH, closeM] = match.map(Number)
+  const currentMinutes = now.getHours() * 60 + now.getMinutes()
+  const openMinutes = openH * 60 + openM
+  const closeMinutes = closeH * 60 + closeM
+  return currentMinutes >= openMinutes && currentMinutes <= closeMinutes
+}
+
 function publicEstablishmentToBordell(e: PublicEstablishment): Bordell {
   return {
     id: e.slug,
@@ -23,8 +68,8 @@ function publicEstablishmentToBordell(e: PublicEstablishment): Bordell {
     maxPrice: e.priceMax ?? undefined,
     ladiesCount: 0,
     services: e.tags,
-    isOpen: false,
-    openHours: '',
+    isOpen: getIsOpen(e.openingHours && Object.keys(e.openingHours).length > 0 ? e.openingHours : DEFAULT_OPENING_HOURS),
+    openHours: formatOpeningHours(e.openingHours && Object.keys(e.openingHours).length > 0 ? e.openingHours : DEFAULT_OPENING_HOURS),
     verified: e.verified,
     premium: false,
     sponsored: false,
@@ -61,7 +106,7 @@ function bordellToProductData(bordell: Bordell, relatedItems: PublicEstablishmen
     ratingValue: bordell.rating,
     reviewCount: bordell.reviewCount,
     reviews: [],
-    openingHours: { days: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], opens: '00:00', closes: '23:59' },
+    openingHours: parseOpeningHoursForSEO(bordell.openHours),
     services: bordell.services,
     ladiesCount: bordell.ladiesCount,
     verified: bordell.verified,
