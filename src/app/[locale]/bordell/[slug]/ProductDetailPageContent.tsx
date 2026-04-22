@@ -111,11 +111,11 @@ export function ProductDetailPageContent({
 
       {/* Hero Section */}
       <section
-        className="relative h-[50vh] min-h-[400px] flex items-center justify-center bg-cover bg-center"
+        className="relative flex min-h-[560px] items-start justify-center bg-cover bg-center md:min-h-[620px] lg:min-h-[680px]"
         style={{ backgroundImage: `url(${bordell.coverImage || '/listing-bg.jpg'})` }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
-        <div className="relative z-10 w-full max-w-6xl mx-auto px-4 pt-28 pb-10">
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pb-24 pt-28 md:pb-28 lg:pb-36">
           <Button
             type="button"
             variant="outline"
@@ -192,7 +192,7 @@ export function ProductDetailPageContent({
         </div>
       </section>
 
-      <div className="relative z-20 mx-auto -mt-12 max-w-7xl px-4">
+      <div className="relative z-20 mx-auto -mt-6 max-w-7xl px-4 md:-mt-8 lg:-mt-12">
         <div className="rounded-[32px] border border-white/10 bg-background/95 p-6 shadow-[0_40px_120px_-70px_rgba(0,0,0,0.9)] backdrop-blur">
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(260px,0.9fr)]">
             <div className="space-y-5">
