@@ -19,7 +19,7 @@ function toSearchBordell(e: PublicEstablishment): Bordell {
     maxPrice: e.priceMax ?? undefined,
     ladiesCount: 0,
     services: e.tags,
-    isOpen: false,
+    isOpen: e.isActive ?? false,
     openHours: '',
     verified: e.verified,
     premium: false,

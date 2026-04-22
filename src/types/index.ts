@@ -81,6 +81,7 @@ export interface PublicEstablishment {
   lat: number | null
   lng: number | null
   openingHours: Record<string, string>
+  isActive?: boolean
 }
 
 export interface PublicCity {

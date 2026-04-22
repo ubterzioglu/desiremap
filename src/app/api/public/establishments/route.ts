@@ -13,7 +13,12 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await backendApi.getPublicEstablishments(params)
-    const items = Array.isArray(data.results) ? data.results : []
+    const raw = Array.isArray(data.results) ? data.results : []
+    const items = raw.map((item) => {
+      const r = item as unknown as Record<string, unknown>
+      // Backend sends snake_case is_active; map to camelCase expected by frontend
+      return { ...item, isActive: (r.isActive ?? r.is_active ?? true) as boolean }
+    })
 
     return NextResponse.json({
       items,

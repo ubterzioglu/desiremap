@@ -12,7 +12,7 @@ function toListingCardBordell(e: PublicEstablishment): Bordell {
     priceRange: e.priceMin != null ? `€${e.priceMin}${e.priceMax ? ` - €${e.priceMax}` : ''}` : 'Auf Anfrage',
     minPrice: e.priceMin ?? 0, maxPrice: e.priceMax ?? undefined,
     ladiesCount: 0, services: e.tags,
-    isOpen: false, openHours: '',
+    isOpen: e.isActive ?? false, openHours: '',
     verified: e.verified, premium: false, sponsored: false,
     phone: '', description: e.description ?? '',
     coverImage: e.images?.[0], images: e.images,
