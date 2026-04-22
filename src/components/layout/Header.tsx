@@ -2,15 +2,14 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronDown, Flame, LogIn, Menu, User, X } from 'lucide-react'
+import { Flame, LogIn, Menu, User, X } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { LanguageSelector } from '@/components/layout/LanguageSelector'
 import { MobileMenu } from '@/components/layout/MobileMenu'
 import { useScrollHeader } from '@/components/layout/hooks/useScrollHeader'
-import { getCityPath, getLocalizedPath } from '@/lib/navigation'
-import { citiesData } from '@/data/cities'
+import { getLocalizedPath } from '@/lib/navigation'
 import type { Translations } from '@/types'
 
 type HeaderProps = {
@@ -24,7 +23,6 @@ type HeaderProps = {
 export function Header({ locale, onLoginClick, isLoggedIn, onDashboardClick, translations }: HeaderProps) {
   const isScrolled = useScrollHeader(50)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [citiesOpen, setCitiesOpen] = useState(false)
 
   return (
     <motion.header initial={{ y: -100 }} animate={{ y: 0 }} className={cn('fixed top-0 left-0 right-0 z-50 transition-all duration-500', isScrolled ? 'bg-black/90 backdrop-blur-xl py-3 sm:py-4' : 'bg-transparent py-4 sm:py-6')}>
@@ -41,33 +39,7 @@ export function Header({ locale, onLoginClick, isLoggedIn, onDashboardClick, tra
           </Link>
           <nav className="hidden md:flex items-center gap-8">
             <Link href={getLocalizedPath(locale, '/')} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{translations.discover}</Link>
-            <div className="relative" onMouseEnter={() => setCitiesOpen(true)} onMouseLeave={() => setCitiesOpen(false)}>
-              <Link href={getLocalizedPath(locale, '/stadt')} className="flex items-center gap-1 text-gray-300 hover:text-white transition-colors text-sm tracking-wide">
-                {translations.cities}
-                <ChevronDown className={cn('w-3.5 h-3.5 transition-transform duration-200', citiesOpen && 'rotate-180')} />
-              </Link>
-              <AnimatePresence>
-                {citiesOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 8 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute top-full left-0 mt-2 w-44 bg-black/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50"
-                  >
-                    {citiesData.map((city) => (
-                      <Link
-                        key={city.slug}
-                        href={getCityPath(locale, city.slug)}
-                        className="block px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
-                      >
-                        {city.name}
-                      </Link>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+            <Link href={getLocalizedPath(locale, '/stadt')} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{translations.cities}</Link>
             <Link href={getLocalizedPath(locale, '/blog')} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">Blog</Link>
             <button onClick={() => onLoginClick ? onLoginClick('premium') : undefined} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{translations.premium}</button>
             <button onClick={() => onLoginClick ? onLoginClick('advertise') : undefined} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{translations.advertise}</button>

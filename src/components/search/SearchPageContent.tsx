@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 import Image from 'next/image'
-import { X } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
@@ -51,7 +51,7 @@ export function SearchPageContent({ locale, initialQuery, initialCity, initialCa
             <div className="absolute inset-0 bg-linear-to-b from-[#8b1a4a]/5 to-transparent" />
           </div>
           <div className="relative z-10 max-w-7xl mx-auto px-6">
-            <Button onClick={() => window.location.href = `/${locale}`} variant="ghost" className="flex items-center gap-2 text-gray-400 hover:text-white mb-8"><X className="w-5 h-5 rotate-45" />{t('backToHome')}</Button>
+            <Button onClick={() => window.location.href = `/${locale}`} variant="ghost" className="flex items-center gap-2 text-gray-400 hover:text-white mb-8"><ArrowLeft className="w-5 h-5" />{t('backToHome')}</Button>
             <h1 className="text-4xl sm:text-5xl font-bold text-white mb-8">{t('results')}</h1>
             <SearchFilters query={searchState.query} selectedCity={searchState.selectedCity} selectedCategory={searchState.selectedCategory} translations={filterTranslations} onQueryChange={searchState.setQuery} onSearch={searchState.handleSearch} onCityChange={searchState.handleCityChange} onCategoryChange={searchState.handleCategoryChange} onClearFilters={searchState.clearFilters} />
           </div>

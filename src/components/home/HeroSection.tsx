@@ -47,11 +47,11 @@ export function HeroSection({ translations, stats, locale }: HeroProps) {
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-base sm:text-xl md:text-2xl lg:text-3xl text-gray-300 font-light tracking-wide">{translations.subtitle}</motion.p>
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-gray-400 max-w-2xl mx-auto">{translations.description}</motion.p>
         <div className="max-w-2xl mx-auto pt-4">
-          <div className="flex flex-col sm:flex-row gap-3 p-2 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10">
+          <div className="flex flex-col gap-3 p-2 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 sm:flex-row sm:items-stretch">
             <div className="relative flex-1">
               <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#b76e79]" />
               <Select value={location} onValueChange={setLocation}>
-                <SelectTrigger className="w-full bg-transparent border-0 pl-12 text-white h-12">
+                <SelectTrigger size="lg" className="w-full bg-transparent border-0 pl-12 text-white">
                   <SelectValue placeholder={translations.selectCity} />
                 </SelectTrigger>
                 <SelectContent className="bg-[#1a1a24] border-[#8b1a4a]/20">
@@ -75,7 +75,7 @@ export function HeroSection({ translations, stats, locale }: HeroProps) {
             </div>
             <Button 
               onClick={handleSearch}
-              className="h-12 px-8 bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] hover:from-[#a8255c] hover:to-[#7d4fb5] text-white border-0 rounded-xl"
+              className="h-12 shrink-0 px-8 bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] text-white border-0 rounded-xl hover:from-[#a8255c] hover:to-[#7d4fb5] sm:h-auto sm:min-h-12"
             >
               <Search className="w-5 h-5 mr-2" />
               {translations.search}

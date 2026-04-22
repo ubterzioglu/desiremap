@@ -67,7 +67,7 @@ export function SearchFilters({
         <div className="relative sm:w-48">
           <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#b76e79] z-10" />
           <Select value={selectedCity || '_all'} onValueChange={handleCityChange}>
-            <SelectTrigger className="w-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl pl-12 h-14 text-white">
+            <SelectTrigger size="xl" className="w-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl pl-12 text-white">
               <SelectValue placeholder={translations.selectCity} />
             </SelectTrigger>
             <SelectContent className="bg-[#1a1a24] border-[#8b1a4a]/20">
