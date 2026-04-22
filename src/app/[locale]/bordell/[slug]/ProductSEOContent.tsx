@@ -43,12 +43,12 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
   const hasReviewEntries = productData.reviews.length > 0
   const hasFaq = productData.faq.length > 0
   const hasRelated = productData.relatedProducts.length > 0
-  const hasContactInfo = Boolean(productData.phone) || Boolean(productData.email)
+  const hasContactInfo = Boolean(productData.phone) || Boolean(productData.email) || Boolean(productData.website)
   const hasServices = productData.services.length > 0
-  const hasMeaningfulOpeningHours =
-    productData.openingHours.opens !== '00:00' ||
-    productData.openingHours.closes !== '23:59' ||
-    productData.openingHours.days.length !== 7
+  const hasOpeningHours =
+    productData.openingHours.days.length > 0 &&
+    Boolean(productData.openingHours.opens) &&
+    Boolean(productData.openingHours.closes)
   const formattedPrice = productData.price > 0 ? `${productData.price.toFixed(2)}€` : 'Auf Anfrage'
   const introStats = [
     hasLadiesCount ? `Mit über ${productData.ladiesCount} Damen` : null,
@@ -158,7 +158,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
             </div>
           </div>
 
-          {hasMeaningfulOpeningHours && (
+          {hasOpeningHours && (
             <div className="rounded-2xl border border-white/5 bg-background/35 p-5">
               <h3 className="text-xl font-semibold text-foreground">
                 Öffnungszeiten

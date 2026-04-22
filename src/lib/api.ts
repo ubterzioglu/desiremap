@@ -2,6 +2,7 @@ import type { PublicCity, PublicEstablishment, PublicServiceType } from '@/types
 import type { AuthSession, AuthUser } from '@/stores/authStore'
 import { useAuthStore } from '@/stores/authStore'
 import { normalizePublicServiceTypes } from '@/lib/public-service-types'
+import { APP_BFF_BASE_URL, CLIENT_API_BASE_URL, joinApiUrl } from '@/lib/api-config'
 
 interface ApiResponse<T> {
   success: boolean
@@ -20,44 +21,14 @@ interface AuthConfig {
 }
 
 type WorkspaceType = 'public' | 'admin'
-
-function collapseDuplicatedApiSegments(value: string) {
-  return value.replace(/(?:\/api){2,}(?=\/|$|\?)/g, '/api')
-}
-
-function normalizeApiBaseUrl(value: string) {
-  const trimmedValue = value.replace(/\/+$/, '')
-
-  if (!trimmedValue) {
-    return ''
-  }
-
-  if (!/^https?:\/\//.test(trimmedValue)) {
-    return collapseDuplicatedApiSegments(trimmedValue)
-  }
-
-  try {
-    const url = new URL(trimmedValue)
-    url.pathname = collapseDuplicatedApiSegments(url.pathname)
-    return url.toString().replace(/\/+$/, '')
-  } catch {
-    return collapseDuplicatedApiSegments(trimmedValue)
-  }
-}
-
-const API_BASE_URL = normalizeApiBaseUrl(process.env.NEXT_PUBLIC_API_URL || '/api')
+const PUBLIC_API_BASE_URL = `${APP_BFF_BASE_URL}/public`
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
 }
 
 function normalizeEndpoint(endpoint: string) {
-  if (/^https?:\/\//.test(endpoint)) {
-    return endpoint
-  }
-
-  const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
-  return collapseDuplicatedApiSegments(API_BASE_URL ? `${API_BASE_URL}${normalizedEndpoint}` : normalizedEndpoint)
+  return joinApiUrl(CLIENT_API_BASE_URL, endpoint)
 }
 
 function createHeaders(options: ApiRequestOptions) {
@@ -121,6 +92,22 @@ function unwrapPayload<T>(payload: unknown): T {
 
 async function apiCall<T>(endpoint: string, options: ApiRequestOptions = {}): Promise<T> {
   const response = await fetch(normalizeEndpoint(endpoint), {
+    ...options,
+    headers: createHeaders(options),
+    cache: options.cache ?? 'no-store'
+  })
+
+  const payload = await parseResponse(response)
+
+  if (!response.ok) {
+    throw new Error(getErrorMessage(payload, response))
+  }
+
+  return unwrapPayload<T>(payload)
+}
+
+async function sameOriginApiCall<T>(endpoint: string, options: ApiRequestOptions = {}): Promise<T> {
+  const response = await fetch(endpoint, {
     ...options,
     headers: createHeaders(options),
     cache: options.cache ?? 'no-store'
@@ -359,10 +346,10 @@ export const bookingApi = {
 
 export const publicApi = {
   getCities: () =>
-    apiCall<{ items: PublicCity[] }>('/public/cities'),
+    sameOriginApiCall<{ items: PublicCity[] }>(`${PUBLIC_API_BASE_URL}/cities`, { auth: false }),
 
   getServiceTypes: async () => ({
-    items: normalizePublicServiceTypes(await apiCall<unknown>('/public/service-types'))
+    items: normalizePublicServiceTypes(await sameOriginApiCall<unknown>(`${PUBLIC_API_BASE_URL}/service-types`, { auth: false }))
   }),
 
   getEstablishments: (params?: {
@@ -379,13 +366,14 @@ export const publicApi = {
       })
     }
     const suffix = qs.toString()
-    return apiCall<{ items: PublicEstablishment[]; total: number }>(
-      suffix ? `/public/establishments?${suffix}` : '/public/establishments'
+    return sameOriginApiCall<{ items: PublicEstablishment[]; total: number }>(
+      suffix ? `${PUBLIC_API_BASE_URL}/establishments?${suffix}` : `${PUBLIC_API_BASE_URL}/establishments`,
+      { auth: false }
     )
   },
 
   getEstablishmentDetail: (slug: string) =>
-    apiCall<PublicEstablishment>(`/public/establishments/${slug}`),
+    sameOriginApiCall<PublicEstablishment>(`${PUBLIC_API_BASE_URL}/establishments/${slug}`, { auth: false }),
 }
 
 export const establishmentsApi = {

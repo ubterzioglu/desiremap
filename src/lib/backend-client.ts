@@ -1,7 +1,8 @@
 import type { PublicCity, PublicEstablishment, PublicServiceType } from '@/types'
+import { SERVER_BACKEND_API_URL } from '@/lib/api-config'
 import { normalizePublicServiceTypes } from '@/lib/public-service-types'
 
-const BACKEND_URL = (process.env.BACKEND_API_URL || 'https://api.desiremap.de/api').replace(/\/+$/, '')
+const BACKEND_URL = SERVER_BACKEND_API_URL
 
 export async function backendFetch<T>(
   endpoint: string,

@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
       total: typeof data.total === 'number' ? data.total : items.length,
     })
   } catch (err) {
-    return NextResponse.json({ success: false, error: String(err) }, { status: 502 })
+    console.error('public establishments fallback:', err)
+    return NextResponse.json({ items: [], total: 0, fallback: true })
   }
 }
