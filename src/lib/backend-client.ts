@@ -4,6 +4,34 @@ import { normalizePublicServiceTypes } from '@/lib/public-service-types'
 
 const BACKEND_URL = SERVER_BACKEND_API_URL
 
+function normalizePublicEstablishment(item: PublicEstablishment): PublicEstablishment {
+  const raw = item as PublicEstablishment & {
+    image?: string | null
+    is_active?: boolean
+    public_image_url?: string | null
+    publicImageUrl?: string | null
+  }
+
+  const images = Array.isArray(item.images)
+    ? item.images.filter((image): image is string => typeof image === 'string' && image.length > 0)
+    : []
+
+  const primaryImage =
+    typeof raw.publicImageUrl === 'string' && raw.publicImageUrl.length > 0
+      ? raw.publicImageUrl
+      : typeof raw.public_image_url === 'string' && raw.public_image_url.length > 0
+        ? raw.public_image_url
+        : typeof raw.image === 'string' && raw.image.length > 0
+          ? raw.image
+        : null
+
+  return {
+    ...item,
+    images: primaryImage ? [primaryImage, ...images.filter((image) => image !== primaryImage)] : images,
+    isActive: raw.isActive ?? raw.is_active ?? true,
+  }
+}
+
 export async function backendFetch<T>(
   endpoint: string,
   options: {
@@ -133,11 +161,16 @@ export const backendApi = {
     const suffix = qs.toString()
     return backendFetch<{ results: PublicEstablishment[]; total: number }>(
       suffix ? `/public/establishments?${suffix}` : '/public/establishments'
-    )
+    ).then((response) => ({
+      ...response,
+      results: Array.isArray(response.results)
+        ? response.results.map(normalizePublicEstablishment)
+        : [],
+    }))
   },
 
   getPublicEstablishmentDetail: (slug: string) =>
-    backendFetch<PublicEstablishment>(`/public/establishments/${slug}`),
+    backendFetch<PublicEstablishment>(`/public/establishments/${slug}`).then(normalizePublicEstablishment),
 
   getPublicVenueEvents: (venuePublicId: string) =>
     backendFetch<{
