@@ -4,7 +4,7 @@ import { normalizePublicServiceTypes } from '@/lib/public-service-types'
 
 const BACKEND_URL = SERVER_BACKEND_API_URL
 
-function normalizePublicEstablishment(item: PublicEstablishment): PublicEstablishment {
+export function normalizePublicEstablishment(item: PublicEstablishment): PublicEstablishment {
   const raw = item as PublicEstablishment & {
     image?: string | null
     is_active?: boolean

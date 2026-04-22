@@ -3,10 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, ArrowRight, Crown, Eye, EyeOff, Loader2, User } from 'lucide-react'
-import { authApi } from '@/lib/api'
 import { GoogleOAuthButton } from '@/components/auth/GoogleOAuthButton'
 import { useGoogleOAuth } from '@/hooks/useGoogleOAuth'
-import { useAuthStore } from '@/stores/authStore'
+import { useRegisterAndLogin } from '@/hooks/useQueries'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -18,16 +17,15 @@ type RegisterPageProps = {
 
 export function RegisterPage({ onBack, onLogin }: RegisterPageProps) {
   const router = useRouter()
-  const setSession = useAuthStore((state) => state.setSession)
   const [showPassword, setShowPassword] = useState(false)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
   const { enabled: googleOAuthEnabled, login: loginWithGoogle } = useGoogleOAuth()
+  const registerMutation = useRegisterAndLogin()
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     setError('')
     if (!email || !password || !name) {
       setError('Bitte fuellen Sie alle Felder aus')
@@ -37,18 +35,13 @@ export function RegisterPage({ onBack, onLogin }: RegisterPageProps) {
       setError('Passwort muss mindestens 8 Zeichen haben')
       return
     }
-    setIsLoading(true)
-    try {
-      await authApi.register({ email, password, name })
-      const session = await authApi.login({ email, password })
-      setSession(session)
-      router.push('/de/dashboard')
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Ein Fehler ist aufgetreten'
-      setError(message)
-    } finally {
-      setIsLoading(false)
-    }
+    registerMutation.mutate(
+      { email, password, name },
+      {
+        onSuccess: () => router.push('/de/dashboard'),
+        onError: (err) => setError(err.message)
+      }
+    )
   }
 
   return (
@@ -135,10 +128,10 @@ export function RegisterPage({ onBack, onLogin }: RegisterPageProps) {
             )}
             <Button
               onClick={handleSubmit}
-              disabled={isLoading}
+              disabled={registerMutation.isPending}
               className="w-full h-12 bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] hover:from-[#a8255c] hover:to-[#7d4fb5] text-white border-0 rounded-xl text-base"
             >
-              {isLoading ? (
+              {registerMutation.isPending ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
                 <>

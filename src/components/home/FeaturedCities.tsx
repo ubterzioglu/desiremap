@@ -19,7 +19,7 @@ export function FeaturedCities({ translations }: FeaturedCitiesProps) {
   return (
     <section className="relative py-12 sm:py-16 md:py-24 overflow-hidden">
       <div className="absolute inset-0">
-        <Image src="/featured-bg.jpg" alt="" fill className="w-full h-full object-cover opacity-15" />
+        <Image src="/featured-bg.jpg" alt="Deutschlands wichtigste Städte für FKK Clubs und Laufhäuser: Berlin, Köln, Frankfurt, München und Stuttgart auf DesireMap" fill className="w-full h-full object-cover opacity-15" />
         <div className="absolute inset-0 bg-linear-to-r from-black via-black/30 to-black/5" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20" />
       </div>

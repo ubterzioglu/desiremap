@@ -2,45 +2,15 @@
 
 import { useState } from 'react'
 import { Building2, ChevronDown, ChevronUp, Plus, UserPlus } from 'lucide-react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useAdminBusinesses, useCreateBusiness, useCreateOperator } from '@/hooks/useQueries'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-
-type Business = {
-  id: string
-  public_id: string
-  legal_name: string
-  display_name: string
-  billing_email: string
-  billing_phone: string | null
-  status: string
-  created_at: string
-}
-
-async function fetchBusinesses(): Promise<Business[]> {
-  const res = await fetch('/api/admin/businesses')
-  const data = await res.json()
-  return data.items ?? []
-}
-
-async function createBusiness(body: { legalName: string; displayName: string; billingEmail: string; billingPhone?: string }) {
-  const res = await fetch('/api/admin/businesses', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-  if (!res.ok) { const d = await res.json(); throw new Error(d.error ?? 'Fehler') }
-  return res.json()
-}
-
-async function createOperator(businessId: string, body: { email: string; password: string; displayName: string }) {
-  const res = await fetch(`/api/admin/businesses/${businessId}/operators`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-  if (!res.ok) { const d = await res.json(); throw new Error(d.error ?? 'Fehler') }
-  return res.json()
-}
 
 const emptyBiz = { legalName: '', displayName: '', billingEmail: '', billingPhone: '' }
 const emptyOp = { email: '', password: '', displayName: '' }
 
 export function AdminBusinessesWorkspace() {
-  const qc = useQueryClient()
-  const { data: businesses = [], isLoading } = useQuery({ queryKey: ['admin', 'businesses'], queryFn: fetchBusinesses })
+  const { data: businesses = [], isLoading } = useAdminBusinesses()
 
   const [bizForm, setBizForm] = useState(emptyBiz)
   const [bizError, setBizError] = useState('')
@@ -51,28 +21,34 @@ export function AdminBusinessesWorkspace() {
   const [opError, setOpError] = useState('')
   const [opSuccess, setOpSuccess] = useState('')
 
-  const createBizMut = useMutation({
-    mutationFn: createBusiness,
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['admin', 'businesses'] })
-      setBizForm(emptyBiz)
-      setBizError('')
-      setBizSuccess('Business erfolgreich erstellt!')
-      setTimeout(() => setBizSuccess(''), 4000)
-    },
-    onError: (e: Error) => setBizError(e.message),
-  })
+  const createBizMut = useCreateBusiness()
+  const createOpMut = useCreateOperator()
 
-  const createOpMut = useMutation({
-    mutationFn: ({ id, ...body }: { id: string } & typeof emptyOp) => createOperator(id, body),
-    onSuccess: () => {
-      setOpForm(emptyOp)
-      setOpError('')
-      setOpSuccess('Operator-Account erstellt! Passwort-Reset beim ersten Login erforderlich.')
-      setTimeout(() => setOpSuccess(''), 6000)
-    },
-    onError: (e: Error) => setOpError(e.message),
-  })
+  const handleCreateBiz = () => {
+    setBizError('')
+    setBizSuccess('')
+    createBizMut.mutate(bizForm, {
+      onSuccess: () => {
+        setBizForm(emptyBiz)
+        setBizSuccess('Business erfolgreich erstellt!')
+        setTimeout(() => setBizSuccess(''), 4000)
+      },
+      onError: (e: Error) => setBizError(e.message),
+    })
+  }
+
+  const handleCreateOp = (businessId: string) => {
+    setOpError('')
+    setOpSuccess('')
+    createOpMut.mutate({ businessId, ...opForm }, {
+      onSuccess: () => {
+        setOpForm(emptyOp)
+        setOpSuccess('Operator-Account erstellt! Passwort-Reset beim ersten Login erforderlich.')
+        setTimeout(() => setOpSuccess(''), 6000)
+      },
+      onError: (e: Error) => setOpError(e.message),
+    })
+  }
 
   return (
     <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
@@ -87,7 +63,7 @@ export function AdminBusinessesWorkspace() {
           <Input placeholder="Telefon (optional)" value={bizForm.billingPhone} onChange={e => setBizForm(s => ({ ...s, billingPhone: e.target.value }))} className="h-12 border-white/10 bg-white/5 text-white placeholder:text-slate-500" />
           {bizError && <p className="text-sm text-red-400">{bizError}</p>}
           {bizSuccess && <p className="text-sm text-teal-400">{bizSuccess}</p>}
-          <Button onClick={() => createBizMut.mutate(bizForm)} disabled={createBizMut.isPending || !bizForm.legalName || !bizForm.displayName || !bizForm.billingEmail} className="w-full rounded-2xl bg-teal-400 text-slate-950 hover:bg-teal-300">
+          <Button onClick={handleCreateBiz} disabled={createBizMut.isPending || !bizForm.legalName || !bizForm.displayName || !bizForm.billingEmail} className="w-full rounded-2xl bg-teal-400 text-slate-950 hover:bg-teal-300">
             <Plus className="mr-2 h-4 w-4" />
             {createBizMut.isPending ? 'Wird erstellt...' : 'Business erstellen'}
           </Button>
@@ -131,7 +107,7 @@ export function AdminBusinessesWorkspace() {
                     <Input placeholder="Initiales Passwort *" type="password" value={opForm.password} onChange={e => setOpForm(s => ({ ...s, password: e.target.value }))} className="h-10 border-white/10 bg-white/5 text-white text-sm placeholder:text-slate-500" />
                     {opError && <p className="text-xs text-red-400">{opError}</p>}
                     {opSuccess && <p className="text-xs text-teal-400">{opSuccess}</p>}
-                    <Button size="sm" onClick={() => createOpMut.mutate({ id: biz.id, ...opForm })} disabled={createOpMut.isPending || !opForm.email || !opForm.password || !opForm.displayName} className="w-full rounded-xl bg-teal-400/20 text-teal-200 hover:bg-teal-400/30 border border-teal-400/20">
+                    <Button size="sm" onClick={() => handleCreateOp(biz.id)} disabled={createOpMut.isPending || !opForm.email || !opForm.password || !opForm.displayName} className="w-full rounded-xl bg-teal-400/20 text-teal-200 hover:bg-teal-400/30 border border-teal-400/20">
                       <UserPlus className="mr-2 h-3.5 w-3.5" />
                       {createOpMut.isPending ? 'Erstellt...' : 'Operator-Account anlegen'}
                     </Button>

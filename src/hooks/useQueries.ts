@@ -1,19 +1,38 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
 import { customerApi, bookingApi, establishmentsApi, adminApi, authApi, publicApi, seedApi } from '@/lib/api'
 import { useAuthStore } from '@/stores/authStore'
-
-function useIsMounted() {
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => setMounted(true), [])
-  return mounted
-}
 
 
 // ============ AUTH HOOKS ============
 export function useRegister() {
   return useMutation({
     mutationFn: authApi.register
+  })
+}
+
+export function useLogin(workspace: 'public' | 'admin' = 'public') {
+  const setSession = useAuthStore((state) => state.setSession)
+
+  return useMutation({
+    mutationFn: (data: { email: string; password: string }) =>
+      authApi.login(data, workspace),
+    onSuccess: (session) => {
+      setSession(session)
+    }
+  })
+}
+
+export function useRegisterAndLogin() {
+  const setSession = useAuthStore((state) => state.setSession)
+
+  return useMutation({
+    mutationFn: async (data: { email: string; password: string; name?: string; phone?: string }) => {
+      await authApi.register(data)
+      return authApi.login({ email: data.email, password: data.password })
+    },
+    onSuccess: (session) => {
+      setSession(session)
+    }
   })
 }
 
@@ -145,22 +164,18 @@ export function useCancelBooking() {
 
 // ============ PUBLIC HOOKS ============
 export function usePublicCities() {
-  const mounted = useIsMounted()
   return useQuery({
     queryKey: ['public', 'cities'],
     queryFn: () => publicApi.getCities().then((r) => r.items ?? []),
     staleTime: 10 * 60 * 1000,
-    enabled: mounted,
   })
 }
 
 export function usePublicServiceTypes() {
-  const mounted = useIsMounted()
   return useQuery({
     queryKey: ['public', 'service-types'],
     queryFn: () => publicApi.getServiceTypes().then((r) => r.items ?? []),
     staleTime: 10 * 60 * 1000,
-    enabled: mounted,
   })
 }
 
@@ -171,12 +186,10 @@ export function usePublicEstablishments(params?: {
   limit?: number
   offset?: number
 }) {
-  const mounted = useIsMounted()
   return useQuery({
     queryKey: ['public', 'establishments', params],
     queryFn: () => publicApi.getEstablishments(params).then((r) => ({ items: r.items ?? [], total: r.total ?? 0 })),
     staleTime: 2 * 60 * 1000,
-    enabled: mounted,
   })
 }
 
@@ -207,7 +220,7 @@ export function useSearchEstablishments(params: {
 }
 
 function useAdminAuthenticated() {
-  const token = useAuthStore.getState().token
+  const token = useAuthStore((state) => state.token)
   return Boolean(token)
 }
 
@@ -333,12 +346,46 @@ export function useAdminSeed() {
 
 export function useDeprovisionBusinessOperator() {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
     mutationFn: adminApi.deprovisionBusinessOperator,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'operators'] })
       queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] })
+    }
+  })
+}
+
+export function useAdminBusinesses() {
+  return useQuery({
+    queryKey: ['admin', 'businesses'],
+    queryFn: adminApi.getBusinesses,
+    enabled: useAdminAuthenticated(),
+    retry: false
+  })
+}
+
+export function useCreateBusiness() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: adminApi.createBusiness,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'businesses'] })
+      queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] })
+    }
+  })
+}
+
+export function useCreateOperator() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ businessId, ...data }: { businessId: string; email: string; password: string; displayName: string }) =>
+      adminApi.createOperator(businessId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'businesses'] })
+      queryClient.invalidateQueries({ queryKey: ['admin', 'operators'] })
     }
   })
 }

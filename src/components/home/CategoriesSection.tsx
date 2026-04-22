@@ -23,7 +23,7 @@ export function CategoriesSection({ translations, locale }: CategoriesProps) {
   return (
     <section className="relative py-12 sm:py-16 md:py-24 overflow-hidden">
       <div className="absolute inset-0">
-        <Image src="/categories-bg.jpg" alt="" fill className="w-full h-full object-cover opacity-40" />
+        <Image src="/categories-bg.jpg" alt="Kategorien von Adult-Entertainment-Etablissements: FKK Clubs, Laufhäuser, Studios und Privat-Adressen in Deutschland" fill className="w-full h-full object-cover opacity-40" />
         <div className="absolute inset-0 bg-linear-to-b from-black via-black/5 to-black" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20" />
       </div>

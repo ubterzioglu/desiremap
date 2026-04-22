@@ -6,6 +6,9 @@ import { CategoriesSection } from './CategoriesSection'
 import { FeaturedCities } from './FeaturedCities'
 import { HeroSection } from './HeroSection'
 import { SEOContentSection } from './SEOContentSection'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { getHomeSeoMetadata } from '@/lib/seo/home'
+import { getStructuredData } from '@/lib/structuredData'
 
 const ListingsSection = dynamic(() => import('@/components/listings/ListingsSection').then(m => m.ListingsSection), { ssr: false })
 
@@ -16,8 +19,13 @@ export function HomePage({ locale }: HomePageProps) {
   const stats = useTranslations('stats')
   const categories = useTranslations('categories')
   const cities = useTranslations('cities')
+  const meta = getHomeSeoMetadata(locale)
+  const structuredData = getStructuredData(locale, meta.title, meta.description, ['de', 'en', 'tr', 'ar'])
+  const schemas = (structuredData['@graph'] || []) as object[]
+
   return (
     <>
+      <JsonLd schemas={schemas} />
       <HeroSection
         locale={locale}
         translations={{ title: hero('title'), subtitle: hero('subtitle'), description: hero('description'), searchPlaceholder: hero('searchPlaceholder'), selectCity: hero('selectCity'), search: hero('search'), scrollToExplore: hero('scrollToExplore') }}

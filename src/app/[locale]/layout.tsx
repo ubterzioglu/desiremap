@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
   return {
     metadataBase: new URL(siteUrl),
-    title: { default: title, template: '%s | DesireMap' },
+    title: { default: title, template: '%s ' },
     description,
     icons: { icon: '/icon.svg', apple: '/icon.svg' },
     robots: {
@@ -85,14 +85,14 @@ export default async function LocaleLayout({
   return (
     <>
       <LocaleInit locale={locale} />
-      <SessionProvider>
-        <QueryProvider>
+      <QueryProvider>
+        <SessionProvider>
           <NextIntlClientProvider messages={messages}>
             {children}
             <Toaster />
           </NextIntlClientProvider>
-        </QueryProvider>
-      </SessionProvider>
+        </SessionProvider>
+      </QueryProvider>
     </>
   )
 }

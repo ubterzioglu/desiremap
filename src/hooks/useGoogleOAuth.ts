@@ -1,31 +1,21 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { authApi } from '@/lib/api'
 
 export function useGoogleOAuth() {
-  const [enabled, setEnabled] = useState(false)
-  const [oauthUrl, setOauthUrl] = useState('')
+  const { data: config } = useQuery({
+    queryKey: ['auth', 'config'],
+    queryFn: () => authApi.getConfig(),
+    staleTime: 5 * 60 * 1000,
+  })
 
-  useEffect(() => {
-    authApi.getConfig()
-      .then((config) => {
-        setEnabled(config.googleOAuth)
-        setOauthUrl(config.googleOAuthUrl || '')
-      })
-      .catch(() => {
-        setEnabled(false)
-        setOauthUrl('')
-      })
-  }, [])
+  const enabled = config?.googleOAuth ?? false
 
   const login = async () => {
-    const targetUrl = oauthUrl || await authApi.getGoogleLoginUrl()
+    const targetUrl = config?.googleOAuthUrl || await authApi.getGoogleLoginUrl()
     window.location.href = targetUrl
   }
 
-  return {
-    enabled,
-    login
-  }
+  return { enabled, login }
 }

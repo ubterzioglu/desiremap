@@ -335,6 +335,181 @@ function getOpeningHoursSchema() {
 }
 
 // Main export function for Homepage
+function getHomepageLocalBusinessSchema() {
+  return {
+    '@type': 'LocalBusiness' as const,
+    '@id': `${siteUrl}/#localbusiness`,
+    name: 'DesireMap',
+    description: 'Deutschlands führende Plattform für Adult-Entertainment-Etablissements. Entdecken Sie Saunaclubs, FKK-Clubs, Bars und mehr.',
+    url: siteUrl,
+    telephone: '+49-30-123456789',
+    email: 'info@desiremap.de',
+    address: {
+      '@type': 'PostalAddress' as const,
+      streetAddress: 'Kurfürstendamm 100',
+      addressLocality: 'Berlin',
+      postalCode: '10711',
+      addressCountry: 'DE'
+    },
+    geo: {
+      '@type': 'GeoCoordinates' as const,
+      latitude: '52.5020',
+      longitude: '13.3245'
+    },
+    openingHoursSpecification: {
+      '@type': 'OpeningHoursSpecification' as const,
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      opens: '00:00',
+      closes: '23:59'
+    },
+    priceRange: '€€',
+    image: `${siteUrl}/og-image.png`,
+    sameAs: [
+      'https://twitter.com/desiremap',
+      'https://instagram.com/desiremap'
+    ]
+  }
+}
+
+function getHomepageSpeakableSchema() {
+  return {
+    '@type': 'SpeakableSpecification' as const,
+    '@id': `${siteUrl}/#speakable`,
+    cssSelector: ['h1', '.hero-description', '.faq-section', '.how-it-works'],
+    xpath: [
+      '/html/head/title',
+      '/html/head/meta[@name="description"]/@content'
+    ]
+  }
+}
+
+function getHomepageVideoSchema() {
+  return {
+    '@type': 'VideoObject' as const,
+    '@id': `${siteUrl}/#homepage-video`,
+    name: 'DesireMap - Entdecken Sie das beste Adult Entertainment in Deutschland',
+    description: 'Erfahren Sie, wie DesireMap Ihnen hilft, die besten Saunaclubs, FKK-Clubs und Entertainment-Etablissements in Deutschland zu finden.',
+    thumbnailUrl: `${siteUrl}/video-thumbnail.jpg`,
+    uploadDate: '2025-01-15T08:00:00+01:00',
+    contentUrl: `${siteUrl}/promo-video.mp4`,
+    embedUrl: 'https://www.youtube.com/embed/desiremap-promo',
+    duration: 'PT2M30S'
+  }
+}
+
+function getHomepageHowToSchema(locale: string) {
+  const steps = locale === 'de' ? [
+    { name: 'Suchen', text: 'Geben Sie Ihre Stadt oder Postleitzahl ein, um Etablissements in Ihrer Nähe zu finden.' },
+    { name: 'Vergleichen', text: 'Vergleichen Sie Bewertungen, Preise und Ausstattungsmerkmale verschiedener Etablissements.' },
+    { name: 'Reservieren', text: 'Buchen Sie Ihren Besuch direkt online mit wenigen Klicks.' },
+    { name: 'Genießen', text: 'Besuchen Sie das Etablissement und genießen Sie Ihr Erlebnis.' }
+  ] : locale === 'en' ? [
+    { name: 'Search', text: 'Enter your city or postal code to find establishments near you.' },
+    { name: 'Compare', text: 'Compare reviews, prices, and amenities of different establishments.' },
+    { name: 'Reserve', text: 'Book your visit directly online with just a few clicks.' },
+    { name: 'Enjoy', text: 'Visit the establishment and enjoy your experience.' }
+  ] : locale === 'tr' ? [
+    { name: 'Ara', text: 'Yakınınızdaki mekânları bulmak için şehrinizi veya posta kodunuzu girin.' },
+    { name: 'Karşılaştır', text: 'Farklı mekânların yorumlarını, fiyatlarını ve olanaklarını karşılaştırın.' },
+    { name: 'Rezerve Et', text: 'Birkaç tıklamayla çevrimiçi ziyaretinizi ayarlayın.' },
+    { name: 'Keyfini Çıkar', text: 'Mekânı ziyaret edin ve deneyiminizin tadını çıkarın.' }
+  ] : [
+    { name: 'بحث', text: 'أدخل مدينتك أو رمزك البريدي للعثور على المؤسسات القريبة منك.' },
+    { name: 'مقارنة', text: 'قارن المراجعات والأسعار والمرافق للمؤسسات المختلفة.' },
+    { name: 'حجز', text: 'احجز زيارتك مباشرة عبر الإنترنت ببضع نقرات.' },
+    { name: 'استمتع', text: 'قم بزيارة المؤسسة واستمتع بتجربتك.' }
+  ]
+
+  return {
+    '@type': 'HowTo' as const,
+    '@id': `${siteUrl}/#howto-use-platform`,
+    name: locale === 'de' ? 'So nutzen Sie DesireMap'
+      : locale === 'en' ? 'How to Use DesireMap'
+      : locale === 'tr' ? 'DesireMap Nasıl Kullanılır'
+      : 'كيفية استخدام DesireMap',
+    description: locale === 'de'
+      ? 'Eine Schritt-für-Schritt-Anleitung zur Nutzung der DesireMap-Plattform'
+      : 'Step-by-step guide to using the DesireMap platform',
+    step: steps.map((step, index) => ({
+      '@type': 'HowToStep' as const,
+      position: index + 1,
+      name: step.name,
+      text: step.text
+    }))
+  }
+}
+
+function getHomepageProductGroupSchema(locale: string) {
+  const categories = [
+    {
+      name: locale === 'de' ? 'FKK & Saunaclub' : locale === 'en' ? 'FKK & Sauna Club' : 'FKK & Saunaclub',
+      description: locale === 'de' ? 'Erstklassige FKK- und Saunaclubs in Deutschland' : 'Premium FKK and sauna clubs in Germany',
+      url: `${siteUrl}/de/search?type=fkk`
+    },
+    {
+      name: locale === 'de' ? 'Bordell & Laufhaus' : locale === 'en' ? 'Brothel & Walk-through' : 'Bordell & Laufhaus',
+      description: locale === 'de' ? 'Diskrete Bordelle und Laufhäuser' : 'Discreet brothels and walk-through establishments',
+      url: `${siteUrl}/de/search?type=bordell`
+    },
+    {
+      name: locale === 'de' ? 'Nightclub & Bar' : locale === 'en' ? 'Nightclub & Bar' : 'Nightclub & Bar',
+      description: locale === 'de' ? 'Stimmungsvolle Nightclubs und Bars' : 'Vibrant nightclubs and bars',
+      url: `${siteUrl}/de/search?type=nightclub`
+    },
+    {
+      name: locale === 'de' ? 'Massage Studio' : locale === 'en' ? 'Massage Studio' : 'Masaj Stüdyosu',
+      description: locale === 'de' ? 'Professionelle Massage-Studios' : 'Professional massage studios',
+      url: `${siteUrl}/de/search?type=massage`
+    },
+    {
+      name: locale === 'de' ? 'Escort Service' : locale === 'en' ? 'Escort Service' : 'Escort Hizmeti',
+      description: locale === 'de' ? 'Exklusive Escort-Services' : 'Exclusive escort services',
+      url: `${siteUrl}/de/search?type=escort`
+    }
+  ]
+
+  return {
+    '@type': 'ProductGroup' as const,
+    '@id': `${siteUrl}/#product-group-venues`,
+    name: locale === 'de' ? 'Adult Entertainment Etablissements' : 'Adult Entertainment Establishments',
+    description: locale === 'de'
+      ? 'Entdecken Sie verschiedene Arten von Adult-Entertainment-Etablissements in Deutschland'
+      : 'Discover various types of adult entertainment establishments in Germany',
+    url: siteUrl,
+    variesBy: ['https://schema.org/category'],
+    hasVariant: categories.map(cat => ({
+      '@type': 'ProductGroup' as const,
+      '@id': `${cat.url}/#variant`,
+      name: cat.name,
+      description: cat.description,
+      url: cat.url
+    }))
+  }
+}
+
+function getHomepagePersonSchema() {
+  return {
+    '@type': 'Person' as const,
+    '@id': `${siteUrl}/#person-desiremap`,
+    name: 'DesireMap',
+    url: siteUrl,
+    image: {
+      '@type': 'ImageObject' as const,
+      url: `${siteUrl}/og-image.png`
+    },
+    jobTitle: 'Adult Entertainment Platform',
+    description: 'Deutschlands führende Plattform für Adult-Entertainment-Etablissements. Bewertungen, Reservierungen und Empfehlungen.',
+    sameAs: [
+      'https://twitter.com/desiremap',
+      'https://instagram.com/desiremap'
+    ],
+    worksFor: {
+      '@type': 'Organization' as const,
+      '@id': `${siteUrl}/#organization`
+    }
+  }
+}
+
 export function getStructuredData(locale: string, title: string, description: string, locales: string[]) {
   const homeMetadata = getHomeSeoMetadata(locale)
 
@@ -347,7 +522,13 @@ export function getStructuredData(locale: string, title: string, description: st
       getBreadcrumbSchema(locale),
       getItemListSchema(),
       getFAQPageSchema(locale),
-      getOpeningHoursSchema()
+      getOpeningHoursSchema(),
+      getHomepageLocalBusinessSchema(),
+      getHomepageSpeakableSchema(),
+      getHomepageVideoSchema(),
+      getHomepageHowToSchema(locale),
+      getHomepageProductGroupSchema(locale),
+      getHomepagePersonSchema()
     ]
   }
 }

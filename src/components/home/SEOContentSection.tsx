@@ -35,13 +35,8 @@ function SeoIntro({ seo }: { seo: HomeSeoExperience }) {
         <h2 className="mt-6 max-w-4xl text-3xl font-semibold leading-tight text-white sm:text-5xl">
           {seo.title}
         </h2>
-        <p className="mt-6 max-w-3xl text-base leading-8 text-gray-300 sm:text-lg">
-          {seo.lead}
-        </p>
-        <p className="mt-5 max-w-3xl text-sm leading-7 text-gray-400 sm:text-base">
-          {seo.supportingCopy}
-        </p>
-
+        <p className="mt-6 max-w-3xl text-base leading-8 text-gray-300 sm:text-lg" dangerouslySetInnerHTML={{ __html: seo.lead }} />
+        <p className="mt-5 max-w-3xl text-sm leading-7 text-gray-400 sm:text-base" dangerouslySetInnerHTML={{ __html: seo.supportingCopy }} />
         <div className="mt-8 flex flex-wrap gap-3">
           {seo.clusters.map((cluster) => (
             <Link
@@ -55,7 +50,6 @@ function SeoIntro({ seo }: { seo: HomeSeoExperience }) {
           ))}
         </div>
       </div>
-
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
         {seo.stats.map((stat) => (
           <div
@@ -66,6 +60,66 @@ function SeoIntro({ seo }: { seo: HomeSeoExperience }) {
             <div className="mt-2 text-sm leading-6 text-gray-400">{stat.label}</div>
           </div>
         ))}
+      </div>
+    </motion.div>
+  )
+}
+
+function SeoDefinitionBlock({ seo }: { seo: HomeSeoExperience }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      className="grid gap-8 lg:grid-cols-[1fr_1fr]"
+    >
+      <div className="rounded-4xl border border-white/10 bg-white/[0.035] p-8 sm:p-10">
+        <h3 className="text-2xl font-semibold text-white sm:text-3xl">
+          Was ist DesireMap? – Definition und Erklärung
+        </h3>
+        <div className="mt-5 max-w-3xl text-base leading-8 text-gray-300" dangerouslySetInnerHTML={{ __html: seo.definitionBlock }} />
+      </div>
+
+      <div className="rounded-4xl border border-white/10 bg-white/[0.035] p-8 sm:p-10 overflow-x-auto">
+        <h3 className="text-2xl font-semibold text-white sm:text-3xl">
+          {seo.comparisonIntro}
+        </h3>
+        <table className="mt-6 w-full text-sm text-left" role="table" aria-label="Vergleich der Etablissement-Kategorien">
+          <thead>
+            <tr className="border-b border-white/10">
+              <th className="pb-3 pr-4 text-[#f0bec6] font-semibold">Kategorie</th>
+              <th className="pb-3 pr-4 text-[#f0bec6] font-semibold">Preisrahmen</th>
+              <th className="pb-3 pr-4 text-[#f0bec6] font-semibold">Atmosphäre</th>
+              <th className="pb-3 text-[#f0bec6] font-semibold">Am besten für</th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-300">
+            <tr className="border-b border-white/5">
+              <td className="py-3 pr-4 font-medium text-white">FKK Club</td>
+              <td className="py-3 pr-4">50 – 150 €</td>
+              <td className="py-3 pr-4">Wellness & Spa</td>
+              <td className="py-3">Tagesplanung, Entspannung</td>
+            </tr>
+            <tr className="border-b border-white/5">
+              <td className="py-3 pr-4 font-medium text-white">Laufhaus</td>
+              <td className="py-3 pr-4">30 – 80 €</td>
+              <td className="py-3 pr-4">Direkt & Variabel</td>
+              <td className="py-3">Schnelle Auswahl, Metropolen</td>
+            </tr>
+            <tr className="border-b border-white/5">
+              <td className="py-3 pr-4 font-medium text-white">Studio</td>
+              <td className="py-3 pr-4">40 – 120 €</td>
+              <td className="py-3 pr-4">Diskret & Persönlich</td>
+              <td className="py-3">Gezielte Terminplanung</td>
+            </tr>
+            <tr>
+              <td className="py-3 pr-4 font-medium text-white">Privat</td>
+              <td className="py-3 pr-4">Variabel</td>
+              <td className="py-3 pr-4">Privat & Exklusiv</td>
+              <td className="py-3">Persönlichere Angebote</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </motion.div>
   )
@@ -93,9 +147,7 @@ function SeoClusterCard({ cluster }: { cluster: HomeSeoCluster }) {
         </div>
       </div>
 
-      <p className="mt-4 text-sm leading-7 text-gray-400">
-        {cluster.description}
-      </p>
+      <p className="mt-4 text-sm leading-7 text-gray-400" dangerouslySetInnerHTML={{ __html: cluster.description }} />
 
       <ul className="mt-5 space-y-2">
         {cluster.highlights.map((highlight) => (
@@ -127,7 +179,7 @@ function SeoClusterAtlas({ seo }: { seo: HomeSeoExperience }) {
           Kategorien im Überblick
         </p>
         <h3 className="mt-4 text-3xl font-semibold text-white sm:text-4xl">
-          Die wichtigsten Einstiege für die Startseite
+          Die besten FKK Clubs, Laufhäuser und Studios finden – Empfehlungen nach Kategorie
         </h3>
         <p className="mt-5 max-w-2xl text-base leading-8 text-gray-400">
           {seo.sectionIntro}
@@ -156,7 +208,7 @@ function SeoTrustAndCities({ seo }: { seo: HomeSeoExperience }) {
           Warum DesireMap
         </p>
         <h3 className="mt-4 text-3xl font-semibold text-white sm:text-4xl">
-          Vertrauen, Aktualität und klare Orientierung
+          Häufige Probleme und Lösungen: Warum DesireMap die sicherste Wahl ist
         </h3>
         <p className="mt-5 max-w-3xl text-base leading-8 text-gray-300">
           {seo.trustIntro}
@@ -166,7 +218,7 @@ function SeoTrustAndCities({ seo }: { seo: HomeSeoExperience }) {
           {seo.trustPoints.map((item) => (
             <div key={item.title} className="rounded-3xl border border-white/10 bg-black/20 p-5">
               <h4 className="text-lg font-semibold text-white">{item.title}</h4>
-              <p className="mt-3 text-sm leading-7 text-gray-400">{item.description}</p>
+              <p className="mt-3 text-sm leading-7 text-gray-400" dangerouslySetInnerHTML={{ __html: item.description }} />
             </div>
           ))}
         </div>
@@ -178,7 +230,7 @@ function SeoTrustAndCities({ seo }: { seo: HomeSeoExperience }) {
           <span className="text-sm font-semibold uppercase tracking-[0.28em]">Stadtcluster</span>
         </div>
         <h3 className="mt-4 text-3xl font-semibold text-white">
-          Deutschlands wichtigste Nachfragezentren
+          Wie funktioniert die Suche nach Städten? – Schritt für Schritt
         </h3>
         <p className="mt-5 text-sm leading-7 text-gray-400">
           {seo.cityIntro}
@@ -220,7 +272,7 @@ function SeoFaqAndCta({ seo }: { seo: HomeSeoExperience }) {
             Häufige Fragen
           </p>
           <h3 className="mt-4 text-3xl font-semibold text-white sm:text-4xl">
-            Antworten auf die wichtigsten Fragen vor der Suche
+            Preise, Kosten und Antworten auf häufige Fragen – was ein Besuch kostet und wie es funktioniert
           </h3>
           <p className="mt-5 max-w-2xl text-base leading-8 text-gray-400">
             {seo.faqIntro}
@@ -237,7 +289,7 @@ function SeoFaqAndCta({ seo }: { seo: HomeSeoExperience }) {
                 <h4 className="text-lg font-semibold text-white">{item.question}</h4>
                 <span className="text-[#f0bec6] transition-transform group-open:rotate-45">+</span>
               </summary>
-              <p className="mt-4 text-sm leading-7 text-gray-400">{item.answer}</p>
+              <p className="mt-4 text-sm leading-7 text-gray-400" dangerouslySetInnerHTML={{ __html: item.answer }} />
             </details>
           ))}
         </div>
@@ -287,6 +339,7 @@ export function SEOContentSection({ locale }: SEOContentSectionProps) {
 
       <div className="relative z-10 mx-auto flex max-w-7xl flex-col gap-16 px-6">
         <SeoIntro seo={seo} />
+        <SeoDefinitionBlock seo={seo} />
         <SeoClusterAtlas seo={seo} />
         <SeoTrustAndCities seo={seo} />
         <SeoFaqAndCta seo={seo} />

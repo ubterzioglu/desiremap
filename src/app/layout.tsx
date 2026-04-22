@@ -11,7 +11,7 @@ export const viewport: Viewport = { width: 'device-width', initialScale: 1, them
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: 'DesireMap - Premium Erotik Guide', template: '%s | DesireMap' },
+  title: { default: 'DesireMap - Premium Erotik Guide', template: '%s ' },
   description: 'Entdecken Sie 847+ verifizierte FKK Clubs, Bordelle und Laufhäuser in ganz Deutschland.',
   icons: { icon: '/icon.svg', apple: '/icon.svg' },
   robots: { index: true, follow: true },

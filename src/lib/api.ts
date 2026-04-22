@@ -1,8 +1,10 @@
-import type { PublicCity, PublicEstablishment, PublicServiceType } from '@/types'
+import type { PublicCity, PublicEstablishment } from '@/types'
 import type { AuthSession, AuthUser } from '@/stores/authStore'
 import { useAuthStore } from '@/stores/authStore'
 import { normalizePublicServiceTypes } from '@/lib/public-service-types'
-import { APP_BFF_BASE_URL, CLIENT_API_BASE_URL, joinApiUrl } from '@/lib/api-config'
+import { normalizePublicEstablishment } from '@/lib/backend-client'
+import { getFallbackPublicCities, getFallbackPublicServiceTypes } from '@/lib/public-discovery-fallbacks'
+import { CLIENT_API_BASE_URL, joinApiUrl } from '@/lib/api-config'
 
 interface ApiResponse<T> {
   success: boolean
@@ -21,8 +23,6 @@ interface AuthConfig {
 }
 
 type WorkspaceType = 'public' | 'admin'
-const PUBLIC_API_BASE_URL = `${APP_BFF_BASE_URL}/public`
-
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
 }
@@ -92,22 +92,6 @@ function unwrapPayload<T>(payload: unknown): T {
 
 async function apiCall<T>(endpoint: string, options: ApiRequestOptions = {}): Promise<T> {
   const response = await fetch(normalizeEndpoint(endpoint), {
-    ...options,
-    headers: createHeaders(options),
-    cache: options.cache ?? 'no-store'
-  })
-
-  const payload = await parseResponse(response)
-
-  if (!response.ok) {
-    throw new Error(getErrorMessage(payload, response))
-  }
-
-  return unwrapPayload<T>(payload)
-}
-
-async function sameOriginApiCall<T>(endpoint: string, options: ApiRequestOptions = {}): Promise<T> {
-  const response = await fetch(endpoint, {
     ...options,
     headers: createHeaders(options),
     cache: options.cache ?? 'no-store'
@@ -345,14 +329,23 @@ export const bookingApi = {
 }
 
 export const publicApi = {
-  getCities: () =>
-    sameOriginApiCall<{ items: PublicCity[] }>(`${PUBLIC_API_BASE_URL}/cities`, { auth: false }),
+  getCities: async () => {
+    try {
+      return await apiCall<{ items: PublicCity[] }>('/public/cities', { auth: false })
+    } catch {
+      return { items: getFallbackPublicCities() }
+    }
+  },
 
-  getServiceTypes: async () => ({
-    items: normalizePublicServiceTypes(await sameOriginApiCall<unknown>(`${PUBLIC_API_BASE_URL}/service-types`, { auth: false }))
-  }),
+  getServiceTypes: async () => {
+    try {
+      return { items: normalizePublicServiceTypes(await apiCall<unknown>('/public/service-types', { auth: false })) }
+    } catch {
+      return { items: getFallbackPublicServiceTypes() }
+    }
+  },
 
-  getEstablishments: (params?: {
+  getEstablishments: async (params?: {
     city?: string
     type?: string
     q?: string
@@ -366,14 +359,21 @@ export const publicApi = {
       })
     }
     const suffix = qs.toString()
-    return sameOriginApiCall<{ items: PublicEstablishment[]; total: number }>(
-      suffix ? `${PUBLIC_API_BASE_URL}/establishments?${suffix}` : `${PUBLIC_API_BASE_URL}/establishments`,
-      { auth: false }
-    )
+    try {
+      const data = await apiCall<{ results: PublicEstablishment[]; total: number }>(
+        suffix ? `/public/establishments?${suffix}` : '/public/establishments',
+        { auth: false }
+      )
+      const raw = Array.isArray(data.results) ? data.results : []
+      const items = raw.map(normalizePublicEstablishment)
+      return { items, total: typeof data.total === 'number' ? data.total : items.length }
+    } catch {
+      return { items: [], total: 0 }
+    }
   },
 
   getEstablishmentDetail: (slug: string) =>
-    sameOriginApiCall<PublicEstablishment>(`${PUBLIC_API_BASE_URL}/establishments/${slug}`, { auth: false }),
+    apiCall<PublicEstablishment>(`/public/establishments/${slug}`, { auth: false }).then(normalizePublicEstablishment),
 }
 
 export const establishmentsApi = {
@@ -471,6 +471,34 @@ export const adminApi = {
   deprovisionBusinessOperator: async (data: any) => {
     return apiCall<any>('/admin/operators', {
       method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  },
+
+  getBusinesses: async () => {
+    const data = await apiCall<{ items: any[] }>('/admin/businesses')
+    return data.items ?? []
+  },
+
+  createBusiness: async (data: {
+    legalName: string
+    displayName: string
+    billingEmail: string
+    billingPhone?: string
+  }) => {
+    return apiCall<any>('/admin/businesses', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  },
+
+  createOperator: async (businessId: string, data: {
+    email: string
+    password: string
+    displayName: string
+  }) => {
+    return apiCall<any>(`/admin/businesses/${businessId}/operators`, {
+      method: 'POST',
       body: JSON.stringify(data)
     })
   }

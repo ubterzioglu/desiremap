@@ -3,37 +3,32 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowRight, Building2, Eye, EyeOff, Loader2, ShieldCheck } from 'lucide-react'
-import { authApi } from '@/lib/api'
-import { useAuthStore } from '@/stores/authStore'
+import { useLogin } from '@/hooks/useQueries'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
 export function OperatorLoginPage() {
   const router = useRouter()
-  const setSession = useAuthStore((state) => state.setSession)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const loginMutation = useLogin('admin')
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     setError('')
     if (!email || !password) {
       setError('Bitte E-Mail und Passwort eingeben.')
       return
     }
-    setIsLoading(true)
-    try {
-      const session = await authApi.login({ email, password }, 'admin')
-      setSession(session)
-      router.replace('/business/dashboard')
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Anmeldung fehlgeschlagen')
-    } finally {
-      setIsLoading(false)
-    }
+    loginMutation.mutate(
+      { email, password },
+      {
+        onSuccess: () => router.replace('/business/dashboard'),
+        onError: (err) => setError(err.message || 'Anmeldung fehlgeschlagen')
+      }
+    )
   }
 
   return (
@@ -132,10 +127,10 @@ export function OperatorLoginPage() {
 
               <Button
                 onClick={handleSubmit}
-                disabled={isLoading}
+                disabled={loginMutation.isPending}
                 className="h-12 w-full rounded-2xl bg-indigo-500 text-white hover:bg-indigo-400 transition-colors"
               >
-                {isLoading ? (
+                {loginMutation.isPending ? (
                   <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
                   <>

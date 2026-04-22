@@ -21,6 +21,7 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'website.inodin.de' },
       { protocol: 'https', hostname: 'ittech.ditsolution.net' },
+      { protocol: 'https', hostname: 'api.desiremap.de' },
     ],
   },
   async headers() {
