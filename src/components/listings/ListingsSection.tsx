@@ -58,7 +58,7 @@ export function ListingsSection() {
   return (
     <section className="relative py-24 overflow-hidden">
       <div className="absolute inset-0">
-        <Image src="/listing-bg.jpg" alt="" fill className="w-full h-full object-cover opacity-40" />
+        <Image src="/listing-bg.jpg" alt="Hintergrundbild der Veranstaltungsübersicht" fill className="w-full h-full object-cover opacity-40" />
         <div className="absolute inset-0 bg-linear-to-b from-black via-[#0a0810]/10 to-black/5" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/10" />
       </div>
