@@ -61,9 +61,20 @@ const nextConfig: NextConfig = {
       '/:locale(en|tr|ar)/admin/:path*'
     ]
 
+    const linkValue = [
+      '</sitemap.xml>; rel="describedby"; type="application/xml"',
+      '<https://api.desiremap.de/api>; rel="service-desc"; type="application/json"',
+    ].join(', ')
+
+    const homepageSources = ['/', '/:locale(en|tr|ar)']
+
     return [
       ...createXRobotsHeaders(publicSources, indexableXRobotsValue),
-      ...createXRobotsHeaders(restrictedSources, noindexXRobotsValue)
+      ...createXRobotsHeaders(restrictedSources, noindexXRobotsValue),
+      ...homepageSources.map((source) => ({
+        source,
+        headers: [{ key: 'Link', value: linkValue }],
+      })),
     ]
   },
   typescript: {
