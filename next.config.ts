@@ -16,11 +16,13 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   reactStrictMode: false,
   typedRoutes: true,
+  allowedDevOrigins: ['127.0.0.1', 'localhost', '192.168.178.160'],
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'api.desiremap.de' },
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
     ],
   },
   async headers() {

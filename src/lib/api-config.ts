@@ -39,6 +39,10 @@ export const CLIENT_API_BASE_URL = normalizeApiBaseUrl(
   process.env.NEXT_PUBLIC_API_URL || APP_BFF_BASE_URL
 )
 
+export const PRODUCTION_PUBLIC_API_BASE_URL = normalizeApiBaseUrl(
+  'https://api.desiremap.de/api'
+)
+
 export const SERVER_BACKEND_API_URL = normalizeApiBaseUrl(
   process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL || 'https://api.desiremap.de/api'
 )

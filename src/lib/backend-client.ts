@@ -4,27 +4,59 @@ import { normalizePublicServiceTypes } from '@/lib/public-service-types'
 
 const BACKEND_URL = SERVER_BACKEND_API_URL
 
+export function normalizePublicImageUrl(value: string | null | undefined) {
+  if (typeof value !== 'string' || value.length === 0) {
+    return null
+  }
+
+  if (value.startsWith('/')) {
+    return value
+  }
+
+  try {
+    const url = new URL(value)
+
+    if (url.hostname.endsWith('.local')) {
+      return null
+    }
+
+    return url.toString()
+  } catch {
+    return null
+  }
+}
+
 export function normalizePublicEstablishment(item: PublicEstablishment): PublicEstablishment {
   const raw = item as PublicEstablishment & {
+    cover_image_url?: string | null
+    coverImage?: string | null
+    hero_image_url?: string | null
+    heroImage?: string | null
     image?: string | null
     is_active?: boolean
     public_image_url?: string | null
     publicImageUrl?: string | null
+    thumbnail_url?: string | null
+    thumbnailUrl?: string | null
   }
 
   const images = Array.isArray(item.images)
-    ? item.images.filter((image): image is string => typeof image === 'string' && image.length > 0)
+    ? item.images
+        .map((image) => normalizePublicImageUrl(image))
+        .filter((image): image is string => typeof image === 'string' && image.length > 0)
     : []
 
   const primaryImage =
-    typeof raw.publicImageUrl === 'string' && raw.publicImageUrl.length > 0
-      ? raw.publicImageUrl
-      : typeof raw.public_image_url === 'string' && raw.public_image_url.length > 0
-        ? raw.public_image_url
-        : typeof raw.image === 'string' && raw.image.length > 0
-          ? raw.image
-        : null
-
+    normalizePublicImageUrl(raw.publicImageUrl)
+      ?? normalizePublicImageUrl(raw.public_image_url)
+      ?? normalizePublicImageUrl(raw.image)
+      ?? normalizePublicImageUrl(raw.coverImage)
+      ?? normalizePublicImageUrl(raw.cover_image_url)
+      ?? normalizePublicImageUrl(raw.thumbnailUrl)
+      ?? normalizePublicImageUrl(raw.thumbnail_url)
+      ?? normalizePublicImageUrl(raw.heroImage)
+      ?? normalizePublicImageUrl(raw.hero_image_url)
+  
   return {
     ...item,
     images: primaryImage ? [primaryImage, ...images.filter((image) => image !== primaryImage)] : images,

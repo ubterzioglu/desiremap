@@ -2,6 +2,7 @@ import { describe, expect, test } from 'bun:test'
 
 import {
   getFallbackPublicCities,
+  getFallbackPublicEstablishments,
   getFallbackPublicServiceTypes,
 } from './public-discovery-fallbacks'
 
@@ -25,5 +26,15 @@ describe('public discovery fallbacks', () => {
       { id: 4, slug: 'studio', name: 'Studios' },
       { id: 5, slug: 'privat', name: 'Privat' },
     ])
+  })
+
+  test('provides static establishments with filtering and pagination', () => {
+    const result = getFallbackPublicEstablishments({ type: 'fkk', limit: 2, offset: 0 })
+
+    expect(result.total).toBeGreaterThan(0)
+    expect(result.items).toHaveLength(2)
+    expect(result.items.every((item) => item.type === 'fkk')).toBe(true)
+    expect(result.items[0]).toHaveProperty('slug')
+    expect(result.items[0]).toHaveProperty('images')
   })
 })

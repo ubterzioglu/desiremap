@@ -3,6 +3,8 @@ import { getHomeSeoExperience, getHomeSeoMetadata } from './seo/home'
 
 const siteUrl = 'https://desiremap.de'
 const companyName = 'DesireMap'
+const homepagePublishedAt = '2025-01-15T08:00:00+01:00'
+const homepageModifiedAt = '2025-01-15T08:00:00+01:00'
 
 function getVenueRelativePath(locale: string, slug: string) {
   return getVenuePath(locale, slug)
@@ -188,8 +190,8 @@ function getWebPageSchema(locale: string, title: string, description: string) {
     url: pageUrl,
     name: title,
     description,
-    datePublished: '2025-01-15T08:00:00+01:00',
-    dateModified: new Date().toISOString(),
+    datePublished: homepagePublishedAt,
+    dateModified: homepageModifiedAt,
     isPartOf: { '@id': `${siteUrl}/#website` },
     about: { '@id': `${siteUrl}/#organization` },
     breadcrumb: { '@id': `${pageUrl}/#breadcrumb` },

@@ -33,7 +33,7 @@ function toListingCardBordell(e: PublicEstablishment): Bordell {
     sponsored: false,
     phone: '',
     description: e.description ?? '',
-    coverImage: e.images?.[0],
+    coverImage: e.images?.[0] || '/listing-bg.jpg',
     images: e.images,
     createdAt: '',
     updatedAt: '',

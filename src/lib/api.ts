@@ -3,8 +3,8 @@ import type { AuthSession, AuthUser } from '@/stores/authStore'
 import { useAuthStore } from '@/stores/authStore'
 import { normalizePublicServiceTypes } from '@/lib/public-service-types'
 import { normalizePublicEstablishment } from '@/lib/backend-client'
-import { getFallbackPublicCities, getFallbackPublicServiceTypes } from '@/lib/public-discovery-fallbacks'
-import { CLIENT_API_BASE_URL, joinApiUrl } from '@/lib/api-config'
+import { getFallbackPublicCities, getFallbackPublicEstablishments, getFallbackPublicServiceTypes } from '@/lib/public-discovery-fallbacks'
+import { CLIENT_API_BASE_URL, PRODUCTION_PUBLIC_API_BASE_URL, joinApiUrl } from '@/lib/api-config'
 
 interface ApiResponse<T> {
   success: boolean
@@ -29,6 +29,14 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function normalizeEndpoint(endpoint: string) {
   return joinApiUrl(CLIENT_API_BASE_URL, endpoint)
+}
+
+function normalizeEndpointWithBase(baseUrl: string, endpoint: string) {
+  return joinApiUrl(baseUrl, endpoint)
+}
+
+function isLocalApiBaseUrl(baseUrl: string) {
+  return /\/\/(127\.0\.0\.1|localhost)(?::\d+)?(\/|$)/.test(baseUrl)
 }
 
 function createHeaders(options: ApiRequestOptions) {
@@ -90,8 +98,8 @@ function unwrapPayload<T>(payload: unknown): T {
   return payload as T
 }
 
-async function apiCall<T>(endpoint: string, options: ApiRequestOptions = {}): Promise<T> {
-  const response = await fetch(normalizeEndpoint(endpoint), {
+async function apiCallAgainstBase<T>(baseUrl: string, endpoint: string, options: ApiRequestOptions = {}): Promise<T> {
+  const response = await fetch(normalizeEndpointWithBase(baseUrl, endpoint), {
     ...options,
     headers: createHeaders(options),
     cache: options.cache ?? 'no-store'
@@ -104,6 +112,30 @@ async function apiCall<T>(endpoint: string, options: ApiRequestOptions = {}): Pr
   }
 
   return unwrapPayload<T>(payload)
+}
+
+async function apiCall<T>(endpoint: string, options: ApiRequestOptions = {}): Promise<T> {
+  return apiCallAgainstBase(CLIENT_API_BASE_URL, endpoint, options)
+}
+
+async function publicApiCall<T>(endpoint: string, options: ApiRequestOptions = {}): Promise<T> {
+  if (isLocalApiBaseUrl(CLIENT_API_BASE_URL) && CLIENT_API_BASE_URL !== PRODUCTION_PUBLIC_API_BASE_URL) {
+    try {
+      return await apiCallAgainstBase(PRODUCTION_PUBLIC_API_BASE_URL, endpoint, options)
+    } catch {
+      return apiCallAgainstBase(CLIENT_API_BASE_URL, endpoint, options)
+    }
+  }
+
+  try {
+    return await apiCall(endpoint, options)
+  } catch (error) {
+    if (CLIENT_API_BASE_URL === PRODUCTION_PUBLIC_API_BASE_URL) {
+      throw error
+    }
+
+    return apiCallAgainstBase(PRODUCTION_PUBLIC_API_BASE_URL, endpoint, options)
+  }
 }
 
 function normalizeUser(payload: unknown): AuthUser {
@@ -331,7 +363,7 @@ export const bookingApi = {
 export const publicApi = {
   getCities: async () => {
     try {
-      return await apiCall<{ items: PublicCity[] }>('/public/cities', { auth: false })
+      return await publicApiCall<{ items: PublicCity[] }>('/public/cities', { auth: false })
     } catch {
       return { items: getFallbackPublicCities() }
     }
@@ -339,7 +371,7 @@ export const publicApi = {
 
   getServiceTypes: async () => {
     try {
-      return { items: normalizePublicServiceTypes(await apiCall<unknown>('/public/service-types', { auth: false })) }
+      return { items: normalizePublicServiceTypes(await publicApiCall<unknown>('/public/service-types', { auth: false })) }
     } catch {
       return { items: getFallbackPublicServiceTypes() }
     }
@@ -360,7 +392,7 @@ export const publicApi = {
     }
     const suffix = qs.toString()
     try {
-      const data = await apiCall<{ results: PublicEstablishment[]; total: number }>(
+      const data = await publicApiCall<{ results: PublicEstablishment[]; total: number }>(
         suffix ? `/public/establishments?${suffix}` : '/public/establishments',
         { auth: false }
       )
@@ -368,12 +400,12 @@ export const publicApi = {
       const items = raw.map(normalizePublicEstablishment)
       return { items, total: typeof data.total === 'number' ? data.total : items.length }
     } catch {
-      return { items: [], total: 0 }
+      return getFallbackPublicEstablishments(params)
     }
   },
 
   getEstablishmentDetail: (slug: string) =>
-    apiCall<PublicEstablishment>(`/public/establishments/${slug}`, { auth: false }).then(normalizePublicEstablishment),
+    publicApiCall<PublicEstablishment>(`/public/establishments/${slug}`, { auth: false }).then(normalizePublicEstablishment),
 }
 
 export const establishmentsApi = {
