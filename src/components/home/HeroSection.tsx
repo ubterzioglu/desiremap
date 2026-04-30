@@ -12,7 +12,18 @@ import { usePublicCities } from '@/hooks/useQueries'
 import type { Translations } from '@/types'
 import { getSearchPath } from '@/lib/navigation'
 
-const starPositions = [{ left: 12, top: 15 }, { left: 25, top: 8 }, { left: 38, top: 22 }, { left: 52, top: 5 }, { left: 67, top: 18 }, { left: 80, top: 12 }, { left: 92, top: 25 }, { left: 8, top: 42 }, { left: 22, top: 55 }, { left: 35, top: 38 }, { left: 48, top: 62 }, { left: 62, top: 45 }, { left: 75, top: 58 }, { left: 88, top: 35 }, { left: 5, top: 72 }, { left: 18, top: 85 }, { left: 32, top: 68 }, { left: 45, top: 92 }, { left: 58, top: 75 }, { left: 72, top: 88 }]
+const starPositions = [
+  { left: 12, top: 15, dur: 2, delay: 0 }, { left: 25, top: 8, dur: 3, delay: 0.4 },
+  { left: 38, top: 22, dur: 4, delay: 0.8 }, { left: 52, top: 5, dur: 2, delay: 1.2 },
+  { left: 67, top: 18, dur: 3, delay: 1.6 }, { left: 80, top: 12, dur: 4, delay: 0 },
+  { left: 92, top: 25, dur: 2, delay: 0.4 }, { left: 8, top: 42, dur: 3, delay: 0.8 },
+  { left: 22, top: 55, dur: 4, delay: 1.2 }, { left: 35, top: 38, dur: 2, delay: 1.6 },
+  { left: 48, top: 62, dur: 3, delay: 0 }, { left: 62, top: 45, dur: 4, delay: 0.4 },
+  { left: 75, top: 58, dur: 2, delay: 0.8 }, { left: 88, top: 35, dur: 3, delay: 1.2 },
+  { left: 5, top: 72, dur: 4, delay: 1.6 }, { left: 18, top: 85, dur: 2, delay: 0 },
+  { left: 32, top: 68, dur: 3, delay: 0.4 }, { left: 45, top: 92, dur: 4, delay: 0.8 },
+  { left: 58, top: 75, dur: 2, delay: 1.2 }, { left: 72, top: 88, dur: 3, delay: 1.6 },
+]
 
 type HeroProps = { 
   translations: Translations['hero']
@@ -42,7 +53,7 @@ export function HeroSection({ translations, stats, locale }: HeroProps) {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
       <div className="absolute inset-0 z-0"><Image src="/hero-bg.jpg" alt="Verifizierte Clubs und Locations in Deutschland – DesireMap Plattform Übersicht" fill priority className="absolute inset-0 w-full h-full object-cover md:object-contain md:object-top" /><div className="absolute inset-0 bg-black/40" /><div className="absolute inset-0 bg-linear-to-r from-black/70 via-black/30 to-transparent" /><div className="absolute inset-0 bg-linear-to-b from-black/50 via-transparent to-black/60" /></div>
-      <div className="absolute inset-0 overflow-hidden">{starPositions.map((pos, index) => <motion.div key={index} className="absolute w-1 h-1 bg-white rounded-full" style={{ left: `${pos.left}%`, top: `${pos.top}%` }} animate={{ opacity: [0.2, 0.8, 0.2], scale: [1, 1.5, 1] }} transition={{ duration: 2 + (index % 4), repeat: Infinity, delay: (index % 5) * 0.4 }} />)}</div>
+      <div className="absolute inset-0 overflow-hidden">{starPositions.map((pos, index) => <div key={index} className="absolute w-1 h-1 bg-white rounded-full animate-[twinkle_var(--star-dur)_ease-in-out_var(--star-delay)_infinite]" style={{ left: `${pos.left}%`, top: `${pos.top}%`, '--star-dur': `${pos.dur}s`, '--star-delay': `${pos.delay}s` } as React.CSSProperties} />)}</div>
       <div className="relative z-10 text-center px-4 sm:px-6 max-w-5xl mx-auto space-y-4 sm:space-y-8">
         <motion.h1 initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white tracking-wider">{translations.title}</motion.h1>
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-base sm:text-xl md:text-2xl lg:text-3xl text-gray-300 font-light tracking-wide line-clamp-3 md:line-clamp-none">{translations.subtitle}</motion.p>

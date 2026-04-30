@@ -187,6 +187,11 @@
   background-clip: text;
 }
 
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.5); }
+}
+
 /* Subtle glow effect */
 .glow {
   box-shadow: 0 0 40px rgba(139, 26, 74, 0.3);

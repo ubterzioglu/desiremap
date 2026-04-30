@@ -59,6 +59,13 @@ export function proxy(request: NextRequest) {
     return NextResponse.next()
   }
 
+  if (request.headers.get('accept')?.includes('text/markdown')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/api/markdown'
+    url.searchParams.set('_path', pathname)
+    return NextResponse.rewrite(url)
+  }
+
   if (pathname.startsWith('/operator/')) {
     const url = request.nextUrl.clone()
     url.pathname = pathname.replace('/operator/', '/business/')
