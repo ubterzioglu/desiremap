@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { Geist, Geist_Mono } from 'next/font/google'
+import { WebMcpProvider } from '@/components/providers/WebMcpProvider'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'], display: 'swap' })
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'], display: 'swap', preload: false })
@@ -38,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="de" className="dark" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`} suppressHydrationWarning>
-        {children}
+        <WebMcpProvider>{children}</WebMcpProvider>
       </body>
     </html>
   )
