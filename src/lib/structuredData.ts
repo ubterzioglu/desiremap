@@ -188,6 +188,8 @@ function getWebPageSchema(locale: string, title: string, description: string) {
     url: pageUrl,
     name: title,
     description,
+    datePublished: '2025-01-15T08:00:00+01:00',
+    dateModified: new Date().toISOString(),
     isPartOf: { '@id': `${siteUrl}/#website` },
     about: { '@id': `${siteUrl}/#organization` },
     breadcrumb: { '@id': `${pageUrl}/#breadcrumb` },

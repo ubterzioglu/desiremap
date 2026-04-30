@@ -1,28 +1,33 @@
-# Directory Structure
+# Directory Structure — Frontend Only
 
 ```
-src/
-├── app/                    # Next.js App Router
-│   ├── [locale]/          # Locale-based routing (de, en, ar, tr)
-│   │   ├── page.tsx       # Homepage
-│   │   ├── layout.tsx     # Locale layout with metadata
-│   │   └── search/        # Search page
-│   ├── api/               # API routes
-│   ├── sitemap.ts         # Dynamic sitemap generation
-│   └── robots.ts          # Robots.txt generation
-├── components/
-│   ├── ui/                # shadcn/ui components (50+ components)
-│   ├── home/              # Homepage sections (Hero, Categories, Cities, Promo)
-│   ├── layout/            # Header, Footer, LanguageSelector, MobileMenu
-│   ├── listings/          # ListingCard, ListingsSection, ReservationModal
-│   └── pages/             # Admin, Dashboard, City, Detail, Login pages
-├── hooks/                 # Custom hooks (use-mobile, use-toast, useScrollHeader)
-├── lib/                   # Utilities (utils, db, search, structuredData)
-├── types/                 # TypeScript types (Bordell, Customer, Booking, etc.)
-├── i18n/                  # next-intl configuration
-└── data/                  # Mock data
-
-messages/                  # Translation files (de.json, en.json, ar.json, tr.json)
-prisma/                    # Database schema
-.agent/skills/             # Claude Code skills (frontend-design, seo-audit, etc.)
+frontend/
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── [locale]/          # Locale-based routing (de, en, ar, tr)
+│   │   │   ├── page.tsx       # Homepage
+│   │   │   ├── layout.tsx     # Locale layout with metadata
+│   │   │   ├── bordell/       # Establishment detail pages
+│   │   │   ├── stadt/         # City pages
+│   │   │   ├── blog/          # Blog pages
+│   │   │   └── search/        # Search page
+│   │   ├── (admin)/           # Admin panel (no locale prefix)
+│   │   ├── sitemap.ts         # Dynamic sitemap generation
+│   │   └── robots.ts          # Robots.txt generation
+│   ├── components/
+│   │   ├── ui/                # shadcn/ui components
+│   │   ├── home/              # Homepage sections
+│   │   ├── layout/            # Header, Footer, MobileMenu
+│   │   ├── listings/          # ListingCard, ReservationModal
+│   │   └── pages/             # Page-level components
+│   ├── hooks/                 # Custom hooks
+│   ├── lib/                   # Utilities, API clients, structured data, SEO
+│   ├── stores/                # Zustand stores (auth, admin, booking)
+│   ├── types/                 # TypeScript types
+│   ├── i18n/                  # next-intl configuration
+│   └── data/                  # Static data (cities, blog posts)
+├── messages/                  # Translation files (de.json, en.json, ar.json, tr.json)
+└── public/                    # Static assets
 ```
+
+No `prisma/`, no `src/app/api/`, no backend code in this repo.

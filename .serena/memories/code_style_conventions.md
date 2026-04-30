@@ -1,4 +1,4 @@
-# Code Style and Conventions
+# Code Style and Conventions — Frontend Only
 
 ## File Size Limits (ESLint enforced)
 - **Max file lines**: 200 (skip blank lines and comments)
@@ -32,3 +32,6 @@
 - Components: PascalCase (e.g., `ListingCard.tsx`)
 - Hooks: camelCase with `use` prefix (e.g., `useToast`)
 - Utilities: camelCase
+
+## No Backend Conventions
+No Prisma, no TypeORM, no NestJS patterns in this repo.

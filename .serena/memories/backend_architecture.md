@@ -1,30 +1,29 @@
-# DesireMap Backend Architecture Summary
+# Backend Architecture — External Reference Only
 
-## Key Files
-- `prisma/schema.prisma` - Database models (User, Bordell, Booking, Review, Visit, Badge, Address, Invoice)
-- `src/lib/db.ts` - Prisma singleton client
-- `src/lib/auth.ts` - NextAuth configuration with CredentialsProvider
-- `src/lib/auth/paseto.ts` - PASETO v4 token service (Ed25519 keys, 7-day expiry)
-- `src/lib/auth/guards.ts` - requireAuth, requireRole, requireAdmin helpers
-- `src/lib/auth/password.ts` - bcrypt with cost factor 12
-- `src/lib/auth/oauth/google.ts` - Google OAuth 2.0 with PKCE
-- `src/lib/auth/blacklist.ts` - In-memory token blacklist (JTI-based)
-- `src/lib/api.ts` - Client API layer (authApi, customerApi, bookingApi, establishmentsApi, adminApi)
-- `src/middleware.ts` - Route protection with role-based access
+Backend lives at https://github.com/ozbakirsahincan/desiremap_core_backend
+API endpoint: https://api.desiremap.de
+Managed by a colleague — user does NOT maintain backend.
 
-## API Route Groups
-- `/api/auth/*` - Authentication (login, register, logout, me, OAuth)
-- `/api/bookings/*` - Booking CRUD
-- `/api/establishments/*` - Public search
-- `/api/admin/*` - Admin dashboard (stats, establishments, customers, bookings, reviews)
-- `/api/customer/*` - Customer profile, bookings, visits, addresses, badges
-- `/api/seed/*` - Database seeding (dev only)
+## Backend Stack
+- NestJS 11, TypeORM 0.3, Liquibase (schema owner)
+- PostgreSQL
 
-## Dual Auth System
-1. NextAuth.js - Session-based for web UI
-2. PASETO tokens - Stateless API auth with JTI revocation
+## API Surfaces (consumed by frontend)
+- Public: /api/public/* (cities, service-types, establishments, events, ticket-tiers)
+- Member: /api/member/* (profile, visits, badges, reservations)
+- Member auth: /api/member-auth/* (OTP request/verify)
+- Admin auth: /api/admin-auth/* (login/refresh/logout)
+- Venue auth: /api/venue-auth/* (login/refresh/logout)
+- Operator: /api/operator/* (CRUD venues, events, tiers, pricing, reservations)
 
-## Docs
-- XML: docs/backend-architecture.xml (comprehensive with code examples)
-- Markdown: docs/backend-architecture.md (summary)
-- Full architecture: docs/backend-architecture.md
+## Auth Model
+- Members: OTP-based, accessToken in body, refreshToken httpOnly cookie
+- Operators: password-based, cookies dm_admin_refresh / dm_venue_refresh
+- Access token TTL: 15min
+
+## Frontend API Clients
+- `src/lib/api.ts` — public/admin features, calls NEXT_PUBLIC_API_URL
+- `src/lib/backend-client.ts` — operator/member flows, calls BACKEND_API_URL
+
+## No Backend Code Here
+Do not look for API routes, database schemas, or server-side auth in this repo.

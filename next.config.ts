@@ -17,10 +17,9 @@ const nextConfig: NextConfig = {
   reactStrictMode: false,
   typedRoutes: true,
   images: {
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
-      { protocol: 'https', hostname: 'website.inodin.de' },
-      { protocol: 'https', hostname: 'ittech.ditsolution.net' },
       { protocol: 'https', hostname: 'api.desiremap.de' },
     ],
   },

@@ -29,12 +29,18 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const { title, description, ogLocale } = getLocaleData(locale)
   const canonical = locale === 'de' ? '/' : `/${locale}`
+  const publishedTime = '2025-01-15T08:00:00+01:00'
+  const modifiedTime = new Date().toISOString()
 
   return {
     metadataBase: new URL(siteUrl),
     title: { default: title, template: '%s ' },
     description,
     icons: { icon: '/icon.svg', apple: '/icon.svg' },
+    other: {
+      'article:published_time': publishedTime,
+      'article:modified_time': modifiedTime,
+    },
     robots: {
       index: true,
       follow: true,
@@ -51,12 +57,14 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       languages: { de: '/', en: '/en', tr: '/tr', ar: '/ar', 'x-default': '/' }
     },
     openGraph: {
-      type: 'website',
+      type: 'article',
       locale: ogLocale,
       url: `${siteUrl}${canonical}`,
       siteName: 'DesireMap',
       title,
       description,
+      publishedTime,
+      modifiedTime,
       images: [{ url: '/hero-bg.jpg', width: 1200, height: 630 }]
     },
     twitter: { card: 'summary_large_image', title, description, images: ['/hero-bg.jpg'] }
