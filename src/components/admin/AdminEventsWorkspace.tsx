@@ -94,7 +94,7 @@ export function AdminEventsWorkspace() {
             </div>
           )}
 
-          {eventItems.map((event: any) => (
+          {eventItems.map((event) => (
             <div key={event.eventPublicId} className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>

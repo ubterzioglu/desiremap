@@ -1,4 +1,4 @@
-import type { PublicCity, PublicEstablishment, PublicServiceType } from '@/types'
+import type { PublicCity, PublicEstablishment } from '@/types'
 import { SERVER_BACKEND_API_URL } from '@/lib/api-config'
 import { normalizePublicServiceTypes } from '@/lib/public-service-types'
 

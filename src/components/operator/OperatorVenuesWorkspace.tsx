@@ -50,8 +50,8 @@ export function OperatorVenuesWorkspace() {
         generalNote: form.generalNote || undefined,
         serviceTypeIds: selectedServiceTypeIds,
       })
-      if ((result as any)?.venuePublicId) {
-        setSelectedVenuePublicId((result as any).venuePublicId)
+      if (typeof result === 'object' && result !== null && 'venuePublicId' in result && typeof result.venuePublicId === 'string') {
+        setSelectedVenuePublicId(result.venuePublicId)
       }
       setForm(emptyForm)
       setSelectedServiceTypeIds([])
@@ -72,7 +72,7 @@ export function OperatorVenuesWorkspace() {
               Noch kein Venue angelegt. Legen Sie rechts ein neues Venue an.
             </div>
           )}
-          {venueList.map((v: any) => (
+          {venueList.map((v) => (
             <button
               key={v.venuePublicId}
               onClick={() => setSelectedVenuePublicId(v.venuePublicId)}

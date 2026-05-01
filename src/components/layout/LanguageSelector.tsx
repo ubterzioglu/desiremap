@@ -1,6 +1,5 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { useLocale } from 'next-intl'
 import { useRouter, usePathname } from 'next/navigation'
 import { Globe } from 'lucide-react'
@@ -15,12 +14,9 @@ const languages = [
 ]
 
 export function LanguageSelector() {
-  const [mounted, setMounted] = useState(false)
   const localeFromHook = useLocale()
   const router = useRouter()
   const pathname = usePathname()
-
-  useEffect(() => { setMounted(true) }, [])
 
   const segments = pathname.split('/').filter(Boolean)
   const localeFromPath = segments[0]
@@ -41,15 +37,6 @@ export function LanguageSelector() {
       segments.unshift(newLocale)
     }
     router.push('/' + segments.join('/'))
-  }
-
-  if (!mounted) {
-    return (
-      <Button variant="ghost" size="sm" className="gap-2 text-gray-300 hover:text-white">
-        <Globe className="w-4 h-4" />
-        <span className="hidden sm:inline">{currentLang.flag}</span>
-      </Button>
-    )
   }
 
   return (

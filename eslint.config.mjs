@@ -4,22 +4,25 @@ import nextTypescript from "eslint-config-next/typescript";
 const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
   files: ["**/*.{ts,tsx}"],
 
+  linterOptions: {
+    reportUnusedDisableDirectives: "error",
+  },
+
   rules: {
     // TypeScript rules
     "@typescript-eslint/no-explicit-any": "error",
-    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-unused-vars": ["error", { args: "none" }],
     "@typescript-eslint/no-non-null-assertion": "error",
     "@typescript-eslint/ban-ts-comment": "error",
     "@typescript-eslint/prefer-as-const": "error",
-    "@typescript-eslint/no-unused-disable-directive": "error",
     
     // React rules
     "react-hooks/exhaustive-deps": "error",
     "react-hooks/purity": "error",
+    "react-hooks/set-state-in-effect": "error",
     "react/no-unescaped-entities": "error",
     "react/display-name": "error",
-    "react/prop-types": "error",
-    "react-compiler/react-compiler": "error",
+    "react/prop-types": "off",
     
     // Next.js rules
     "@next/next/no-img-element": "error",
@@ -27,7 +30,7 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
     
     // General JavaScript rules
     "prefer-const": "error",
-    "no-unused-vars": "error",
+    "no-unused-vars": "off",
     "no-console": "error",
     "no-debugger": "error",
     "no-empty": "error",
@@ -35,8 +38,8 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
     "no-case-declarations": "error",
     "no-fallthrough": "error",
     "no-mixed-spaces-and-tabs": "error",
-    "no-redeclare": "error",
-    "no-undef": "error",
+    "no-redeclare": "off",
+    "no-undef": "off",
     "no-unreachable": "error",
     "no-useless-escape": "error",
       /**
@@ -86,6 +89,35 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
         "warn",
         3
       ],
+  },
+}, {
+  files: ["e2e/**/*.ts"],
+  rules: {
+    "no-console": "off",
+  },
+}, {
+  // Existing large SEO/pages/components. Keep global metric rules active for new code.
+  files: [
+    "e2e/schema-smoke.spec.ts",
+    "src/app/**/blog/**/page.tsx",
+    "src/app/**/bordell/**/ProductDetailPageContent.tsx",
+    "src/app/**/bordell/**/ProductSEOContent.tsx",
+    "src/app/**/stadt/**/page.tsx",
+    "src/components/admin/AdminDashboard.tsx",
+    "src/components/admin/AdminDiscoveryWorkspace.tsx",
+    "src/components/bordell/ProductDetailPageContent.tsx",
+    "src/components/bordell/ProductSEOContent.tsx",
+    "src/components/listings/ReservationModal.tsx",
+    "src/lib/api.ts",
+    "src/lib/structuredData.ts",
+    "src/proxy.ts",
+  ],
+  rules: {
+    "max-lines": "off",
+    "max-lines-per-function": "off",
+    "complexity": "off",
+    "max-statements": "off",
+    "max-depth": "off",
   },
 }, {
   ignores: [

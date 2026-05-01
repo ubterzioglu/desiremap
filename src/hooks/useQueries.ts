@@ -143,7 +143,7 @@ export function useUpdateBooking() {
   const queryClient = useQueryClient()
   
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) => bookingApi.update(id, data),
+    mutationFn: ({ id, data }: { id: string; data: Record<string, unknown> }) => bookingApi.update(id, data),
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ['booking', id] })
       queryClient.invalidateQueries({ queryKey: ['customer', 'bookings'] })
@@ -386,6 +386,50 @@ export function useCreateOperator() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'businesses'] })
       queryClient.invalidateQueries({ queryKey: ['admin', 'operators'] })
+    }
+  })
+}
+
+// ============ ADMIN CITIES HOOKS ============
+export function useAdminCities() {
+  return useQuery({
+    queryKey: ['admin', 'cities'],
+    queryFn: adminApi.getCities,
+    enabled: useAdminAuthenticated(),
+    retry: false
+  })
+}
+
+export function useCreateCity() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: adminApi.createCity,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'cities'] })
+    }
+  })
+}
+
+export function useUpdateCity() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ cityId, ...data }: { cityId: number; name?: string; slug?: string }) =>
+      adminApi.updateCity(cityId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'cities'] })
+    }
+  })
+}
+
+export function useDeleteCity() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: adminApi.deleteCity,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'cities'] })
     }
   })
 }

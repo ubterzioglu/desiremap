@@ -105,7 +105,7 @@ export function OperatorEventsWorkspace() {
               Keine Events gefunden. Legen Sie rechts einen neuen Event an.
             </div>
           )}
-          {eventList.map((ev: any) => (
+          {eventList.map((ev) => (
             <div key={ev.eventPublicId} className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
@@ -115,7 +115,7 @@ export function OperatorEventsWorkspace() {
                   </div>
                 </div>
                 <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.16em] text-slate-300">
-                  {STATUS_LABELS[ev.status] ?? ev.status}
+                  {ev.status ? STATUS_LABELS[ev.status] ?? ev.status : 'Unbekannt'}
                 </span>
               </div>
               <div className="mt-3 flex flex-wrap gap-2 text-sm text-slate-400">

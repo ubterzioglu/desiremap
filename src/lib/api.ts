@@ -23,6 +23,95 @@ interface AuthConfig {
 }
 
 type WorkspaceType = 'public' | 'admin'
+export interface CustomerProfileResponse {
+  name?: string | null
+  email?: string | null
+  memberSince?: string | number | Date
+  totalSpent?: number
+}
+
+export interface CustomerVisitResponse {
+  id: string
+  bordellName?: string
+  date?: string | number | Date
+  price?: number | string
+  duration?: number | string
+}
+
+export interface CustomerAddressResponse {
+  id: string
+  label?: string
+  street?: string
+  zip?: string
+  city?: string
+  isDefault?: boolean
+}
+
+export interface CustomerBadgeResponse {
+  id: string
+  color?: string
+  icon?: string
+  name?: string
+  description?: string
+}
+
+export interface AdminStatsResponse {
+  venues?: number
+  publishedEvents?: number
+  draftEvents?: number
+  operators?: number
+}
+
+export interface AdminVenueResponse {
+  venuePublicId: string
+  venueName?: string
+  name?: string
+  city?: string
+  status?: string
+}
+
+export interface AdminEventResponse {
+  eventPublicId: string
+  title?: string
+  startAt: string | number | Date
+  endAt: string | number | Date
+  status?: string
+  capacityTotal?: number
+  reservedCount?: number
+  reservationMode?: string
+  lockVersion?: number
+}
+
+export interface AdminOperatorResponse {
+  operatorPublicId: string
+  displayName?: string
+  invitedEmail?: string
+  accountStatus?: string
+  venues?: Array<{ roleCode?: string }>
+}
+
+export interface AdminBusinessResponse {
+  id?: string
+  public_id?: string
+  businessPublicId: string
+  legalName?: string
+  display_name?: string
+  displayName?: string
+  billing_email?: string
+  billingEmail?: string
+  billingPhone?: string
+  accountStatus?: string
+  status?: string
+  createdAt?: string | number | Date
+  operators?: AdminOperatorResponse[]
+}
+
+export interface AdminCityResponse {
+  cityId: number
+  name: string
+  slug: string
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
 }
@@ -273,22 +362,22 @@ export const authApi = {
 
 export const customerApi = {
   getProfile: async () => {
-    return apiCall<any>('/customer')
+    return apiCall<CustomerProfileResponse>('/customer')
   },
 
   updateProfile: async (data: { name?: string; phone?: string; avatar?: string }) => {
-    return apiCall<any>('/customer', {
+    return apiCall<unknown>('/customer', {
       method: 'PUT',
       body: JSON.stringify(data)
     })
   },
 
   getVisits: async () => {
-    return apiCall<any[]>('/customer/visits')
+    return apiCall<CustomerVisitResponse[]>('/customer/visits')
   },
 
   getAddresses: async () => {
-    return apiCall<any[]>('/customer/addresses')
+    return apiCall<CustomerAddressResponse[]>('/customer/addresses')
   },
 
   createAddress: async (data: {
@@ -299,14 +388,14 @@ export const customerApi = {
     country?: string
     isDefault?: boolean
   }) => {
-    return apiCall<any>('/customer/addresses', {
+    return apiCall<unknown>('/customer/addresses', {
       method: 'POST',
       body: JSON.stringify(data)
     })
   },
 
-  updateAddress: async (data: any) => {
-    return apiCall<any>('/customer/addresses', {
+  updateAddress: async (data: Record<string, unknown>) => {
+    return apiCall<unknown>('/customer/addresses', {
       method: 'PUT',
       body: JSON.stringify(data)
     })
@@ -319,11 +408,11 @@ export const customerApi = {
   },
 
   getBadges: async () => {
-    return apiCall<any[]>('/customer/badges')
+    return apiCall<CustomerBadgeResponse[]>('/customer/badges')
   },
 
   getBookings: async () => {
-    return apiCall<any[]>('/customer/bookings')
+    return apiCall<unknown[]>('/customer/bookings')
   }
 }
 
@@ -336,18 +425,18 @@ export const bookingApi = {
     price: number
     notes?: string
   }) => {
-    return apiCall<any>('/bookings', {
+    return apiCall<unknown>('/bookings', {
       method: 'POST',
       body: JSON.stringify(data)
     })
   },
 
   getById: async (id: string) => {
-    return apiCall<any>(`/bookings/${id}`)
+    return apiCall<unknown>(`/bookings/${id}`)
   },
 
-  update: async (id: string, data: any) => {
-    return apiCall<any>(`/bookings/${id}`, {
+  update: async (id: string, data: Record<string, unknown>) => {
+    return apiCall<unknown>(`/bookings/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data)
     })
@@ -426,7 +515,7 @@ export const establishmentsApi = {
     })
 
     const suffix = searchParams.toString()
-    return apiCall<{ results: any[]; total: number; limit: number; offset: number }>(
+    return apiCall<{ results: unknown[]; total: number; limit: number; offset: number }>(
       suffix ? `/establishments?${suffix}` : '/establishments'
     )
   }
@@ -434,15 +523,15 @@ export const establishmentsApi = {
 
 export const adminApi = {
   getDashboardSnapshot: async () => {
-    return apiCall<any>('/admin/stats')
+    return apiCall<AdminStatsResponse>('/admin/stats')
   },
 
   getVenues: async () => {
-    return apiCall<any[]>('/admin/venues')
+    return apiCall<AdminVenueResponse[]>('/admin/venues')
   },
 
-  createVenue: async (data: any) => {
-    return apiCall<any>('/admin/venues', {
+  createVenue: async (data: Record<string, unknown>) => {
+    return apiCall<AdminVenueResponse>('/admin/venues', {
       method: 'POST',
       body: JSON.stringify(data)
     })
@@ -451,64 +540,64 @@ export const adminApi = {
   getVenueEvents: async (venuePublicId: string) => {
     const searchParams = new URLSearchParams()
     searchParams.set('venuePublicId', venuePublicId)
-    return apiCall<any[]>(`/admin/events?${searchParams.toString()}`)
+    return apiCall<AdminEventResponse[]>(`/admin/events?${searchParams.toString()}`)
   },
 
   getEventDetail: async (venuePublicId: string, eventPublicId: string) => {
     const searchParams = new URLSearchParams()
     searchParams.set('venuePublicId', venuePublicId)
     searchParams.set('eventPublicId', eventPublicId)
-    return apiCall<any>(`/admin/event-detail?${searchParams.toString()}`)
+    return apiCall<AdminEventResponse>(`/admin/event-detail?${searchParams.toString()}`)
   },
 
-  createEvent: async (data: any) => {
-    return apiCall<any>('/admin/events', {
+  createEvent: async (data: Record<string, unknown>) => {
+    return apiCall<unknown>('/admin/events', {
       method: 'POST',
       body: JSON.stringify(data)
     })
   },
 
-  publishEvent: async (data: any) => {
-    return apiCall<any>('/admin/events', {
+  publishEvent: async (data: Record<string, unknown>) => {
+    return apiCall<unknown>('/admin/events', {
       method: 'PUT',
       body: JSON.stringify(data)
     })
   },
 
-  cancelEvent: async (data: any) => {
-    return apiCall<any>('/admin/events', {
+  cancelEvent: async (data: Record<string, unknown>) => {
+    return apiCall<unknown>('/admin/events', {
       method: 'PUT',
       body: JSON.stringify(data)
     })
   },
 
   getBusinessOperators: async () => {
-    return apiCall<any[]>('/admin/operators')
+    return apiCall<AdminOperatorResponse[]>('/admin/operators')
   },
 
-  disableBusinessOperator: async (data: any) => {
-    return apiCall<any>('/admin/operators', {
+  disableBusinessOperator: async (data: Record<string, unknown>) => {
+    return apiCall<unknown>('/admin/operators', {
       method: 'PUT',
       body: JSON.stringify(data)
     })
   },
 
-  reactivateBusinessOperator: async (data: any) => {
-    return apiCall<any>('/admin/operators', {
+  reactivateBusinessOperator: async (data: Record<string, unknown>) => {
+    return apiCall<unknown>('/admin/operators', {
       method: 'PUT',
       body: JSON.stringify(data)
     })
   },
 
-  deprovisionBusinessOperator: async (data: any) => {
-    return apiCall<any>('/admin/operators', {
+  deprovisionBusinessOperator: async (data: Record<string, unknown>) => {
+    return apiCall<unknown>('/admin/operators', {
       method: 'PUT',
       body: JSON.stringify(data)
     })
   },
 
   getBusinesses: async () => {
-    const data = await apiCall<{ items: any[] }>('/admin/businesses')
+    const data = await apiCall<{ items: AdminBusinessResponse[] }>('/admin/businesses')
     return data.items ?? []
   },
 
@@ -518,7 +607,7 @@ export const adminApi = {
     billingEmail: string
     billingPhone?: string
   }) => {
-    return apiCall<any>('/admin/businesses', {
+    return apiCall<unknown>('/admin/businesses', {
       method: 'POST',
       body: JSON.stringify(data)
     })
@@ -529,16 +618,41 @@ export const adminApi = {
     password: string
     displayName: string
   }) => {
-    return apiCall<any>(`/admin/businesses/${businessId}/operators`, {
+    return apiCall<unknown>(`/admin/businesses/${businessId}/operators`, {
       method: 'POST',
       body: JSON.stringify(data)
+    })
+  },
+
+  getCities: async () => {
+    const data = await apiCall<{ items: AdminCityResponse[] }>('/admin/cities')
+    return data.items ?? []
+  },
+
+  createCity: async (data: { name: string; slug: string }) => {
+    return apiCall<AdminCityResponse>('/admin/cities', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  },
+
+  updateCity: async (cityId: number, data: { name?: string; slug?: string }) => {
+    return apiCall<AdminCityResponse>(`/admin/cities/${cityId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  },
+
+  deleteCity: async (cityId: number) => {
+    return apiCall<unknown>(`/admin/cities/${cityId}`, {
+      method: 'DELETE'
     })
   }
 }
 
 export const seedApi = {
   seed: async () => {
-    return apiCall<{ success: boolean; message: string; data: any }>('/seed', {
+    return apiCall<{ success: boolean; message: string; data: unknown }>('/seed', {
       method: 'POST'
     })
   }

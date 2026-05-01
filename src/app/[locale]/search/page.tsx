@@ -64,6 +64,8 @@ export async function generateMetadata({
 
 function getSearchSchema(locale: string, query?: string, city?: string, resultCount?: number) {
   const searchUrl = `${siteUrl}/${locale}/search`
+  const locationPhrase = city ? ` in ${city}` : ''
+  const resultPhrase = typeof resultCount === 'number' ? ` with ${resultCount} results` : ''
   
   return {
     '@context': 'https://schema.org',
@@ -73,7 +75,7 @@ function getSearchSchema(locale: string, query?: string, city?: string, resultCo
         '@id': `${searchUrl}/#webpage`,
         url: searchUrl,
         name: query ? `Search results for "${query}"` : 'Search',
-        description: `Search FKK clubs, brothels and laufhaus in Germany`,
+        description: `Search FKK clubs, brothels and laufhaus${locationPhrase} in Germany${resultPhrase}`,
         isPartOf: { '@id': `${siteUrl}/#website` },
         inLanguage: locale
       },

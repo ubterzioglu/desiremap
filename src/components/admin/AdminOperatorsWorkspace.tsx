@@ -39,7 +39,7 @@ export function AdminOperatorsWorkspace() {
             Keine Operatoren gefunden. Sobald der Business-Kontext gueltig ist, erscheinen hier Disable-, Reactivate- und Deprovision-Aktionen.
           </div>
         )}
-        {rows.map((operator: any) => (
+        {rows.map((operator) => (
           <div key={operator.operatorPublicId} className="grid grid-cols-[1.3fr_1fr_1fr_1.2fr] gap-4 border-b border-white/10 px-5 py-4 text-sm last:border-b-0">
             <div>
               <div className="font-medium text-white">{operator.displayName || operator.invitedEmail}</div>
@@ -48,7 +48,7 @@ export function AdminOperatorsWorkspace() {
             <div className="text-slate-300">{operator.accountStatus}</div>
             <div className="text-slate-400">
               {Array.isArray(operator.venues) && operator.venues.length > 0
-                ? operator.venues.map((venue: any) => venue.roleCode).join(', ')
+                ? operator.venues.map((venue) => venue.roleCode).join(', ')
                 : 'Keine aktiven Rollen'}
             </div>
             <div className="flex flex-wrap gap-2">

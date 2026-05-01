@@ -64,7 +64,9 @@ test.describe('JSON-LD Schema Smoke Test', () => {
 
     for (let i = 0; i < count; i++) {
       const content = await scripts.nth(i).textContent()
-      expect(() => JSON.parse(content!), `Script #${i} is not valid JSON`).not.toThrow()
+      expect(content, `Script #${i} is empty`).not.toBeNull()
+      if (content === null) continue
+      expect(() => JSON.parse(content), `Script #${i} is not valid JSON`).not.toThrow()
     }
   })
 
@@ -74,7 +76,9 @@ test.describe('JSON-LD Schema Smoke Test', () => {
     expect(count).toBeGreaterThan(0)
 
     const content = await scripts.first().textContent()
-    const json = JSON.parse(content!)
+    expect(content, 'First JSON-LD script is empty').not.toBeNull()
+    if (content === null) return
+    const json = JSON.parse(content)
     expect(json['@context'] || json['@type']).toBeDefined()
   })
 })

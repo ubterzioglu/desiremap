@@ -224,7 +224,8 @@ export default async function CityPage({
             {citySlugs
               .filter((s) => s !== city)
               .map((slug) => {
-                const c = getCityBySlug(slug)!
+                const c = getCityBySlug(slug)
+                if (!c) return null
                 return (
                   <Link
                     key={slug}

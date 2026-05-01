@@ -20,11 +20,47 @@ interface DashboardTabsProps {
   sidebarOpen: boolean
 }
 
+interface CustomerProfile {
+  name?: string | null
+  email?: string | null
+  memberSince?: string | number | Date
+  totalSpent?: number
+}
+
+interface CustomerVisit {
+  id: string
+  bordellName?: string
+  date?: string | number | Date
+  price?: number | string
+  duration?: number | string
+}
+
+interface CustomerAddress {
+  id: string
+  label?: string
+  street?: string
+  zip?: string
+  city?: string
+  isDefault?: boolean
+}
+
+interface CustomerBadge {
+  id: string
+  color?: string
+  icon?: React.ReactNode
+  name?: string
+  description?: string
+}
+
 export function DashboardTabs({ activeTab, sidebarOpen }: DashboardTabsProps) {
   const { data: profile, isLoading: profileLoading } = useCustomerProfile()
   const { data: visits = [], isLoading: visitsLoading } = useCustomerVisits()
   const { data: addresses = [], isLoading: addressesLoading } = useCustomerAddresses()
   const { data: badges = [], isLoading: badgesLoading } = useCustomerBadges()
+  const customerProfile = profile as CustomerProfile | undefined
+  const customerVisits = visits as CustomerVisit[]
+  const customerAddresses = addresses as CustomerAddress[]
+  const customerBadges = badges as CustomerBadge[]
   const createAddress = useCreateAddress()
   const deleteAddress = useDeleteAddress()
 
@@ -39,7 +75,7 @@ export function DashboardTabs({ activeTab, sidebarOpen }: DashboardTabsProps) {
     await createAddress.mutateAsync({
       ...newAddress,
       country: 'Deutschland',
-      isDefault: addresses.length === 0
+      isDefault: customerAddresses.length === 0
     })
 
     setNewAddress({ label: '', street: '', city: '', zip: '' })
@@ -59,8 +95,8 @@ export function DashboardTabs({ activeTab, sidebarOpen }: DashboardTabsProps) {
         <div className="text-gray-400">Laden...</div>
       ) : (
         <>
-          <StatsGrid visits={visits.length} addresses={addresses.length} badges={badges.length} />
-          {profile && <ProfileCard profile={profile} />}
+          <StatsGrid visits={customerVisits.length} addresses={customerAddresses.length} badges={customerBadges.length} />
+          {customerProfile && <ProfileCard profile={customerProfile} />}
         </>
       )}
     </div>
@@ -71,10 +107,10 @@ export function DashboardTabs({ activeTab, sidebarOpen }: DashboardTabsProps) {
       <h1 className="text-2xl font-bold text-white">Meine Besuche</h1>
       {visitsLoading ? (
         <div className="text-gray-400">Laden...</div>
-      ) : visits.length === 0 ? (
+      ) : customerVisits.length === 0 ? (
         <div className="text-gray-400">Noch keine Besuche</div>
       ) : (
-        visits.map((visit: any) => (
+        customerVisits.map((visit) => (
           <VisitCard key={visit.id} visit={visit} />
         ))
       )}
@@ -102,10 +138,10 @@ export function DashboardTabs({ activeTab, sidebarOpen }: DashboardTabsProps) {
 
       {addressesLoading ? (
         <div className="text-gray-400">Laden...</div>
-      ) : addresses.length === 0 ? (
+      ) : customerAddresses.length === 0 ? (
         <div className="text-gray-400">Noch keine Adressen</div>
       ) : (
-        addresses.map((addr: any) => (
+        customerAddresses.map((addr) => (
           <AddressCard key={addr.id} address={addr} onDelete={handleDeleteAddress} />
         ))
       )}
@@ -117,11 +153,11 @@ export function DashboardTabs({ activeTab, sidebarOpen }: DashboardTabsProps) {
       <h1 className="text-2xl font-bold text-white">Meine Badges</h1>
       {badgesLoading ? (
         <div className="text-gray-400">Laden...</div>
-      ) : badges.length === 0 ? (
+      ) : customerBadges.length === 0 ? (
         <div className="text-gray-400">Noch keine Badges verdient</div>
       ) : (
         <div className="grid grid-cols-2 gap-4">
-          {badges.map((badge: any) => (
+          {customerBadges.map((badge) => (
             <BadgeCard key={badge.id} badge={badge} />
           ))}
         </div>
@@ -164,7 +200,7 @@ function StatsGrid({ visits, addresses, badges }: { visits: number; addresses: n
   )
 }
 
-function ProfileCard({ profile }: { profile: any }) {
+function ProfileCard({ profile }: { profile: CustomerProfile }) {
   return (
     <div className="bg-white/5 rounded-xl p-6">
       <h2 className="text-lg font-semibold text-white mb-4">Profil</h2>
@@ -175,11 +211,11 @@ function ProfileCard({ profile }: { profile: any }) {
         </div>
         <div>
           <div className="text-gray-400 text-sm">Email</div>
-          <div className="text-white">{profile.email}</div>
+          <div className="text-white">{profile.email || 'Nicht angegeben'}</div>
         </div>
         <div>
           <div className="text-gray-400 text-sm">Mitglied seit</div>
-          <div className="text-white">{new Date(profile.memberSince).toLocaleDateString('de-DE')}</div>
+          <div className="text-white">{profile.memberSince ? new Date(profile.memberSince).toLocaleDateString('de-DE') : 'Nicht angegeben'}</div>
         </div>
         <div>
           <div className="text-gray-400 text-sm">Gesamtausgaben</div>
@@ -190,13 +226,13 @@ function ProfileCard({ profile }: { profile: any }) {
   )
 }
 
-function VisitCard({ visit }: { visit: any }) {
+function VisitCard({ visit }: { visit: CustomerVisit }) {
   return (
     <div className="bg-white/5 rounded-xl p-4">
       <div className="flex justify-between">
         <div>
           <p className="text-white font-medium">{visit.bordellName}</p>
-          <p className="text-gray-500 text-sm">{new Date(visit.date).toLocaleDateString('de-DE')}</p>
+          <p className="text-gray-500 text-sm">{visit.date ? new Date(visit.date).toLocaleDateString('de-DE') : 'Kein Datum'}</p>
         </div>
         <div className="text-right">
           <p className="text-[#b76e79] font-bold">€{visit.price}</p>
@@ -258,7 +294,7 @@ function AddressForm({
   )
 }
 
-function AddressCard({ address, onDelete }: { address: any; onDelete: (id: string) => void }) {
+function AddressCard({ address, onDelete }: { address: CustomerAddress; onDelete: (id: string) => void }) {
   return (
     <div className="bg-white/5 rounded-xl p-4 flex justify-between items-start">
       <div>
@@ -282,7 +318,7 @@ function AddressCard({ address, onDelete }: { address: any; onDelete: (id: strin
   )
 }
 
-function BadgeCard({ badge }: { badge: any }) {
+function BadgeCard({ badge }: { badge: CustomerBadge }) {
   return (
     <div className="bg-white/5 rounded-xl p-4 flex items-center gap-3">
       <div

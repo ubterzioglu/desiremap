@@ -11,11 +11,11 @@ interface PendingBooking {
 
 interface BookingState {
   pendingBooking: PendingBooking | null
-  recentBookings: any[]
+  recentBookings: PendingBooking[]
   isModalOpen: boolean
   setPendingBooking: (booking: PendingBooking | null) => void
-  setRecentBookings: (bookings: any[]) => void
-  addRecentBooking: (booking: any) => void
+  setRecentBookings: (bookings: PendingBooking[]) => void
+  addRecentBooking: (booking: PendingBooking) => void
   openModal: () => void
   closeModal: () => void
   clearPendingBooking: () => void

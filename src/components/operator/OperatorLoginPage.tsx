@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ArrowRight, Building2, Eye, EyeOff, Loader2, ShieldCheck } from 'lucide-react'
 import { useLogin } from '@/hooks/useQueries'
@@ -69,9 +70,9 @@ export function OperatorLoginPage() {
 
             <p className="mt-10 text-xs text-slate-500">
               Sie sind Super Admin?{' '}
-              <a href="/auth/login" className="text-indigo-400 hover:text-indigo-300 transition-colors">
+              <Link href="/auth/login" className="text-indigo-400 hover:text-indigo-300 transition-colors">
                 Admin-Login →
-              </a>
+              </Link>
             </p>
           </section>
 

@@ -10,7 +10,6 @@ type ProductSEOContentProps = {
 }
 
 export function ProductSEOContent({ productData, locale }: ProductSEOContentProps) {
-  const siteUrl = 'https://desiremap.de'
   const typeLabels: Record<string, string> = {
     fkk: 'FKK Club',
     laufhaus: 'Laufhaus',

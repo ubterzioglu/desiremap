@@ -47,7 +47,7 @@
     "runtime": null
   },
   "build": {
-    "buildCommand": "npm run build",
+    "buildCommand": "bun run build 2>&1 | tail -30",
     "testCommand": "npm test",
     "lintCommand": "npm run lint",
     "devCommand": "npm run dev",
@@ -258,6 +258,12 @@
       "type": "directory"
     },
     {
+      "path": "src/proxy.ts",
+      "accessCount": 7,
+      "lastAccessed": 1777542606787,
+      "type": "file"
+    },
+    {
       "path": "PLAN.md",
       "accessCount": 5,
       "lastAccessed": 1776356638808,
@@ -273,12 +279,6 @@
       "path": "src/lib/admin-config.ts",
       "accessCount": 5,
       "lastAccessed": 1776375083509,
-      "type": "file"
-    },
-    {
-      "path": "src/proxy.ts",
-      "accessCount": 5,
-      "lastAccessed": 1776906656697,
       "type": "file"
     },
     {
@@ -357,6 +357,12 @@
       "path": "src/components/pages/DashboardPage.tsx",
       "accessCount": 2,
       "lastAccessed": 1776375268667,
+      "type": "file"
+    },
+    {
+      "path": "src/i18n/routing.ts",
+      "accessCount": 2,
+      "lastAccessed": 1777542277899,
       "type": "file"
     },
     {
@@ -465,12 +471,6 @@
       "path": "src/i18n/request.ts",
       "accessCount": 1,
       "lastAccessed": 1776370951621,
-      "type": "file"
-    },
-    {
-      "path": "src/i18n/routing.ts",
-      "accessCount": 1,
-      "lastAccessed": 1776370951783,
       "type": "file"
     },
     {

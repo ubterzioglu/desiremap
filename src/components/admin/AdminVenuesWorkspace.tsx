@@ -70,7 +70,7 @@ export function AdminVenuesWorkspace() {
             </div>
           )}
 
-          {normalizedVenues.map((venue: any) => {
+          {normalizedVenues.map((venue) => {
             const isSelected = selectedVenuePublicId === venue.venuePublicId
 
             return (

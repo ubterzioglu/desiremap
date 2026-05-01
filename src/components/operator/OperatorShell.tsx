@@ -14,6 +14,10 @@ const navItems: Array<{ id: OperatorTab; label: string; href: string; icon: type
   { id: 'events', label: 'Events', href: '/business/events', icon: CalendarRange },
 ]
 
+function hasAuthStoreHydrated() {
+  return useAuthStore.persist?.hasHydrated?.() ?? false
+}
+
 export function OperatorShell({
   activeTab,
   children,
@@ -29,11 +33,32 @@ export function OperatorShell({
   const router = useRouter()
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(true)
-  const [ready, setReady] = useState(false)
+  const [ready, setReady] = useState(hasAuthStoreHydrated)
 
   useEffect(() => {
-    setReady(true)
-  }, [])
+    if (ready) return
+
+    const markReady = () => {
+      const timer = window.setTimeout(() => {
+        setReady(true)
+      }, 0)
+
+      return () => window.clearTimeout(timer)
+    }
+
+    if (hasAuthStoreHydrated()) {
+      return markReady()
+    }
+
+    const onFinishHydration = useAuthStore.persist?.onFinishHydration
+    if (!onFinishHydration) {
+      return markReady()
+    }
+
+    return onFinishHydration(() => {
+      setReady(true)
+    })
+  }, [ready])
 
   useEffect(() => {
     if (ready && !isAuthenticated) {

@@ -8,6 +8,7 @@ import { AdminOperatorsWorkspace } from '@/components/admin/AdminOperatorsWorksp
 import { AdminSettingsWorkspace } from '@/components/admin/AdminSettingsWorkspace'
 import { AdminShell } from '@/components/admin/AdminShell'
 import { AdminVenuesWorkspace } from '@/components/admin/AdminVenuesWorkspace'
+import { AdminCitiesWorkspace } from '@/components/admin/AdminCitiesWorkspace'
 import type { AdminTab } from '@/types'
 
 const pageConfig: Record<string, { tab: AdminTab; title: string; subtitle: string; content: React.ReactNode }> = {
@@ -46,6 +47,12 @@ const pageConfig: Record<string, { tab: AdminTab; title: string; subtitle: strin
     title: 'Admin Settings',
     subtitle: 'Technische Rahmenbedingungen und naechste Ausbaustufen fuer das Operator-UI.',
     content: <AdminSettingsWorkspace />,
+  },
+  '/cities': {
+    tab: 'cities',
+    title: 'Cities',
+    subtitle: 'Städte verwalten — anlegen, umbenennen und löschen.',
+    content: <AdminCitiesWorkspace />,
   },
 }
 

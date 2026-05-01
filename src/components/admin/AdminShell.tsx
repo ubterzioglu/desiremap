@@ -10,6 +10,7 @@ import {
   DoorOpen,
   Globe,
   LogOut,
+  MapPin,
   Menu,
   Settings,
   ShieldCheck,
@@ -33,6 +34,7 @@ const navigationItems: Array<{
   { id: 'discovery', label: 'Discovery', href: '/discovery', icon: Globe },
   { id: 'businesses', label: 'Businesses', href: '/auth/businesses', icon: Building2 },
   { id: 'settings', label: 'Settings', href: '/settings', icon: Settings },
+  { id: 'cities', label: 'Cities', href: '/cities', icon: MapPin },
 ]
 
 export function AdminShell({

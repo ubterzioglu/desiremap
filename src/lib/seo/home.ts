@@ -87,33 +87,6 @@ const HOME_SEO_METADATA: Record<HomeSeoLocale, HomeSeoMetadata> = {
  * Bu kısım admin panelinde seo kısmından beslenir hale getirilecek
  * 
  */
-const BASE_CITY_LINKS = [
-  {
-    name: 'Berlin',
-    hint: 'Größte Dichte an Premium- und Wellness-orientierten Adressen.'
-  },
-  {
-    name: 'Hamburg',
-    hint: 'Diskrete Studios und bekannte Häuser in zentralen Lagen.'
-  },
-  {
-    name: 'Köln',
-    hint: 'Laufhaus-Cluster mit hoher Nachfrage und starker Markenbekanntheit.'
-  },
-  {
-    name: 'Frankfurt',
-    hint: 'Bahnhofsviertel und Premium-Locations mit hoher Besuchsfrequenz.'
-  },
-  {
-    name: 'München',
-    hint: 'Privatere und hochpreisige Adressen mit exklusiver Ausrichtung.'
-  },
-  {
-    name: 'Stuttgart',
-    hint: 'FKK- und Club-lastige Auswahl mit gutem Wellness-Fit.'
-  }
-] as const
-
 const BASE_FAQ: HomeSeoFaq[] = [
   {
     question: 'Wie hilft DesireMap bei der Auswahl einer passenden Adresse?',

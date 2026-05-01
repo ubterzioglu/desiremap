@@ -76,10 +76,13 @@ export function AdminBusinessesWorkspace() {
         <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">Alle Betriebe</h2>
         <div className="mt-5 space-y-3">
           {isLoading && <p className="text-sm text-slate-400">Lädt...</p>}
-          {businesses.map(biz => (
-            <div key={biz.id} className="rounded-[24px] border border-white/10 bg-white/[0.03]">
+          {businesses.map(biz => {
+            const businessId = biz.id ?? biz.businessPublicId
+
+            return (
+            <div key={businessId} className="rounded-[24px] border border-white/10 bg-white/[0.03]">
               <button
-                onClick={() => { setExpandedId(expandedId === biz.id ? null : biz.id); setOpForm(emptyOp); setOpError(''); setOpSuccess('') }}
+                onClick={() => { setExpandedId(expandedId === businessId ? null : businessId); setOpForm(emptyOp); setOpError(''); setOpSuccess('') }}
                 className="flex w-full items-center justify-between px-5 py-4 text-left"
               >
                 <div className="flex items-center gap-3">
@@ -93,11 +96,11 @@ export function AdminBusinessesWorkspace() {
                 </div>
                 <div className="flex items-center gap-3">
                   <span className={`rounded-full px-2 py-0.5 text-xs ${biz.status === 'ACTIVE' ? 'bg-teal-400/10 text-teal-300' : 'bg-red-400/10 text-red-300'}`}>{biz.status}</span>
-                  {expandedId === biz.id ? <ChevronUp className="h-4 w-4 text-slate-400" /> : <ChevronDown className="h-4 w-4 text-slate-400" />}
+                  {expandedId === businessId ? <ChevronUp className="h-4 w-4 text-slate-400" /> : <ChevronDown className="h-4 w-4 text-slate-400" />}
                 </div>
               </button>
 
-              {expandedId === biz.id && (
+              {expandedId === businessId && (
                 <div className="border-t border-white/10 px-5 pb-5 pt-4">
                   <div className="mb-3 text-xs text-slate-500">Public ID: <span className="font-mono text-slate-400">{biz.public_id}</span></div>
                   <div className="text-xs uppercase tracking-[0.2em] text-slate-500 mb-3">Operator-Account erstellen</div>
@@ -107,7 +110,7 @@ export function AdminBusinessesWorkspace() {
                     <Input placeholder="Initiales Passwort *" type="password" value={opForm.password} onChange={e => setOpForm(s => ({ ...s, password: e.target.value }))} className="h-10 border-white/10 bg-white/5 text-white text-sm placeholder:text-slate-500" />
                     {opError && <p className="text-xs text-red-400">{opError}</p>}
                     {opSuccess && <p className="text-xs text-teal-400">{opSuccess}</p>}
-                    <Button size="sm" onClick={() => handleCreateOp(biz.id)} disabled={createOpMut.isPending || !opForm.email || !opForm.password || !opForm.displayName} className="w-full rounded-xl bg-teal-400/20 text-teal-200 hover:bg-teal-400/30 border border-teal-400/20">
+                    <Button size="sm" onClick={() => handleCreateOp(businessId)} disabled={createOpMut.isPending || !opForm.email || !opForm.password || !opForm.displayName} className="w-full rounded-xl bg-teal-400/20 text-teal-200 hover:bg-teal-400/30 border border-teal-400/20">
                       <UserPlus className="mr-2 h-3.5 w-3.5" />
                       {createOpMut.isPending ? 'Erstellt...' : 'Operator-Account anlegen'}
                     </Button>
@@ -115,7 +118,7 @@ export function AdminBusinessesWorkspace() {
                 </div>
               )}
             </div>
-          ))}
+          )})}
         </div>
       </section>
     </div>

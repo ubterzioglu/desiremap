@@ -371,8 +371,8 @@ export function ReservationModal({ open, onOpenChange, bordell }: ReservationMod
         onOpenChange(false)
         resetForm()
       }, 2000)
-    } catch (err: any) {
-      setError(err.message || 'Reservierung fehlgeschlagen')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Reservierung fehlgeschlagen')
     }
   }
 

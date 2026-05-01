@@ -149,7 +149,7 @@ export function AdminDashboard() {
                 Operatoren werden geladen, sobald Backend-Endpunkte verfuegbar sind.
               </div>
             )}
-            {operatorList.map((operator: Record<string, string>) => (
+            {operatorList.map((operator) => (
               <div key={operator.operatorPublicId} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
                 <div className="flex items-center justify-between gap-3">
                   <div>

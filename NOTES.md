@@ -1,0 +1,2 @@
+- sitemap.xml hatalı 
+- favicon.ico hatalı

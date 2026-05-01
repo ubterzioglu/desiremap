@@ -835,8 +835,6 @@ export function getProductDetailStructuredData(
   locale: string,
   locales: string[]
 ) {
-  const productUrl = `${siteUrl}/${locale}/bordell/${product.slug}`
-
   return {
     '@context': 'https://schema.org',
     '@graph': [
@@ -1143,8 +1141,6 @@ export function getBlogPostStructuredData(
   locale: string,
   locales: string[]
 ) {
-  const postUrl = `${siteUrl}/${locale}/blog/${post.slug}`
-
   const schemas: object[] = [
     getOrganizationSchema(),
     getWebSiteSchema(locales),
