@@ -549,6 +549,15 @@ export interface ProductDetailData {
   image: string
   images?: string[]
   type: string // FKK, Laufhaus, Bordell, Studio, Privat
+  detailContent?: {
+    aboutText: string | null
+    servicesText: string | null
+    ladiesAtmosphereText: string | null
+    faq: Array<{
+      question: string
+      answer: string
+    }>
+  } | null
   city: string
   address: string
   phone?: string

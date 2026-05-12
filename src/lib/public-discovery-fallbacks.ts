@@ -59,6 +59,7 @@ export function getFallbackPublicEstablishments(params?: {
       city: bordell.city,
       type: bordell.type,
       description: bordell.description,
+      detailContent: null,
       lat: null,
       lng: null,
       phone: bordell.phone,

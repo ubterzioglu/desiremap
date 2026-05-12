@@ -45,6 +45,9 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
   const hasRelated = productData.relatedProducts.length > 0
   const hasContactInfo = Boolean(productData.phone) || Boolean(productData.email) || Boolean(productData.website)
   const hasServices = productData.services.length > 0
+  const customAboutText = productData.detailContent?.aboutText?.trim()
+  const customServicesText = productData.detailContent?.servicesText?.trim()
+  const customLadiesAtmosphereText = productData.detailContent?.ladiesAtmosphereText?.trim()
   const hasOpeningHours =
     productData.openingHours.days.length > 0 &&
     Boolean(productData.openingHours.opens) &&
@@ -64,22 +67,26 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
           Über {productData.name}?
         </h2>
         <div className="mt-6 max-w-3xl space-y-4 speakable-description">
-          <p className="text-[15px] leading-8 text-muted-foreground">
-            {productData.name} ist ein renommierter {typeLabels[productData.type]} im {productData.city}er Rotlichtviertel.
-            Als Teil des größten{' '}
-            <Link href={getLocalizedPath(locale, '/')} className="text-primary hover:underline">
-              Bordellmarkt
-            </Link>{' '}
-            in Deutschland bietet dieser Betrieb höchste Standards in Diskretion und Servicequalität.
-            {introStats && (
-              <>
-                {' '}{introStats} gehört {productData.name} zu den Top-Adressen auf dem{' '}
-                <Link href={getSearchPath(locale, { category: productData.type })} className="text-primary hover:underline">
-                  {typeLabels[productData.type]}-Markt
-                </Link>.
-              </>
-            )}
-          </p>
+          {customAboutText ? (
+            <p className="text-[15px] leading-8 text-muted-foreground">{customAboutText}</p>
+          ) : (
+            <p className="text-[15px] leading-8 text-muted-foreground">
+              {productData.name} ist ein renommierter {typeLabels[productData.type]} im {productData.city}er Rotlichtviertel.
+              Als Teil des größten{' '}
+              <Link href={getLocalizedPath(locale, '/')} className="text-primary hover:underline">
+                Bordellmarkt
+              </Link>{' '}
+              in Deutschland bietet dieser Betrieb höchste Standards in Diskretion und Servicequalität.
+              {introStats && (
+                <>
+                  {' '}{introStats} gehört {productData.name} zu den Top-Adressen auf dem{' '}
+                  <Link href={getSearchPath(locale, { category: productData.type })} className="text-primary hover:underline">
+                    {typeLabels[productData.type]}-Markt
+                  </Link>.
+                </>
+              )}
+            </p>
+          )}
         </div>
       </SectionShell>
 
@@ -105,15 +112,19 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
               </div>
             )}
             <div className="mt-4 max-w-3xl">
-              <p className="text-[15px] leading-8 text-muted-foreground">
-                Der {typeLabels[productData.type]} {productData.name} bietet ein umfangreiches Serviceportfolio.
-                Zu den Hauptleistungen gehören: {productData.services.join(', ')}. Alle Services werden
-                professionell und diskret auf dem{' '}
-                <Link href={getLocalizedPath(locale, '/')} className="text-primary hover:underline">
-                  Bordellmarkt
-                </Link>{' '}
-                angeboten.
-              </p>
+              {customServicesText ? (
+                <p className="text-[15px] leading-8 text-muted-foreground">{customServicesText}</p>
+              ) : (
+                <p className="text-[15px] leading-8 text-muted-foreground">
+                  Der {typeLabels[productData.type]} {productData.name} bietet ein umfangreiches Serviceportfolio.
+                  Zu den Hauptleistungen gehören: {productData.services.join(', ')}. Alle Services werden
+                  professionell und diskret auf dem{' '}
+                  <Link href={getLocalizedPath(locale, '/')} className="text-primary hover:underline">
+                    Bordellmarkt
+                  </Link>{' '}
+                  angeboten.
+                </p>
+              )}
             </div>
           </div>
 
@@ -182,45 +193,52 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
         <h2 className="text-2xl font-bold text-foreground md:text-3xl">
           Damen und Atmosphäre
         </h2>
-        <div className="mt-6 space-y-4">
-          {hasLadiesCount && (
-            <div className="rounded-2xl border border-white/5 bg-background/35 p-5">
-              <h3 className="text-xl font-semibold text-foreground">
-                Damenauswahl in {productData.name}
-              </h3>
-              <div className="mt-4 max-w-3xl">
-                <p className="text-[15px] leading-8 text-muted-foreground">
-                  In {productData.name} arbeiten derzeit {productData.ladiesCount} Damen.
-                  Die Auswahl umfasst verschiedene Nationalitäten und Serviceprofile.
-                  Der {typeLabels[productData.type]} auf dem{' '}
-                  <Link href={getLocalizedPath(locale, '/')} className="text-primary hover:underline">
-                    Bordellmarkt
-                  </Link>{' '}
-                  bietet detaillierte Profile und Bewertungen.
-                </p>
-              </div>
-            </div>
-          )}
-
-          <div className="rounded-2xl border border-white/5 bg-background/35 p-5">
-            <h3 className="text-xl font-semibold text-foreground">
-              Ambiente und Ausstattung
-            </h3>
-            <div className="mt-4 max-w-3xl">
-              <p className="text-[15px] leading-8 text-muted-foreground">
-                Das Ambiente in {productData.name} ist elegant und diskret.
-                Die Räumlichkeiten sind gepflegt und bieten privaten Rückzugsort.
-                {productData.verified && (
-                  <> Als verifizierter Betrieb auf dem{' '}
+        {customLadiesAtmosphereText && (
+          <p className="mt-6 text-[15px] leading-8 text-muted-foreground">
+            {customLadiesAtmosphereText}
+          </p>
+        )}
+        {!customLadiesAtmosphereText && (
+          <div className="mt-6 space-y-4">
+            {hasLadiesCount && (
+              <div className="rounded-2xl border border-white/5 bg-background/35 p-5">
+                <h3 className="text-xl font-semibold text-foreground">
+                  Damenauswahl in {productData.name}
+                </h3>
+                <div className="mt-4 max-w-3xl">
+                  <p className="text-[15px] leading-8 text-muted-foreground">
+                    In {productData.name} arbeiten derzeit {productData.ladiesCount} Damen.
+                    Die Auswahl umfasst verschiedene Nationalitäten und Serviceprofile.
+                    Der {typeLabels[productData.type]} auf dem{' '}
                     <Link href={getLocalizedPath(locale, '/')} className="text-primary hover:underline">
                       Bordellmarkt
                     </Link>{' '}
-                    erfüllt {productData.name} höchste Hygienestandards.</>
-                )}
-              </p>
+                    bietet detaillierte Profile und Bewertungen.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <div className="rounded-2xl border border-white/5 bg-background/35 p-5">
+              <h3 className="text-xl font-semibold text-foreground">
+                Ambiente und Ausstattung
+              </h3>
+              <div className="mt-4 max-w-3xl">
+                <p className="text-[15px] leading-8 text-muted-foreground">
+                  Das Ambiente in {productData.name} ist elegant und diskret.
+                  Die Räumlichkeiten sind gepflegt und bieten privaten Rückzugsort.
+                  {productData.verified && (
+                    <> Als verifizierter Betrieb auf dem{' '}
+                      <Link href={getLocalizedPath(locale, '/')} className="text-primary hover:underline">
+                        Bordellmarkt
+                      </Link>{' '}
+                      erfüllt {productData.name} höchste Hygienestandards.</>
+                  )}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </SectionShell>
 
       {hasReviewSection && (

@@ -22,6 +22,7 @@ export interface Bordell {
   ladiesCount: number; services: string[]; isOpen: boolean; openHours: string
   verified: boolean; premium: boolean; premiumExpiry?: string; sponsored: boolean; sponsoredExpiry?: string
   phone: string; email?: string; website?: string; description: string
+  detailContent?: PublicEstablishment['detailContent']
   coverImage?: string; images?: string[]; availableSlots?: string[]
   createdAt: string; updatedAt: string; views: number; bookings: number; revenue: number
   status: BordellStatus; ownerId?: string
@@ -71,6 +72,15 @@ export interface PublicEstablishment {
   city: string
   type: string
   description: string | null
+  detailContent?: {
+    aboutText: string | null
+    servicesText: string | null
+    ladiesAtmosphereText: string | null
+    faq: Array<{
+      question: string
+      answer: string
+    }>
+  } | null
   images: string[]
   rating: number | null
   reviewCount: number

@@ -81,6 +81,7 @@ function publicEstablishmentToBordell(e: PublicEstablishment): Bordell {
     email: e.email,
     website: e.website,
     description: e.description ?? '',
+    detailContent: e.detailContent,
     coverImage: e.images?.[0],
     images: e.images,
     createdAt: '2025-01-01T00:00:00.000Z',
@@ -101,6 +102,7 @@ function bordellToProductData(bordell: Bordell, relatedItems: PublicEstablishmen
     image: bordell.coverImage || `${siteUrl}/listing-bg.jpg`,
     images: bordell.images,
     type: bordell.type,
+    detailContent: bordell.detailContent,
     city: bordell.city,
     address: bordell.city,
     phone: bordell.phone,
@@ -116,7 +118,7 @@ function bordellToProductData(bordell: Bordell, relatedItems: PublicEstablishmen
     verified: bordell.verified,
     premium: bordell.premium,
     relatedProducts: relatedItems.slice(0, 3).map((b) => ({ id: b.slug, name: b.name, slug: b.slug, type: b.type, city: b.city })),
-    faq: [
+    faq: bordell.detailContent?.faq.length ? bordell.detailContent.faq : [
       { question: `Was kostet der Eintritt in ${bordell.name}?`, answer: `Der Eintritt beginnt bei ${bordell.minPrice > 0 ? `${bordell.minPrice}€` : 'Auf Anfrage'}.` },
       { question: `Ist ${bordell.name} verifiziert?`, answer: bordell.verified ? `Ja, ${bordell.name} ist verifiziert.` : `${bordell.name} befindet sich im Verifizierungsprozess.` },
     ],
