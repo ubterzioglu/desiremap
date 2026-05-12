@@ -22,11 +22,11 @@ export function FeaturedCities({ translations }: FeaturedCitiesProps) {
   const cities = useMemo(() => {
     if (!backendCities || backendCities.length === 0) return citiesData
 
-    const staticBySlug = new Map(citiesData.map((c) => [c.slug, c]))
+    const staticBySlug = new Map<string, (typeof citiesData)[number]>(citiesData.map((c) => [c.slug, c]))
 
     return backendCities
       .map((bc) => {
-        const s = staticBySlug.get(bc.slug as string)
+        const s = staticBySlug.get(bc.slug)
         if (!s) return null
         return { ...s, name: bc.name }
       })
