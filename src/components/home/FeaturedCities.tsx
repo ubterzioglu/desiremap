@@ -6,8 +6,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ChevronRight, MapPin } from 'lucide-react'
 import { useLocale } from 'next-intl'
-import { citiesData } from '@/data/cities'
-import { usePublicCities } from '@/hooks/useQueries'
+import { usePublicCities, usePublicCityCounts } from '@/hooks/useQueries'
 import { getCityPath } from '@/lib/navigation'
 import type { Translations } from '@/types'
 
@@ -18,20 +17,19 @@ type FeaturedCitiesProps = {
 export function FeaturedCities({ translations }: FeaturedCitiesProps) {
   const locale = useLocale()
   const { data: backendCities } = usePublicCities()
+  const citySlugs = useMemo(
+    () => backendCities?.map((city) => city.slug) ?? [],
+    [backendCities]
+  )
+  const cityCounts = usePublicCityCounts(citySlugs)
 
   const cities = useMemo(() => {
-    if (!backendCities || backendCities.length === 0) return citiesData
-
-    const staticBySlug = new Map<string, (typeof citiesData)[number]>(citiesData.map((c) => [c.slug, c]))
-
-    return backendCities
-      .map((bc) => {
-        const s = staticBySlug.get(bc.slug)
-        if (!s) return null
-        return { ...s, name: bc.name }
-      })
-      .filter(Boolean) as typeof citiesData
-  }, [backendCities])
+    return (backendCities ?? []).map((city) => ({
+      slug: city.slug,
+      name: city.name,
+      count: cityCounts[city.slug] ?? 0,
+    }))
+  }, [backendCities, cityCounts])
 
   return (
     <section className="relative py-12 sm:py-16 md:py-24 overflow-hidden">

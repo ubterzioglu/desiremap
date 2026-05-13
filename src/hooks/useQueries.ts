@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueries, useMutation, useQueryClient } from '@tanstack/react-query'
 import { customerApi, bookingApi, establishmentsApi, adminApi, authApi, publicApi, seedApi } from '@/lib/api'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -191,6 +191,22 @@ export function usePublicEstablishments(params?: {
     queryFn: () => publicApi.getEstablishments(params).then((r) => ({ items: r.items ?? [], total: r.total ?? 0 })),
     staleTime: 2 * 60 * 1000,
   })
+}
+
+export function usePublicCityCounts(citySlugs: string[]) {
+  const uniqueCitySlugs = Array.from(new Set(citySlugs.filter(Boolean)))
+  const countQueries = useQueries({
+    queries: uniqueCitySlugs.map((citySlug) => ({
+      queryKey: ['public', 'establishments', 'count', citySlug],
+      queryFn: () => publicApi.getEstablishments({ city: citySlug, limit: 1 }).then((r) => r.total ?? 0),
+      staleTime: 2 * 60 * 1000,
+    })),
+  })
+
+  return uniqueCitySlugs.reduce<Record<string, number | undefined>>((countsByCity, citySlug, index) => {
+    countsByCity[citySlug] = countQueries[index]?.data
+    return countsByCity
+  }, {})
 }
 
 export function usePublicEstablishmentDetail(slug: string) {

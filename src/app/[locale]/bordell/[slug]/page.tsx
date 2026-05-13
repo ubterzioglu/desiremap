@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { backendApi } from '@/lib/backend-client'
+import { backendApi, normalizePublicEstablishment } from '@/lib/backend-client'
+import { PRODUCTION_PUBLIC_API_BASE_URL, joinApiUrl } from '@/lib/api-config'
 import { getProductDetailStructuredData, getProductMetadata, type ProductDetailData } from '@/lib/structuredData'
 import { ProductDetailPageContent } from './ProductDetailPageContent'
 import type { Bordell, BordellType, PublicEstablishment } from '@/types'
@@ -21,6 +22,46 @@ const DEFAULT_OPENING_HOURS: Record<string, string> = {
 }
 
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+async function getPublicEstablishmentDetailWithFallback(slug: string): Promise<PublicEstablishment> {
+  try {
+    return await backendApi.getPublicEstablishmentDetail(slug)
+  } catch {
+    const response = await fetch(
+      joinApiUrl(PRODUCTION_PUBLIC_API_BASE_URL, `/public/establishments/${slug}`),
+      { cache: 'no-store' }
+    )
+
+    if (!response.ok) {
+      throw new Error(`Fallback detail fetch failed: ${response.status}`)
+    }
+
+    const payload = (await response.json()) as PublicEstablishment
+    return normalizePublicEstablishment(payload)
+  }
+}
+
+async function getPublicEstablishmentsByCityWithFallback(city: string): Promise<{ results: PublicEstablishment[]; total: number }> {
+  try {
+    return await backendApi.getPublicEstablishments({ city, limit: 4 })
+  } catch {
+    const url = new URL(joinApiUrl(PRODUCTION_PUBLIC_API_BASE_URL, '/public/establishments'))
+    url.searchParams.set('city', city)
+    url.searchParams.set('limit', '4')
+
+    const response = await fetch(url.toString(), { cache: 'no-store' })
+    if (!response.ok) {
+      return { results: [], total: 0 }
+    }
+
+    const payload = (await response.json()) as { results?: PublicEstablishment[]; total?: number }
+    const results = Array.isArray(payload.results)
+      ? payload.results.map(normalizePublicEstablishment)
+      : []
+
+    return { results, total: typeof payload.total === 'number' ? payload.total : results.length }
+  }
+}
 
 function parseOpeningHoursForSEO(hoursStr: string): { days: string[], opens: string, closes: string } {
   if (!hoursStr) return { days: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], opens: '00:00', closes: '23:59' }
@@ -134,7 +175,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params
   try {
-    const establishment = await backendApi.getPublicEstablishmentDetail(slug)
+    const establishment = await getPublicEstablishmentDetailWithFallback(slug)
     const bordell = publicEstablishmentToBordell(establishment)
     const productData = bordellToProductData(bordell, [])
     return getProductMetadata(productData, locale)
@@ -152,13 +193,13 @@ export default async function BordellDetailPage({
 
   let establishment: PublicEstablishment
   try {
-    establishment = await backendApi.getPublicEstablishmentDetail(slug)
+    establishment = await getPublicEstablishmentDetailWithFallback(slug)
   } catch {
     notFound()
   }
 
   const bordell = publicEstablishmentToBordell(establishment)
-  const relatedResult = await backendApi.getPublicEstablishments({ city: establishment.city, limit: 4 }).catch(() => ({ results: [], total: 0 }))
+  const relatedResult = await getPublicEstablishmentsByCityWithFallback(establishment.city)
   const relatedItems = relatedResult.results.filter((e) => e.slug !== slug)
 
   const productData = bordellToProductData(bordell, relatedItems)

@@ -3,8 +3,8 @@ import type { AuthSession, AuthUser } from '@/stores/authStore'
 import { useAuthStore } from '@/stores/authStore'
 import { normalizePublicServiceTypes } from '@/lib/public-service-types'
 import { normalizePublicEstablishment } from '@/lib/backend-client'
-import { getFallbackPublicCities, getFallbackPublicEstablishments, getFallbackPublicServiceTypes } from '@/lib/public-discovery-fallbacks'
-import { CLIENT_API_BASE_URL, PRODUCTION_PUBLIC_API_BASE_URL, joinApiUrl } from '@/lib/api-config'
+import { getFallbackPublicServiceTypes } from '@/lib/public-discovery-fallbacks'
+import { APP_BFF_BASE_URL, CLIENT_API_BASE_URL, PRODUCTION_PUBLIC_API_BASE_URL, joinApiUrl } from '@/lib/api-config'
 
 interface ApiResponse<T> {
   success: boolean
@@ -68,6 +68,23 @@ export interface AdminVenueResponse {
   name?: string
   city?: string
   status?: string
+  priceMin?: number | null
+  priceMax?: number | null
+  price_min?: number | null
+  price_max?: number | null
+}
+
+export interface AdminCreateVenuePayload {
+  name: string
+  addressLine: string
+  cityId: number
+  website?: string
+  publicEmail?: string
+  publicPhone?: string
+  serviceTypeIds: number[]
+  generalNote?: string
+  priceMin?: number
+  priceMax?: number
 }
 
 export interface AdminEventResponse {
@@ -208,6 +225,14 @@ async function apiCall<T>(endpoint: string, options: ApiRequestOptions = {}): Pr
 }
 
 async function publicApiCall<T>(endpoint: string, options: ApiRequestOptions = {}): Promise<T> {
+  if (typeof window !== 'undefined' && APP_BFF_BASE_URL.startsWith('/')) {
+    try {
+      return await apiCallAgainstBase(APP_BFF_BASE_URL, endpoint, options)
+    } catch {
+      // fall through to external/public fallback chain
+    }
+  }
+
   if (isLocalApiBaseUrl(CLIENT_API_BASE_URL) && CLIENT_API_BASE_URL !== PRODUCTION_PUBLIC_API_BASE_URL) {
     try {
       return await apiCallAgainstBase(PRODUCTION_PUBLIC_API_BASE_URL, endpoint, options)
@@ -451,11 +476,7 @@ export const bookingApi = {
 
 export const publicApi = {
   getCities: async () => {
-    try {
-      return await publicApiCall<{ items: PublicCity[] }>('/public/cities', { auth: false })
-    } catch {
-      return { items: getFallbackPublicCities() }
-    }
+    return publicApiCall<{ items: PublicCity[] }>('/public/cities', { auth: false })
   },
 
   getServiceTypes: async () => {
@@ -480,17 +501,13 @@ export const publicApi = {
       })
     }
     const suffix = qs.toString()
-    try {
-      const data = await publicApiCall<{ results: PublicEstablishment[]; total: number }>(
-        suffix ? `/public/establishments?${suffix}` : '/public/establishments',
-        { auth: false }
-      )
-      const raw = Array.isArray(data.results) ? data.results : []
-      const items = raw.map(normalizePublicEstablishment)
-      return { items, total: typeof data.total === 'number' ? data.total : items.length }
-    } catch {
-      return getFallbackPublicEstablishments(params)
-    }
+    const data = await publicApiCall<{ results: PublicEstablishment[]; total: number }>(
+      suffix ? `/public/establishments?${suffix}` : '/public/establishments',
+      { auth: false }
+    )
+    const raw = Array.isArray(data.results) ? data.results : []
+    const items = raw.map(normalizePublicEstablishment)
+    return { items, total: typeof data.total === 'number' ? data.total : items.length }
   },
 
   getEstablishmentDetail: (slug: string) =>
@@ -527,10 +544,16 @@ export const adminApi = {
   },
 
   getVenues: async () => {
-    return apiCall<AdminVenueResponse[]>('/admin/venues')
+    return apiCall<AdminVenueResponse[]>('/admin/venues').then((venues) =>
+      (Array.isArray(venues) ? venues : []).map((venue) => ({
+        ...venue,
+        priceMin: venue.priceMin ?? venue.price_min ?? null,
+        priceMax: venue.priceMax ?? venue.price_max ?? null,
+      }))
+    )
   },
 
-  createVenue: async (data: Record<string, unknown>) => {
+  createVenue: async (data: AdminCreateVenuePayload) => {
     return apiCall<AdminVenueResponse>('/admin/venues', {
       method: 'POST',
       body: JSON.stringify(data)

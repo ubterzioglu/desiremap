@@ -16,8 +16,31 @@ const initialForm = {
   website: '',
   publicEmail: '',
   publicPhone: '',
+  priceMin: '',
+  priceMax: '',
   serviceTypeIds: '',
   generalNote: '',
+}
+
+function parseOptionalPrice(value: string): number | undefined {
+  const normalized = value.replace(',', '.').trim()
+  if (!normalized) return undefined
+  const parsed = Number(normalized)
+  if (!Number.isFinite(parsed)) return undefined
+  return parsed
+}
+
+function formatPriceRange(priceMin?: number | null, priceMax?: number | null) {
+  if (typeof priceMin === 'number' && typeof priceMax === 'number') {
+    return `€${priceMin} - €${priceMax}`
+  }
+  if (typeof priceMin === 'number') {
+    return `ab €${priceMin}`
+  }
+  if (typeof priceMax === 'number') {
+    return `bis €${priceMax}`
+  }
+  return 'Preis nicht gesetzt'
 }
 
 export function AdminVenuesWorkspace() {
@@ -35,6 +58,8 @@ export function AdminVenuesWorkspace() {
   const handleSubmit = async () => {
     const cityId = Number(form.cityId)
     const serviceTypeIds = selectedServiceTypeIds
+    const priceMin = parseOptionalPrice(form.priceMin)
+    const priceMax = parseOptionalPrice(form.priceMax)
 
     const result = await createVenue.mutateAsync({
       name: form.name,
@@ -45,6 +70,8 @@ export function AdminVenuesWorkspace() {
       publicPhone: form.publicPhone || undefined,
       serviceTypeIds,
       generalNote: form.generalNote || undefined,
+      priceMin,
+      priceMax,
     })
 
     if (result?.venuePublicId) {
@@ -82,6 +109,7 @@ export function AdminVenuesWorkspace() {
                 <div>
                   <div className="text-sm font-medium text-white">{venue.venueName}</div>
                   <div className="mt-1 text-xs text-slate-500">{venue.venuePublicId}</div>
+                  <div className="mt-1 text-xs text-slate-400">{formatPriceRange(venue.priceMin, venue.priceMax)}</div>
                 </div>
                 {isSelected && (
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-teal-400/15 text-teal-200">
@@ -133,6 +161,10 @@ export function AdminVenuesWorkspace() {
           <div className="grid gap-4 md:grid-cols-2">
             <Input placeholder="Public Email" value={form.publicEmail} onChange={(event) => setForm((state) => ({ ...state, publicEmail: event.target.value }))} className="h-12 border-white/10 bg-white/5 text-white" />
             <Input placeholder="Public Phone" value={form.publicPhone} onChange={(event) => setForm((state) => ({ ...state, publicPhone: event.target.value }))} className="h-12 border-white/10 bg-white/5 text-white" />
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <Input placeholder="Preis min (EUR)" value={form.priceMin} onChange={(event) => setForm((state) => ({ ...state, priceMin: event.target.value }))} className="h-12 border-white/10 bg-white/5 text-white" inputMode="decimal" />
+            <Input placeholder="Preis max (EUR)" value={form.priceMax} onChange={(event) => setForm((state) => ({ ...state, priceMax: event.target.value }))} className="h-12 border-white/10 bg-white/5 text-white" inputMode="decimal" />
           </div>
           <Input placeholder="Website" value={form.website} onChange={(event) => setForm((state) => ({ ...state, website: event.target.value }))} className="h-12 border-white/10 bg-white/5 text-white" />
           <Textarea placeholder="General note" value={form.generalNote} onChange={(event) => setForm((state) => ({ ...state, generalNote: event.target.value }))} className="min-h-28 border-white/10 bg-white/5 text-white" />
