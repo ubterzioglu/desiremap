@@ -192,7 +192,7 @@ export function getHomeSeoExperience(locale: string): HomeSeoExperience {
     ],
     cityLinks: citiesData.slice(0, 6).map((item) => ({
       name: item.name,
-      hint: item.subtitles[currentLocale] || item.subtitles.de,
+      hint: item.subtitles[currentLocale] ?? item.subtitles.de ?? item.name,
       href: getCityPath(currentLocale, item.slug),
     })),
     trustPoints: [

@@ -58,7 +58,12 @@ const pageConfig: Record<string, { tab: AdminTab; title: string; subtitle: strin
 
 export function AdminPanel() {
   const pathname = usePathname()
-  const currentPage = pageConfig[pathname] || pageConfig['/dashboard']
+  const defaultPage = pageConfig['/dashboard']
+  if (!defaultPage) {
+    throw new Error('Admin dashboard page config missing')
+  }
+
+  const currentPage = pageConfig[pathname] ?? defaultPage
 
   return (
     <AdminShell

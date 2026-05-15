@@ -5,6 +5,8 @@ import { usePublicEstablishments } from '@/hooks/useQueries'
 import type { Bordell, BordellType, PublicEstablishment } from '@/types'
 
 function toSearchBordell(e: PublicEstablishment): Bordell {
+  const coverImage = e.images[0]
+
   return {
     id: e.slug,
     name: e.name,
@@ -16,7 +18,7 @@ function toSearchBordell(e: PublicEstablishment): Bordell {
     reviewCount: e.reviewCount,
     priceRange: e.priceMin != null ? `€${e.priceMin}${e.priceMax ? ` - €${e.priceMax}` : ''}` : 'Auf Anfrage',
     minPrice: e.priceMin ?? 0,
-    maxPrice: e.priceMax ?? undefined,
+    ...(e.priceMax === null ? {} : { maxPrice: e.priceMax }),
     ladiesCount: 0,
     services: e.tags,
     isOpen: e.isActive ?? false,
@@ -26,7 +28,7 @@ function toSearchBordell(e: PublicEstablishment): Bordell {
     sponsored: false,
     phone: '',
     description: e.description ?? '',
-    coverImage: e.images?.[0],
+    ...(coverImage === undefined ? {} : { coverImage }),
     images: e.images,
     createdAt: '',
     updatedAt: '',
@@ -46,9 +48,9 @@ export function useSearchPage(locale: string, initialQuery: string, initialCity:
 
   const updateUrl = useCallback((newQuery: string, newCity: string, newCategory: string) => {
     router.push(getSearchPath(locale, {
-      q: newQuery || undefined,
-      city: newCity || undefined,
-      category: newCategory || undefined
+      ...(newQuery.length > 0 ? { q: newQuery } : {}),
+      ...(newCity.length > 0 ? { city: newCity } : {}),
+      ...(newCategory.length > 0 ? { category: newCategory } : {}),
     }), { scroll: false })
   }, [locale, router])
 
@@ -79,9 +81,9 @@ export function useSearchPage(locale: string, initialQuery: string, initialCity:
   }, [locale, router])
 
   const { data: result, isLoading } = usePublicEstablishments({
-    q: initialQuery || undefined,
-    city: initialCity || undefined,
-    type: initialCategory || undefined,
+    ...(initialQuery.length > 0 ? { q: initialQuery } : {}),
+    ...(initialCity.length > 0 ? { city: initialCity } : {}),
+    ...(initialCategory.length > 0 ? { type: initialCategory } : {}),
     limit: 50,
   })
 

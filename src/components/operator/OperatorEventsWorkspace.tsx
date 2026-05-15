@@ -43,13 +43,14 @@ export function OperatorEventsWorkspace() {
       return
     }
     try {
+      const capacityTotal = form.capacityTotal ? Number(form.capacityTotal) : undefined
       await createEvent.mutateAsync({
         venuePublicId: venueId,
         title: form.title,
-        description: form.description || undefined,
+        ...(form.description.length > 0 ? { description: form.description } : {}),
         startAt: new Date(form.startAt).toISOString(),
         endAt: new Date(form.endAt).toISOString(),
-        capacityTotal: form.capacityTotal ? Number(form.capacityTotal) : undefined,
+        ...(capacityTotal === undefined ? {} : { capacityTotal }),
       })
       setForm(emptyForm)
     } catch (err) {

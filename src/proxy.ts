@@ -27,7 +27,7 @@ export function proxy(request: NextRequest) {
 
   if (isAdminHostname(host)) {
     const segment = pathname.split('/')[1]
-    const hasLocalePrefix = (locales as readonly string[]).includes(segment)
+    const hasLocalePrefix = segment !== undefined && (locales as readonly string[]).includes(segment)
 
     if (hasLocalePrefix) {
       const url = request.nextUrl.clone()
@@ -42,7 +42,7 @@ export function proxy(request: NextRequest) {
       return NextResponse.redirect(url, 308)
     }
 
-    if (ADMIN_CLEAN_ROUTES.includes(segment)) {
+    if (segment !== undefined && ADMIN_CLEAN_ROUTES.includes(segment)) {
       const url = request.nextUrl.clone()
       url.pathname = `/auth${pathname}`
       return NextResponse.rewrite(url)
@@ -73,7 +73,7 @@ export function proxy(request: NextRequest) {
   }
 
   const segment = pathname.split('/')[1]
-  const hasLocalePrefix = (locales as readonly string[]).includes(segment)
+  const hasLocalePrefix = segment !== undefined && (locales as readonly string[]).includes(segment)
 
   if (hasLocalePrefix) {
     if (segment === defaultLocale) {

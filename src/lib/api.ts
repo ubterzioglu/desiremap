@@ -257,6 +257,8 @@ function normalizeUser(payload: unknown): AuthUser {
     throw new Error('API user payload missing')
   }
 
+  const operatorPublicId = typeof payload.operatorPublicId === 'string' ? payload.operatorPublicId : undefined
+
   return {
     id: String(payload.id ?? ''),
     email: String(payload.email ?? ''),
@@ -265,7 +267,7 @@ function normalizeUser(payload: unknown): AuthUser {
     status: String(payload.status ?? 'active').toLowerCase(),
     avatar: typeof payload.avatar === 'string' ? payload.avatar : null,
     workspace: payload.workspace === 'admin' ? 'admin' : 'public',
-    operatorPublicId: typeof payload.operatorPublicId === 'string' ? payload.operatorPublicId : undefined,
+    ...(operatorPublicId === undefined ? {} : { operatorPublicId }),
     businessAccountPublicId: typeof payload.businessAccountPublicId === 'string' ? payload.businessAccountPublicId : null,
     requirePasswordReset: payload.requirePasswordReset === true
   }
@@ -314,7 +316,7 @@ function normalizeAuthConfig(payload: unknown): AuthConfig {
 
   return {
     googleOAuth: payload.googleOAuth === true || Boolean(googleOAuthUrl),
-    googleOAuthUrl
+    ...(googleOAuthUrl === undefined ? {} : { googleOAuthUrl })
   }
 }
 

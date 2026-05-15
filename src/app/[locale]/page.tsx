@@ -35,7 +35,14 @@ function ViewDetail(props: { bordell: Bordell; hasCity: boolean; handlers: Handl
 }
 
 function ViewLogin(props: { loginMessage?: string; handlers: Handlers }) {
-  return <LoginPage key="login" onBack={props.handlers.onBackHome} loginMessage={props.loginMessage} onRegister={props.handlers.onRegister} />
+  return (
+    <LoginPage
+      key="login"
+      onBack={props.handlers.onBackHome}
+      {...(props.loginMessage === undefined ? {} : { loginMessage: props.loginMessage })}
+      onRegister={props.handlers.onRegister}
+    />
+  )
 }
 
 function ViewDashboard() {
@@ -67,7 +74,7 @@ export default function Home() {
       home: <ViewHome locale={locale} />,
       city: selectedCity ? <ViewCity city={selectedCity} handlers={handlers} /> : null,
       detail: selectedBordell ? <ViewDetail bordell={selectedBordell} hasCity={!!selectedCity} handlers={handlers} /> : null,
-      login: <ViewLogin loginMessage={loginMessage} handlers={handlers} />,
+      login: <ViewLogin {...(loginMessage === undefined ? {} : { loginMessage })} handlers={handlers} />,
       dashboard: <ViewDashboard />
     }
     return viewMap[view]

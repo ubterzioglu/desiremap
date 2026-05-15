@@ -15,7 +15,7 @@ export function getFallbackPublicServiceTypes(): PublicServiceType[] {
   return categoriesData.map((category, index) => ({
     id: index + 1,
     slug: category.slug,
-    name: category.name.de,
+    name: category.name.de ?? category.slug,
   }))
 }
 
@@ -53,7 +53,7 @@ export function getFallbackPublicEstablishments(params?: {
 
       return haystack.includes(query)
     })
-    .map((bordell) => ({
+    .map((bordell): PublicEstablishment => ({
       slug: bordell.id,
       name: bordell.name,
       city: bordell.city,
@@ -63,8 +63,8 @@ export function getFallbackPublicEstablishments(params?: {
       lat: null,
       lng: null,
       phone: bordell.phone,
-      email: bordell.email,
-      website: bordell.website,
+      ...(bordell.email === undefined ? {} : { email: bordell.email }),
+      ...(bordell.website === undefined ? {} : { website: bordell.website }),
       images: bordell.coverImage ? [bordell.coverImage] : [],
       rating: bordell.rating,
       reviewCount: bordell.reviewCount,

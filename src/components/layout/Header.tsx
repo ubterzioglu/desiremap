@@ -59,7 +59,7 @@ export function Header({ locale, onLoginClick, isLoggedIn, onDashboardClick, tra
           </div>
         </div>
         <AnimatePresence>
-          <MobileMenu isOpen={mobileMenuOpen} locale={locale} translations={translations} onLoginClick={onLoginClick} onClose={() => setMobileMenuOpen(false)} />
+          <MobileMenu isOpen={mobileMenuOpen} locale={locale} translations={translations} {...(onLoginClick === undefined ? {} : { onLoginClick })} onClose={() => setMobileMenuOpen(false)} />
         </AnimatePresence>
       </div>
     </motion.header>

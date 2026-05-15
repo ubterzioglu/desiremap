@@ -363,7 +363,7 @@ export function ReservationModal({ open, onOpenChange, bordell }: ReservationMod
         time: selectedTime,
         duration: durationNum,
         price: estimatedPrice,
-        notes: notes || undefined
+        ...(notes.length > 0 ? { notes } : {}),
       })
       
       setSuccess(true)

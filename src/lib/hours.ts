@@ -2,9 +2,16 @@
 const DAY_KEYS = ['su', 'mo', 'tu', 'we', 'th', 'fr', 'sa'] as const
 
 function parseRange(range: string): [number, number] | null {
-  const m = range.match(/^(\d{1,2}):(\d{2})-(\d{1,2}):(\d{2})$/)
-  if (!m) return null
-  return [parseInt(m[1]) * 60 + parseInt(m[2]), parseInt(m[3]) * 60 + parseInt(m[4])]
+  const match = range.match(/^(\d{1,2}):(\d{2})-(\d{1,2}):(\d{2})$/)
+  if (!match) return null
+
+  const [, startHour, startMinute, endHour, endMinute] = match
+  if (!startHour || !startMinute || !endHour || !endMinute) return null
+
+  return [
+    parseInt(startHour, 10) * 60 + parseInt(startMinute, 10),
+    parseInt(endHour, 10) * 60 + parseInt(endMinute, 10),
+  ]
 }
 
 export function isOpenNow(openingHours: Record<string, string> | null | undefined): boolean {
@@ -14,6 +21,7 @@ export function isOpenNow(openingHours: Record<string, string> | null | undefine
   const cur = now.getHours() * 60 + now.getMinutes()
   const todayKey = DAY_KEYS[now.getDay()]
   const yesterdayKey = DAY_KEYS[(now.getDay() + 6) % 7]
+  if (!todayKey || !yesterdayKey) return false
 
   const todayRange = parseRange(openingHours[todayKey] ?? '')
   if (todayRange) {

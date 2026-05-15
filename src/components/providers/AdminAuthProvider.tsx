@@ -46,7 +46,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     setAdminSession({
       id: session.user.id,
       email: session.user.email,
-      name: session.user.name ?? email.split('@')[0],
+      name: session.user.name ?? email.split('@')[0] ?? email,
       role: 'super_admin',
       workspace: 'admin',
     })

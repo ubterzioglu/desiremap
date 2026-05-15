@@ -18,20 +18,29 @@ export function LanguageSelector() {
   const router = useRouter()
   const pathname = usePathname()
 
+  const defaultLanguage = languages[0]
+  if (!defaultLanguage) {
+    throw new Error('Language selector options missing')
+  }
+
   const segments = pathname.split('/').filter(Boolean)
   const localeFromPath = segments[0]
   const validLocales = ['de', 'en', 'ar', 'tr']
-  const currentLocale = validLocales.includes(localeFromPath) ? localeFromPath : localeFromHook
+  const hasLocaleInPath = localeFromPath !== undefined && validLocales.includes(localeFromPath)
+  const currentLocale = hasLocaleInPath ? localeFromPath : localeFromHook
 
-  const currentLang = languages.find((lang) => lang.code === currentLocale) ?? languages[0]
+  const currentLang = languages.find((lang) => lang.code === currentLocale) ?? defaultLanguage
 
   const changeLocale = (newLocale: string) => {
+    const firstSegment = segments[0]
+    const firstSegmentIsLocale = firstSegment !== undefined && validLocales.includes(firstSegment)
+
     if (newLocale === 'de') {
-      const remaining = validLocales.includes(segments[0]) ? segments.slice(1) : segments
+      const remaining = firstSegmentIsLocale ? segments.slice(1) : segments
       router.push('/' + remaining.join('/'))
       return
     }
-    if (segments.length > 0 && validLocales.includes(segments[0])) {
+    if (segments.length > 0 && firstSegmentIsLocale) {
       segments[0] = newLocale
     } else {
       segments.unshift(newLocale)

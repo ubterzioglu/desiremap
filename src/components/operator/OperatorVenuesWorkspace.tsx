@@ -44,10 +44,10 @@ export function OperatorVenuesWorkspace() {
         name: form.name,
         addressLine: form.addressLine,
         cityId: Number(form.cityId),
-        website: form.website || undefined,
-        publicEmail: form.publicEmail || undefined,
-        publicPhone: form.publicPhone || undefined,
-        generalNote: form.generalNote || undefined,
+        ...(form.website.length > 0 ? { website: form.website } : {}),
+        ...(form.publicEmail.length > 0 ? { publicEmail: form.publicEmail } : {}),
+        ...(form.publicPhone.length > 0 ? { publicPhone: form.publicPhone } : {}),
+        ...(form.generalNote.length > 0 ? { generalNote: form.generalNote } : {}),
         serviceTypeIds: selectedServiceTypeIds,
       })
       if (typeof result === 'object' && result !== null && 'venuePublicId' in result && typeof result.venuePublicId === 'string') {

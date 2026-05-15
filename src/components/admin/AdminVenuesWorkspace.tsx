@@ -65,13 +65,13 @@ export function AdminVenuesWorkspace() {
       name: form.name,
       addressLine: form.addressLine,
       cityId,
-      website: form.website || undefined,
-      publicEmail: form.publicEmail || undefined,
-      publicPhone: form.publicPhone || undefined,
+      ...(form.website.length > 0 ? { website: form.website } : {}),
+      ...(form.publicEmail.length > 0 ? { publicEmail: form.publicEmail } : {}),
+      ...(form.publicPhone.length > 0 ? { publicPhone: form.publicPhone } : {}),
       serviceTypeIds,
-      generalNote: form.generalNote || undefined,
-      priceMin,
-      priceMax,
+      ...(form.generalNote.length > 0 ? { generalNote: form.generalNote } : {}),
+      ...(priceMin === undefined ? {} : { priceMin }),
+      ...(priceMax === undefined ? {} : { priceMax }),
     })
 
     if (result?.venuePublicId) {

@@ -31,13 +31,14 @@ export function AdminEventsWorkspace() {
   const eventItems = useMemo(() => Array.isArray(events) ? events : [], [events])
 
   const handleCreateEvent = async () => {
+    const capacityTotal = form.capacityTotal ? Number(form.capacityTotal) : undefined
     await createEvent.mutateAsync({
       venuePublicId,
       title: form.title,
-      description: form.description || undefined,
+      ...(form.description.length > 0 ? { description: form.description } : {}),
       startAt: new Date(form.startAt).toISOString(),
       endAt: new Date(form.endAt).toISOString(),
-      capacityTotal: form.capacityTotal ? Number(form.capacityTotal) : undefined,
+      ...(capacityTotal === undefined ? {} : { capacityTotal }),
     })
 
     setForm(initialForm)

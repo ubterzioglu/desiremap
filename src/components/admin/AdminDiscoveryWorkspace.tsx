@@ -15,8 +15,8 @@ export function AdminDiscoveryWorkspace() {
   const { data: citiesResult } = usePublicCities()
   const { data: serviceTypesResult } = usePublicServiceTypes()
   const { data: result, isLoading } = usePublicEstablishments({
-    city: filterCity || undefined,
-    type: filterType || undefined,
+    ...(filterCity.length > 0 ? { city: filterCity } : {}),
+    ...(filterType.length > 0 ? { type: filterType } : {}),
     limit: 50,
   })
   const seed = useAdminSeed()
