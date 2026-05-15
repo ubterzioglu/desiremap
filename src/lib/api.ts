@@ -2,8 +2,15 @@ import type { PublicCity, PublicEstablishment } from '@/types'
 import type { AuthSession, AuthUser } from '@/stores/authStore'
 import { useAuthStore } from '@/stores/authStore'
 import { normalizePublicServiceTypes } from '@/lib/public-service-types'
-import { normalizePublicEstablishment } from '@/lib/backend-client'
-import { getFallbackPublicServiceTypes } from '@/lib/public-discovery-fallbacks'
+import { normalizePublicCity, normalizePublicEstablishment } from '@/lib/backend-client'
+import {
+  getFallbackPublicCities,
+  getFallbackPublicServiceTypes,
+} from '@/lib/public-discovery-fallbacks'
+import {
+  getFallbackPublicStadtCities,
+  getFallbackPublicStadtCity,
+} from '@/lib/public-cities'
 import { APP_BFF_BASE_URL, CLIENT_API_BASE_URL, PRODUCTION_PUBLIC_API_BASE_URL, joinApiUrl } from '@/lib/api-config'
 
 interface ApiResponse<T> {
@@ -127,6 +134,32 @@ export interface AdminCityResponse {
   cityId: number
   name: string
   slug: string
+  venueCount?: number
+  publicImageUrl?: string | null
+  publicHeroImageUrl?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  publicSubtitle?: Record<string, string | null> | null
+  publicDescription?: Record<string, string | null> | null
+  seoTitle?: Record<string, string | null> | null
+  seoDescription?: Record<string, string | null> | null
+  isPublicActive?: boolean
+  sortOrder?: number | null
+}
+
+export interface AdminCityPayload {
+  name?: string
+  slug?: string
+  publicImageUrl?: string | null
+  publicHeroImageUrl?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  publicSubtitle?: Record<string, string | null> | null
+  publicDescription?: Record<string, string | null> | null
+  seoTitle?: Record<string, string | null> | null
+  seoDescription?: Record<string, string | null> | null
+  isPublicActive?: boolean
+  sortOrder?: number | null
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -482,7 +515,46 @@ async function enrichPublicEstablishmentSummary(item: PublicEstablishment) {
 
 export const publicApi = {
   getCities: async () => {
-    return publicApiCall<{ items: PublicCity[] }>('/public/cities', { auth: false })
+    try {
+      const response = await publicApiCall<{ items: PublicCity[] }>('/public/cities', { auth: false })
+
+      return {
+        items: Array.isArray(response.items)
+          ? response.items.map(normalizePublicCity)
+          : [],
+      }
+    } catch {
+      return { items: getFallbackPublicCities() }
+    }
+  },
+
+  getStadtCities: async () => {
+    try {
+      const response = await publicApiCall<{ items: PublicCity[] }>('/public/stadt/cities', { auth: false })
+
+      return {
+        items: Array.isArray(response.items)
+          ? response.items.map(normalizePublicCity)
+          : [],
+      }
+    } catch {
+      return { items: getFallbackPublicStadtCities() }
+    }
+  },
+
+  getStadtCity: async (slug: string) => {
+    try {
+      return normalizePublicCity(
+        await publicApiCall<PublicCity>(`/public/stadt/cities/${encodeURIComponent(slug)}`, { auth: false })
+      )
+    } catch {
+      const city = getFallbackPublicStadtCity(slug)
+      if (!city) {
+        throw new Error('City not found')
+      }
+
+      return city
+    }
   },
 
   getServiceTypes: async () => {
@@ -658,14 +730,14 @@ export const adminApi = {
     return data.items ?? []
   },
 
-  createCity: async (data: { name: string; slug: string }) => {
+  createCity: async (data: AdminCityPayload & { name: string; slug: string }) => {
     return apiCall<AdminCityResponse>('/admin/cities', {
       method: 'POST',
       body: JSON.stringify(data)
     })
   },
 
-  updateCity: async (cityId: number, data: { name?: string; slug?: string }) => {
+  updateCity: async (cityId: number, data: AdminCityPayload) => {
     return apiCall<AdminCityResponse>(`/admin/cities/${cityId}`, {
       method: 'PUT',
       body: JSON.stringify(data)

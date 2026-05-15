@@ -3,8 +3,13 @@ import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import Link from 'next/link'
 import { MapPin, ChevronRight } from 'lucide-react'
-import { citiesData } from '@/data/cities'
+import { backendApi } from '@/lib/backend-client'
 import { getCityPath } from '@/lib/navigation'
+import {
+  getFallbackPublicStadtCities,
+  getPublicCityImage,
+  getPublicCityVenueCount,
+} from '@/lib/public-cities'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 
@@ -43,6 +48,10 @@ export default async function StadtIndexPage({
 }) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'nav' })
+  const cities = await backendApi
+    .getPublicStadtCities()
+    .then((response) => response.items)
+    .catch(() => getFallbackPublicStadtCities())
 
   return (
     <main className="min-h-screen bg-black flex flex-col">
@@ -75,26 +84,33 @@ export default async function StadtIndexPage({
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {citiesData.map((city) => (
+            {cities.map((city) => {
+              const image = getPublicCityImage(city)
+
+              return (
               <Link
                 key={city.slug}
                 href={getCityPath(locale, city.slug)}
                 className="group relative overflow-hidden rounded-2xl border border-white/10 hover:border-[#8b1a4a]/50 transition-all duration-300"
               >
                 <div className="absolute inset-0">
-                  <Image
-                    src={city.image}
-                    alt={city.name}
-                    fill
-                    className="object-cover opacity-30 group-hover:opacity-45 transition-opacity duration-300"
-                  />
+                  {image ? (
+                    <Image
+                      src={image}
+                      alt={city.name}
+                      fill
+                      className="object-cover opacity-30 group-hover:opacity-45 transition-opacity duration-300"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-linear-to-br from-[#8b1a4a]/30 via-[#1a0a14] to-black" />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
                 </div>
                 <div className="relative z-10 p-6 flex items-end justify-between min-h-[160px]">
                   <div>
                     <div className="flex items-center gap-1.5 mb-1">
                       <MapPin className="w-3.5 h-3.5 text-[#b76e79]" />
-                      <span className="text-xs text-gray-400">{city.count} Betriebe</span>
+                      <span className="text-xs text-gray-400">{getPublicCityVenueCount(city)} Betriebe</span>
                     </div>
                     <h2 className="text-xl sm:text-2xl font-bold text-white group-hover:text-[#e8a0b0] transition-colors duration-300">
                       {city.name}
@@ -103,7 +119,8 @@ export default async function StadtIndexPage({
                   <ChevronRight className="w-5 h-5 text-gray-500 group-hover:text-[#b76e79] group-hover:translate-x-1 transition-all duration-300" />
                 </div>
               </Link>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>

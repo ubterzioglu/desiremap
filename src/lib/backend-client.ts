@@ -39,6 +39,38 @@ function normalizeNullableNumber(value: number | string | null | undefined) {
   return null
 }
 
+export function normalizePublicCity(item: PublicCity): PublicCity {
+  const raw = item as PublicCity & {
+    count?: number | string | null
+    venue_count?: number | string | null
+    venueCount?: number | string | null
+    public_image_url?: string | null
+    publicImageUrl?: string | null
+  }
+  const id = Number(raw.id ?? raw.cityId)
+  const normalizedId = Number.isFinite(id) ? id : 0
+  const cityId = raw.cityId ?? (normalizedId > 0 ? normalizedId : null)
+
+  return {
+    ...item,
+    id: normalizedId,
+    ...(cityId !== null ? { cityId } : {}),
+    venueCount: normalizeNullableNumber(raw.venueCount ?? raw.venue_count ?? raw.count) ?? 0,
+    image:
+      normalizePublicImageUrl(raw.image)
+      ?? normalizePublicImageUrl(raw.publicImageUrl)
+      ?? normalizePublicImageUrl(raw.public_image_url),
+    latitude: normalizeNullableNumber(raw.latitude),
+    longitude: normalizeNullableNumber(raw.longitude),
+    subtitle: raw.subtitle ?? {},
+    description: raw.description ?? {},
+    seoTitle: raw.seoTitle ?? {},
+    seoDescription: raw.seoDescription ?? {},
+    isActive: raw.isActive ?? true,
+    sortOrder: normalizeNullableNumber(raw.sortOrder),
+  }
+}
+
 export function normalizePublicEstablishment(item: PublicEstablishment): PublicEstablishment {
   const raw = item as PublicEstablishment & {
     cover_image_url?: string | null
@@ -198,6 +230,18 @@ export const backendApi = {
 
   getPublicCities: () =>
     backendFetch<{ items: PublicCity[] }>('/public/cities'),
+
+  getPublicStadtCities: () =>
+    backendFetch<{ items: PublicCity[] }>('/public/stadt/cities').then((response) => ({
+      items: Array.isArray(response.items)
+        ? response.items.map(normalizePublicCity)
+        : [],
+    })),
+
+  getPublicStadtCity: (slug: string) =>
+    backendFetch<PublicCity>(`/public/stadt/cities/${encodeURIComponent(slug)}`).then(
+      normalizePublicCity
+    ),
 
   getPublicServiceTypes: async () => ({
     items: normalizePublicServiceTypes(await backendFetch<unknown>('/public/service-types'))

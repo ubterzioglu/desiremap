@@ -100,8 +100,19 @@ export interface PublicEstablishment {
 
 export interface PublicCity {
   id: number
+  cityId?: number
   slug: string
   name: string
+  venueCount?: number
+  image?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  subtitle?: Record<string, string | null>
+  description?: Record<string, string | null>
+  seoTitle?: Record<string, string | null>
+  seoDescription?: Record<string, string | null>
+  isActive?: boolean
+  sortOrder?: number | null
 }
 
 export interface PublicServiceType {

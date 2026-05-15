@@ -5,14 +5,205 @@ import { MapPin, Pencil, Plus, Trash2, X, Check } from 'lucide-react'
 import { useAdminCities, useCreateCity, useUpdateCity, useDeleteCity } from '@/hooks/useQueries'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import type { AdminCityResponse } from '@/lib/api'
+import { Textarea } from '@/components/ui/textarea'
+import type { AdminCityPayload, AdminCityResponse } from '@/lib/api'
 
-const emptyForm = { name: '', slug: '' }
+type CityFormState = {
+  name: string
+  slug: string
+  publicImageUrl: string
+  publicHeroImageUrl: string
+  latitude: string
+  longitude: string
+  publicSubtitleJson: string
+  publicDescriptionJson: string
+  seoTitleJson: string
+  seoDescriptionJson: string
+  isPublicActive: boolean
+  sortOrder: string
+}
+
+const emptyForm: CityFormState = {
+  name: '',
+  slug: '',
+  publicImageUrl: '',
+  publicHeroImageUrl: '',
+  latitude: '',
+  longitude: '',
+  publicSubtitleJson: '',
+  publicDescriptionJson: '',
+  seoTitleJson: '',
+  seoDescriptionJson: '',
+  isPublicActive: true,
+  sortOrder: '',
+}
+
+function stringifyLocalized(value: Record<string, string | null> | null | undefined) {
+  return value && Object.keys(value).length > 0
+    ? JSON.stringify(value, null, 2)
+    : ''
+}
+
+function cityToForm(city: AdminCityResponse): CityFormState {
+  return {
+    name: city.name,
+    slug: city.slug,
+    publicImageUrl: city.publicImageUrl ?? '',
+    publicHeroImageUrl: city.publicHeroImageUrl ?? '',
+    latitude: city.latitude == null ? '' : String(city.latitude),
+    longitude: city.longitude == null ? '' : String(city.longitude),
+    publicSubtitleJson: stringifyLocalized(city.publicSubtitle),
+    publicDescriptionJson: stringifyLocalized(city.publicDescription),
+    seoTitleJson: stringifyLocalized(city.seoTitle),
+    seoDescriptionJson: stringifyLocalized(city.seoDescription),
+    isPublicActive: city.isPublicActive ?? true,
+    sortOrder: city.sortOrder == null ? '' : String(city.sortOrder),
+  }
+}
+
+function parseNullableNumber(value: string, fieldName: string) {
+  const trimmed = value.trim()
+  if (!trimmed) {
+    return null
+  }
+
+  const parsed = Number(trimmed)
+  if (!Number.isFinite(parsed)) {
+    throw new Error(`${fieldName} muss eine Zahl sein.`)
+  }
+
+  return parsed
+}
+
+function parseLocalizedJson(value: string, fieldName: string) {
+  const trimmed = value.trim()
+  if (!trimmed) {
+    return null
+  }
+
+  const parsed = JSON.parse(trimmed) as unknown
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    throw new Error(`${fieldName} muss ein JSON-Objekt sein.`)
+  }
+
+  return parsed as Record<string, string | null>
+}
+
+function formToPayload(form: CityFormState): AdminCityPayload {
+  return {
+    name: form.name.trim(),
+    slug: form.slug.trim(),
+    publicImageUrl: form.publicImageUrl.trim() || null,
+    publicHeroImageUrl: form.publicHeroImageUrl.trim() || null,
+    latitude: parseNullableNumber(form.latitude, 'Latitude'),
+    longitude: parseNullableNumber(form.longitude, 'Longitude'),
+    publicSubtitle: parseLocalizedJson(form.publicSubtitleJson, 'Public Subtitle'),
+    publicDescription: parseLocalizedJson(form.publicDescriptionJson, 'Public Description'),
+    seoTitle: parseLocalizedJson(form.seoTitleJson, 'SEO Title'),
+    seoDescription: parseLocalizedJson(form.seoDescriptionJson, 'SEO Description'),
+    isPublicActive: form.isPublicActive,
+    sortOrder: parseNullableNumber(form.sortOrder, 'Sort Order'),
+  }
+}
+
+function CityFormFields({
+  form,
+  onChange,
+}: {
+  form: CityFormState
+  onChange: (field: keyof CityFormState, value: string | boolean) => void
+}) {
+  return (
+    <div className="space-y-3">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Input
+          placeholder="Name (z.B. Berlin) *"
+          value={form.name}
+          onChange={e => onChange('name', e.target.value)}
+          className="h-11 border-white/10 bg-white/5 text-white placeholder:text-slate-500"
+        />
+        <Input
+          placeholder="Slug (z.B. berlin) *"
+          value={form.slug}
+          onChange={e => onChange('slug', e.target.value.toLowerCase().replace(/\s+/g, '-'))}
+          className="h-11 border-white/10 bg-white/5 text-white placeholder:text-slate-500"
+        />
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Input
+          placeholder="Card Image URL"
+          value={form.publicImageUrl}
+          onChange={e => onChange('publicImageUrl', e.target.value)}
+          className="h-11 border-white/10 bg-white/5 text-white placeholder:text-slate-500"
+        />
+        <Input
+          placeholder="Hero Image URL"
+          value={form.publicHeroImageUrl}
+          onChange={e => onChange('publicHeroImageUrl', e.target.value)}
+          className="h-11 border-white/10 bg-white/5 text-white placeholder:text-slate-500"
+        />
+      </div>
+      <div className="grid gap-3 sm:grid-cols-3">
+        <Input
+          placeholder="Latitude"
+          value={form.latitude}
+          onChange={e => onChange('latitude', e.target.value)}
+          className="h-11 border-white/10 bg-white/5 text-white placeholder:text-slate-500"
+        />
+        <Input
+          placeholder="Longitude"
+          value={form.longitude}
+          onChange={e => onChange('longitude', e.target.value)}
+          className="h-11 border-white/10 bg-white/5 text-white placeholder:text-slate-500"
+        />
+        <Input
+          placeholder="Sort Order"
+          value={form.sortOrder}
+          onChange={e => onChange('sortOrder', e.target.value)}
+          className="h-11 border-white/10 bg-white/5 text-white placeholder:text-slate-500"
+        />
+      </div>
+      <label className="flex items-center gap-2 text-sm text-slate-300">
+        <input
+          type="checkbox"
+          checked={form.isPublicActive}
+          onChange={e => onChange('isPublicActive', e.target.checked)}
+          className="h-4 w-4 rounded border-white/20 bg-white/5"
+        />
+        Public Stadt-Seite aktiv
+      </label>
+      <Textarea
+        placeholder='Public Subtitle JSON, z.B. {"de":"Premium-Adressen","en":"Premium venues"}'
+        value={form.publicSubtitleJson}
+        onChange={e => onChange('publicSubtitleJson', e.target.value)}
+        className="min-h-20 border-white/10 bg-white/5 text-white placeholder:text-slate-500"
+      />
+      <Textarea
+        placeholder='Public Description JSON, z.B. {"de":"Beschreibung fuer Berlin"}'
+        value={form.publicDescriptionJson}
+        onChange={e => onChange('publicDescriptionJson', e.target.value)}
+        className="min-h-24 border-white/10 bg-white/5 text-white placeholder:text-slate-500"
+      />
+      <Textarea
+        placeholder='SEO Title JSON, z.B. {"de":"Berlin | DesireMap"}'
+        value={form.seoTitleJson}
+        onChange={e => onChange('seoTitleJson', e.target.value)}
+        className="min-h-20 border-white/10 bg-white/5 text-white placeholder:text-slate-500"
+      />
+      <Textarea
+        placeholder='SEO Description JSON, z.B. {"de":"Diskrete Empfehlungen fuer Berlin."}'
+        value={form.seoDescriptionJson}
+        onChange={e => onChange('seoDescriptionJson', e.target.value)}
+        className="min-h-20 border-white/10 bg-white/5 text-white placeholder:text-slate-500"
+      />
+    </div>
+  )
+}
 
 interface CityRowProps {
   city: AdminCityResponse
   editingId: number | null
-  editForm: { name: string; slug: string }
+  editForm: CityFormState
   editError: string
   deletingId: number | null
   isPendingUpdate: boolean
@@ -20,7 +211,7 @@ interface CityRowProps {
   onCancelEdit: () => void
   onUpdate: (cityId: number) => void
   onDelete: (cityId: number) => void
-  onEditFormChange: (field: 'name' | 'slug', value: string) => void
+  onEditFormChange: (field: keyof CityFormState, value: string | boolean) => void
 }
 
 function CityRow({
@@ -33,16 +224,7 @@ function CityRow({
     <div className="rounded-[24px] border border-white/10 bg-white/[0.03] px-5 py-4">
       {isEditing ? (
         <div className="space-y-3">
-          <Input
-            value={editForm.name}
-            onChange={e => onEditFormChange('name', e.target.value)}
-            className="h-10 border-white/10 bg-white/5 text-white"
-          />
-          <Input
-            value={editForm.slug}
-            onChange={e => onEditFormChange('slug', e.target.value.toLowerCase().replace(/\s+/g, '-'))}
-            className="h-10 border-white/10 bg-white/5 text-white"
-          />
+          <CityFormFields form={editForm} onChange={onEditFormChange} />
           {editError && <p className="text-xs text-red-400">{editError}</p>}
           <div className="flex gap-2">
             <Button size="sm" onClick={() => onUpdate(city.cityId)} disabled={isPendingUpdate}
@@ -63,7 +245,12 @@ function CityRow({
             </div>
             <div>
               <div className="text-sm font-medium text-white">{city.name}</div>
-              <div className="text-xs text-slate-500">/{city.slug} · ID {city.cityId}</div>
+              <div className="text-xs text-slate-500">
+                /{city.slug} · ID {city.cityId} · {city.venueCount ?? 0} Venues
+              </div>
+              <div className="text-xs text-slate-600">
+                Public: {city.isPublicActive === false ? 'inaktiv' : 'aktiv'} · Sort {city.sortOrder ?? '-'}
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -103,7 +290,16 @@ export function AdminCitiesWorkspace() {
   const handleCreate = () => {
     setCreateError('')
     setCreateSuccess('')
-    createMut.mutate(createForm, {
+
+    let payload: AdminCityPayload & { name: string; slug: string }
+    try {
+      payload = formToPayload(createForm) as AdminCityPayload & { name: string; slug: string }
+    } catch (error) {
+      setCreateError(error instanceof Error ? error.message : 'Ungueltige Stadtdaten.')
+      return
+    }
+
+    createMut.mutate(payload, {
       onSuccess: () => {
         setCreateForm(emptyForm)
         setCreateSuccess('Stadt erfolgreich erstellt!')
@@ -115,13 +311,22 @@ export function AdminCitiesWorkspace() {
 
   const startEdit = (city: AdminCityResponse) => {
     setEditingId(city.cityId)
-    setEditForm({ name: city.name, slug: city.slug })
+    setEditForm(cityToForm(city))
     setEditError('')
   }
 
   const handleUpdate = (cityId: number) => {
     setEditError('')
-    updateMut.mutate({ cityId, ...editForm }, {
+
+    let payload: AdminCityPayload
+    try {
+      payload = formToPayload(editForm)
+    } catch (error) {
+      setEditError(error instanceof Error ? error.message : 'Ungueltige Stadtdaten.')
+      return
+    }
+
+    updateMut.mutate({ cityId, ...payload }, {
       onSuccess: () => setEditingId(null),
       onError: (e: Error) => setEditError(e.message),
     })
@@ -136,23 +341,14 @@ export function AdminCitiesWorkspace() {
   }
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[360px_1fr]">
-      {/* Create City */}
+    <div className="grid gap-6 xl:grid-cols-[420px_1fr]">
       <section className="rounded-[32px] border border-white/10 bg-slate-950/70 p-6">
         <div className="text-xs uppercase tracking-[0.24em] text-slate-500">Neue Stadt</div>
         <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">Stadt anlegen</h2>
         <div className="mt-6 space-y-4">
-          <Input
-            placeholder="Name (z.B. Berlin) *"
-            value={createForm.name}
-            onChange={e => setCreateForm(s => ({ ...s, name: e.target.value }))}
-            className="h-12 border-white/10 bg-white/5 text-white placeholder:text-slate-500"
-          />
-          <Input
-            placeholder="Slug (z.B. berlin) *"
-            value={createForm.slug}
-            onChange={e => setCreateForm(s => ({ ...s, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') }))}
-            className="h-12 border-white/10 bg-white/5 text-white placeholder:text-slate-500"
+          <CityFormFields
+            form={createForm}
+            onChange={(field, value) => setCreateForm(s => ({ ...s, [field]: value }))}
           />
           {createError && <p className="text-sm text-red-400">{createError}</p>}
           {createSuccess && <p className="text-sm text-teal-400">{createSuccess}</p>}
@@ -167,7 +363,6 @@ export function AdminCitiesWorkspace() {
         </div>
       </section>
 
-      {/* City List */}
       <section className="rounded-[32px] border border-white/10 bg-slate-950/70 p-6">
         <div className="text-xs uppercase tracking-[0.24em] text-slate-500">Städte ({cities.length})</div>
         <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">Alle Städte</h2>

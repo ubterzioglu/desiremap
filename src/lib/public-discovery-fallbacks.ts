@@ -2,13 +2,10 @@ import type { PublicCity, PublicEstablishment, PublicServiceType } from '@/types
 import { categoriesData } from '@/data/categories'
 import { citiesData } from '@/data/cities'
 import { bordells } from '@/data/mock-data'
+import { publicCityFromStatic } from '@/lib/public-cities'
 
 export function getFallbackPublicCities(): PublicCity[] {
-  return citiesData.map((city, index) => ({
-    id: index + 1,
-    slug: city.slug,
-    name: city.name,
-  }))
+  return citiesData.map(publicCityFromStatic)
 }
 
 export function getFallbackPublicServiceTypes(): PublicServiceType[] {

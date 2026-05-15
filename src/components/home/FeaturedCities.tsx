@@ -6,8 +6,9 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ChevronRight, MapPin } from 'lucide-react'
 import { useLocale } from 'next-intl'
-import { usePublicCities, usePublicCityCounts } from '@/hooks/useQueries'
+import { usePublicStadtCities } from '@/hooks/useQueries'
 import { getCityPath } from '@/lib/navigation'
+import { getPublicCityVenueCount } from '@/lib/public-cities'
 import type { Translations } from '@/types'
 
 type FeaturedCitiesProps = {
@@ -16,20 +17,15 @@ type FeaturedCitiesProps = {
 
 export function FeaturedCities({ translations }: FeaturedCitiesProps) {
   const locale = useLocale()
-  const { data: backendCities } = usePublicCities()
-  const citySlugs = useMemo(
-    () => backendCities?.map((city) => city.slug) ?? [],
-    [backendCities]
-  )
-  const cityCounts = usePublicCityCounts(citySlugs)
+  const { data: backendCities } = usePublicStadtCities()
 
   const cities = useMemo(() => {
     return (backendCities ?? []).map((city) => ({
       slug: city.slug,
       name: city.name,
-      count: cityCounts[city.slug] ?? 0,
+      count: getPublicCityVenueCount(city),
     }))
-  }, [backendCities, cityCounts])
+  }, [backendCities])
 
   return (
     <section className="relative py-12 sm:py-16 md:py-24 overflow-hidden">

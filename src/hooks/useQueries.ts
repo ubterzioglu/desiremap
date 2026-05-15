@@ -1,5 +1,6 @@
 import { useQuery, useQueries, useMutation, useQueryClient } from '@tanstack/react-query'
 import { customerApi, bookingApi, establishmentsApi, adminApi, authApi, publicApi, seedApi } from '@/lib/api'
+import type { AdminCityPayload } from '@/lib/api'
 import { useAuthStore } from '@/stores/authStore'
 
 
@@ -167,6 +168,14 @@ export function usePublicCities() {
   return useQuery({
     queryKey: ['public', 'cities'],
     queryFn: () => publicApi.getCities().then((r) => r.items ?? []),
+    staleTime: 10 * 60 * 1000,
+  })
+}
+
+export function usePublicStadtCities() {
+  return useQuery({
+    queryKey: ['public', 'stadt-cities'],
+    queryFn: () => publicApi.getStadtCities().then((r) => r.items ?? []),
     staleTime: 10 * 60 * 1000,
   })
 }
@@ -431,7 +440,7 @@ export function useUpdateCity() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ cityId, ...data }: { cityId: number; name?: string; slug?: string }) =>
+    mutationFn: ({ cityId, ...data }: { cityId: number } & AdminCityPayload) =>
       adminApi.updateCity(cityId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'cities'] })
