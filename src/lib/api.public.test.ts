@@ -50,4 +50,74 @@ describe('publicApi establishments fallback', () => {
       globalThis.fetch = originalFetch
     }
   })
+
+  test('does not enrich missing establishment summary images from detail API', async () => {
+    const originalFetch = globalThis.fetch
+    const calls: string[] = []
+
+    globalThis.fetch = (async (input: RequestInfo | URL) => {
+      const url = String(input)
+      calls.push(url)
+
+      if (url.includes('/public/establishments/pascha-laufhaus-und-hotel')) {
+        return new Response(JSON.stringify({
+          slug: 'pascha-laufhaus-und-hotel',
+          name: 'Pascha Laufhaus und Hotel',
+          city: 'Cologne',
+          type: 'laufhaus',
+          description: null,
+          images: ['https://pascha.de/assets/img/Image-12.jpg'],
+          rating: null,
+          reviewCount: 0,
+          priceMin: null,
+          priceMax: null,
+          tags: ['Laufhaus', 'Bordelle'],
+          verified: true,
+          lat: null,
+          lng: null,
+          openingHours: {},
+          isActive: true,
+        }), {
+          status: 200,
+          headers: { 'content-type': 'application/json' },
+        })
+      }
+
+      return new Response(JSON.stringify({
+        results: [
+          {
+            slug: 'pascha-laufhaus-und-hotel',
+            name: 'Pascha Laufhaus und Hotel',
+            city: 'Cologne',
+            type: 'laufhaus',
+            description: null,
+            images: [],
+            rating: null,
+            reviewCount: 0,
+            priceMin: null,
+            priceMax: null,
+            tags: ['Laufhaus', 'Bordelle'],
+            verified: true,
+            lat: null,
+            lng: null,
+            openingHours: {},
+            isActive: true,
+          },
+        ],
+        total: 1,
+      }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      })
+    }) as unknown as typeof fetch
+
+    try {
+      const result = await publicApi.getEstablishments({ limit: 1 })
+
+      expect(result.items[0]?.images).toEqual([])
+      expect(calls.some((url) => url.includes('/public/establishments/pascha-laufhaus-und-hotel'))).toBe(false)
+    } finally {
+      globalThis.fetch = originalFetch
+    }
+  })
 })

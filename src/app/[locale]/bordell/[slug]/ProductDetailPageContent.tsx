@@ -26,6 +26,7 @@ export function ProductDetailPageContent({
   productData,
   locale
 }: ProductDetailPageContentProps) {
+  
   const router = useRouter()
   const t = useTranslations('listing')
   const tNav = useTranslations('nav')
@@ -83,7 +84,9 @@ export function ProductDetailPageContent({
   }
 
   return (
+    
     <div className="min-h-screen bg-background">
+    
       <Header
         locale={locale}
         onLoginClick={() => router.push(getLocalizedPath(locale, '/login'))}

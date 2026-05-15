@@ -50,6 +50,8 @@ prod.db
 # TESTING
 # ====================
 coverage/
+test-results/
+playwright-report/
 
 # ====================
 # LOGS & DEBUG

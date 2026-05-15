@@ -81,6 +81,7 @@ export interface PublicEstablishment {
       answer: string
     }>
   } | null
+  image?: string | null
   images: string[]
   rating: number | null
   reviewCount: number

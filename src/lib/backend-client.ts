@@ -26,14 +26,30 @@ export function normalizePublicImageUrl(value: string | null | undefined) {
   }
 }
 
+function normalizeNullableNumber(value: number | string | null | undefined) {
+  if (typeof value === 'number') {
+    return Number.isFinite(value) ? value : null
+  }
+
+  if (typeof value === 'string' && value.trim().length > 0) {
+    const parsed = Number(value)
+    return Number.isFinite(parsed) ? parsed : null
+  }
+
+  return null
+}
+
 export function normalizePublicEstablishment(item: PublicEstablishment): PublicEstablishment {
   const raw = item as PublicEstablishment & {
     cover_image_url?: string | null
     coverImage?: string | null
     hero_image_url?: string | null
     heroImage?: string | null
-    image?: string | null
     is_active?: boolean
+    price_min?: number | string | null
+    price_max?: number | string | null
+    public_hero_image_url?: string | null
+    publicHeroImageUrl?: string | null
     public_image_url?: string | null
     publicImageUrl?: string | null
     thumbnail_url?: string | null
@@ -47,19 +63,24 @@ export function normalizePublicEstablishment(item: PublicEstablishment): PublicE
     : []
 
   const primaryImage =
-    normalizePublicImageUrl(raw.publicImageUrl)
+    normalizePublicImageUrl(raw.image)
+      ?? normalizePublicImageUrl(raw.publicHeroImageUrl)
+      ?? normalizePublicImageUrl(raw.public_hero_image_url)
+      ?? normalizePublicImageUrl(raw.publicImageUrl)
       ?? normalizePublicImageUrl(raw.public_image_url)
-      ?? normalizePublicImageUrl(raw.image)
       ?? normalizePublicImageUrl(raw.coverImage)
       ?? normalizePublicImageUrl(raw.cover_image_url)
       ?? normalizePublicImageUrl(raw.thumbnailUrl)
       ?? normalizePublicImageUrl(raw.thumbnail_url)
       ?? normalizePublicImageUrl(raw.heroImage)
       ?? normalizePublicImageUrl(raw.hero_image_url)
-  
+
   return {
     ...item,
-    images: primaryImage ? [primaryImage, ...images.filter((image) => image !== primaryImage)] : images,
+    image: primaryImage,
+    images,
+    priceMin: normalizeNullableNumber(raw.priceMin ?? raw.price_min),
+    priceMax: normalizeNullableNumber(raw.priceMax ?? raw.price_max),
     isActive: raw.isActive ?? raw.is_active ?? true,
   }
 }
@@ -84,12 +105,17 @@ export async function backendFetch<T>(
 
   const url = `${BACKEND_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`
 
-  const response = await fetch(url, {
+  const requestInit: RequestInit = {
     method,
     headers,
-    body: body ? JSON.stringify(body) : undefined,
     cache: 'no-store',
-  })
+  }
+
+  if (body !== undefined) {
+    requestInit.body = JSON.stringify(body)
+  }
+
+  const response = await fetch(url, requestInit)
 
   const payload = await response.json().catch(() => null)
 

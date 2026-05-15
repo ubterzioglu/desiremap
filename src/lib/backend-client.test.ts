@@ -32,6 +32,7 @@ describe('normalizePublicEstablishment', () => {
       'https://lh3.googleusercontent.com/example',
       '/covers/artemis-bg.jpg',
     ])
+    expect((result as PublicEstablishment & { image?: string | null }).image).toBeNull()
   })
 
   test('drops internal .local image URLs from alternate primary image fields', () => {
@@ -60,6 +61,63 @@ describe('normalizePublicEstablishment', () => {
       thumbnail_url: string
     })
 
-    expect(result.images).toEqual(['https://api.desiremap.de/media/venues/munich-cover.jpg'])
+    expect((result as PublicEstablishment & { image?: string | null }).image).toBe('https://api.desiremap.de/media/venues/munich-cover.jpg')
+    expect(result.images).toEqual([])
+  })
+
+  test('normalizes summary image separately from snake_case price fields', () => {
+    const result = normalizePublicEstablishment({
+      slug: 'pascha-laufhaus-und-hotel',
+      name: 'Pascha Laufhaus und Hotel',
+      city: 'Cologne',
+      type: 'laufhaus',
+      description: null,
+      images: [],
+      rating: null,
+      reviewCount: 0,
+      priceMin: null,
+      priceMax: null,
+      tags: ['Laufhaus'],
+      verified: true,
+      lat: null,
+      lng: null,
+      openingHours: {},
+      image: 'https://pascha.de/assets/img/Image-12.jpg',
+      price_min: '80',
+      price_max: '120',
+    } as PublicEstablishment & {
+      image: string
+      price_min: string
+      price_max: string
+    })
+
+    expect((result as PublicEstablishment & { image?: string | null }).image).toBe('https://pascha.de/assets/img/Image-12.jpg')
+    expect(result.images).toEqual([])
+    expect(result.priceMin).toBe(80)
+    expect(result.priceMax).toBe(120)
+  })
+
+  test('keeps listing image separate from gallery images', () => {
+    const result = normalizePublicEstablishment({
+      slug: 'berlin-gallery-club',
+      name: 'Berlin Gallery Club',
+      city: 'Berlin',
+      type: 'fkk',
+      description: null,
+      images: ['https://cdn.example.com/gallery-1.jpg'],
+      rating: null,
+      reviewCount: 0,
+      priceMin: null,
+      priceMax: null,
+      tags: [],
+      verified: true,
+      lat: null,
+      lng: null,
+      openingHours: {},
+      public_image_url: 'https://cdn.example.com/card.jpg',
+    } as PublicEstablishment & { public_image_url: string })
+
+    expect((result as PublicEstablishment & { image?: string | null }).image).toBe('https://cdn.example.com/card.jpg')
+    expect(result.images).toEqual(['https://cdn.example.com/gallery-1.jpg'])
   })
 })

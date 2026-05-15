@@ -27,7 +27,7 @@ function ViewHome(props: { locale: string }) {
 }
 
 function ViewCity(props: { city: string; handlers: Handlers }) {
-  return <CityPage key="city" city={props.city} bordells={bordells} onBack={props.handlers.onBackHome} onBordellClick={props.handlers.onBordellClick} />
+  return <CityPage key="city" city={props.city} bordells={bordells} onBackAction={props.handlers.onBackHome} onBordellClickAction={props.handlers.onBordellClick} />
 }
 
 function ViewDetail(props: { bordell: Bordell; hasCity: boolean; handlers: Handlers }) {

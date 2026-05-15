@@ -48,9 +48,23 @@
     "verified": "Doğrulanmış",
     "top": "EN İYİ",
     "price": "Fiyat",
+    "priceOnRequest": "Talep üzerine",
     "reserve": "Rezerve Et",
     "reviews": "Değerlendirme",
-    "ladies": "Bayan"
+    "ladies": "Bayan",
+    "types": {
+      "laufhaus": "Laufhaus",
+      "bordell": "Bordell",
+      "fkk": "FKK Club",
+      "studio": "Studio",
+      "privat": "Özel"
+    },
+    "actions": {
+      "details": "Detaylari göster: {name}",
+      "reserve": "{name} icin rezervasyon baslat",
+      "addFavorite": "{name} favorilere ekle",
+      "removeFavorite": "{name} favorilerden cikar"
+    }
   },
   "reservation": {
     "title": "Rezervasyon",

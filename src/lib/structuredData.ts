@@ -762,6 +762,10 @@ function getProductBreadcrumbSchema(product: ProductDetailData, locale: string) 
 
 // FAQPage Schema for Detail Page (26-28)
 function getProductFAQSchema(product: ProductDetailData) {
+  if (product.faq.length === 0) {
+    return null
+  }
+
   const productUrl = getVenueAbsoluteUrl('de', product.slug)
   return {
     '@type': 'FAQPage' as const,
@@ -779,6 +783,14 @@ function getProductFAQSchema(product: ProductDetailData) {
 
 // OpeningHours Schema for Detail Page (17)
 function getProductOpeningHoursSchema(product: ProductDetailData) {
+  if (
+    product.openingHours.days.length === 0 ||
+    !product.openingHours.opens ||
+    !product.openingHours.closes
+  ) {
+    return null
+  }
+
   return {
     '@type': 'OpeningHoursSpecification' as const,
     dayOfWeek: product.openingHours.days,
@@ -790,6 +802,8 @@ function getProductOpeningHoursSchema(product: ProductDetailData) {
 // LocalBusiness Schema (additional for product pages)
 function getLocalBusinessSchema(product: ProductDetailData) {
   const productUrl = getVenueAbsoluteUrl('de', product.slug)
+  const openingHours = getProductOpeningHoursSchema(product)
+
   return {
     '@type': 'LocalBusiness' as const,
     '@id': `${productUrl}/#localbusiness`,
@@ -809,7 +823,7 @@ function getLocalBusinessSchema(product: ProductDetailData) {
       latitude: '52.5200', // Default - should be dynamic
       longitude: '13.4050'
     },
-    openingHoursSpecification: getProductOpeningHoursSchema(product),
+    ...(openingHours ? { openingHoursSpecification: openingHours } : {}),
     priceRange: `€${product.price}`,
     aggregateRating: {
       '@type': 'AggregateRating' as const,
@@ -844,19 +858,21 @@ export function getProductDetailStructuredData(
   locale: string,
   locales: string[]
 ) {
+  const graph = [
+    getOrganizationSchema(),
+    getWebSiteSchema(locales),
+    getProductDetailSchema(product),
+    getProductWebPageSchema(product, locale),
+    getProductBreadcrumbSchema(product, locale),
+    getLocalBusinessSchema(product),
+    getProductFAQSchema(product),
+    getProductOpeningHoursSchema(product),
+    getRelatedProductsSchema(product, locale)
+  ].filter((node): node is NonNullable<typeof node> => node !== null)
+
   return {
     '@context': 'https://schema.org',
-    '@graph': [
-      getOrganizationSchema(),
-      getWebSiteSchema(locales),
-      getProductDetailSchema(product),
-      getProductWebPageSchema(product, locale),
-      getProductBreadcrumbSchema(product, locale),
-      getLocalBusinessSchema(product),
-      getProductFAQSchema(product),
-      getProductOpeningHoursSchema(product),
-      getRelatedProductsSchema(product, locale)
-    ]
+    '@graph': graph
   }
 }
 

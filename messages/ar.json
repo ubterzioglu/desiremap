@@ -48,9 +48,23 @@
     "verified": "موثق",
     "top": "الأفضل",
     "price": "السعر",
+    "priceOnRequest": "حسب الطلب",
     "reserve": "حجز",
     "reviews": "تقييمات",
-    "ladies": "سيدات"
+    "ladies": "سيدات",
+    "types": {
+      "laufhaus": "Laufhaus",
+      "bordell": "Bordell",
+      "fkk": "FKK Club",
+      "studio": "Studio",
+      "privat": "خاص"
+    },
+    "actions": {
+      "details": "عرض التفاصيل: {name}",
+      "reserve": "بدء الحجز لـ {name}",
+      "addFavorite": "حفظ {name} في المفضلة",
+      "removeFavorite": "إزالة {name} من المفضلة"
+    }
   },
   "reservation": {
     "title": "الحجز",
@@ -92,7 +106,7 @@
     "selectCity": "اختر مدينة...",
     "allCities": "جميع المدن",
     "results": "نتائج البحث",
-    "found": "نتيجة gefunden",
+    "found": "نتيجة",
     "noResults": "لا توجد نتائج",
     "noResultsHint": "جرب كلمات مفتاحية مختلفة أو امسح الفلاتر",
     "sponsored": "برعاية",

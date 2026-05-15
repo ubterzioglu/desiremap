@@ -474,6 +474,10 @@ export const bookingApi = {
   }
 }
 
+async function enrichPublicEstablishmentSummary(item: PublicEstablishment) {
+  return normalizePublicEstablishment(item)
+}
+
 export const publicApi = {
   getCities: async () => {
     return publicApiCall<{ items: PublicCity[] }>('/public/cities', { auth: false })
@@ -501,12 +505,12 @@ export const publicApi = {
       })
     }
     const suffix = qs.toString()
-    const data = await publicApiCall<{ results: PublicEstablishment[]; total: number }>(
+    const data = await publicApiCall<{ results?: PublicEstablishment[]; items?: PublicEstablishment[]; total?: number }>(
       suffix ? `/public/establishments?${suffix}` : '/public/establishments',
       { auth: false }
     )
-    const raw = Array.isArray(data.results) ? data.results : []
-    const items = raw.map(normalizePublicEstablishment)
+    const raw = Array.isArray(data.results) ? data.results : Array.isArray(data.items) ? data.items : []
+    const items = await Promise.all(raw.map(enrichPublicEstablishmentSummary))
     return { items, total: typeof data.total === 'number' ? data.total : items.length }
   },
 

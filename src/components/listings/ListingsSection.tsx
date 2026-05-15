@@ -8,14 +8,24 @@ import { cn } from '@/lib/utils'
 import { ListingCard } from '@/components/listings/ListingCard'
 import { usePublicEstablishments, usePublicServiceTypes } from '@/hooks/useQueries'
 import { useParams, useRouter } from 'next/navigation'
+import { toBordellType } from '@/lib/bordell-type'
 import { getVenuePath } from '@/lib/navigation'
-import type { Bordell, BordellType, PublicEstablishment } from '@/types'
+import type { Bordell, PublicEstablishment } from '@/types'
+
+const LOADING_SKELETON_KEYS = [
+  'listing-card-skeleton-1',
+  'listing-card-skeleton-2',
+  'listing-card-skeleton-3',
+  'listing-card-skeleton-4',
+  'listing-card-skeleton-5',
+  'listing-card-skeleton-6',
+]
 
 function toListingCardBordell(e: PublicEstablishment): Bordell {
-  return {
+  const bordell: Bordell = {
     id: e.slug,
     name: e.name,
-    type: e.type as BordellType,
+    type: toBordellType(e.type),
     location: e.city,
     city: e.city,
     distance: '',
@@ -23,7 +33,6 @@ function toListingCardBordell(e: PublicEstablishment): Bordell {
     reviewCount: e.reviewCount,
     priceRange: e.priceMin != null ? `€${e.priceMin}${e.priceMax ? ` - €${e.priceMax}` : ''}` : 'Auf Anfrage',
     minPrice: e.priceMin ?? 0,
-    maxPrice: e.priceMax ?? undefined,
     ladiesCount: 0,
     services: e.tags,
     isOpen: e.isActive ?? false,
@@ -33,7 +42,7 @@ function toListingCardBordell(e: PublicEstablishment): Bordell {
     sponsored: false,
     phone: '',
     description: e.description ?? '',
-    coverImage: e.images?.[0] || '/listing-bg.jpg',
+    coverImage: e.image || '/listing-bg.jpg',
     images: e.images,
     createdAt: '',
     updatedAt: '',
@@ -42,6 +51,10 @@ function toListingCardBordell(e: PublicEstablishment): Bordell {
     revenue: 0,
     status: 'active',
   }
+
+  if (e.priceMax != null) bordell.maxPrice = e.priceMax
+
+  return bordell
 }
 
 export function ListingsSection() {
@@ -49,7 +62,8 @@ export function ListingsSection() {
   const params = useParams()
   const router = useRouter()
   const locale = (params?.locale as string) || 'de'
-  const { data: result, isLoading } = usePublicEstablishments({ limit: 12, type: selectedCategory ?? undefined })
+  const establishmentParams = selectedCategory ? { limit: 12, type: selectedCategory } : { limit: 12 }
+  const { data: result, isLoading } = usePublicEstablishments(establishmentParams)
   const { data: serviceTypes = [] } = usePublicServiceTypes()
 
   const bordells = useMemo(() => (result?.items ?? []).map(toListingCardBordell), [result])
@@ -58,7 +72,7 @@ export function ListingsSection() {
   return (
     <section className="relative py-24 overflow-hidden">
       <div className="absolute inset-0">
-        <Image src="/listing-bg.jpg" alt="Hintergrundbild der Veranstaltungsübersicht" fill className="w-full h-full object-cover opacity-40" />
+        <Image src="/listing-bg.jpg" alt="Hintergrundbild der Veranstaltungsübersicht" fill sizes="100vw" className="w-full h-full object-cover opacity-40" />
         <div className="absolute inset-0 bg-linear-to-b from-black via-[#0a0810]/10 to-black/5" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/10" />
       </div>
@@ -76,8 +90,8 @@ export function ListingsSection() {
         </div>
         {isLoading && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="rounded-2xl bg-white/5 border border-white/10 h-72 animate-pulse" />
+            {LOADING_SKELETON_KEYS.map((key) => (
+              <div key={key} className="rounded-2xl bg-white/5 border border-white/10 h-72 animate-pulse" />
             ))}
           </div>
         )}
@@ -86,7 +100,7 @@ export function ListingsSection() {
         )}
         {!isLoading && bordells.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {bordells.map((bordell, index) => <ListingCard key={bordell.id} bordell={bordell} index={index} onDetailClick={(selectedBordell) => router.push(getVenuePath(locale, selectedBordell.id))} />)}
+            {bordells.map((bordell, index) => <ListingCard key={bordell.id} bordell={bordell} index={index} onDetailClickAction={(selectedBordell) => router.push(getVenuePath(locale, selectedBordell.id))} />)}
           </div>
         )}
         <div className="flex justify-center mt-16"><Button onClick={() => router.push(`/${locale}/search`)} size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 px-10 rounded-full group backdrop-blur-sm">Mehr anzeigen<ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" /></Button></div>

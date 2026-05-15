@@ -48,9 +48,23 @@
     "verified": "Verified",
     "top": "TOP",
     "price": "Price",
+    "priceOnRequest": "On request",
     "reserve": "Reserve",
     "reviews": "Reviews",
-    "ladies": "Ladies"
+    "ladies": "Ladies",
+    "types": {
+      "laufhaus": "Laufhaus",
+      "bordell": "Brothel",
+      "fkk": "FKK Club",
+      "studio": "Studio",
+      "privat": "Private"
+    },
+    "actions": {
+      "details": "Show details: {name}",
+      "reserve": "Start reservation for {name}",
+      "addFavorite": "Save {name} to favorites",
+      "removeFavorite": "Remove {name} from favorites"
+    }
   },
   "reservation": {
     "title": "Reservation",

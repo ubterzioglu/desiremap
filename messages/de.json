@@ -48,9 +48,23 @@
     "verified": "Verifiziert",
     "top": "TOP",
     "price": "Preis",
+    "priceOnRequest": "Auf Anfrage",
     "reserve": "Reservieren",
     "reviews": "Bewertungen",
-    "ladies": "Damen"
+    "ladies": "Damen",
+    "types": {
+      "laufhaus": "Laufhaus",
+      "bordell": "Bordell",
+      "fkk": "FKK Club",
+      "studio": "Studio",
+      "privat": "Privat"
+    },
+    "actions": {
+      "details": "Details anzeigen: {name}",
+      "reserve": "Reservierung fuer {name} starten",
+      "addFavorite": "{name} als Favorit speichern",
+      "removeFavorite": "{name} aus Favoriten entfernen"
+    }
   },
   "reservation": {
     "title": "Reservierung",

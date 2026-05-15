@@ -19,8 +19,8 @@ type SearchResultsProps = {
     noResultsHint: string
     clearFilters: string
   }
-  onBordellClick: (bordell: { id: string }) => void
-  onClearFilters: () => void
+  onBordellClickAction: (bordell: { id: string }) => void
+  onClearFiltersAction: () => void
 }
 
 export function SearchResults({
@@ -29,8 +29,8 @@ export function SearchResults({
   totalCount,
   isLoading,
   translations,
-  onBordellClick,
-  onClearFilters
+  onBordellClickAction,
+  onClearFiltersAction
 }: SearchResultsProps) {
   if (isLoading) {
     return (
@@ -47,7 +47,7 @@ export function SearchResults({
         <Search className="w-16 h-16 text-gray-600 mx-auto mb-4" />
         <p className="text-gray-400 text-xl mb-2">{translations.noResults}</p>
         <p className="text-gray-500">{translations.noResultsHint}</p>
-        <Button onClick={onClearFilters} variant="outline" className="mt-6 border-white/10 text-white hover:bg-white/5">
+        <Button onClick={onClearFiltersAction} variant="outline" className="mt-6 border-white/10 text-white hover:bg-white/5">
           {translations.clearFilters}
         </Button>
       </div>
@@ -67,7 +67,7 @@ export function SearchResults({
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {sponsoredResults.map((item, index) => (
-              <ListingCard key={item.id} bordell={item} index={index} onDetailClick={onBordellClick} />
+              <ListingCard key={item.id} bordell={item} index={index} onDetailClickAction={onBordellClickAction} />
             ))}
           </div>
         </div>
@@ -84,7 +84,7 @@ export function SearchResults({
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {regularResults.map((item, index) => (
-              <ListingCard key={item.id} bordell={item} index={index} onDetailClick={onBordellClick} />
+              <ListingCard key={item.id} bordell={item} index={index} onDetailClickAction={onBordellClickAction} />
             ))}
           </div>
         </div>
