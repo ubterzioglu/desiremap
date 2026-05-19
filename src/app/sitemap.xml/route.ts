@@ -1,4 +1,3 @@
-import type { MetadataRoute } from 'next'
 import { getAllBlogPostSlugs, getBlogPostBySlug } from '@/data/blog-posts'
 import { backendApi } from '@/lib/backend-client'
 import { getCityPath, getLocalizedPath, getVenuePath } from '@/lib/navigation'
@@ -9,9 +8,17 @@ const locales = ['de', 'en', 'ar', 'tr'] as const
 const defaultLocale = 'de'
 const maxSitemapItems = 5000
 
+export const dynamic = 'force-dynamic'
+
 type Locale = (typeof locales)[number]
-type SitemapEntry = MetadataRoute.Sitemap[number]
-type ChangeFrequency = NonNullable<SitemapEntry['changeFrequency']>
+type ChangeFrequency = 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never'
+
+type SitemapEntry = {
+  url: string
+  lastModified: Date | string
+  changeFrequency: ChangeFrequency
+  priority: number
+}
 
 function absoluteUrl(path: string) {
   return path === '/' ? siteUrl : `${siteUrl}${path}`
@@ -29,13 +36,6 @@ function sitemapPriority(priority: number) {
   return Number(priority.toFixed(1))
 }
 
-function languageAlternates(path: string) {
-  return locales.reduce<Record<string, string>>((acc, locale) => {
-    acc[locale] = absoluteUrl(localizedPath(locale, path))
-    return acc
-  }, {})
-}
-
 function localizedEntries({
   path,
   lastModified,
@@ -47,16 +47,11 @@ function localizedEntries({
   changeFrequency: ChangeFrequency
   priority: number
 }): SitemapEntry[] {
-  const alternates = languageAlternates(path)
-
   return locales.map((locale) => ({
     url: absoluteUrl(localizedPath(locale, path)),
     lastModified,
     changeFrequency,
     priority: sitemapPriority(locale === defaultLocale ? priority : Math.max(priority - 0.1, 0.1)),
-    alternates: {
-      languages: alternates,
-    },
   }))
 }
 
@@ -92,7 +87,7 @@ async function fetchPublicEstablishments() {
       offset += response.results.length
     }
   } catch {
-    return []
+    return [] satisfies PublicEstablishment[]
   }
 
   const seen = new Set<string>()
@@ -106,7 +101,7 @@ async function fetchPublicEstablishments() {
   })
 }
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+export async function getSitemapEntries() {
   const now = new Date()
   const [cities, establishments] = await Promise.all([
     fetchPublicCities(),
@@ -149,4 +144,62 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...venueEntries,
     ...blogEntries,
   ]
+}
+
+function escapeXml(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
+}
+
+function formatLastModified(value: Date | string) {
+  if (value instanceof Date) {
+    return value.toISOString().slice(0, 10)
+  }
+
+  const parsed = new Date(value)
+  if (Number.isFinite(parsed.getTime())) {
+    return parsed.toISOString().slice(0, 10)
+  }
+
+  return value.slice(0, 10)
+}
+
+function formatPriority(value: number) {
+  return value.toFixed(1)
+}
+
+function sitemapEntryToXml(entry: SitemapEntry) {
+  return [
+    '<url>',
+    `<loc>${escapeXml(entry.url)}</loc>`,
+    `<lastmod>${escapeXml(formatLastModified(entry.lastModified))}</lastmod>`,
+    `<changefreq>${entry.changeFrequency}</changefreq>`,
+    `<priority>${formatPriority(entry.priority)}</priority>`,
+    '</url>',
+  ].join('\n')
+}
+
+export function buildSitemapXml(entries: SitemapEntry[]) {
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    entries.map(sitemapEntryToXml).join('\n'),
+    '</urlset>',
+    '',
+  ].join('\n')
+}
+
+export async function GET() {
+  const entries = await getSitemapEntries()
+
+  return new Response(buildSitemapXml(entries), {
+    headers: {
+      'Content-Type': 'application/xml; charset=utf-8',
+      'Cache-Control': 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400',
+    },
+  })
 }

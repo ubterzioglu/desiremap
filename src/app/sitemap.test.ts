@@ -1,13 +1,19 @@
 import { describe, expect, test } from 'bun:test'
 
-import sitemap from './sitemap'
+describe('sitemap.xml route', () => {
+  test('serves explicit urlset XML with url children for public venue URLs', async () => {
+    const routeModule = await import('./sitemap.xml/route').catch(() => null)
 
-describe('sitemap', () => {
-  test('includes localized venue detail URLs from public establishments', async () => {
+    expect(routeModule).not.toBeNull()
+
+    if (!routeModule) {
+      return
+    }
+
     const originalFetch = globalThis.fetch
     const calls: string[] = []
 
-    globalThis.fetch = (async (input: RequestInfo | URL) => {
+    const mockFetch = Object.assign(async (input: RequestInfo | URL) => {
       const url = String(input)
       calls.push(url)
 
@@ -51,35 +57,30 @@ describe('sitemap', () => {
         status: 404,
         headers: { 'content-type': 'application/json' },
       })
-    }) as unknown as typeof fetch
+    }, { preconnect: originalFetch.preconnect })
+
+    globalThis.fetch = mockFetch
 
     try {
-      const entries = await sitemap()
-      const urls = entries.map((entry) => entry.url)
+      const response = await routeModule.GET()
+      const body = await response.text()
 
+      expect(response.status).toBe(200)
+      expect(response.headers.get('content-type')).toContain('application/xml')
+      expect(body.startsWith('<?xml version="1.0" encoding="UTF-8"?>')).toBe(true)
+      expect(body).toContain('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+      expect(body).toContain('<url>')
+      expect(body).toContain('<loc>https://desiremap.de/venue/pascha-laufhaus-und-hotel</loc>')
+      expect(body).toContain('<loc>https://desiremap.de/en</loc>')
+      expect(body).toContain('<loc>https://desiremap.de/en/venue/pascha-laufhaus-und-hotel</loc>')
+      expect(body).toContain('<changefreq>daily</changefreq>')
+      expect(body).toContain('<priority>0.7</priority>')
+      expect(body).not.toContain('<loc>https://desiremap.de/en/</loc>')
+      expect(body).not.toContain('0.7000000000000001')
+      expect(body).not.toContain('xmlns:xhtml')
+      expect(body).not.toContain('<xhtml:link')
+      expect(body.trim().endsWith('</urlset>')).toBe(true)
       expect(calls.some((url) => url.includes('/public/establishments'))).toBe(true)
-      expect(urls).toContain('https://desiremap.de/venue/pascha-laufhaus-und-hotel')
-      expect(urls).toContain('https://desiremap.de/en')
-      expect(urls).toContain('https://desiremap.de/en/venue/pascha-laufhaus-und-hotel')
-      expect(urls).not.toContain('https://desiremap.de/en/')
-      expect(urls).not.toContain('https://desiremap.de/de/venue/pascha-laufhaus-und-hotel')
-
-      const venueEntry = entries.find(
-        (entry) => entry.url === 'https://desiremap.de/venue/pascha-laufhaus-und-hotel'
-      )
-
-      expect(venueEntry?.alternates?.languages?.de).toBe(
-        'https://desiremap.de/venue/pascha-laufhaus-und-hotel'
-      )
-      expect(venueEntry?.alternates?.languages?.en).toBe(
-        'https://desiremap.de/en/venue/pascha-laufhaus-und-hotel'
-      )
-
-      const englishStadtEntry = entries.find(
-        (entry) => entry.url === 'https://desiremap.de/en/stadt'
-      )
-
-      expect(englishStadtEntry?.priority).toBe(0.7)
     } finally {
       globalThis.fetch = originalFetch
     }

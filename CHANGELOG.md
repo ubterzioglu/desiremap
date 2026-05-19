@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.10] - 2026-05-19
+
+### Fixed
+- Replaced Next metadata sitemap generation with an explicit `/sitemap.xml` route handler that returns plain sitemap XML.
+- Sitemap output now uses direct `<urlset>` / `<url>` / `<loc>` / `<lastmod>` / `<changefreq>` / `<priority>` tags without XHTML alternate tags.
+
 ## [0.2.9] - 2026-05-19
 
 ### Fixed

@@ -1,5 +1,15 @@
 # STATE
 
+## 2026-05-19 20:43 +0200
+
+- Scope: explicit sitemap XML route repair.
+- Root cause: Next metadata sitemap output was technically XML, but it included framework-generated XHTML alternate nodes and browser-rendered XML text output did not match the required plain sitemap structure.
+- Fixed: removed `src/app/sitemap.ts` metadata route and replaced it with `src/app/sitemap.xml/route.ts` returning manual XML via `Response`.
+- XML shape: `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">` wraps explicit `<url>` entries with `<loc>`, `<lastmod>`, `<changefreq>`, and one-decimal `<priority>` children.
+- Added: sitemap route regression asserts XML wrapper, URL children, venue URL inclusion, no XHTML namespace, no `/en/` homepage URL, and no float priority artifact.
+- Verification: targeted sitemap test 1/1 pass; `bun run typecheck` pass; `bun run lint` pass; `bun run build` pass; route handler output status 200, `application/xml`, explicit `urlset/url/loc` tags, no XHTML namespace.
+- Version: 0.2.9 → 0.2.10 (patch).
+
 ## 2026-05-19 20:23 +0200
 
 - Scope: sitemap output cleanup after production inspection.
