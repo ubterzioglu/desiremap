@@ -9,18 +9,16 @@ import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
 import { HomePage } from '@/components/home/HomePage'
 import { CityPage } from '@/components/pages/CityPage'
-import { DashboardPage } from '@/components/pages/DashboardPage'
 import { DetailPage } from '@/components/pages/DetailPage'
-import { LoginPage } from '@/components/pages/LoginPage'
 import { getLocalizedPath, getVenuePath } from '@/lib/navigation'
 import type { Bordell, View } from '@/types'
 
 function useNavTranslations() {
   const t = useTranslations('nav')
-  return { discover: t('discover'), cities: t('cities'), premium: t('premium'), advertise: t('advertise'), login: t('login'), register: t('register'), myAccount: t('myAccount') }
+  return { home: t('home'), discover: t('discover'), cities: t('cities'), premium: t('premium'), advertise: t('advertise'), login: t('login'), register: t('register'), myAccount: t('myAccount') }
 }
 
-type Handlers = { onCityClick: (city: string) => void; onBordellClick: (bordell: Bordell) => void; onBackHome: () => void; onBackCity: () => void; onLogin: () => void; onLogout: () => void; onRegister: () => void }
+type Handlers = { onCityClick: (city: string) => void; onBordellClick: (bordell: Bordell) => void; onBackHome: () => void; onBackCity: () => void }
 
 function ViewHome(props: { locale: string }) {
   return <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><HomePage {...props} /></motion.div>
@@ -34,56 +32,33 @@ function ViewDetail(props: { bordell: Bordell; hasCity: boolean; handlers: Handl
   return <DetailPage key="detail" bordell={props.bordell} onBack={props.hasCity ? props.handlers.onBackCity : props.handlers.onBackHome} />
 }
 
-function ViewLogin(props: { loginMessage?: string; handlers: Handlers }) {
-  return (
-    <LoginPage
-      key="login"
-      onBack={props.handlers.onBackHome}
-      {...(props.loginMessage === undefined ? {} : { loginMessage: props.loginMessage })}
-      onRegister={props.handlers.onRegister}
-    />
-  )
-}
-
-function ViewDashboard() {
-  return <DashboardPage key="dashboard" />
-}
-
 export default function Home() {
   const router = useRouter()
   const locale = useLocale()
   const [view, setView] = useState<View>('home')
   const [selectedCity, setSelectedCity] = useState<string | null>(null)
   const [selectedBordell, setSelectedBordell] = useState<Bordell | null>(null)
-  const [loginMessage, setLoginMessage] = useState<string | undefined>()
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const navTranslations = useNavTranslations()
   const toTop = () => window.scrollTo(0, 0)
-  const showLayout = view !== 'dashboard'
   const handlers: Handlers = {
     onCityClick: (city) => { setSelectedCity(city); setView('city'); toTop() },
     onBordellClick: (bordell) => { router.push(getVenuePath(locale, bordell.id)); toTop() },
-    onBackHome: () => { setView('home'); setSelectedCity(null); setSelectedBordell(null); setLoginMessage(undefined); toTop() },
+    onBackHome: () => { setView('home'); setSelectedCity(null); setSelectedBordell(null); toTop() },
     onBackCity: () => { setView('city'); setSelectedBordell(null); toTop() },
-    onLogin: () => { setIsLoggedIn(true); setLoginMessage(undefined); setView('dashboard'); toTop() },
-    onLogout: () => { setIsLoggedIn(false); setView('home'); toTop() },
-    onRegister: () => { router.push(getLocalizedPath(locale, '/register')) }
   }
   const renderView = () => {
     const viewMap: Record<View, React.ReactNode> = {
       home: <ViewHome locale={locale} />,
       city: selectedCity ? <ViewCity city={selectedCity} handlers={handlers} /> : null,
       detail: selectedBordell ? <ViewDetail bordell={selectedBordell} hasCity={!!selectedCity} handlers={handlers} /> : null,
-      login: <ViewLogin {...(loginMessage === undefined ? {} : { loginMessage })} handlers={handlers} />,
-      dashboard: <ViewDashboard />
     }
     return viewMap[view]
   }
   return (
-    <main className="min-h-screen bg-black flex flex-col">
-      {showLayout && <Header locale={locale} onLoginClick={(msg) => { setLoginMessage(msg); setView('login'); toTop() }} isLoggedIn={isLoggedIn} onDashboardClick={() => setView('dashboard')} translations={navTranslations} />}
+    <main className="flex min-h-screen flex-col bg-black">
+      <Header locale={locale} translations={navTranslations} onLoginClick={() => { router.push(getLocalizedPath(locale, '/login')) }} isLoggedIn={false} />
       <AnimatePresence mode="wait">{renderView()}</AnimatePresence>
-      {showLayout && <Footer locale={locale} />}
+      <Footer locale={locale} />
     </main>
   )
 }

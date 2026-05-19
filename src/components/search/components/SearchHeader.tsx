@@ -13,11 +13,11 @@ type SearchHeaderProps = {
 export function SearchHeader({ locale, backToHome, resultsTitle, onNavigate }: SearchHeaderProps) {
   return (
     <>
-      <Button onClick={() => onNavigate(`/${locale}`)} variant="ghost" className="flex items-center gap-2 text-gray-400 hover:text-white mb-8">
-        <ArrowLeft className="w-5 h-5" />
+      <Button onClick={() => onNavigate(`/${locale}`)} variant="ghost" className="mb-8 flex items-center gap-2 text-gray-400 hover:text-white">
+        <ArrowLeft className="h-5 w-5" />
         {backToHome}
       </Button>
-      <h1 className="text-4xl sm:text-5xl font-bold text-white mb-8">{resultsTitle}</h1>
+      <h1 className="mb-8 text-4xl font-bold text-white sm:text-5xl">{resultsTitle}</h1>
     </>
   )
 }

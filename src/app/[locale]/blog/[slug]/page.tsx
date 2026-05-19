@@ -1,11 +1,14 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 import { Calendar, Clock, User, ArrowLeft, Check, MapPin, Building2, Star, Shield } from 'lucide-react'
 import { getBlogPostBySlug, getAllBlogPostSlugs } from '@/data/blog-posts'
 import { premiumErotikPlattformContent, premiumErotikPlattformFAQ } from '@/data/blog-content'
 import { getBlogPostStructuredData, getBlogPostMetadata, BlogPostData } from '@/lib/structuredData'
 import { getSearchPath } from '@/lib/navigation'
+import { Header } from '@/components/layout/Header'
+import { Footer } from '@/components/layout/Footer'
 
 // Blog slug'ına göre içerik eşleştirmesi
 const blogContentMap: Record<string, string> = {
@@ -45,6 +48,7 @@ export default async function BlogPostPage({
   params: Promise<{ locale: string; slug: string }>
 }) {
   const { locale, slug } = await params
+  const t = await getTranslations({ locale, namespace: 'nav' })
   const post = getBlogPostBySlug(slug)
 
   if (!post) {
@@ -72,55 +76,69 @@ export default async function BlogPostPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
-      <div className="min-h-screen bg-gradient-to-b from-[#0a0a12] to-[#1a1a24]">
+      <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#0F172A] to-[#0b1326]">
+        <Header
+          locale={locale}
+          translations={{
+            home: t('home'),
+            discover: t('discover'),
+            cities: t('cities'),
+            premium: t('premium'),
+            advertise: t('advertise'),
+            login: t('login'),
+            register: t('register'),
+            myAccount: t('myAccount'),
+          }}
+        />
+        <main className="flex-1">
         {/* Breadcrumb */}
-        <nav className="py-4 px-4 border-b border-white/10">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-center gap-2 text-sm text-gray-400">
-              <Link href={`/${locale}`} className="hover:text-white transition-colors">
+        <nav className="border-b border-[#564146] px-4 py-4">
+          <div className="mx-auto max-w-4xl">
+            <div className="flex items-center gap-2 text-sm text-[#a48a90]">
+              <Link href={`/${locale}`} className="transition-colors hover:text-[#dae2fd]">
                 Home
               </Link>
               <span>/</span>
-              <Link href={`/${locale}/blog`} className="hover:text-white transition-colors">
+              <Link href={`/${locale}/blog`} className="transition-colors hover:text-[#dae2fd]">
                 Blog
               </Link>
               <span>/</span>
-              <span className="text-[#b76e79]">{post.category}</span>
+              <span className="text-[#ffb1c6]">{post.category}</span>
             </div>
           </div>
         </nav>
 
         {/* Article Header */}
-        <header className="py-12 px-4">
-          <div className="max-w-4xl mx-auto">
+        <header className="px-4 py-12">
+          <div className="mx-auto max-w-4xl">
             {/* Category */}
             <div className="mb-4">
-              <span className="px-3 py-1 bg-[#8b1a4a] text-white text-sm font-medium rounded-full">
+              <span className="rounded-full bg-[#8b1a4a] px-3 py-1 text-sm font-medium text-[#dae2fd]">
                 {post.category}
               </span>
             </div>
 
             {/* H1 - Ana Başlık */}
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
+            <h1 className="mb-6 text-3xl leading-tight font-bold text-[#dae2fd] md:text-4xl lg:text-5xl">
               {post.headline}
             </h1>
 
             {/* Meta Info */}
-            <div className="flex flex-wrap items-center gap-6 text-gray-400 text-sm mb-8">
+            <div className="mb-8 flex flex-wrap items-center gap-6 text-sm text-[#a48a90]">
               {/* Author */}
               <div className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#8b1a4a] to-[#6b3fa0] flex items-center justify-center">
-                  <User className="w-5 h-5 text-white" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#8b1a4a] to-[#6b1a5c]">
+                  <User className="h-5 w-5 text-[#ffb1c6]" />
                 </div>
                 <div>
-                  <div className="text-white font-medium">{post.author.name}</div>
+                  <div className="font-medium text-[#dae2fd]">{post.author.name}</div>
                   <div className="text-xs">{post.author.jobTitle}</div>
                 </div>
               </div>
 
               {/* Date */}
               <div className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
+                <Calendar className="h-4 w-4 text-[#D4AF37]" />
                 <span>
                   {new Date(post.datePublished).toLocaleDateString('de-DE', {
                     day: 'numeric',
@@ -132,7 +150,7 @@ export default async function BlogPostPage({
 
               {/* Reading Time */}
               <div className="flex items-center gap-1">
-                <Clock className="w-4 h-4" />
+                <Clock className="h-4 w-4 text-[#D4AF37]" />
                 <span>{Math.ceil(post.wordCount / 200)} Min. Lesezeit</span>
               </div>
             </div>
@@ -142,7 +160,7 @@ export default async function BlogPostPage({
               {post.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="px-3 py-1 bg-white/5 text-gray-300 text-sm rounded-full border border-white/10"
+                  className="rounded-full border border-[#564146] bg-[#8b1a4a]/20 px-3 py-1 text-sm text-[#ffb1c6]"
                 >
                   #{tag}
                 </span>
@@ -152,18 +170,18 @@ export default async function BlogPostPage({
         </header>
 
         {/* Article Content */}
-        <article className="py-8 px-4">
+        <article className="px-4 py-8">
           <div
-            className="max-w-4xl mx-auto prose prose-lg prose-invert
-            prose-headings:text-white prose-headings:font-bold
-            prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:text-white prose-h2:pb-2 prose-h2:border-b prose-h2:border-[#8b1a4a]/30
-            prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3 prose-h3:text-[#b76e79]
-            prose-h4:text-lg prose-h4:mt-6 prose-h4:mb-2 prose-h4:text-white
-            prose-p:text-gray-300 prose-p:leading-relaxed prose-p:mb-4
-            prose-ul:mb-4 prose-ol:mb-4 prose-li:text-gray-300 prose-li:mb-1
-            prose-a:text-[#b76e79] prose-a:underline prose-a:underline-offset-2 hover:prose-a:text-[#d48a95]
-            prose-strong:text-white prose-strong:font-semibold
-            prose-blockquote:border-l-[#8b1a4a] prose-blockquote:bg-[#8b1a4a]/10 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:rounded-r-xl prose-blockquote:not-italic
+            className="prose prose-lg prose-invert prose-headings:text-[#dae2fd] prose-headings:font-bold
+            prose-h2:text-2xl prose-h2:mt-10
+            prose-h2:mb-4 prose-h2:text-[#dae2fd] prose-h2:pb-2 prose-h2:border-b prose-h2:border-[#8b1a4a]/40 prose-h3:text-xl prose-h3:mt-8
+            prose-h3:mb-3 prose-h3:text-[#ffb1c6] prose-h4:text-lg prose-h4:mt-6
+            prose-h4:mb-2 prose-h4:text-[#dae2fd] prose-p:text-[#a48a90] prose-p:leading-relaxed
+            prose-p:mb-4 prose-ul:mb-4 prose-ol:mb-4
+            prose-li:text-[#a48a90] prose-li:mb-1 prose-a:text-[#ffb1c6] prose-a:underline
+            prose-a:underline-offset-2 hover:prose-a:text-[#e8a0b0] prose-strong:text-[#dae2fd] prose-strong:font-semibold
+            prose-blockquote:border-l-[#8b1a4a] prose-blockquote:bg-[#8b1a4a]/15
+            prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:rounded-r-xl prose-blockquote:not-italic mx-auto max-w-4xl
             "
             dangerouslySetInnerHTML={{ __html: content }}
           />
@@ -171,10 +189,10 @@ export default async function BlogPostPage({
 
         {/* FAQ Section */}
         {faq.length > 0 && (
-          <section className="py-12 px-4 border-t border-white/10">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
-                <span className="w-10 h-10 rounded-full bg-[#8b1a4a]/20 flex items-center justify-center text-[#b76e79]">
+          <section className="border-t border-[#564146] px-4 py-12">
+            <div className="mx-auto max-w-4xl">
+              <h2 className="mb-8 flex items-center gap-3 text-2xl font-bold text-[#dae2fd]">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#8b1a4a]/25 text-[#D4AF37]">
                   ?
                 </span>
                 Häufig gestellte Fragen
@@ -183,18 +201,18 @@ export default async function BlogPostPage({
                 {faq.map((item, index) => (
                   <details
                     key={index}
-                    className="group bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden"
+                    className="group overflow-hidden rounded-xl border border-[#564146] bg-[#131b2e] backdrop-blur-sm transition-all hover:border-[#B76E79]/40"
                   >
-                    <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                      <span className="text-lg font-semibold text-white pr-4">
+                    <summary className="flex cursor-pointer list-none items-center justify-between p-6">
+                      <span className="pr-4 text-lg font-semibold text-[#dae2fd]">
                         {item.question}
                       </span>
-                      <span className="text-[#b76e79] group-open:rotate-180 transition-transform">
+                      <span className="text-[#D4AF37] transition-transform group-open:rotate-180">
                         ▼
                       </span>
                     </summary>
                     <div className="px-6 pb-6">
-                      <p className="text-gray-400 leading-relaxed">
+                      <p className="leading-relaxed text-[#a48a90]">
                         {item.answer}
                       </p>
                     </div>
@@ -206,30 +224,30 @@ export default async function BlogPostPage({
         )}
 
         {/* Author Box */}
-        <section className="py-12 px-4 border-t border-white/10">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-              <div className="flex flex-col md:flex-row items-start gap-6">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#8b1a4a] to-[#6b3fa0] flex items-center justify-center flex-shrink-0">
-                  <User className="w-10 h-10 text-white" />
+        <section className="border-t border-[#564146] px-4 py-12">
+          <div className="mx-auto max-w-4xl">
+            <div className="rounded-2xl border border-[#564146] bg-[#131b2e] p-8 backdrop-blur-sm">
+              <div className="flex flex-col items-start gap-6 md:flex-row">
+                <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#8b1a4a] to-[#6b1a5c]">
+                  <User className="h-10 w-10 text-[#ffb1c6]" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-white mb-1">
+                  <h3 className="mb-1 text-xl font-semibold text-[#dae2fd]">
                     {post.author.name}
                   </h3>
-                  <p className="text-[#b76e79] text-sm mb-3">{post.author.jobTitle}</p>
-                  <p className="text-gray-400 leading-relaxed">
+                  <p className="mb-3 text-sm text-[#ffb1c6]">{post.author.jobTitle}</p>
+                  <p className="leading-relaxed text-[#a48a90]">
                     {post.author.description}
                   </p>
                   {post.author.sameAs && (
-                    <div className="flex gap-4 mt-4">
+                    <div className="mt-4 flex gap-4">
                       {post.author.sameAs.map((url, i) => (
                         <a
                           key={i}
                           href={url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-gray-500 hover:text-[#b76e79] transition-colors text-sm"
+                          className="text-sm text-[#a48a90] transition-colors hover:text-[#ffb1c6]"
                         >
                           {url.includes('linkedin') ? 'LinkedIn' : url.includes('twitter') ? 'Twitter' : 'Profil'}
                         </a>
@@ -243,74 +261,76 @@ export default async function BlogPostPage({
         </section>
 
         {/* Quick Links */}
-        <section className="py-12 px-4 border-t border-white/10">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-xl font-bold text-white mb-6">Beliebte Kategorien</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <section className="border-t border-[#564146] px-4 py-12">
+          <div className="mx-auto max-w-4xl">
+            <h2 className="mb-6 text-xl font-bold text-[#dae2fd]">Beliebte Kategorien</h2>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
               <Link
                 href={getSearchPath(locale, { category: 'fkk' })}
-                className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-4 hover:border-[#b76e79]/50 transition-all"
+                className="flex items-center gap-3 rounded-xl border border-[#564146] bg-[#131b2e] p-4 transition-all hover:border-[#B76E79]/60"
               >
-                <Building2 className="w-5 h-5 text-[#b76e79]" />
-                <span className="text-white text-sm">FKK Clubs</span>
+                <Building2 className="h-5 w-5 text-[#D4AF37]" />
+                <span className="text-sm text-[#dae2fd]">FKK Clubs</span>
               </Link>
               <Link
                 href={getSearchPath(locale, { category: 'laufhaus' })}
-                className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-4 hover:border-[#b76e79]/50 transition-all"
+                className="flex items-center gap-3 rounded-xl border border-[#564146] bg-[#131b2e] p-4 transition-all hover:border-[#B76E79]/60"
               >
-                <Building2 className="w-5 h-5 text-[#b76e79]" />
-                <span className="text-white text-sm">Laufhäuser</span>
+                <Building2 className="h-5 w-5 text-[#D4AF37]" />
+                <span className="text-sm text-[#dae2fd]">Laufhäuser</span>
               </Link>
               <Link
                 href={getSearchPath(locale, { category: 'bordell' })}
-                className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-4 hover:border-[#b76e79]/50 transition-all"
+                className="flex items-center gap-3 rounded-xl border border-[#564146] bg-[#131b2e] p-4 transition-all hover:border-[#B76E79]/60"
               >
-                <Building2 className="w-5 h-5 text-[#b76e79]" />
-                <span className="text-white text-sm">Bordelle</span>
+                <Building2 className="h-5 w-5 text-[#D4AF37]" />
+                <span className="text-sm text-[#dae2fd]">Bordelle</span>
               </Link>
               <Link
                 href={getSearchPath(locale, { city: 'Berlin' })}
-                className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-4 hover:border-[#b76e79]/50 transition-all"
+                className="flex items-center gap-3 rounded-xl border border-[#564146] bg-[#131b2e] p-4 transition-all hover:border-[#B76E79]/60"
               >
-                <MapPin className="w-5 h-5 text-[#b76e79]" />
-                <span className="text-white text-sm">Berlin</span>
+                <MapPin className="h-5 w-5 text-[#D4AF37]" />
+                <span className="text-sm text-[#dae2fd]">Berlin</span>
               </Link>
             </div>
           </div>
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 px-4 border-t border-white/10">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="bg-gradient-to-br from-[#8b1a4a]/20 to-[#6b3fa0]/20 rounded-3xl p-8 md:p-12 border border-white/10">
-              <div className="flex justify-center gap-4 mb-6">
-                <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
-                  <Check className="w-6 h-6 text-green-400" />
+        <section className="border-t border-[#564146] px-4 py-16">
+          <div className="mx-auto max-w-4xl text-center">
+            <div className="rounded-3xl border border-[#564146] bg-gradient-to-br from-[#8b1a4a]/20 to-[#6b1a5c]/20 p-8 md:p-12">
+              <div className="mb-6 flex justify-center gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#8b1a4a]/30">
+                  <Check className="h-6 w-6 text-[#38BDF8]" />
                 </div>
-                <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
-                  <Star className="w-6 h-6 text-yellow-400" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#8b1a4a]/30">
+                  <Star className="h-6 w-6 text-[#D4AF37]" />
                 </div>
-                <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
-                  <Shield className="w-6 h-6 text-blue-400" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#8b1a4a]/30">
+                  <Shield className="h-6 w-6 text-[#ffb1c6]" />
                 </div>
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+              <h2 className="mb-4 text-2xl font-bold text-[#dae2fd] md:text-3xl">
                 Jetzt auf DesireMap stöbern
               </h2>
-              <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
+              <p className="mx-auto mb-8 max-w-2xl text-[#a48a90]">
                 Entdecken Sie 847+ verifizierte Betriebe in ganz Deutschland.
                 Qualitätsgeprüft, echt bewertet, diskret kontaktiert.
               </p>
               <Link
                 href={`/${locale}`}
-                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#8b1a4a] to-[#6b3fa0] text-white font-medium rounded-xl hover:from-[#a8255c] hover:to-[#7d4fb5] transition-all shadow-lg hover:shadow-xl hover:shadow-[#8b1a4a]/20"
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#8b1a4a] to-[#6b1a5c] px-8 py-4 font-medium text-[#dae2fd] shadow-lg transition-all hover:from-[#a8255c] hover:to-[#7d2a6e] hover:shadow-xl hover:shadow-[#8b1a4a]/25"
               >
                 Betriebe entdecken
-                <ArrowLeft className="w-4 h-4 rotate-180" />
+                <ArrowLeft className="h-4 w-4 rotate-180" />
               </Link>
             </div>
           </div>
         </section>
+        </main>
+        <Footer locale={locale} />
       </div>
     </>
   )

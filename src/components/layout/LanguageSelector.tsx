@@ -52,16 +52,16 @@ export function LanguageSelector() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="sm" className="gap-2 text-gray-300 hover:text-white">
-          <Globe className="w-4 h-4" />
+          <Globe className="h-4 w-4" />
           <span className="hidden sm:inline">{currentLang.flag}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="bg-[#1a1a24] border-white/10">
+      <DropdownMenuContent align="end" className="border-white/10 bg-[#1a1a24]">
         {languages.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
             onClick={() => changeLocale(lang.code)}
-            className={`cursor-pointer text-gray-300 hover:text-white hover:bg-[#8b1a4a]/20 ${currentLocale === lang.code ? 'bg-[#8b1a4a]/20 text-white' : ''}`}
+            className={`cursor-pointer text-gray-300 hover:bg-[#8b1a4a]/20 hover:text-white ${currentLocale === lang.code ? 'bg-[#8b1a4a]/20 text-white' : ''}`}
           >
             {lang.flag} {lang.name}
           </DropdownMenuItem>

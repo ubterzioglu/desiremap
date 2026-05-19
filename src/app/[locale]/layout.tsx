@@ -3,7 +3,6 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { Toaster } from '@/components/ui/toaster'
-import { SessionProvider } from '@/components/providers/SessionProvider'
 import { QueryProvider } from '@/components/providers/QueryProvider'
 import { LocaleInit } from '@/components/layout/LocaleInit'
 import { getHomeSeoMetadata } from '@/lib/seo/home'
@@ -94,12 +93,10 @@ export default async function LocaleLayout({
     <>
       <LocaleInit locale={locale} />
       <QueryProvider>
-        <SessionProvider>
-          <NextIntlClientProvider messages={messages}>
-            {children}
-            <Toaster />
-          </NextIntlClientProvider>
-        </SessionProvider>
+        <NextIntlClientProvider messages={messages}>
+          {children}
+          <Toaster />
+        </NextIntlClientProvider>
       </QueryProvider>
     </>
   )

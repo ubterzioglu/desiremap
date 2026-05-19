@@ -1,8 +1,10 @@
-import type { PublicCity, PublicEstablishment } from '@/types'
-import type { AuthSession, AuthUser } from '@/stores/authStore'
-import { useAuthStore } from '@/stores/authStore'
+import type { PublicCity, PublicEstablishment, PublicHeroSlide } from '@/types'
 import { normalizePublicServiceTypes } from '@/lib/public-service-types'
-import { normalizePublicCity, normalizePublicEstablishment } from '@/lib/backend-client'
+import {
+  normalizePublicCity,
+  normalizePublicEstablishment,
+  normalizePublicImageUrl,
+} from '@/lib/backend-client'
 import {
   getFallbackPublicCities,
   getFallbackPublicServiceTypes,
@@ -20,16 +22,7 @@ interface ApiResponse<T> {
   meta?: { total: number; page: number; limit: number }
 }
 
-interface ApiRequestOptions extends RequestInit {
-  auth?: boolean
-}
-
-interface AuthConfig {
-  googleOAuth: boolean
-  googleOAuthUrl?: string
-}
-
-type WorkspaceType = 'public' | 'admin'
+type ApiRequestOptions = RequestInit
 export interface CustomerProfileResponse {
   name?: string | null
   email?: string | null
@@ -62,112 +55,10 @@ export interface CustomerBadgeResponse {
   description?: string
 }
 
-export interface AdminStatsResponse {
-  venues?: number
-  publishedEvents?: number
-  draftEvents?: number
-  operators?: number
-}
 
-export interface AdminVenueResponse {
-  venuePublicId: string
-  venueName?: string
-  name?: string
-  city?: string
-  status?: string
-  priceMin?: number | null
-  priceMax?: number | null
-  price_min?: number | null
-  price_max?: number | null
-}
-
-export interface AdminCreateVenuePayload {
-  name: string
-  addressLine: string
-  cityId: number
-  website?: string
-  publicEmail?: string
-  publicPhone?: string
-  serviceTypeIds: number[]
-  generalNote?: string
-  priceMin?: number
-  priceMax?: number
-}
-
-export interface AdminEventResponse {
-  eventPublicId: string
-  title?: string
-  startAt: string | number | Date
-  endAt: string | number | Date
-  status?: string
-  capacityTotal?: number
-  reservedCount?: number
-  reservationMode?: string
-  lockVersion?: number
-}
-
-export interface AdminOperatorResponse {
-  operatorPublicId: string
-  displayName?: string
-  invitedEmail?: string
-  accountStatus?: string
-  venues?: Array<{ roleCode?: string }>
-}
-
-export interface AdminBusinessResponse {
-  id?: string
-  public_id?: string
-  businessPublicId: string
-  legalName?: string
-  display_name?: string
-  displayName?: string
-  billing_email?: string
-  billingEmail?: string
-  billingPhone?: string
-  accountStatus?: string
-  status?: string
-  createdAt?: string | number | Date
-  operators?: AdminOperatorResponse[]
-}
-
-export interface AdminCityResponse {
-  cityId: number
-  name: string
-  slug: string
-  venueCount?: number
-  publicImageUrl?: string | null
-  publicHeroImageUrl?: string | null
-  latitude?: number | null
-  longitude?: number | null
-  publicSubtitle?: Record<string, string | null> | null
-  publicDescription?: Record<string, string | null> | null
-  seoTitle?: Record<string, string | null> | null
-  seoDescription?: Record<string, string | null> | null
-  isPublicActive?: boolean
-  sortOrder?: number | null
-}
-
-export interface AdminCityPayload {
-  name?: string
-  slug?: string
-  publicImageUrl?: string | null
-  publicHeroImageUrl?: string | null
-  latitude?: number | null
-  longitude?: number | null
-  publicSubtitle?: Record<string, string | null> | null
-  publicDescription?: Record<string, string | null> | null
-  seoTitle?: Record<string, string | null> | null
-  seoDescription?: Record<string, string | null> | null
-  isPublicActive?: boolean
-  sortOrder?: number | null
-}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
-}
-
-function normalizeEndpoint(endpoint: string) {
-  return joinApiUrl(CLIENT_API_BASE_URL, endpoint)
 }
 
 function normalizeEndpointWithBase(baseUrl: string, endpoint: string) {
@@ -183,13 +74,6 @@ function createHeaders(options: ApiRequestOptions) {
 
   if (options.body && !(options.body instanceof FormData) && !headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json')
-  }
-
-  if (options.auth !== false) {
-    const token = useAuthStore.getState().token
-    if (token) {
-      headers.set('Authorization', `Bearer ${token}`)
-    }
   }
 
   return headers
@@ -285,139 +169,75 @@ async function publicApiCall<T>(endpoint: string, options: ApiRequestOptions = {
   }
 }
 
-function normalizeUser(payload: unknown): AuthUser {
-  if (!isRecord(payload)) {
-    throw new Error('API user payload missing')
-  }
-
-  const operatorPublicId = typeof payload.operatorPublicId === 'string' ? payload.operatorPublicId : undefined
-
-  return {
-    id: String(payload.id ?? ''),
-    email: String(payload.email ?? ''),
-    name: typeof payload.name === 'string' ? payload.name : null,
-    role: String(payload.role ?? 'customer').toLowerCase(),
-    status: String(payload.status ?? 'active').toLowerCase(),
-    avatar: typeof payload.avatar === 'string' ? payload.avatar : null,
-    workspace: payload.workspace === 'admin' ? 'admin' : 'public',
-    ...(operatorPublicId === undefined ? {} : { operatorPublicId }),
-    businessAccountPublicId: typeof payload.businessAccountPublicId === 'string' ? payload.businessAccountPublicId : null,
-    requirePasswordReset: payload.requirePasswordReset === true
-  }
-}
-
-function normalizeAuthSession(payload: unknown): AuthSession {
-  if (!isRecord(payload)) {
-    throw new Error('API login payload missing')
-  }
-
-  const token =
-    typeof payload.accessToken === 'string'
-      ? payload.accessToken
-      : typeof payload.token === 'string'
-        ? payload.token
-        : typeof payload.authToken === 'string'
-          ? payload.authToken
-          : null
-
-  const userPayload = isRecord(payload.user)
-    ? payload.user
-    : isRecord(payload.data) && isRecord(payload.data.user)
-      ? payload.data.user
-      : null
-
-  if (!token || !userPayload) {
-    throw new Error('API login response must include token and user')
-  }
-
-  return {
-    token,
-    user: normalizeUser(userPayload)
-  }
-}
-
-function normalizeAuthConfig(payload: unknown): AuthConfig {
-  if (!isRecord(payload)) {
-    return { googleOAuth: false }
-  }
-
-  const googleOAuthUrl = typeof payload.googleOAuthUrl === 'string'
-    ? payload.googleOAuthUrl
-    : typeof payload.googleAuthUrl === 'string'
-      ? payload.googleAuthUrl
-      : undefined
-
-  return {
-    googleOAuth: payload.googleOAuth === true || Boolean(googleOAuthUrl),
-    ...(googleOAuthUrl === undefined ? {} : { googleOAuthUrl })
-  }
-}
-
-function getFallbackGoogleOAuthUrl() {
-  return normalizeEndpoint('/auth/google')
-}
-
-export const authApi = {
-  login: async (
-    data: { email: string; password: string },
-    workspace: WorkspaceType = 'public'
-  ) => {
-    const payload = await apiCall<unknown>('/auth/login', {
-      method: 'POST',
-      auth: false,
-      headers: {
-        'X-Desiremap-Workspace': workspace
-      },
-      body: JSON.stringify(data)
-    })
-
-    return normalizeAuthSession(payload)
-  },
-
-  register: async (data: {
-    email: string
-    password: string
-    name?: string
-    phone?: string
-  }) => {
-    return apiCall<{ id: string; email: string; name: string; role: string }>('/register', {
-      method: 'POST',
-      auth: false,
-      body: JSON.stringify(data)
-    })
-  },
-
-  me: async () => {
-    const payload = await apiCall<unknown>('/auth/me')
-    const userPayload = isRecord(payload) && isRecord(payload.user) ? payload.user : payload
-    return normalizeUser(userPayload)
-  },
-
-  logout: async () => {
-    return apiCall<{ success: boolean; message?: string }>('/auth/logout', {
-      method: 'POST'
-    })
-  },
-
-  getConfig: async () => {
+async function directPublicApiCall<T>(endpoint: string, options: ApiRequestOptions = {}): Promise<T> {
+  if (isLocalApiBaseUrl(CLIENT_API_BASE_URL) && CLIENT_API_BASE_URL !== PRODUCTION_PUBLIC_API_BASE_URL) {
     try {
-      const payload = await apiCall<unknown>('/auth/config', { auth: false })
-      const config = normalizeAuthConfig(payload)
+      return await apiCallAgainstBase(PRODUCTION_PUBLIC_API_BASE_URL, endpoint, options)
+    } catch {
+      return apiCallAgainstBase(CLIENT_API_BASE_URL, endpoint, options)
+    }
+  }
 
-      if (config.googleOAuth && !config.googleOAuthUrl) {
-        return { ...config, googleOAuthUrl: getFallbackGoogleOAuthUrl() }
+  try {
+    return await apiCallAgainstBase(CLIENT_API_BASE_URL, endpoint, options)
+  } catch (error) {
+    if (CLIENT_API_BASE_URL === PRODUCTION_PUBLIC_API_BASE_URL) {
+      throw error
+    }
+
+    return apiCallAgainstBase(PRODUCTION_PUBLIC_API_BASE_URL, endpoint, options)
+  }
+}
+
+function normalizePublicHeroSlides(items: unknown[]): PublicHeroSlide[] {
+  const normalized = items
+    .map((item) => {
+      if (!isRecord(item)) {
+        return null
       }
 
-      return config
-    } catch {
-      return { googleOAuth: false }
-    }
-  },
+      const raw = item as unknown as PublicHeroSlide & {
+        alt_text?: string | null
+        image_url?: string | null
+        is_active?: boolean | null
+        sort_order?: number | string | null
+        updated_at?: string | null
+        updated_by?: string | null
+      }
 
-  getGoogleLoginUrl: async () => {
-    const config = await authApi.getConfig()
-    return config.googleOAuthUrl || getFallbackGoogleOAuthUrl()
-  }
+      const imageUrl = normalizePublicImageUrl(raw.imageUrl ?? raw.image_url)
+      if (!imageUrl) {
+        return null
+      }
+
+      const rawSortOrder = raw.sortOrder ?? raw.sort_order
+      const parsedSortOrder =
+        typeof rawSortOrder === 'number'
+          ? rawSortOrder
+          : typeof rawSortOrder === 'string' && rawSortOrder.trim().length > 0
+            ? Number(rawSortOrder)
+            : null
+
+      return {
+        imageUrl,
+        altText: raw.altText ?? raw.alt_text ?? null,
+        isActive: raw.isActive ?? raw.is_active ?? true,
+        sortOrder:
+          parsedSortOrder !== null && Number.isFinite(parsedSortOrder)
+            ? parsedSortOrder
+            : null,
+        updatedAt: raw.updatedAt ?? raw.updated_at ?? null,
+        updatedBy: raw.updatedBy ?? raw.updated_by ?? null,
+      }
+    })
+
+  return normalized
+    .filter((item): item is NonNullable<typeof item> => item !== null)
+    .sort((left, right) => {
+      const leftOrder = left.sortOrder ?? Number.MAX_SAFE_INTEGER
+      const rightOrder = right.sortOrder ?? Number.MAX_SAFE_INTEGER
+      return leftOrder - rightOrder
+    })
 }
 
 export const customerApi = {
@@ -514,9 +334,20 @@ async function enrichPublicEstablishmentSummary(item: PublicEstablishment) {
 }
 
 export const publicApi = {
+  getHero: async () => {
+    const response = await directPublicApiCall<unknown>('/public/hero')
+    const items = isRecord(response) && Array.isArray(response.items)
+      ? response.items
+      : []
+
+    return {
+      items: normalizePublicHeroSlides(items),
+    }
+  },
+
   getCities: async () => {
     try {
-      const response = await publicApiCall<{ items: PublicCity[] }>('/public/cities', { auth: false })
+      const response = await publicApiCall<{ items: PublicCity[] }>('/public/cities')
 
       return {
         items: Array.isArray(response.items)
@@ -530,7 +361,7 @@ export const publicApi = {
 
   getStadtCities: async () => {
     try {
-      const response = await publicApiCall<{ items: PublicCity[] }>('/public/stadt/cities', { auth: false })
+      const response = await publicApiCall<{ items: PublicCity[] }>('/public/stadt/cities')
 
       return {
         items: Array.isArray(response.items)
@@ -545,7 +376,7 @@ export const publicApi = {
   getStadtCity: async (slug: string) => {
     try {
       return normalizePublicCity(
-        await publicApiCall<PublicCity>(`/public/stadt/cities/${encodeURIComponent(slug)}`, { auth: false })
+        await publicApiCall<PublicCity>(`/public/stadt/cities/${encodeURIComponent(slug)}`)
       )
     } catch {
       const city = getFallbackPublicStadtCity(slug)
@@ -559,7 +390,7 @@ export const publicApi = {
 
   getServiceTypes: async () => {
     try {
-      return { items: normalizePublicServiceTypes(await publicApiCall<unknown>('/public/service-types', { auth: false })) }
+      return { items: normalizePublicServiceTypes(await publicApiCall<unknown>('/public/service-types')) }
     } catch {
       return { items: getFallbackPublicServiceTypes() }
     }
@@ -580,8 +411,7 @@ export const publicApi = {
     }
     const suffix = qs.toString()
     const data = await publicApiCall<{ results?: PublicEstablishment[]; items?: PublicEstablishment[]; total?: number }>(
-      suffix ? `/public/establishments?${suffix}` : '/public/establishments',
-      { auth: false }
+      suffix ? `/public/establishments?${suffix}` : '/public/establishments'
     )
     const raw = Array.isArray(data.results) ? data.results : Array.isArray(data.items) ? data.items : []
     const items = await Promise.all(raw.map(enrichPublicEstablishmentSummary))
@@ -589,7 +419,7 @@ export const publicApi = {
   },
 
   getEstablishmentDetail: (slug: string) =>
-    publicApiCall<PublicEstablishment>(`/public/establishments/${slug}`, { auth: false }).then(normalizePublicEstablishment),
+    publicApiCall<PublicEstablishment>(`/public/establishments/${slug}`).then(normalizePublicEstablishment),
 }
 
 export const establishmentsApi = {
@@ -613,148 +443,5 @@ export const establishmentsApi = {
     return apiCall<{ results: unknown[]; total: number; limit: number; offset: number }>(
       suffix ? `/establishments?${suffix}` : '/establishments'
     )
-  }
-}
-
-export const adminApi = {
-  getDashboardSnapshot: async () => {
-    return apiCall<AdminStatsResponse>('/admin/stats')
-  },
-
-  getVenues: async () => {
-    return apiCall<AdminVenueResponse[]>('/admin/venues').then((venues) =>
-      (Array.isArray(venues) ? venues : []).map((venue) => ({
-        ...venue,
-        priceMin: venue.priceMin ?? venue.price_min ?? null,
-        priceMax: venue.priceMax ?? venue.price_max ?? null,
-      }))
-    )
-  },
-
-  createVenue: async (data: AdminCreateVenuePayload) => {
-    return apiCall<AdminVenueResponse>('/admin/venues', {
-      method: 'POST',
-      body: JSON.stringify(data)
-    })
-  },
-
-  getVenueEvents: async (venuePublicId: string) => {
-    const searchParams = new URLSearchParams()
-    searchParams.set('venuePublicId', venuePublicId)
-    return apiCall<AdminEventResponse[]>(`/admin/events?${searchParams.toString()}`)
-  },
-
-  getEventDetail: async (venuePublicId: string, eventPublicId: string) => {
-    const searchParams = new URLSearchParams()
-    searchParams.set('venuePublicId', venuePublicId)
-    searchParams.set('eventPublicId', eventPublicId)
-    return apiCall<AdminEventResponse>(`/admin/event-detail?${searchParams.toString()}`)
-  },
-
-  createEvent: async (data: Record<string, unknown>) => {
-    return apiCall<unknown>('/admin/events', {
-      method: 'POST',
-      body: JSON.stringify(data)
-    })
-  },
-
-  publishEvent: async (data: Record<string, unknown>) => {
-    return apiCall<unknown>('/admin/events', {
-      method: 'PUT',
-      body: JSON.stringify(data)
-    })
-  },
-
-  cancelEvent: async (data: Record<string, unknown>) => {
-    return apiCall<unknown>('/admin/events', {
-      method: 'PUT',
-      body: JSON.stringify(data)
-    })
-  },
-
-  getBusinessOperators: async () => {
-    return apiCall<AdminOperatorResponse[]>('/admin/operators')
-  },
-
-  disableBusinessOperator: async (data: Record<string, unknown>) => {
-    return apiCall<unknown>('/admin/operators', {
-      method: 'PUT',
-      body: JSON.stringify(data)
-    })
-  },
-
-  reactivateBusinessOperator: async (data: Record<string, unknown>) => {
-    return apiCall<unknown>('/admin/operators', {
-      method: 'PUT',
-      body: JSON.stringify(data)
-    })
-  },
-
-  deprovisionBusinessOperator: async (data: Record<string, unknown>) => {
-    return apiCall<unknown>('/admin/operators', {
-      method: 'PUT',
-      body: JSON.stringify(data)
-    })
-  },
-
-  getBusinesses: async () => {
-    const data = await apiCall<{ items: AdminBusinessResponse[] }>('/admin/businesses')
-    return data.items ?? []
-  },
-
-  createBusiness: async (data: {
-    legalName: string
-    displayName: string
-    billingEmail: string
-    billingPhone?: string
-  }) => {
-    return apiCall<unknown>('/admin/businesses', {
-      method: 'POST',
-      body: JSON.stringify(data)
-    })
-  },
-
-  createOperator: async (businessId: string, data: {
-    email: string
-    password: string
-    displayName: string
-  }) => {
-    return apiCall<unknown>(`/admin/businesses/${businessId}/operators`, {
-      method: 'POST',
-      body: JSON.stringify(data)
-    })
-  },
-
-  getCities: async () => {
-    const data = await apiCall<{ items: AdminCityResponse[] }>('/admin/cities')
-    return data.items ?? []
-  },
-
-  createCity: async (data: AdminCityPayload & { name: string; slug: string }) => {
-    return apiCall<AdminCityResponse>('/admin/cities', {
-      method: 'POST',
-      body: JSON.stringify(data)
-    })
-  },
-
-  updateCity: async (cityId: number, data: AdminCityPayload) => {
-    return apiCall<AdminCityResponse>(`/admin/cities/${cityId}`, {
-      method: 'PUT',
-      body: JSON.stringify(data)
-    })
-  },
-
-  deleteCity: async (cityId: number) => {
-    return apiCall<unknown>(`/admin/cities/${cityId}`, {
-      method: 'DELETE'
-    })
-  }
-}
-
-export const seedApi = {
-  seed: async () => {
-    return apiCall<{ success: boolean; message: string; data: unknown }>('/seed', {
-      method: 'POST'
-    })
   }
 }

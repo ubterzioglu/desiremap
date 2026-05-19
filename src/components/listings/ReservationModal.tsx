@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useAuth } from '@/components/providers/SessionProvider'
 import { ArrowRight, Bell, Calendar, Check, Crown, Loader2, Shield } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -29,7 +28,7 @@ type StepProps = {
 
 function StepIndicator({ step }: { step: number }) {
   return (
-    <div className="flex items-center justify-between my-4">
+    <div className="my-4 flex items-center justify-between">
       {[1, 2, 3].map((item) => (
         <div key={item} className="flex items-center">
           <div className={cn(
@@ -38,7 +37,7 @@ function StepIndicator({ step }: { step: number }) {
               ? 'bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] text-white'
               : 'bg-white/5 text-gray-500'
           )}>
-            {step > item ? <Check className="w-4 h-4" /> : item}
+            {step > item ? <Check className="h-4 w-4" /> : item}
           </div>
           {item < 3 && (
             <div className={cn(
@@ -61,17 +60,17 @@ function Step1({
   return (
     <div className="space-y-4">
       <div>
-        <Label className="text-gray-300 mb-2 block">Datum</Label>
+        <Label className="mb-2 block text-gray-300">Datum</Label>
         <Input
           type="date"
           value={selectedDate}
           onChange={(e) => onDateChange(e.target.value)}
-          className="bg-white/5 border-white/10 text-white"
+          className="border-white/10 bg-white/5 text-white"
           min={new Date().toISOString().split('T')[0]}
         />
       </div>
       <div>
-        <Label className="text-gray-300 mb-2 block">Verfuegbare Zeiten</Label>
+        <Label className="mb-2 block text-gray-300">Verfuegbare Zeiten</Label>
         <div className="grid grid-cols-3 gap-2">
           {timeSlots.map((time) => (
             <button
@@ -90,12 +89,12 @@ function Step1({
         </div>
       </div>
       <div>
-        <Label className="text-gray-300 mb-2 block">Dauer</Label>
+        <Label className="mb-2 block text-gray-300">Dauer</Label>
         <Select value={duration} onValueChange={onDurationChange}>
-          <SelectTrigger className="bg-white/5 border-white/10 text-white">
+          <SelectTrigger className="border-white/10 bg-white/5 text-white">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent className="bg-[#1a1a24] border-white/10">
+          <SelectContent className="border-white/10 bg-[#1a1a24]">
             <SelectItem value="30">30 Min</SelectItem>
             <SelectItem value="60">1 Stunde</SelectItem>
             <SelectItem value="90">1.5 Stunden</SelectItem>
@@ -103,14 +102,14 @@ function Step1({
           </SelectContent>
         </Select>
       </div>
-      <div className="bg-white/5 rounded-lg p-4">
+      <div className="rounded-lg bg-white/5 p-4">
         <div className="flex items-start gap-3">
           <input
             type="checkbox"
             id="autoReserve"
             checked={autoReserve}
             onChange={(e) => onAutoReserveChange(e.target.checked)}
-            className="mt-1 rounded bg-white/10 border-white/20"
+            className="mt-1 rounded border-white/20 bg-white/10"
             disabled={!isPremium}
           />
           <div className="flex-1">
@@ -118,15 +117,15 @@ function Step1({
               'text-sm font-medium flex items-center gap-2',
               !isPremium && 'text-gray-500'
             )}>
-              <Bell className="w-4 h-4" />
+              <Bell className="h-4 w-4" />
               Automatische Reservierung
             </Label>
-            <p className="text-gray-500 text-xs mt-1">
+            <p className="mt-1 text-xs text-gray-500">
               {isPremium ? 'Muesaitlik acilinca otomatik rezervasyon' : 'Nur fuer Premium-Mitglieder'}
             </p>
           </div>
           {!isPremium && (
-            <Badge className="bg-[#8b1a4a]/20 text-[#b76e79] border-[#8b1a4a]/30">Premium</Badge>
+            <Badge className="border-[#8b1a4a]/30 bg-[#8b1a4a]/20 text-[#b76e79]">Premium</Badge>
           )}
         </div>
       </div>
@@ -149,41 +148,41 @@ function Step2({ name, email, phone, notes, onNameChange, onEmailChange, onPhone
   return (
     <div className="space-y-4">
       <div>
-        <Label className="text-gray-300 mb-2 block">Name</Label>
+        <Label className="mb-2 block text-gray-300">Name</Label>
         <Input
           placeholder="Ihr Name"
           value={name}
           onChange={(e) => onNameChange(e.target.value)}
-          className="bg-white/5 border-white/10 text-white"
+          className="border-white/10 bg-white/5 text-white"
         />
       </div>
       <div>
-        <Label className="text-gray-300 mb-2 block">E-Mail</Label>
+        <Label className="mb-2 block text-gray-300">E-Mail</Label>
         <Input
           type="email"
           placeholder="ihre@email.de"
           value={email}
           onChange={(e) => onEmailChange(e.target.value)}
-          className="bg-white/5 border-white/10 text-white"
+          className="border-white/10 bg-white/5 text-white"
         />
       </div>
       <div>
-        <Label className="text-gray-300 mb-2 block">Telefon (optional)</Label>
+        <Label className="mb-2 block text-gray-300">Telefon (optional)</Label>
         <Input
           type="tel"
           placeholder="+49 ..."
           value={phone}
           onChange={(e) => onPhoneChange(e.target.value)}
-          className="bg-white/5 border-white/10 text-white"
+          className="border-white/10 bg-white/5 text-white"
         />
       </div>
       <div>
-        <Label className="text-gray-300 mb-2 block">Notizen (optional)</Label>
+        <Label className="mb-2 block text-gray-300">Notizen (optional)</Label>
         <Input
           placeholder="Sonderwuensche..."
           value={notes}
           onChange={(e) => onNotesChange(e.target.value)}
-          className="bg-white/5 border-white/10 text-white"
+          className="border-white/10 bg-white/5 text-white"
         />
       </div>
     </div>
@@ -199,8 +198,8 @@ function Step3({
 
   return (
     <div className="space-y-4">
-      <div className="bg-white/5 rounded-lg p-4">
-        <h4 className="text-sm font-medium text-gray-300 mb-3">Uebersicht</h4>
+      <div className="rounded-lg bg-white/5 p-4">
+        <h4 className="mb-3 text-sm font-medium text-gray-300">Uebersicht</h4>
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-gray-400">Betrieb</span>
@@ -218,7 +217,7 @@ function Step3({
             <span className="text-gray-400">Dauer</span>
             <span className="text-white">{duration} Min</span>
           </div>
-          <Separator className="bg-white/10 my-2" />
+          <Separator className="my-2 bg-white/10" />
           <div className="flex justify-between font-medium">
             <span className="text-gray-300">Preis ca.</span>
             <span className="text-[#b76e79]">€{estimatedPrice.toFixed(0)}</span>
@@ -226,13 +225,13 @@ function Step3({
         </div>
       </div>
       {autoReserve && (
-        <div className="flex items-center gap-2 text-xs text-green-400 bg-green-500/10 rounded-lg p-3">
-          <Bell className="w-4 h-4" />
+        <div className="flex items-center gap-2 rounded-lg bg-green-500/10 p-3 text-xs text-green-400">
+          <Bell className="h-4 w-4" />
           Automatische Reservierung aktiv
         </div>
       )}
       <div className="flex items-start gap-2 text-xs text-gray-400">
-        <Shield className="w-4 h-4 text-[#b76e79] mt-0.5 flex-shrink-0" />
+        <Shield className="mt-0.5 h-4 w-4 flex-shrink-0 text-[#b76e79]" />
         <p>Diskrete Abrechnung. Stornierung bis 2h vorher kostenlos.</p>
       </div>
     </div>
@@ -255,7 +254,7 @@ function StepButtons({
   isLoading: boolean
 }) {
   return (
-    <div className="flex gap-3 mt-6">
+    <div className="mt-6 flex gap-3">
       {step > 1 && (
         <Button
           variant="outline"
@@ -270,20 +269,20 @@ function StepButtons({
         <Button
           onClick={onNext}
           disabled={!canProceed || isLoading}
-          className="flex-1 bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] hover:from-[#a8255c] hover:to-[#7d4fb5] text-white border-0"
+          className="flex-1 border-0 bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] text-white hover:from-[#a8255c] hover:to-[#7d4fb5]"
         >
-          Weiter <ArrowRight className="w-4 h-4 ml-2" />
+          Weiter <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       ) : (
         <Button
           onClick={onSubmit}
           disabled={isLoading}
-          className="flex-1 bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] hover:from-[#a8255c] hover:to-[#7d4fb5] text-white border-0"
+          className="flex-1 border-0 bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] text-white hover:from-[#a8255c] hover:to-[#7d4fb5]"
         >
           {isLoading ? (
-            <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Wird reserviert...</>
+            <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Wird reserviert...</>
           ) : (
-            <><Check className="w-4 h-4 mr-2" /> Reservieren</>
+            <><Check className="mr-2 h-4 w-4" /> Reservieren</>
           )}
         </Button>
       )}
@@ -298,7 +297,6 @@ type ReservationModalProps = {
 }
 
 export function ReservationModal({ open, onOpenChange, bordell }: ReservationModalProps) {
-  const { user, isAuthenticated } = useAuth()
   const createBooking = useCreateBooking()
   
   const [step, setStep] = useState(1)
@@ -314,14 +312,6 @@ export function ReservationModal({ open, onOpenChange, bordell }: ReservationMod
   const [error, setError] = useState('')
 
   const isPremium = false
-
-  // Pre-fill user data if authenticated
-  useState(() => {
-    if (user) {
-      setName(user.name || '')
-      setEmail(user.email || '')
-    }
-  })
 
   const resetForm = () => {
     setStep(1)
@@ -348,7 +338,7 @@ export function ReservationModal({ open, onOpenChange, bordell }: ReservationMod
   }
 
   const handleSubmit = async () => {
-    if (!bordell || !isAuthenticated) return
+    if (!bordell) return
     
     setError('')
     
@@ -381,49 +371,13 @@ export function ReservationModal({ open, onOpenChange, bordell }: ReservationMod
   if (success) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="bg-[#0f0f14] border-white/10 text-white max-w-md">
-          <div className="text-center py-8">
-            <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-4">
-              <Check className="w-8 h-8 text-green-400" />
+        <DialogContent className="max-w-md border-white/10 bg-[#0f0f14] text-white">
+          <div className="py-8 text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-500/20">
+              <Check className="h-8 w-8 text-green-400" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">Reservierung erfolgreich!</h3>
+            <h3 className="mb-2 text-xl font-bold text-white">Reservierung erfolgreich!</h3>
             <p className="text-gray-400">Sie erhalten eine Bestaetigung per E-Mail.</p>
-          </div>
-        </DialogContent>
-      </Dialog>
-    )
-  }
-
-  if (!isAuthenticated) {
-    return (
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="bg-[#0f0f14] border-white/10 text-white max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-xl flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-[#b76e79]" />
-              Anmeldung erforderlich
-            </DialogTitle>
-            <DialogDescription className="text-gray-400">
-              Bitte melden Sie sich an, um eine Reservierung zu erstellen.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex gap-3 mt-4">
-            <Button
-              onClick={() => {
-                onOpenChange(false)
-                window.location.href = '/de/login'
-              }}
-              className="flex-1 bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] hover:from-[#a8255c] hover:to-[#7d4fb5] text-white"
-            >
-              Anmelden
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              className="flex-1 border-white/10 text-gray-300"
-            >
-              Abbrechen
-            </Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -448,10 +402,10 @@ export function ReservationModal({ open, onOpenChange, bordell }: ReservationMod
       if (!open) resetForm()
       onOpenChange(open)
     }}>
-      <DialogContent className="bg-[#0f0f14] border-white/10 text-white max-w-md">
+      <DialogContent className="max-w-md border-white/10 bg-[#0f0f14] text-white">
         <DialogHeader>
-          <DialogTitle className="text-xl flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-[#b76e79]" />
+          <DialogTitle className="flex items-center gap-2 text-xl">
+            <Calendar className="h-5 w-5 text-[#b76e79]" />
             Reservierung
           </DialogTitle>
           <DialogDescription className="text-gray-400">
@@ -460,9 +414,9 @@ export function ReservationModal({ open, onOpenChange, bordell }: ReservationMod
         </DialogHeader>
         
         {isPremium && (
-          <div className="bg-[#8b1a4a]/20 rounded-lg p-3 flex items-center gap-2 border border-[#8b1a4a]/30 text-sm">
-            <Crown className="w-4 h-4 text-[#b76e79]" />
-            <span className="text-white font-medium">Premium</span>
+          <div className="flex items-center gap-2 rounded-lg border border-[#8b1a4a]/30 bg-[#8b1a4a]/20 p-3 text-sm">
+            <Crown className="h-4 w-4 text-[#b76e79]" />
+            <span className="font-medium text-white">Premium</span>
             <span className="text-gray-400">- Prioritaets-Reservierung aktiv</span>
           </div>
         )}
@@ -493,7 +447,7 @@ export function ReservationModal({ open, onOpenChange, bordell }: ReservationMod
         )}
         
         {error && (
-          <div className="text-red-400 text-sm bg-red-500/10 rounded-lg p-3">
+          <div className="rounded-lg bg-red-500/10 p-3 text-sm text-red-400">
             {error}
           </div>
         )}

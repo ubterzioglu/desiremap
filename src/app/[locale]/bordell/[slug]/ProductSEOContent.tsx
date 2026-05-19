@@ -63,7 +63,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
           <h2 className="text-2xl font-bold text-foreground md:text-3xl">
             Über {productData.name}
           </h2>
-          <div className="mt-6 max-w-3xl space-y-4 speakable-description">
+          <div className="speakable-description mt-6 max-w-3xl space-y-4">
             <p className="text-[15px] leading-8 text-muted-foreground">{customAboutText}</p>
           </div>
         </SectionShell>
@@ -79,7 +79,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
               Services von {productData.name}
             </h3>
             {hasServices && (
-              <div className="mt-4 flex flex-wrap gap-2 speakable-services">
+              <div className="speakable-services mt-4 flex flex-wrap gap-2">
                 {productData.services.map((service) => (
                   <span
                     key={service}
@@ -209,7 +209,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
                 href={getVenuePath(locale, related.slug)}
                 className="group rounded-2xl border border-white/5 bg-background/35 p-5 transition-colors hover:border-primary/40 hover:bg-background/55"
               >
-                <p className="text-sm uppercase tracking-[0.18em] text-muted-foreground">
+                <p className="text-sm tracking-[0.18em] text-muted-foreground uppercase">
                   {typeLabels[related.type] ?? related.type}
                 </p>
                 <h3 className="mt-3 text-lg font-semibold text-foreground transition-colors group-hover:text-primary">

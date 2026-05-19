@@ -9,27 +9,27 @@ type FooterProps = {
 
 export function Footer({ locale }: FooterProps) {
   return (
-    <footer className="bg-black border-t border-white/5">
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+    <footer className="border-t border-[#564146] bg-[#0b1326]">
+      <div className="mx-auto max-w-7xl px-6 py-12">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 rounded-full bg-linear-to-br from-[#8b1a4a] to-[#6b3fa0] flex items-center justify-center">
-                <Flame className="w-5 h-5 text-white" />
+            <div className="mb-4 flex items-center gap-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#8b1a4a] to-[#6b1a5c]">
+                <Flame className="h-5 w-5 text-[#ffb1c6]" />
               </div>
               <div>
-                <span className="text-lg font-bold text-white">DESIREMAP</span>
-                <span className="text-gray-500 text-xs">.de</span>
+                <span className="text-lg font-bold text-[#dae2fd]">DESIREMAP</span>
+                <span className="text-xs text-[#a48a90]">.de</span>
               </div>
             </div>
-            <p className="text-gray-500 text-sm">Deutschlands fuehrendes Erotik-Verzeichnis</p>
+            <p className="text-sm text-[#a48a90]">Deutschlands fuehrendes Erotik-Verzeichnis</p>
           </div>
           <div>
-            <h4 className="text-white font-medium mb-4">Kategorien</h4>
+            <h4 className="mb-4 text-sm font-semibold text-[#dae2fd] uppercase" style={{ letterSpacing: '0.05em' }}>Kategorien</h4>
             <ul className="space-y-2">
               {['FKK Clubs', 'Laufhaeuser', 'Bordelle', 'Studios'].map((link) => (
                 <li key={link}>
-                  <Link href={getCityPath(locale, 'berlin')} className="text-gray-500 hover:text-[#b76e79] transition-colors text-sm">
+                  <Link href={getCityPath(locale, 'berlin')} className="text-sm text-[#a48a90] transition-colors hover:text-[#ffb1c6]">
                     {link}
                   </Link>
                 </li>
@@ -37,12 +37,12 @@ export function Footer({ locale }: FooterProps) {
             </ul>
           </div>
           <div>
-            <h4 className="text-white font-medium mb-4">Staedte</h4>
+            <h4 className="mb-4 text-sm font-semibold text-[#dae2fd] uppercase" style={{ letterSpacing: '0.05em' }}>Staedte</h4>
             <ul className="space-y-2">
               {citiesData.slice(0, 4).map((city) => (
                 <li key={city.slug}>
-                  <Link href={getCityPath(locale, city.slug)} className="text-gray-500 hover:text-[#b76e79] transition-colors text-sm flex items-center gap-1">
-                    <MapPin className="w-3 h-3" />
+                  <Link href={getCityPath(locale, city.slug)} className="flex items-center gap-1 text-sm text-[#a48a90] transition-colors hover:text-[#ffb1c6]">
+                    <MapPin className="h-3 w-3 text-[#D4AF37]" />
                     {city.name}
                   </Link>
                 </li>
@@ -50,11 +50,11 @@ export function Footer({ locale }: FooterProps) {
             </ul>
           </div>
           <div>
-            <h4 className="text-white font-medium mb-4">Rechtliches</h4>
+            <h4 className="mb-4 text-sm font-semibold text-[#dae2fd] uppercase" style={{ letterSpacing: '0.05em' }}>Rechtliches</h4>
             <ul className="space-y-2">
               {['Impressum', 'Datenschutz', 'AGB', 'Kontakt'].map((link) => (
                 <li key={link}>
-                  <Link href={`/${locale}`} className="text-gray-500 hover:text-[#b76e79] transition-colors text-sm">
+                  <Link href={`/${locale}`} className="text-sm text-[#a48a90] transition-colors hover:text-[#ffb1c6]">
                     {link}
                   </Link>
                 </li>
@@ -62,19 +62,19 @@ export function Footer({ locale }: FooterProps) {
             </ul>
           </div>
         </div>
-        <div className="border-t border-white/5 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-gray-600 text-sm">© 2024 DesireMap.de - 18+ only</p>
+        <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-[#564146] pt-8 sm:flex-row">
+          <p className="text-sm text-[#a48a90]">© 2024 DesireMap.de - 18+ only</p>
           <div className="flex items-center gap-4">
             <a
               href="https://www.spindorai.com/en"
               target="_blank"
               rel="dofollow"
-              className="text-gray-500 hover:text-[#b76e79] transition-colors text-sm"
+              className="text-sm text-[#a48a90] transition-colors hover:text-[#ffb1c6]"
             >
               AI SEO Tool
             </a> AI Powered Seo Analysis Tool
-            <div className="flex items-center gap-2 text-gray-600 text-sm">
-              <Shield className="w-4 h-4 text-[#b76e79]" />
+            <div className="flex items-center gap-2 text-sm text-[#a48a90]">
+              <Shield className="h-4 w-4 text-[#D4AF37]" />
               SSL-gesichert
             </div>
           </div>

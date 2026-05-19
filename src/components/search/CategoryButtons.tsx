@@ -22,7 +22,7 @@ export function CategoryButtons({
 }: CategoryButtonsProps) {
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <span className="text-gray-400 text-sm">{translations.filters}:</span>
+      <span className="text-sm text-gray-400">{translations.filters}:</span>
 
       <Button
         onClick={() => onCategoryChange(null)}
@@ -46,8 +46,8 @@ export function CategoryButtons({
       ))}
 
       {hasActiveFilters && (
-        <Button onClick={onClearFilters} size="sm" variant="ghost" className="text-gray-400 hover:text-white rounded-full">
-          <X className="w-4 h-4 mr-1" />
+        <Button onClick={onClearFilters} size="sm" variant="ghost" className="rounded-full text-gray-400 hover:text-white">
+          <X className="mr-1 h-4 w-4" />
           {translations.clearFilters}
         </Button>
       )}

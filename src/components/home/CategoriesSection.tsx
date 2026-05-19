@@ -3,16 +3,17 @@
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { ChevronRight, Flame, Building2, Crown, Gem, Shield } from 'lucide-react'
+import type { ReactNode } from 'react'
 import type { Translations } from '@/types'
 import { getSearchPath } from '@/lib/navigation'
 import { usePublicServiceTypes } from '@/hooks/useQueries'
 
-const CATEGORY_ICONS: Record<string, React.ReactNode> = {
-  fkk: <Flame className="w-5 h-5" />,
-  laufhaus: <Building2 className="w-5 h-5" />,
-  bordell: <Crown className="w-5 h-5" />,
-  studio: <Gem className="w-5 h-5" />,
-  privat: <Shield className="w-5 h-5" />,
+const CATEGORY_ICONS: Record<string, ReactNode> = {
+  fkk: <Flame className="h-5 w-5" />,
+  laufhaus: <Building2 className="h-5 w-5" />,
+  bordell: <Crown className="h-5 w-5" />,
+  studio: <Gem className="h-5 w-5" />,
+  privat: <Shield className="h-5 w-5" />,
 }
 
 type CategoriesProps = { translations: Translations['categories']; locale: string }
@@ -21,52 +22,63 @@ export function CategoriesSection({ translations, locale }: CategoriesProps) {
   const { data: serviceTypes = [] } = usePublicServiceTypes()
 
   return (
-    <section className="relative py-12 sm:py-16 md:py-24 overflow-hidden">
+    <section className="relative overflow-hidden border-t border-white/6 bg-[#060e20] py-16 sm:py-20 lg:py-24">
       <div className="absolute inset-0">
-        <Image src="/categories-bg.jpg" alt="Kategorien von Adult-Entertainment-Etablissements: FKK Clubs, Laufhäuser, Studios und Privat-Adressen in Deutschland" fill className="w-full h-full object-cover opacity-40" />
-        <div className="absolute inset-0 bg-linear-to-b from-black via-black/5 to-black" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20" />
+        <Image
+          src="/categories-bg.jpg"
+          alt="Kategorien von Adult-Entertainment-Etablissements: FKK Clubs, Laufhäuser, Studios und Privat-Adressen in Deutschland"
+          fill
+          sizes="100vw"
+          className="object-cover opacity-18"
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,177,198,0.16),transparent_26%),linear-gradient(180deg,rgba(6,14,32,0.84)_0%,rgba(6,14,32,0.96)_100%)]" />
       </div>
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
+
+      <div className="relative z-10 mx-auto max-w-[1280px] px-5 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-8 sm:mb-12 md:mb-16"
+          className="mb-10 grid gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-end"
         >
-          <span className="inline-block text-[#b76e79] text-xs sm:text-sm font-medium tracking-widest uppercase mb-3 sm:mb-4">
-            {translations.title}
-          </span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4">
-            {translations.title}
-          </h2>
-          <p className="text-gray-400 text-sm sm:text-base md:text-lg max-w-xl mx-auto">
-            {translations.subtitle}
-          </p>
+          <div className="space-y-4">
+            <span className="inline-flex rounded-full border border-[#a48a90]/35 bg-[#8b1a4a]/14 px-4 py-1 text-[11px] font-bold tracking-[0.22em] text-[#ffd9e1] uppercase">
+              {translations.title}
+            </span>
+            <h2 className="max-w-xl text-3xl font-semibold tracking-[-0.03em] text-[#dae2fd] sm:text-4xl lg:text-5xl">
+              {translations.title}
+            </h2>
+          </div>
+          <div className="rounded-[1.75rem] border border-[#334155]/55 bg-[#131b2e]/74 p-6 shadow-[0_24px_60px_rgba(6,14,32,0.28)] backdrop-blur-xl sm:p-7">
+            <p className="max-w-2xl text-base leading-8 text-[#dcbfc5] sm:text-lg">
+              {translations.subtitle}
+            </p>
+          </div>
         </motion.div>
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
           {serviceTypes.map((category, index) => (
             <motion.a
               key={category.id}
               href={getSearchPath(locale, { category: category.slug })}
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 32 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
-              whileHover={{ y: -8 }}
-              className="group relative"
+              transition={{ delay: index * 0.06, duration: 0.45 }}
+              className="group"
             >
-              <div className="relative p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl bg-linear-to-b from-white/10 to-white/5 border border-white/10 hover:border-[#8b1a4a]/50 backdrop-blur-sm transition-all duration-500 overflow-hidden">
-                <div className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 mx-auto mb-3 sm:mb-4 md:mb-6 rounded-xl sm:rounded-2xl bg-linear-to-br from-[#8b1a4a]/30 to-[#6b3fa0]/30 flex items-center justify-center">
-                  <span className="relative text-[#b76e79] group-hover:text-white transition-colors duration-300">
-                    {CATEGORY_ICONS[category.slug] ?? <Gem className="w-5 h-5" />}
-                  </span>
+              <div className="flex h-full flex-col justify-between rounded-[1.6rem] border border-[#334155]/55 bg-[#171f33]/80 p-6 shadow-[0_24px_60px_rgba(6,14,32,0.24)] transition-all duration-300 hover:-translate-y-1 hover:border-[#8b1a4a]/55 hover:bg-[#1b2438] hover:shadow-[0_28px_70px_rgba(139,26,74,0.18)] sm:p-7">
+                <div>
+                  <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-[1.1rem] border border-[#564146] bg-[#0f172a] text-[#ffb1c6] transition-colors duration-300 group-hover:border-[#8b1a4a] group-hover:text-white">
+                    {CATEGORY_ICONS[category.slug] ?? <Gem className="h-5 w-5" />}
+                  </div>
+                  <h3 className="text-xl font-semibold tracking-[-0.02em] text-[#dae2fd] transition-colors duration-300 group-hover:text-white">
+                    {category.name}
+                  </h3>
                 </div>
-                <h3 className="relative text-white font-semibold text-sm sm:text-base md:text-lg mb-1 sm:mb-2 group-hover:text-[#b76e79] transition-colors duration-300">
-                  {category.name}
-                </h3>
-                <div className="absolute bottom-3 sm:bottom-4 md:bottom-6 right-3 sm:right-4 md:right-6 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0">
-                  <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-[#b76e79]" />
+                <div className="mt-8 flex items-center justify-between text-sm text-[#dcbfc5]">
+                  <span className="tracking-[0.18em] uppercase">Entdecken</span>
+                  <ChevronRight className="h-4 w-4 text-[#e9c349] transition-transform duration-300 group-hover:translate-x-1" />
                 </div>
               </div>
             </motion.a>

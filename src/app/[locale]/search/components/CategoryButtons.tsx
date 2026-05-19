@@ -24,13 +24,22 @@ export function CategoryButtons({
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <span className="text-gray-400 text-sm">{translations.filters}:</span>
+      <span
+        className="text-sm font-medium text-[#a48a90]"
+        style={{ letterSpacing: '0.05em' }}
+      >
+        {translations.filters}:
+      </span>
 
       <Button
         onClick={() => onCategoryChange(null)}
         size="sm"
-        variant={!selectedCategory ? 'default' : 'outline'}
-        className={cn('rounded-full px-5', !selectedCategory ? 'bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] text-white border-0' : 'border-white/10 text-gray-300 hover:bg-white/5')}
+        className={cn(
+          'rounded-full px-5 py-2 transition-all',
+          !selectedCategory
+            ? 'bg-[#8b1a4a] text-[#dae2fd] border-0 hover:bg-[#a7315f]'
+            : 'border border-[#564146] text-[#dae2fd] bg-transparent hover:bg-[#8b1a4a]/10'
+        )}
       >
         Alle
       </Button>
@@ -40,16 +49,24 @@ export function CategoryButtons({
           key={cat.slug}
           onClick={() => onCategoryChange(cat.slug)}
           size="sm"
-          variant={selectedCategory === cat.slug ? 'default' : 'outline'}
-          className={cn('rounded-full px-5', selectedCategory === cat.slug ? 'bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] text-white border-0' : 'border-white/10 text-gray-300 hover:bg-white/5')}
+          className={cn(
+            'rounded-full px-5 py-2 transition-all',
+            selectedCategory === cat.slug
+              ? 'bg-[#8b1a4a] text-[#dae2fd] border-0 hover:bg-[#a7315f]'
+              : 'border border-[#564146] text-[#dae2fd] bg-transparent hover:bg-[#8b1a4a]/10'
+          )}
         >
           {cat.name}
         </Button>
       ))}
 
       {hasActiveFilters && (
-        <Button onClick={onClearFilters} size="sm" variant="ghost" className="text-gray-400 hover:text-white rounded-full">
-          <X className="w-4 h-4 mr-1" />
+        <Button
+          onClick={onClearFilters}
+          size="sm"
+          className="rounded-full bg-transparent text-[#a48a90] transition-colors hover:text-[#dae2fd]"
+        >
+          <X className="mr-1 h-4 w-4" />
           {translations.clearFilters}
         </Button>
       )}

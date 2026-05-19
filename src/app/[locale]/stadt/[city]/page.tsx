@@ -119,10 +119,11 @@ export default async function CityPage({
   const image = getPublicCityImage(cityData)
 
   return (
-    <main className="min-h-screen bg-black flex flex-col">
+    <main className="flex min-h-screen flex-col bg-[#0b1326]">
       <Header
         locale={locale}
         translations={{
+          home: t('home'),
           discover: t('discover'),
           cities: t('cities'),
           premium: t('premium'),
@@ -133,7 +134,7 @@ export default async function CityPage({
         }}
       />
 
-      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
+      <section className="relative flex min-h-[70vh] items-center justify-center overflow-hidden bg-gradient-to-b from-[#0F172A] to-[#0b1326]">
         <div className="absolute inset-0 z-0">
           {image ? (
             <Image
@@ -144,89 +145,89 @@ export default async function CityPage({
               className="object-cover"
             />
           ) : (
-            <div className="absolute inset-0 bg-linear-to-br from-[#8b1a4a]/35 via-[#140911] to-black" />
+            <div className="absolute inset-0 bg-linear-to-br from-[#8b1a4a]/25 via-[#0F172A] to-[#0b1326]" />
           )}
-          <div className="absolute inset-0 bg-black/50" />
-          <div className="absolute inset-0 bg-linear-to-t from-black via-black/30 to-transparent" />
-          <div className="absolute inset-0 bg-linear-to-r from-black/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-[#0b1326]/60" />
+          <div className="absolute inset-0 bg-linear-to-t from-[#0b1326] via-[#0b1326]/50 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-r from-[#0b1326]/70 via-transparent to-transparent" />
         </div>
 
-        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto pt-24 pb-16">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 backdrop-blur-sm px-4 py-2 mb-6">
-            <MapPin className="w-4 h-4 text-[#b76e79]" />
-            <span className="text-sm text-gray-300">{subtitle || cityData.name}</span>
+        <div className="relative z-10 mx-auto max-w-4xl px-6 pt-24 pb-16 text-center">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 backdrop-blur-[20px]">
+            <MapPin className="h-4 w-4 text-[#D4AF37]" />
+            <span className="text-sm text-[#dae2fd]">{subtitle || cityData.name}</span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold text-white tracking-wider mb-6">
+          <h1 className="mb-6 text-4xl font-bold tracking-wider text-[#dae2fd] sm:text-6xl md:text-7xl">
             {cityData.name}
           </h1>
 
           {description && (
-            <p className="text-base sm:text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed mb-8">
+            <p className="mx-auto mb-8 max-w-2xl text-base leading-relaxed text-[#a48a90] sm:text-lg">
               {description}
             </p>
           )}
 
           <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
-            <div className="flex items-center gap-2 bg-white/5 backdrop-blur-sm rounded-xl px-4 py-3 border border-white/10">
-              <Building2 className="w-5 h-5 text-[#b76e79]" />
-              <span className="text-white font-semibold">{getPublicCityVenueCount(cityData)}</span>
-              <span className="text-gray-400 text-sm">Betriebe</span>
+            <div className="flex items-center gap-2 rounded-xl border border-[#564146] bg-white/[0.03] px-4 py-3 backdrop-blur-[20px]">
+              <Building2 className="h-5 w-5 text-[#D4AF37]" />
+              <span className="font-semibold text-[#dae2fd]">{getPublicCityVenueCount(cityData)}</span>
+              <span className="text-sm text-[#a48a90]">Betriebe</span>
             </div>
-            <div className="flex items-center gap-2 bg-white/5 backdrop-blur-sm rounded-xl px-4 py-3 border border-white/10">
-              <Star className="w-5 h-5 text-[#b76e79]" />
-              <span className="text-white font-semibold">4.6</span>
-              <span className="text-gray-400 text-sm">Ø Rating</span>
+            <div className="flex items-center gap-2 rounded-xl border border-[#564146] bg-white/[0.03] px-4 py-3 backdrop-blur-[20px]">
+              <Star className="h-5 w-5 text-[#D4AF37]" />
+              <span className="font-semibold text-[#dae2fd]">4.6</span>
+              <span className="text-sm text-[#a48a90]">Ø Rating</span>
             </div>
-            <div className="flex items-center gap-2 bg-white/5 backdrop-blur-sm rounded-xl px-4 py-3 border border-white/10">
-              <Shield className="w-5 h-5 text-[#b76e79]" />
-              <span className="text-white font-semibold">100%</span>
-              <span className="text-gray-400 text-sm">Verifiziert</span>
+            <div className="flex items-center gap-2 rounded-xl border border-[#564146] bg-white/[0.03] px-4 py-3 backdrop-blur-[20px]">
+              <Shield className="h-5 w-5 text-[#D4AF37]" />
+              <span className="font-semibold text-[#dae2fd]">100%</span>
+              <span className="text-sm text-[#a48a90]">Verifiziert</span>
             </div>
           </div>
 
           <div className="mt-8">
             <Link
               href={getSearchPath(locale, { city: cityData.slug })}
-              className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] hover:from-[#a8255c] hover:to-[#7d4fb5] px-8 py-4 text-sm font-semibold text-white transition-all"
+              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#8b1a4a] to-[#6b1a5c] px-8 py-4 text-sm font-semibold text-[#dae2fd] transition-all hover:from-[#a8255c] hover:to-[#7d2a6e]"
             >
               <span>Alle Betriebe in {cityData.name} durchsuchen</span>
-              <ArrowLeft className="w-4 h-4 rotate-180" />
+              <ArrowLeft className="h-4 w-4 rotate-180" />
             </Link>
           </div>
         </div>
       </section>
 
-      <section className="relative bg-[#050507] py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <section className="relative bg-[#0F172A] py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
           {cityBordells.length > 0 ? (
             <>
-              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-8">
+              <h2 className="mb-8 text-2xl font-bold text-[#dae2fd] sm:text-3xl">
                 Top Adressen in {cityData.name}
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
                 {cityBordells.map((est) => (
                   <Link
                     key={est.key}
                     href={getSearchPath(locale, { q: est.name, city: est.city })}
-                    className="group rounded-2xl border border-white/10 bg-white/3 p-5 transition-all hover:-translate-y-1 hover:border-[#b76e79]/40 hover:bg-white/5"
+                    className="group rounded-2xl border border-[#564146] bg-[#131b2e] p-5 transition-all hover:-translate-y-1 hover:border-[#B76E79]/60 hover:bg-[#1a2333]"
                   >
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="inline-flex rounded-full bg-[#8b1a4a]/20 px-3 py-1 text-xs font-medium text-[#f0bec6]">
+                    <div className="mb-3 flex items-center justify-between">
+                      <span className="inline-flex rounded-full bg-[#8b1a4a]/30 px-3 py-1 text-xs font-medium text-[#ffb1c6]">
                         {est.typeLabel}
                       </span>
                       {est.rating != null && (
                         <div className="flex items-center gap-1">
-                          <Star className="w-4 h-4 text-yellow-400" />
-                          <span className="text-white text-sm font-semibold">{est.rating}</span>
+                          <Star className="h-4 w-4 text-[#D4AF37]" />
+                          <span className="text-sm font-semibold text-[#dae2fd]">{est.rating}</span>
                         </div>
                       )}
                     </div>
-                    <h3 className="text-white font-semibold text-lg group-hover:text-[#b76e79] transition-colors">
+                    <h3 className="text-lg font-semibold text-[#dae2fd] transition-colors group-hover:text-[#ffb1c6]">
                       {est.name}
                     </h3>
-                    <div className="flex items-center justify-between mt-4">
-                      <span className="text-gray-500 text-sm">
+                    <div className="mt-4 flex items-center justify-between">
+                      <span className="text-sm text-[#a48a90]">
                         {est.priceMin != null ? `ab €${est.priceMin}` : 'Auf Anfrage'}
                       </span>
                     </div>
@@ -235,16 +236,16 @@ export default async function CityPage({
               </div>
             </>
           ) : (
-            <div className="text-center py-16">
-              <h2 className="text-2xl font-bold text-white mb-4">
+            <div className="py-16 text-center">
+              <h2 className="mb-4 text-2xl font-bold text-[#dae2fd]">
                 Bald verfügbar in {cityData.name}
               </h2>
-              <p className="text-gray-400 mb-8">
+              <p className="mb-8 text-[#a48a90]">
                 Wir erweitern kontinuierlich unser Angebot.
               </p>
               <Link
                 href={getSearchPath(locale, { city: cityData.slug })}
-                className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-medium text-white hover:bg-white/10 transition-all"
+                className="inline-flex items-center gap-2 rounded-full border border-[#564146] bg-transparent px-6 py-3 text-sm font-medium text-[#dae2fd] transition-all hover:border-[#B76E79] hover:bg-white/[0.03]"
               >
                 Stattdessen suchen
               </Link>
@@ -253,12 +254,12 @@ export default async function CityPage({
         </div>
       </section>
 
-      <section className="relative bg-[#050507] py-16 border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-8">
+      <section className="relative border-t border-[#564146] bg-[#0F172A] py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <h2 className="mb-8 text-2xl font-bold text-[#dae2fd] sm:text-3xl">
             Weitere Städte
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
             {allCities
               .filter((item) => item.slug !== cityData.slug)
               .map((item) => {
@@ -266,17 +267,17 @@ export default async function CityPage({
                   <Link
                     key={item.slug}
                     href={getCityPath(locale, item.slug)}
-                    className="group rounded-2xl border border-white/10 bg-white/3 p-5 transition-all hover:-translate-y-1 hover:border-[#b76e79]/40 hover:bg-white/5"
+                    className="group rounded-2xl border border-[#564146] bg-[#131b2e] p-5 transition-all hover:-translate-y-1 hover:border-[#B76E79]/60 hover:bg-[#1a2333]"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-linear-to-br from-[#8b1a4a]/30 to-[#6b3fa0]/30 flex items-center justify-center">
-                        <MapPin className="w-4 h-4 text-[#b76e79]" />
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#8b1a4a]/30 to-[#6b1a5c]/30">
+                        <MapPin className="h-4 w-4 text-[#D4AF37]" />
                       </div>
                       <div>
-                        <div className="text-white font-semibold group-hover:text-[#b76e79] transition-colors">
+                        <div className="font-semibold text-[#dae2fd] transition-colors group-hover:text-[#ffb1c6]">
                           {item.name}
                         </div>
-                        <div className="text-gray-400 text-sm">{getPublicCityVenueCount(item)} Betriebe</div>
+                        <div className="text-sm text-[#a48a90]">{getPublicCityVenueCount(item)} Betriebe</div>
                       </div>
                     </div>
                   </Link>

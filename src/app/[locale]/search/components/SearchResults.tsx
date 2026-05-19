@@ -32,11 +32,11 @@ export function SearchResults({
 }: SearchResultsProps) {
   if (totalCount === 0) {
     return (
-      <div className="text-center py-20">
-        <Search className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-        <p className="text-gray-400 text-xl mb-2">{translations.noResults}</p>
-        <p className="text-gray-500">{translations.noResultsHint}</p>
-        <Button onClick={onClearFiltersAction} variant="outline" className="mt-6 border-white/10 text-white hover:bg-white/5">
+      <div className="py-24 text-center">
+        <Search className="mx-auto mb-6 h-16 w-16 text-[#a48a90]" />
+        <p className="mb-3 text-xl font-semibold text-[#dae2fd]">{translations.noResults}</p>
+        <p className="mb-8 text-[#a48a90]">{translations.noResultsHint}</p>
+        <Button onClick={onClearFiltersAction} variant="outline" className="border border-[#8b1a4a] bg-transparent text-[#dae2fd] transition-colors hover:bg-[#8b1a4a]/10">
           {translations.clearFilters}
         </Button>
       </div>
@@ -44,17 +44,17 @@ export function SearchResults({
   }
 
   return (
-    <div>
-      <p className="text-gray-400 mb-6">{totalCount} {translations.found}</p>
+    <div className="space-y-12">
+      <p className="text-[#a48a90]" style={{fontSize: '16px', lineHeight: '24px'}}>{totalCount} {translations.found}</p>
 
       {sponsoredResults.length > 0 && (
-        <div className="mb-12">
-          <div className="flex items-center gap-2 mb-6">
-            <Badge className="bg-linear-to-r from-amber-500 to-orange-500 text-white border-0">
+        <div>
+          <div className="mb-8 flex items-center gap-3">
+            <Badge className="border-0 bg-[#d4af37] px-3 py-1 font-semibold text-[#0b1326]">
               {translations.sponsored}
             </Badge>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {sponsoredResults.map((item, index) => (
               <ListingCard key={item.id} bordell={item} index={index} onDetailClickAction={onBordellClickAction} />
             ))}
@@ -65,13 +65,13 @@ export function SearchResults({
       {regularResults.length > 0 && (
         <div>
           {sponsoredResults.length > 0 && regularResults.some(b => b.premium) && (
-            <div className="flex items-center gap-2 mb-6">
-              <Badge className="bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] text-white border-0">
+            <div className="mb-8 flex items-center gap-3">
+              <Badge className="border-0 bg-[#8b1a4a] px-3 py-1 font-semibold text-[#dae2fd]">
                 {translations.premium}
               </Badge>
             </div>
           )}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {regularResults.map((item, index) => (
               <ListingCard key={item.id} bordell={item} index={index} onDetailClickAction={onBordellClickAction} />
             ))}

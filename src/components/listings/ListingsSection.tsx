@@ -57,6 +57,26 @@ function toListingCardBordell(e: PublicEstablishment): Bordell {
   return bordell
 }
 
+function ListingsHeader({ resultCount: _resultCount }: { resultCount: number | undefined }) {
+  return (
+    <div className="mb-10 grid gap-6 lg:grid-cols-[0.78fr_1.22fr] lg:items-end">
+      <div className="space-y-4">
+        <span className="inline-flex rounded-full border border-[#564146] bg-[#8b1a4a]/12 px-4 py-1 text-[11px] font-bold tracking-[0.22em] text-[#ffd9e1] uppercase">
+          Empfehlungen
+        </span>
+        <h2 className="text-3xl font-semibold tracking-[-0.03em] text-[#dae2fd] sm:text-4xl lg:text-5xl">
+          Ausgewählte Betriebe
+        </h2>
+      </div>
+      {/* <div className="rounded-[1.75rem] border border-[#334155]/55 bg-[#131b2e]/74 p-6 shadow-[0_24px_60px_rgba(6,14,32,0.28)] backdrop-blur-xl sm:p-7">
+        <p className="text-base leading-8 text-[#dcbfc5] sm:text-lg">
+          {resultCount ? `${resultCount} verifizierte Betriebe` : '...' }
+        </p>
+      </div> */}
+    </div>
+  )
+}
+
 export function ListingsSection() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const params = useParams()
@@ -65,45 +85,88 @@ export function ListingsSection() {
   const establishmentParams = selectedCategory ? { limit: 12, type: selectedCategory } : { limit: 12 }
   const { data: result, isLoading } = usePublicEstablishments(establishmentParams)
   const { data: serviceTypes = [] } = usePublicServiceTypes()
-
   const bordells = useMemo(() => (result?.items ?? []).map(toListingCardBordell), [result])
 
-
   return (
-    <section className="relative py-24 overflow-hidden">
+    <section className="relative overflow-hidden border-t border-white/6 bg-[#060e20] py-16 sm:py-20 lg:py-24">
       <div className="absolute inset-0">
-        <Image src="/listing-bg.jpg" alt="Hintergrundbild der Veranstaltungsübersicht" fill sizes="100vw" className="w-full h-full object-cover opacity-40" />
-        <div className="absolute inset-0 bg-linear-to-b from-black via-[#0a0810]/10 to-black/5" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/10" />
+        <Image src="/listing-bg.jpg" alt="Hintergrundbild der Veranstaltungsübersicht" fill sizes="100vw" className="object-cover opacity-18" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_left_bottom,rgba(255,177,198,0.1),transparent_22%),radial-gradient(circle_at_right_top,rgba(212,175,55,0.08),transparent_18%),linear-gradient(180deg,rgba(6,14,32,0.84)_0%,rgba(6,14,32,0.96)_100%)]" />
       </div>
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#8b1a4a]/10 rounded-full blur-[180px]" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#6b3fa0]/10 rounded-full blur-[150px]" />
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
-        <div className="text-center mb-12">
-          <span className="inline-block text-[#b76e79] text-sm font-medium tracking-widest uppercase mb-3">Empfehlungen</span>
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">Ausgewaehlte Betriebe</h2>
-          <p className="text-gray-400 text-lg">{isLoading ? '...' : `${result?.total ?? bordells.length} verifizierte Betriebe`}</p>
+
+      <div className="relative z-10 mx-auto max-w-[1280px] px-5 sm:px-6 lg:px-8">
+        <ListingsHeader resultCount={result?.total ?? bordells.length} />
+
+        <div className="mb-10 flex flex-wrap gap-3 rounded-[1.6rem] border border-[#334155]/55 bg-[#131b2e]/72 p-4 shadow-[0_20px_50px_rgba(6,14,32,0.22)] backdrop-blur-xl">
+          <Button
+            onClick={() => setSelectedCategory(null)}
+            size="sm"
+            variant={selectedCategory === null ? 'default' : 'outline'}
+            className={cn(
+              'rounded-full px-5',
+              selectedCategory === null
+                ? 'border-0 bg-[#8b1a4a] text-white shadow-[0_14px_28px_rgba(139,26,74,0.28)]'
+                : 'border-[#334155] bg-transparent text-[#dcbfc5] hover:bg-[#171f33] hover:text-white'
+            )}
+          >
+            Alle
+          </Button>
+          {serviceTypes.map((cat) => (
+            <Button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.slug)}
+              size="sm"
+              variant={selectedCategory === cat.slug ? 'default' : 'outline'}
+              className={cn(
+                'rounded-full px-5',
+                selectedCategory === cat.slug
+                  ? 'border-0 bg-[#8b1a4a] text-white shadow-[0_14px_28px_rgba(139,26,74,0.28)]'
+                  : 'border-[#334155] bg-transparent text-[#dcbfc5] hover:bg-[#171f33] hover:text-white'
+              )}
+            >
+              {cat.name}
+            </Button>
+          ))}
         </div>
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
-          <Button onClick={() => setSelectedCategory(null)} size="sm" variant={selectedCategory === null ? 'default' : 'outline'} className={cn('rounded-full px-5', selectedCategory === null ? 'bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] text-white border-0' : 'border-white/20 text-gray-300 hover:bg-white/10 hover:text-white backdrop-blur-sm')}>Alle</Button>
-          {serviceTypes.map((cat) => <Button key={cat.id} onClick={() => setSelectedCategory(cat.slug)} size="sm" variant={selectedCategory === cat.slug ? 'default' : 'outline'} className={cn('rounded-full px-5', selectedCategory === cat.slug ? 'bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] text-white border-0' : 'border-white/20 text-gray-300 hover:bg-white/10 hover:text-white backdrop-blur-sm')}>{cat.name}</Button>)}
-        </div>
+
         {isLoading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {LOADING_SKELETON_KEYS.map((key) => (
-              <div key={key} className="rounded-2xl bg-white/5 border border-white/10 h-72 animate-pulse" />
+              <div key={key} className="h-72 animate-pulse rounded-[1.6rem] border border-[#334155]/55 bg-[#171f33]/72" />
             ))}
           </div>
         )}
+
         {!isLoading && bordells.length === 0 && (
-          <div className="text-center text-gray-500 py-16">Noch keine Betriebe vorhanden.</div>
-        )}
-        {!isLoading && bordells.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {bordells.map((bordell, index) => <ListingCard key={bordell.id} bordell={bordell} index={index} onDetailClickAction={(selectedBordell) => router.push(getVenuePath(locale, selectedBordell.id))} />)}
+          <div className="rounded-[1.6rem] border border-[#334155]/55 bg-[#131b2e]/72 px-6 py-16 text-center text-[#dcbfc5]">
+            Noch keine Betriebe vorhanden.
           </div>
         )}
-        <div className="flex justify-center mt-16"><Button onClick={() => router.push(`/${locale}/search`)} size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 px-10 rounded-full group backdrop-blur-sm">Mehr anzeigen<ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" /></Button></div>
+
+        {!isLoading && bordells.length > 0 && (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:gap-7">
+            {bordells.map((bordell, index) => (
+              <ListingCard
+                key={bordell.id}
+                bordell={bordell}
+                index={index}
+                onDetailClickAction={(selectedBordell) => router.push(getVenuePath(locale, selectedBordell.id))}
+              />
+            ))}
+          </div>
+        )}
+
+        <div className="mt-14 flex justify-center">
+          <Button
+            onClick={() => router.push(`/${locale}/search`)}
+            size="lg"
+            variant="outline"
+            className="group rounded-full border-[#334155] bg-[#131b2e]/72 px-10 text-white backdrop-blur-xl hover:bg-[#171f33]"
+          >
+            Mehr anzeigen
+            <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Button>
+        </div>
       </div>
     </section>
   )

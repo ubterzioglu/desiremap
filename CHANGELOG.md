@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.6] - 2026-05-19
+
+### Added
+- `eslint-plugin-tailwindcss` re-added with Tailwind v4 fix: `config` set to absolute path of `src/app/globals.css` (CSS-based config for v4)
+- Tailwind rules promoted to `error` level: `classnames-order`, `enforces-shorthand`, `no-custom-classname`, `no-contradicting-classname`, etc.
+- `prettier-plugin-tailwindcss@0.8.0` — auto-sorts classes on `bun run format`
+- `.prettierrc` updated with plugin + `tailwindConfig` path
+- `eslint-plugin-tailwindcss` `classnames-order` auto-fixed across 500 class strings via `--fix`
+- Whitelist for `speakable-*` (JSON-LD SEO) and `prose-*:` variant override for blog pages (awaiting `@tailwindcss/typography` install)
+
+### Fixed
+- Unused `createRequire` import removed from `eslint.config.mjs`
+
 ## [0.2.5] - 2026-05-19
 
 ### Fixed

@@ -1,12 +1,9 @@
-export type View = 'home' | 'city' | 'detail' | 'login' | 'dashboard'
+export type View = 'home' | 'city' | 'detail'
 
 export interface SearchParams {
   query: string
   city?: string
 }
-export type DashboardTab = 'dashboard' | 'visits' | 'addresses' | 'badges'
-export type AdminTab = 'dashboard' | 'venues' | 'events' | 'operators' | 'settings' | 'discovery' | 'businesses' | 'cities'
-export type OperatorTab = 'dashboard' | 'venues' | 'events'
 
 export type BordellType = 'laufhaus' | 'bordell' | 'fkk' | 'studio' | 'privat'
 export type BordellStatus = 'active' | 'inactive' | 'pending' | 'suspended'
@@ -57,14 +54,28 @@ export interface Category { id: string; name: string; icon: React.ReactNode; cou
 export interface City { name: string; count: number }
 
 export interface Translations {
-  nav: { discover: string; cities: string; premium: string; advertise: string; login: string; register: string; myAccount: string }
-  hero: { title: string; subtitle: string; description: string; searchPlaceholder: string; selectCity: string; search: string; scrollToExplore: string }
+  nav: { home: string; discover: string; cities: string; premium: string; advertise: string; login: string; register: string; myAccount: string }
+  hero: {
+    eyebrow: string
+    titleLine1Start: string
+    titleLine1Accent: string
+    titleLine1End: string
+    titleLine2Start: string
+    titleLine2Accent: string
+    description: string
+    selectCity: string
+    selectCategory: string
+    search: string
+    slideLabel: string
+    sliderControls: string
+    pauseSlider: string
+    playSlider: string
+  }
   stats: { establishments: string; ladies: string; rating: string; verified: string }
   categories: { title: string; subtitle: string }
   cities: { title: string; subtitle: string }
 }
 
-export * from './admin'
 
 export interface PublicEstablishment {
   slug: string
@@ -119,4 +130,13 @@ export interface PublicServiceType {
   id: number
   slug: string
   name: string
+}
+
+export interface PublicHeroSlide {
+  imageUrl: string
+  altText?: string | null
+  sortOrder?: number | null
+  isActive?: boolean
+  updatedAt?: string | null
+  updatedBy?: string | null
 }

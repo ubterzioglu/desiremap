@@ -1,7 +1,10 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 import { blogPosts } from '@/data/blog-posts'
 import { Calendar, Clock, User } from 'lucide-react'
+import { Header } from '@/components/layout/Header'
+import { Footer } from '@/components/layout/Footer'
 
 export async function generateMetadata({
   params
@@ -39,38 +42,53 @@ export default async function BlogPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'nav' })
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0a0a12] to-[#1a1a24]">
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#0F172A] to-[#0b1326]">
+      <Header
+        locale={locale}
+        translations={{
+          home: t('home'),
+          discover: t('discover'),
+          cities: t('cities'),
+          premium: t('premium'),
+          advertise: t('advertise'),
+          login: t('login'),
+          register: t('register'),
+          myAccount: t('myAccount'),
+        }}
+      />
+      <main className="flex-1">
       {/* Hero Section */}
-      <section className="relative py-20 px-4">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#8b1a4a]/10 to-transparent" />
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+      <section className="relative px-4 py-20">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#8b1a4a]/15 to-transparent" />
+        <div className="relative z-10 mx-auto max-w-4xl text-center">
+          <h1 className="mb-6 text-4xl font-bold text-[#dae2fd] md:text-5xl">
             DesireMap Blog
           </h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+          <p className="mx-auto max-w-2xl text-xl text-[#a48a90]">
             Guides, Tipps und Einblicke zu FKK Clubs, Laufhäusern und Bordellen in Deutschland
           </p>
         </div>
       </section>
 
       {/* Blog Posts Grid */}
-      <section className="py-12 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <section className="px-4 py-12">
+        <div className="mx-auto max-w-6xl">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {blogPosts.map((post) => (
               <article
                 key={post.id}
-                className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:border-[#b76e79]/50 transition-all duration-300 group"
+                className="group overflow-hidden rounded-2xl border border-[#564146] bg-[#131b2e] backdrop-blur-sm transition-all duration-300 hover:border-[#B76E79]/60"
               >
                 {/* Image */}
-                <div className="relative h-48 bg-gradient-to-br from-[#8b1a4a]/20 to-[#6b3fa0]/20">
+                <div className="relative h-48 bg-gradient-to-br from-[#8b1a4a]/25 to-[#6b1a5c]/25">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <span className="text-6xl opacity-20">📝</span>
                   </div>
                   <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 bg-[#8b1a4a] text-white text-xs font-medium rounded-full">
+                    <span className="rounded-full bg-[#8b1a4a] px-3 py-1 text-xs font-medium text-[#dae2fd]">
                       {post.category}
                     </span>
                   </div>
@@ -78,24 +96,24 @@ export default async function BlogPage({
 
                 {/* Content */}
                 <div className="p-6">
-                  <h2 className="text-xl font-semibold text-white mb-3 group-hover:text-[#b76e79] transition-colors">
+                  <h2 className="mb-3 text-xl font-semibold text-[#dae2fd] transition-colors group-hover:text-[#ffb1c6]">
                     <Link href={`/${locale}/blog/${post.slug}`}>
                       {post.headline}
                     </Link>
                   </h2>
 
-                  <p className="text-gray-400 text-sm mb-4 line-clamp-3">
+                  <p className="mb-4 line-clamp-3 text-sm text-[#a48a90]">
                     {post.description}
                   </p>
 
                   {/* Meta */}
-                  <div className="flex items-center gap-4 text-xs text-gray-500">
+                  <div className="flex items-center gap-4 text-xs text-[#a48a90]">
                     <div className="flex items-center gap-1">
-                      <User className="w-4 h-4" />
+                      <User className="h-4 w-4 text-[#D4AF37]" />
                       <span>{post.author.name}</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4" />
+                      <Calendar className="h-4 w-4 text-[#D4AF37]" />
                       <span>
                         {new Date(post.datePublished).toLocaleDateString('de-DE', {
                           day: 'numeric',
@@ -105,17 +123,17 @@ export default async function BlogPage({
                       </span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
+                      <Clock className="h-4 w-4 text-[#D4AF37]" />
                       <span>{Math.ceil(post.wordCount / 200)} Min.</span>
                     </div>
                   </div>
 
                   {/* Tags */}
-                  <div className="flex flex-wrap gap-2 mt-4">
+                  <div className="mt-4 flex flex-wrap gap-2">
                     {post.tags.slice(0, 3).map((tag) => (
                       <span
                         key={tag}
-                        className="px-2 py-1 bg-white/5 text-gray-400 text-xs rounded"
+                        className="rounded bg-[#8b1a4a]/20 px-2 py-1 text-xs text-[#ffb1c6]"
                       >
                         #{tag}
                       </span>
@@ -129,22 +147,24 @@ export default async function BlogPage({
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 border-t border-white/10">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl font-bold text-white mb-4">
+      <section className="border-t border-[#564146] px-4 py-16">
+        <div className="mx-auto max-w-4xl text-center">
+          <h2 className="mb-4 text-2xl font-bold text-[#dae2fd]">
             Betriebe entdecken
           </h2>
-          <p className="text-gray-400 mb-8">
+          <p className="mb-8 text-[#a48a90]">
             Stöbern Sie durch 847+ verifizierte Premium-Betriebe in ganz Deutschland
           </p>
           <Link
             href={`/${locale}`}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#8b1a4a] to-[#6b3fa0] text-white font-medium rounded-xl hover:from-[#a8255c] hover:to-[#7d4fb5] transition-all"
+            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#8b1a4a] to-[#6b1a5c] px-6 py-3 font-medium text-[#dae2fd] transition-all hover:from-[#a8255c] hover:to-[#7d2a6e]"
           >
             Jetzt stöbern →
           </Link>
         </div>
       </section>
+      </main>
+      <Footer locale={locale} />
     </div>
   )
 }

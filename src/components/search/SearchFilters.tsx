@@ -47,30 +47,30 @@ export function SearchFilters({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col sm:flex-row gap-3 max-w-3xl">
+      <div className="flex max-w-3xl flex-col gap-3 sm:flex-row">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#b76e79]" />
+          <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-[#b76e79]" />
           <Input
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={translations.searchPlaceholder}
-            className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl pl-12 h-14 text-white placeholder:text-gray-500"
+            className="h-14 rounded-2xl border border-white/10 bg-white/5 pl-12 text-white backdrop-blur-xl placeholder:text-gray-500"
           />
           {query && (
-            <button onClick={() => onQueryChange('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white">
-              <X className="w-5 h-5" />
+            <button onClick={() => onQueryChange('')} className="absolute top-1/2 right-4 -translate-y-1/2 text-gray-400 hover:text-white">
+              <X className="h-5 w-5" />
             </button>
           )}
         </div>
 
         <div className="relative sm:w-48">
-          <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#b76e79] z-10" />
+          <MapPin className="absolute top-1/2 left-4 z-10 h-5 w-5 -translate-y-1/2 text-[#b76e79]" />
           <Select value={selectedCity || '_all'} onValueChange={handleCityChange}>
-            <SelectTrigger size="xl" className="w-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl pl-12 text-white">
+            <SelectTrigger size="xl" className="w-full rounded-2xl border border-white/10 bg-white/5 pl-12 text-white backdrop-blur-xl">
               <SelectValue placeholder={translations.selectCity} />
             </SelectTrigger>
-            <SelectContent className="bg-[#1a1a24] border-[#8b1a4a]/20">
+            <SelectContent className="border-[#8b1a4a]/20 bg-[#1a1a24]">
               <SelectItem value="_all" className="text-gray-300">{translations.allCities}</SelectItem>
               {germanCities.map((city) => (
                 <SelectItem key={city.name} value={city.name} className="text-gray-300 focus:bg-[#8b1a4a]/20 focus:text-white">

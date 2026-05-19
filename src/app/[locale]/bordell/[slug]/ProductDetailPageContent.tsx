@@ -32,6 +32,7 @@ export function ProductDetailPageContent({
   const tNav = useTranslations('nav')
   const [isReservationOpen, setIsReservationOpen] = useState(false)
   const navTranslations = useMemo(() => ({
+    home: tNav('home'),
     discover: tNav('discover'),
     cities: tNav('cities'),
     premium: tNav('premium'),
@@ -101,7 +102,7 @@ export function ProductDetailPageContent({
         style={{ backgroundImage: `url(${bordell.coverImage || '/listing-bg.jpg'})` }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
-        <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pb-24 pt-28 md:pb-28 lg:pb-36">
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pt-28 pb-24 md:pb-28 lg:pb-36">
           <Button
             type="button"
             variant="outline"
@@ -112,9 +113,9 @@ export function ProductDetailPageContent({
             Zurück
           </Button>
 
-          <div className="text-center max-w-4xl mx-auto">
+          <div className="mx-auto max-w-4xl text-center">
           {/* Breadcrumb */}
-            <nav className="text-sm text-white/70 mb-4">
+            <nav className="mb-4 text-sm text-white/70">
               <Link href={getLocalizedPath(locale, '/')} className="hover:text-white">Home</Link>
             {' / '}
               <Link href={getSearchPath(locale, { city: bordell.city })} className="hover:text-white">{bordell.city}</Link>
@@ -125,18 +126,18 @@ export function ProductDetailPageContent({
             </nav>
 
             {/* H1 - Only one H1 per page */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
+            <h1 className="mb-4 text-4xl font-bold text-white md:text-5xl lg:text-6xl">
               {bordell.name}
             </h1>
 
-            <p className="text-lg md:text-xl text-white/90 mb-2">
+            <p className="mb-2 text-lg text-white/90 md:text-xl">
               {typeLabels[bordell.type]} in {bordell.city}
             </p>
 
             <div className="mb-8 flex flex-wrap items-center justify-center gap-2 text-sm">
               {bordell.verified && (
                 <span className="flex items-center gap-1 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1.5 text-emerald-200">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                   {t('verified')}
@@ -144,7 +145,7 @@ export function ProductDetailPageContent({
               )}
               {bordell.premium && (
                 <span className="flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1.5 text-amber-100">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                   {t('premium')}
@@ -208,7 +209,7 @@ export function ProductDetailPageContent({
                   key={item.label}
                   className="rounded-2xl border border-border/60 bg-card/70 px-4 py-4"
                 >
-                  <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                  <p className="text-xs tracking-[0.18em] text-muted-foreground uppercase">
                     {item.label}
                   </p>
                   <p className="mt-2 text-base font-semibold text-foreground">
@@ -222,7 +223,7 @@ export function ProductDetailPageContent({
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 pb-16 pt-10">
+      <div className="mx-auto max-w-7xl px-4 pt-10 pb-16">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
           {/* Left Column - Main Info */}
           <div className="space-y-6">
@@ -238,12 +239,12 @@ export function ProductDetailPageContent({
                 <CardTitle>{t('price')}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-primary mb-2">
+                <div className="mb-2 text-3xl font-bold text-primary">
                   {priceLabel}
                 </div>
                 <p className="text-sm text-muted-foreground">{bordell.priceRange}</p>
                 <Button
-                  className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-600"
+                  className="mt-4 w-full bg-gradient-to-r from-amber-500 to-orange-600"
                   onClick={() => setIsReservationOpen(true)}
                 >
                   {t('reserve')}
@@ -279,12 +280,12 @@ export function ProductDetailPageContent({
                     </a>
                   )}
                   {bordell.email && (
-                    <a href={`mailto:${bordell.email}`} className="block text-primary hover:underline text-sm">
+                    <a href={`mailto:${bordell.email}`} className="block text-sm text-primary hover:underline">
                       {bordell.email}
                     </a>
                   )}
                   {bordell.website && (
-                    <a href={bordell.website} target="_blank" rel="noopener noreferrer" className="block text-primary hover:underline text-sm">
+                    <a href={bordell.website} target="_blank" rel="noopener noreferrer" className="block text-sm text-primary hover:underline">
                       Website besuchen
                     </a>
                   )}

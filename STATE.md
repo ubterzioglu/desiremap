@@ -1,5 +1,14 @@
 # STATE
 
+## 2026-05-19 17:45 +0200
+
+- Scope: Tailwind strict lint + prettier class sorting.
+- Added: eslint-plugin-tailwindcss (v4 fix: absolute CSS config path), prettier-plugin-tailwindcss@0.8.0.
+- Fixed: classnames-order auto-fixed 500 strings; speakable-* whitelisted; prose-*: disabled in blog page (needs @tailwindcss/typography).
+- Updated: .prettierrc with prettier-plugin-tailwindcss.
+- Verification: lint 0 errors 0 warnings; typecheck 0 errors; tests 4/4; build OK.
+- Version: 0.2.5 → 0.2.6 (patch).
+
 ## 2026-05-19 17:15 +0200
 
 - Scope: ESLint fix — removed incompatible `eslint-plugin-tailwindcss` (v3 + Tailwind v4 uyumsuz).

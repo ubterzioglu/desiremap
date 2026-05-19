@@ -1,7 +1,6 @@
 'use client'
 
 import { useMemo } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ChevronRight, MapPin } from 'lucide-react'
@@ -9,42 +8,107 @@ import { useLocale } from 'next-intl'
 import { usePublicStadtCities } from '@/hooks/useQueries'
 import { getCityPath } from '@/lib/navigation'
 import { getPublicCityVenueCount } from '@/lib/public-cities'
-import type { Translations } from '@/types'
+import type { PublicCity, Translations } from '@/types'
+import { cn } from '@/lib/utils'
+
+type FeaturedCity = {
+  count: number
+  image?: string | null
+  name: string
+  slug: string
+}
 
 type FeaturedCitiesProps = {
   translations: Translations['cities']
+}
+
+function getCityCardStyle(city: FeaturedCity): { backgroundImage?: string } | undefined {
+  if (typeof city.image !== 'string' || city.image.length === 0) {
+    return undefined
+  }
+
+  return { backgroundImage: `url("${city.image}")` }
 }
 
 export function FeaturedCities({ translations }: FeaturedCitiesProps) {
   const locale = useLocale()
   const { data: backendCities } = usePublicStadtCities()
 
-  const cities = useMemo(() => {
-    return (backendCities ?? []).map((city) => ({
+  const cities = useMemo<FeaturedCity[]>(() => {
+    return (backendCities ?? []).map((city: PublicCity) => ({
       slug: city.slug,
       name: city.name,
       count: getPublicCityVenueCount(city),
+      image: city.image ?? null,
     }))
   }, [backendCities])
 
   return (
-    <section className="relative py-12 sm:py-16 md:py-24 overflow-hidden">
-      <div className="absolute inset-0">
-        <Image src="/featured-bg.jpg" alt="Deutschlands wichtigste Städte für FKK Clubs und Laufhäuser: Berlin, Köln, Frankfurt, München und Stuttgart auf DesireMap" fill className="w-full h-full object-cover opacity-15" />
-        <div className="absolute inset-0 bg-linear-to-r from-black via-black/30 to-black/5" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20" />
-      </div>
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6 mb-8 sm:mb-10 md:mb-12">
-          <div><span className="inline-block text-[#b76e79] text-xs sm:text-sm font-medium tracking-widest uppercase mb-2 sm:mb-3">{translations.subtitle}</span><h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white">{translations.title}</h2></div>
+    <section className="relative overflow-hidden border-t border-white/6 bg-[#0b1326] py-16 sm:py-20 lg:py-24">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_right_top,rgba(212,175,55,0.12),transparent_20%),linear-gradient(180deg,rgba(11,19,38,0.82)_0%,rgba(6,14,32,0.96)_100%)]" />
+
+      <div className="relative z-10 mx-auto max-w-[1280px] px-5 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-10 grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-end"
+        >
+          <div className="space-y-4">
+            <span className="inline-flex rounded-full border border-[#564146] bg-[#8b1a4a]/12 px-4 py-1 text-[11px] font-bold tracking-[0.22em] text-[#ffd9e1] uppercase">
+              {translations.subtitle}
+            </span>
+            <h2 className="text-3xl font-semibold tracking-[-0.03em] text-[#dae2fd] sm:text-4xl lg:text-5xl">
+              {translations.title}
+            </h2>
+          </div>
+          <div className="rounded-[1.75rem] border border-[#334155]/55 bg-[#131b2e]/74 p-6 shadow-[0_24px_60px_rgba(6,14,32,0.28)] backdrop-blur-xl sm:p-7">
+            <p className="max-w-2xl text-base leading-8 text-[#dcbfc5] sm:text-lg">
+              Deutschlands wichtigste Stadtcluster mit direktem Einstieg in verifizierte Angebote, klarer Orientierung und diskretem Fokus.
+            </p>
+          </div>
         </motion.div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {cities.map((city, index) => (
-            <Link key={city.slug} href={getCityPath(locale, city.slug)} className="group relative text-left min-h-[56px] sm:min-h-[60px]">
-              <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.08, duration: 0.5 }} className="relative p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-[#8b1a4a]/40 transition-all duration-300 overflow-hidden">
-                <div className="relative flex items-center gap-3 sm:gap-4"><div className="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-lg sm:rounded-xl bg-linear-to-br from-[#8b1a4a]/30 to-[#6b3fa0]/30 flex items-center justify-center"><MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-[#b76e79]" /></div><div className="flex-1"><h3 className="text-white font-semibold text-base sm:text-lg group-hover:text-[#b76e79] transition-colors duration-300">{city.name}</h3><p className="text-gray-400 text-xs sm:text-sm">{city.count} Betriebe</p></div><ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 group-hover:text-[#b76e79] group-hover:translate-x-1 transition-all duration-300" /></div>
-              </motion.div>
-            </Link>
+            <motion.div
+              key={city.slug}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.05, duration: 0.4 }}
+            >
+              <Link
+                href={getCityPath(locale, city.slug)}
+                className="group relative block overflow-hidden rounded-[1.6rem] border border-[#334155]/55 bg-[#171f33]/80 shadow-[0_24px_60px_rgba(6,14,32,0.24)] transition-all duration-300 hover:-translate-y-1 hover:border-[#8b1a4a]/55 hover:shadow-[0_28px_70px_rgba(139,26,74,0.18)]"
+              >
+                <div className="relative min-h-[220px]">
+                  <div
+                    className={cn(
+                      'absolute inset-0 bg-[#131b2e]',
+                      city.image ? 'bg-cover bg-center opacity-65' : 'bg-[radial-gradient(circle_at_top,rgba(255,177,198,0.22),transparent_25%),linear-gradient(180deg,#171f33_0%,#0f172a_100%)]'
+                    )}
+                    style={getCityCardStyle(city)}
+                  />
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,19,38,0.1)_0%,rgba(11,19,38,0.88)_100%)]" />
+                  <div className="relative flex h-full min-h-[220px] flex-col justify-between p-6 sm:p-7">
+                    <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/12 bg-black/20 px-3 py-1 text-[11px] font-bold tracking-[0.18em] text-[#e9c349] uppercase backdrop-blur-sm">
+                      <MapPin className="h-3.5 w-3.5" />
+                      Stadt
+                    </div>
+                    <div className="space-y-3">
+                      <div className="text-2xl font-semibold tracking-[-0.02em] text-white">
+                        {city.name}
+                      </div>
+                      <div className="flex items-center justify-between gap-4 text-sm text-[#dcbfc5]">
+                        <span>{city.count} Betriebe</span>
+                        <ChevronRight className="h-4 w-4 text-[#ffb1c6] transition-transform duration-300 group-hover:translate-x-1" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
           ))}
         </div>
       </div>

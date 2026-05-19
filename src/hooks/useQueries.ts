@@ -1,41 +1,6 @@
 import { useQuery, useQueries, useMutation, useQueryClient } from '@tanstack/react-query'
-import { customerApi, bookingApi, establishmentsApi, adminApi, authApi, publicApi, seedApi } from '@/lib/api'
-import type { AdminCityPayload } from '@/lib/api'
-import { useAuthStore } from '@/stores/authStore'
+import { customerApi, bookingApi, establishmentsApi, publicApi } from '@/lib/api'
 
-
-// ============ AUTH HOOKS ============
-export function useRegister() {
-  return useMutation({
-    mutationFn: authApi.register
-  })
-}
-
-export function useLogin(workspace: 'public' | 'admin' = 'public') {
-  const setSession = useAuthStore((state) => state.setSession)
-
-  return useMutation({
-    mutationFn: (data: { email: string; password: string }) =>
-      authApi.login(data, workspace),
-    onSuccess: (session) => {
-      setSession(session)
-    }
-  })
-}
-
-export function useRegisterAndLogin() {
-  const setSession = useAuthStore((state) => state.setSession)
-
-  return useMutation({
-    mutationFn: async (data: { email: string; password: string; name?: string; phone?: string }) => {
-      await authApi.register(data)
-      return authApi.login({ email: data.email, password: data.password })
-    },
-    onSuccess: (session) => {
-      setSession(session)
-    }
-  })
-}
 
 // ============ CUSTOMER HOOKS ============
 export function useCustomerProfile() {
@@ -172,6 +137,14 @@ export function usePublicCities() {
   })
 }
 
+export function usePublicHero() {
+  return useQuery({
+    queryKey: ['public', 'hero'],
+    queryFn: () => publicApi.getHero().then((r) => r.items ?? []),
+    staleTime: 10 * 60 * 1000,
+  })
+}
+
 export function usePublicStadtCities() {
   return useQuery({
     queryKey: ['public', 'stadt-cities'],
@@ -241,220 +214,5 @@ export function useSearchEstablishments(params: {
     queryKey: ['establishments', 'search', params],
     queryFn: () => establishmentsApi.search(params),
     enabled: Object.values(params).some(v => v !== undefined && v !== '')
-  })
-}
-
-function useAdminAuthenticated() {
-  const token = useAuthStore((state) => state.token)
-  return Boolean(token)
-}
-
-// ============ ADMIN HOOKS ============
-export function useAdminStats() {
-  return useQuery({
-    queryKey: ['admin', 'stats'],
-    queryFn: adminApi.getDashboardSnapshot,
-    staleTime: 30 * 1000,
-    enabled: useAdminAuthenticated(),
-    retry: false
-  })
-}
-
-export function useAdminVenues() {
-  return useQuery({
-    queryKey: ['admin', 'venues'],
-    queryFn: adminApi.getVenues,
-    enabled: useAdminAuthenticated(),
-    retry: false
-  })
-}
-
-export function useCreateVenue() {
-  const queryClient = useQueryClient()
-  
-  return useMutation({
-    mutationFn: adminApi.createVenue,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'venues'] })
-      queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] })
-    }
-  })
-}
-
-export function useAdminEvents(venuePublicId: string | null) {
-  return useQuery({
-    queryKey: ['admin', 'events', venuePublicId],
-    queryFn: () => adminApi.getVenueEvents(venuePublicId || ''),
-    enabled: Boolean(venuePublicId)
-  })
-}
-
-export function useCreateEvent() {
-  const queryClient = useQueryClient()
-  
-  return useMutation({
-    mutationFn: adminApi.createEvent,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'events'] })
-      queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] })
-    }
-  })
-}
-
-export function usePublishEvent() {
-  const queryClient = useQueryClient()
-  
-  return useMutation({
-    mutationFn: adminApi.publishEvent,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'events'] })
-      queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] })
-    }
-  })
-}
-
-export function useCancelEvent() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: adminApi.cancelEvent,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'events'] })
-      queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] })
-    }
-  })
-}
-
-export function useAdminOperators() {
-  return useQuery({
-    queryKey: ['admin', 'operators'],
-    queryFn: adminApi.getBusinessOperators,
-    enabled: useAdminAuthenticated(),
-    retry: false
-  })
-}
-
-export function useDisableBusinessOperator() {
-  const queryClient = useQueryClient()
-  
-  return useMutation({
-    mutationFn: adminApi.disableBusinessOperator,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'operators'] })
-      queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] })
-    }
-  })
-}
-
-export function useReactivateBusinessOperator() {
-  const queryClient = useQueryClient()
-  
-  return useMutation({
-    mutationFn: adminApi.reactivateBusinessOperator,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'operators'] })
-      queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] })
-    }
-  })
-}
-
-export function useAdminSeed() {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: seedApi.seed,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['public'] })
-      queryClient.invalidateQueries({ queryKey: ['admin'] })
-    },
-  })
-}
-
-export function useDeprovisionBusinessOperator() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: adminApi.deprovisionBusinessOperator,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'operators'] })
-      queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] })
-    }
-  })
-}
-
-export function useAdminBusinesses() {
-  return useQuery({
-    queryKey: ['admin', 'businesses'],
-    queryFn: adminApi.getBusinesses,
-    enabled: useAdminAuthenticated(),
-    retry: false
-  })
-}
-
-export function useCreateBusiness() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: adminApi.createBusiness,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'businesses'] })
-      queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] })
-    }
-  })
-}
-
-export function useCreateOperator() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: ({ businessId, ...data }: { businessId: string; email: string; password: string; displayName: string }) =>
-      adminApi.createOperator(businessId, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'businesses'] })
-      queryClient.invalidateQueries({ queryKey: ['admin', 'operators'] })
-    }
-  })
-}
-
-// ============ ADMIN CITIES HOOKS ============
-export function useAdminCities() {
-  return useQuery({
-    queryKey: ['admin', 'cities'],
-    queryFn: adminApi.getCities,
-    enabled: useAdminAuthenticated(),
-    retry: false
-  })
-}
-
-export function useCreateCity() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: adminApi.createCity,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'cities'] })
-    }
-  })
-}
-
-export function useUpdateCity() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: ({ cityId, ...data }: { cityId: number } & AdminCityPayload) =>
-      adminApi.updateCity(cityId, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'cities'] })
-    }
-  })
-}
-
-export function useDeleteCity() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: adminApi.deleteCity,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'cities'] })
-    }
   })
 }

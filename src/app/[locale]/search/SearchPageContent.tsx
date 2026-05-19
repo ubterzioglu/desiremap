@@ -25,41 +25,89 @@ export function SearchPageContent({ locale, initialQuery, initialCity, initialCa
   const searchState = useSearchPage(locale, initialQuery, initialCity, initialCategory)
 
   const navTranslations = useMemo(() => ({
-    discover: tNav('discover'), cities: tNav('cities'), premium: tNav('premium'),
-    advertise: tNav('advertise'), login: tNav('login'), register: tNav('register'), myAccount: tNav('myAccount')
+    home: tNav('home'),
+    discover: tNav('discover'),
+    cities: tNav('cities'),
+    premium: tNav('premium'),
+    advertise: tNav('advertise'),
+    login: tNav('login'),
+    register: tNav('register'),
+    myAccount: tNav('myAccount')
   }), [tNav])
 
   const filterTranslations = useMemo(() => ({
-    searchPlaceholder: t('searchPlaceholder'), selectCity: t('selectCity'), allCities: t('allCities'),
-    filters: t('filters'), clearFilters: t('clearFilters')
+    searchPlaceholder: t('searchPlaceholder'),
+    selectCity: t('selectCity'),
+    allCities: t('allCities'),
+    filters: t('filters'),
+    clearFilters: t('clearFilters')
   }), [t])
 
   const resultsTranslations = useMemo(() => ({
-    found: t('found'), sponsored: t('sponsored'), premium: t('premium'),
-    noResults: t('noResults'), noResultsHint: t('noResultsHint'), clearFilters: t('clearFilters')
+    found: t('found'),
+    sponsored: t('sponsored'),
+    premium: t('premium'),
+    noResults: t('noResults'),
+    noResultsHint: t('noResultsHint'),
+    clearFilters: t('clearFilters')
   }), [t])
 
   return (
-    <div className="min-h-screen bg-black">
-      <Header locale={locale} onLoginClick={() => window.location.href = `/${locale}/login`} isLoggedIn={false} onDashboardClick={() => window.location.href = `/${locale}/dashboard`} translations={navTranslations} />
+    <div className="min-h-screen bg-[#0b1326]">
+      <Header
+        locale={locale}
+        onLoginClick={() => window.location.href = `/${locale}/login`}
+        isLoggedIn={false}
+        onDashboardClick={() => window.location.href = `/${locale}/dashboard`}
+        translations={navTranslations}
+      />
       <div className="pt-24">
-        {/* Search Page Üst kısım */}
-        <section className="relative py-16 overflow-hidden">
+        {/* Search Page Header */}
+        <section className="relative overflow-hidden border-b border-[#2d3449] py-32">
           <div className="absolute inset-0">
-            <Image src="/search-bg.jpg" alt="" fill className="w-full h-full object-cover" />
-            <div className="absolute inset-0 backdrop-blur-sm bg-black/5" />
-            <div className="absolute inset-0 bg-linear-to-b from-[#8b1a4a]/5 to-transparent" />
+            <Image src="/search-bg.jpg" alt="" fill className="h-full w-full object-cover" />
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#8b1a4a]/10 to-[#0b1326]" />
           </div>
-          <div className="relative z-10 max-w-7xl mx-auto px-6">
-            <Button onClick={() => window.location.href = `/${locale}`} variant="ghost" className="flex items-center gap-2 text-gray-400 hover:text-white mb-8"><ArrowLeft className="w-5 h-5" />{t('backToHome')}</Button>
-            <h1 className="text-4xl sm:text-5xl font-bold text-white mb-8">{t('results')}</h1>
-            <SearchFilters query={searchState.query} selectedCity={searchState.selectedCity} selectedCategory={searchState.selectedCategory} translations={filterTranslations} onQueryChange={searchState.setQuery} onSearch={searchState.handleSearch} onCityChange={searchState.handleCityChange} onCategoryChange={searchState.handleCategoryChange} onClearFilters={searchState.clearFilters} />
+          <div className="relative z-10 mx-auto max-w-7xl px-6">
+            <Button
+              onClick={() => window.location.href = `/${locale}`}
+              variant="ghost"
+              className="mb-12 flex items-center gap-2 text-[#a48a90] hover:text-[#dae2fd]"
+            >
+              <ArrowLeft className="h-5 w-5" />
+              {t('backToHome')}
+            </Button>
+            <h1
+              className="mb-12 text-5xl font-bold text-[#dae2fd] sm:text-6xl"
+              style={{ letterSpacing: '-0.02em' }}
+            >
+              {t('results')}
+            </h1>
+            <SearchFilters
+              query={searchState.query}
+              selectedCity={searchState.selectedCity}
+              selectedCategory={searchState.selectedCategory}
+              translations={filterTranslations}
+              onQueryChange={searchState.setQuery}
+              onSearch={searchState.handleSearch}
+              onCityChange={searchState.handleCityChange}
+              onCategoryChange={searchState.handleCategoryChange}
+              onClearFilters={searchState.clearFilters}
+            />
           </div>
         </section>
-        {/* Search page arama sonuçları kısım */}
-        <section className="py-12">
-          <div className="max-w-7xl mx-auto px-6">
-            <SearchResults sponsoredResults={searchState.sponsoredResults} regularResults={searchState.regularResults} totalCount={searchState.searchResults.length} translations={resultsTranslations} onBordellClickAction={searchState.handleBordellClick} onClearFiltersAction={searchState.clearFilters} />
+        {/* Search Results Section */}
+        <section className="py-16">
+          <div className="mx-auto max-w-7xl px-6">
+            <SearchResults
+              sponsoredResults={searchState.sponsoredResults}
+              regularResults={searchState.regularResults}
+              totalCount={searchState.searchResults.length}
+              translations={resultsTranslations}
+              onBordellClickAction={searchState.handleBordellClick}
+              onClearFiltersAction={searchState.clearFilters}
+            />
           </div>
         </section>
       </div>

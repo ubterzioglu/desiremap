@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Flame, LogIn, Menu, User, X } from 'lucide-react'
+import { LogIn, Menu, Search, User, X } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { LanguageSelector } from '@/components/layout/LanguageSelector'
 import { MobileMenu } from '@/components/layout/MobileMenu'
 import { useScrollHeader } from '@/components/layout/hooks/useScrollHeader'
 import { getLocalizedPath } from '@/lib/navigation'
@@ -22,46 +22,103 @@ type HeaderProps = {
 
 export function Header({ locale, onLoginClick, isLoggedIn, onDashboardClick, translations }: HeaderProps) {
   const isScrolled = useScrollHeader(50)
+  const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const homePath = getLocalizedPath(locale, '/')
+  const searchPath = getLocalizedPath(locale, '/search')
+  const cityPath = getLocalizedPath(locale, '/stadt')
+  const blogPath = getLocalizedPath(locale, '/blog')
+  const navigationItems = [
+    { href: homePath, label: translations.home, active: pathname === homePath },
+    { href: searchPath, label: translations.discover, active: pathname.startsWith(searchPath) },
+    { href: cityPath, label: translations.cities, active: pathname.startsWith(cityPath) },
+    { href: blogPath, label: 'Blog', active: pathname.startsWith(blogPath) }
+  ]
 
   return (
-    <motion.header initial={{ y: -100 }} animate={{ y: 0 }} className={cn('fixed top-0 left-0 right-0 z-50 transition-all duration-500', isScrolled ? 'bg-black/90 backdrop-blur-xl py-3 sm:py-4' : 'bg-transparent py-4 sm:py-6')}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between">
-          <Link href={getLocalizedPath(locale, '/')} className="flex items-center gap-2 sm:gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-linear-to-br from-[#8b1a4a] to-[#6b3fa0] flex items-center justify-center">
-              <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-            </div>
-            <div>
-              <span className="text-lg sm:text-xl font-bold text-white tracking-wider">DESIREMAP</span>
-              <span className="text-gray-500 text-xs hidden sm:inline">.de</span>
-            </div>
-          </Link>
-          <nav className="hidden md:flex items-center gap-8">
-            <Link href={getLocalizedPath(locale, '/')} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{translations.discover}</Link>
-            <Link href={getLocalizedPath(locale, '/stadt')} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{translations.cities}</Link>
-            <Link href={getLocalizedPath(locale, '/blog')} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">Blog</Link>
-            <button onClick={() => onLoginClick ? onLoginClick('premium') : undefined} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{translations.premium}</button>
-            <button onClick={() => onLoginClick ? onLoginClick('advertise') : undefined} className="text-gray-300 hover:text-white transition-colors text-sm tracking-wide">{translations.advertise}</button>
-          </nav>
-          <div className="flex items-center gap-2 sm:gap-3">
-            <LanguageSelector />
-            {isLoggedIn ? (
-              <Button variant="ghost" size="sm" onClick={onDashboardClick} className="text-gray-300 hover:text-white"><User className="w-4 h-4 mr-2" />{translations.myAccount}</Button>
-            ) : (
-              <Button variant="ghost" size="sm" asChild className="hidden sm:flex text-gray-300 hover:text-white">
-              <Link href={getLocalizedPath(locale, '/login')}><LogIn className="w-4 h-4 mr-2" />{translations.login}</Link>
+    <motion.header
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      className={cn(
+        'fixed inset-x-0 top-0 z-50 border-b border-white/6 bg-[#0b1326]/92 backdrop-blur-xl transition-all duration-300',
+        isScrolled ? 'shadow-[0_18px_40px_rgba(5,10,24,0.38)]' : 'shadow-none'
+      )}
+    >
+      <div className="flex h-[72px] w-full items-center justify-between px-5 sm:px-6 lg:px-8">
+        <Link href={homePath} className="text-[30px] font-bold tracking-[-0.04em] text-[#f3c2cf]">
+          DesireMap
+        </Link>
+
+        <nav className="hidden items-center gap-7 lg:flex">
+          {navigationItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                'relative pb-1 text-[12px] font-bold uppercase tracking-[0.08em] transition-colors',
+                item.active ? 'text-[#ffb1c6]' : 'text-[#d7ddee] hover:text-white'
+              )}
+            >
+              {item.label}
+              <span
+                className={cn(
+                  'absolute inset-x-0 -bottom-1 h-[2px] rounded-full bg-[#ffb1c6] transition-opacity',
+                  item.active ? 'opacity-100' : 'opacity-0'
+                )}
+              />
+            </Link>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          <Button
+            asChild
+            variant="ghost"
+            size="icon"
+            className="hidden rounded-full border border-transparent text-[#f0b0c0] hover:bg-white/6 hover:text-white lg:inline-flex"
+          >
+            <Link href={searchPath} aria-label={translations.discover}>
+              <Search className="h-4 w-4" />
+            </Link>
+          </Button>
+
+          {isLoggedIn ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onDashboardClick}
+              className="hidden rounded-full border border-white/10 bg-white/5 px-4 text-[#d7ddee] hover:bg-white/8 hover:text-white sm:inline-flex"
+            >
+              <User className="mr-2 h-4 w-4" />
+              {translations.myAccount}
             </Button>
-            )}
-            <Button variant="ghost" size="icon" className="md:hidden text-white" onClick={() => setMobileMenuOpen((v) => !v)}>
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          ) : onLoginClick ? (
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => onLoginClick()}
+              className="hidden h-10 rounded-full border border-[#b33b6a] bg-[#8b1a4a] px-5 text-[12px] font-bold tracking-[0.08em] text-white uppercase shadow-[0_10px_24px_rgba(139,26,74,0.35)] hover:bg-[#a11f57] sm:inline-flex"
+            >
+              <LogIn className="mr-2 h-4 w-4" />
+              {translations.login}
             </Button>
-          </div>
+          ) : null}
+
+          <Button variant="ghost" size="icon" aria-label="Open menu" aria-expanded={mobileMenuOpen} className="text-white lg:hidden" onClick={() => setMobileMenuOpen((v) => !v)}>
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </Button>
         </div>
-        <AnimatePresence>
-          <MobileMenu isOpen={mobileMenuOpen} locale={locale} translations={translations} {...(onLoginClick === undefined ? {} : { onLoginClick })} onClose={() => setMobileMenuOpen(false)} />
-        </AnimatePresence>
       </div>
+
+      <AnimatePresence>
+        <MobileMenu
+          isOpen={mobileMenuOpen}
+          locale={locale}
+          translations={translations}
+          {...(onLoginClick === undefined ? {} : { onLoginClick })}
+          onClose={() => setMobileMenuOpen(false)}
+        />
+      </AnimatePresence>
     </motion.header>
   )
 }

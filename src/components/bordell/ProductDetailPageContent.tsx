@@ -31,6 +31,7 @@ export function ProductDetailPageContent({
   const tNav = useTranslations('nav')
   const [isReservationOpen, setIsReservationOpen] = useState(false)
   const navTranslations = useMemo(() => ({
+    home: tNav('home'),
     discover: tNav('discover'),
     cities: tNav('cities'),
     premium: tNav('premium'),
@@ -69,11 +70,11 @@ export function ProductDetailPageContent({
 
       {/* Hero Section */}
       <section
-        className="relative h-[50vh] min-h-[400px] flex items-center justify-center bg-cover bg-center"
+        className="relative flex h-[50vh] min-h-[400px] items-center justify-center bg-cover bg-center"
         style={{ backgroundImage: `url(${bordell.coverImage || '/listing-bg.jpg'})` }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
-        <div className="relative z-10 w-full max-w-6xl mx-auto px-4 pt-28 pb-10">
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pt-28 pb-10">
           <Button
             type="button"
             variant="outline"
@@ -84,9 +85,9 @@ export function ProductDetailPageContent({
             Zurück
           </Button>
 
-          <div className="text-center max-w-4xl mx-auto">
+          <div className="mx-auto max-w-4xl text-center">
           {/* Breadcrumb */}
-            <nav className="text-sm text-white/70 mb-4">
+            <nav className="mb-4 text-sm text-white/70">
               <Link href={getLocalizedPath(locale, '/')} className="hover:text-white">Home</Link>
             {' / '}
               <Link href={getSearchPath(locale, { city: bordell.city })} className="hover:text-white">{bordell.city}</Link>
@@ -97,18 +98,18 @@ export function ProductDetailPageContent({
             </nav>
 
             {/* H1 - Only one H1 per page */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
+            <h1 className="mb-4 text-4xl font-bold text-white md:text-5xl lg:text-6xl">
               {bordell.name}
             </h1>
 
-            <p className="text-lg md:text-xl text-white/90 mb-2">
+            <p className="mb-2 text-lg text-white/90 md:text-xl">
               {typeLabels[bordell.type]} in {bordell.city}
             </p>
 
-            <div className="flex items-center justify-center gap-4 text-white/80 text-sm mb-6">
+            <div className="mb-6 flex items-center justify-center gap-4 text-sm text-white/80">
               {bordell.verified && (
                 <span className="flex items-center gap-1 text-green-400">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                   {t('verified')}
@@ -116,7 +117,7 @@ export function ProductDetailPageContent({
               )}
               {bordell.premium && (
                 <span className="flex items-center gap-1 text-amber-400">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                   {t('premium')}
@@ -144,10 +145,10 @@ export function ProductDetailPageContent({
       </section>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="mx-auto max-w-7xl px-4 py-12">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Left Column - Main Info */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="space-y-8 lg:col-span-2">
             {/* Quick Info */}
             <Card>
               <CardHeader>
@@ -159,7 +160,7 @@ export function ProductDetailPageContent({
                 </CardTitle>
               </CardHeader>
               <CardContent className="speakable-description">
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="leading-relaxed text-muted-foreground">
                   {bordell.description}
                 </p>
               </CardContent>
@@ -175,7 +176,7 @@ export function ProductDetailPageContent({
                   {bordell.services.map((service) => (
                     <span
                       key={service}
-                      className="px-3 py-1 bg-primary/10 rounded-full text-sm"
+                      className="rounded-full bg-primary/10 px-3 py-1 text-sm"
                     >
                       {service}
                     </span>
@@ -196,12 +197,12 @@ export function ProductDetailPageContent({
                 <CardTitle>{t('price')}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-primary mb-2">
+                <div className="mb-2 text-3xl font-bold text-primary">
                   ab {bordell.minPrice}€
                 </div>
                 <p className="text-sm text-muted-foreground">{bordell.priceRange}</p>
                 <Button
-                  className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-600"
+                  className="mt-4 w-full bg-gradient-to-r from-amber-500 to-orange-600"
                   onClick={() => setIsReservationOpen(true)}
                 >
                   {t('reserve')}
@@ -244,12 +245,12 @@ export function ProductDetailPageContent({
                   {bordell.phone}
                 </a>
                 {bordell.email && (
-                  <a href={`mailto:${bordell.email}`} className="block text-primary hover:underline text-sm">
+                  <a href={`mailto:${bordell.email}`} className="block text-sm text-primary hover:underline">
                     {bordell.email}
                   </a>
                 )}
                 {bordell.website && (
-                  <a href={bordell.website} target="_blank" rel="noopener noreferrer" className="block text-primary hover:underline text-sm">
+                  <a href={bordell.website} target="_blank" rel="noopener noreferrer" className="block text-sm text-primary hover:underline">
                     Website besuchen
                   </a>
                 )}
@@ -260,17 +261,17 @@ export function ProductDetailPageContent({
 
         {/* Related Products - Internal Linking */}
         <section className="mt-16">
-          <h2 className="text-2xl font-bold mb-6">
+          <h2 className="mb-6 text-2xl font-bold">
             Ähnliche {typeLabels[bordell.type]} in {bordell.city}
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {productData.relatedProducts.map((related) => (
               <Link
                 key={related.id}
                 href={getVenuePath(locale, related.slug)}
-                className="group block p-4 bg-card rounded-lg border hover:border-primary/50 transition-colors"
+                className="group block rounded-lg border bg-card p-4 transition-colors hover:border-primary/50"
               >
-                <h3 className="font-semibold group-hover:text-primary transition-colors">
+                <h3 className="font-semibold transition-colors group-hover:text-primary">
                   {related.name}
                 </h3>
                 <p className="text-sm text-muted-foreground">

@@ -38,7 +38,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="de" className="dark" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`} suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} bg-background text-foreground antialiased`} suppressHydrationWarning>
         <WebMcpProvider>{children}</WebMcpProvider>
       </body>
     </html>

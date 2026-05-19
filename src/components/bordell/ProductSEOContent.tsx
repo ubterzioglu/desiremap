@@ -22,10 +22,10 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
     <div className="space-y-8 text-muted-foreground">
       {/* H2: Was ist...? */}
       <section>
-        <h2 className="text-2xl font-bold text-foreground mb-4">
+        <h2 className="mb-4 text-2xl font-bold text-foreground">
           Was ist {productData.name}?
         </h2>
-        <div className="prose prose-invert max-w-none speakable-description">
+        <div className="prose prose-invert speakable-description max-w-none">
           <p className="leading-relaxed">
             {productData.name} ist ein renommierter {typeLabels[productData.type]} im {productData.city}er Rotlichtviertel.
             Als Teil des größten{' '}
@@ -44,15 +44,15 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
 
       {/* H2: Leistungen und Services */}
       <section>
-        <h2 className="text-2xl font-bold text-foreground mb-4">
+        <h2 className="mb-4 text-2xl font-bold text-foreground">
           Leistungen und Services im {typeLabels[productData.type]}
         </h2>
 
         {/* H3: Hauptservices */}
-        <h3 className="text-xl font-semibold text-foreground mb-3">
+        <h3 className="mb-3 text-xl font-semibold text-foreground">
           Hauptservices von {productData.name}
         </h3>
-        <div className="prose prose-invert max-w-none speakable-services mb-6">
+        <div className="prose prose-invert speakable-services mb-6 max-w-none">
           <p className="leading-relaxed">
             Der {typeLabels[productData.type]} {productData.name} bietet ein umfangreiches Serviceportfolio.
             Zu den Hauptleistungen gehören: {productData.services.join(', ')}. Alle Services werden
@@ -65,7 +65,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
         </div>
 
         {/* H3: Preise */}
-        <h3 className="text-xl font-semibold text-foreground mb-3">
+        <h3 className="mb-3 text-xl font-semibold text-foreground">
           Preise und Eintritt
         </h3>
         <div className="prose prose-invert max-w-none">
@@ -83,12 +83,12 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
 
       {/* H2: Lage und Erreichbarkeit */}
       <section>
-        <h2 className="text-2xl font-bold text-foreground mb-4">
+        <h2 className="mb-4 text-2xl font-bold text-foreground">
           Lage und Erreichbarkeit
         </h2>
 
         {/* H3: Adresse */}
-        <h3 className="text-xl font-semibold text-foreground mb-3">
+        <h3 className="mb-3 text-xl font-semibold text-foreground">
           Adresse von {productData.name}
         </h3>
         <div className="prose prose-invert max-w-none">
@@ -104,7 +104,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
         </div>
 
         {/* H3: Öffnungszeiten */}
-        <h3 className="text-xl font-semibold text-foreground mb-3 mt-6">
+        <h3 className="mt-6 mb-3 text-xl font-semibold text-foreground">
           Öffnungszeiten
         </h3>
         <div className="prose prose-invert max-w-none">
@@ -121,12 +121,12 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
 
       {/* H2: Damen und Atmosphäre */}
       <section>
-        <h2 className="text-2xl font-bold text-foreground mb-4">
+        <h2 className="mb-4 text-2xl font-bold text-foreground">
           Damen und Atmosphäre
         </h2>
 
         {/* H3: Damenauswahl */}
-        <h3 className="text-xl font-semibold text-foreground mb-3">
+        <h3 className="mb-3 text-xl font-semibold text-foreground">
           Damenauswahl in {productData.name}
         </h3>
         <div className="prose prose-invert max-w-none">
@@ -142,7 +142,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
         </div>
 
         {/* H3: Ambiente */}
-        <h3 className="text-xl font-semibold text-foreground mb-3 mt-6">
+        <h3 className="mt-6 mb-3 text-xl font-semibold text-foreground">
           Ambiente und Ausstattung
         </h3>
         <div className="prose prose-invert max-w-none">
@@ -162,12 +162,12 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
 
       {/* H2: Bewertungen und Erfahrungen */}
       <section>
-        <h2 className="text-2xl font-bold text-foreground mb-4">
+        <h2 className="mb-4 text-2xl font-bold text-foreground">
           Bewertungen und Erfahrungen
         </h2>
 
         {/* H3: Gesamtbewertung */}
-        <h3 className="text-xl font-semibold text-foreground mb-3">
+        <h3 className="mb-3 text-xl font-semibold text-foreground">
           Gesamtbewertung auf dem Bordellmarkt
         </h3>
         <div className="prose prose-invert max-w-none">
@@ -182,13 +182,13 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
         </div>
 
         {/* H3: Erfahrungsberichte */}
-        <h3 className="text-xl font-semibold text-foreground mb-3 mt-6">
+        <h3 className="mt-6 mb-3 text-xl font-semibold text-foreground">
           Erfahrungsberichte von Kunden
         </h3>
         <div className="space-y-4">
           {productData.reviews.map((review) => (
-            <div key={review.id} className="p-4 bg-card rounded-lg border">
-              <div className="flex items-center gap-2 mb-2">
+            <div key={review.id} className="rounded-lg border bg-card p-4">
+              <div className="mb-2 flex items-center gap-2">
                 <span className="font-medium text-foreground">{review.authorName}</span>
                 <span className="text-amber-400">{'★'.repeat(review.rating)}</span>
                 <span className="text-sm text-muted-foreground">{review.date}</span>
@@ -201,13 +201,13 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
 
       {/* H2: FAQ - SSS */}
       <section className="speakable-faq">
-        <h2 className="text-2xl font-bold text-foreground mb-4">
+        <h2 className="mb-4 text-2xl font-bold text-foreground">
           Häufig gestellte Fragen (FAQ)
         </h2>
         <div className="space-y-4">
           {productData.faq.map((item, index) => (
-            <div key={index} className="p-4 bg-card rounded-lg border">
-              <h3 className="font-semibold text-foreground mb-2">
+            <div key={index} className="rounded-lg border bg-card p-4">
+              <h3 className="mb-2 font-semibold text-foreground">
                 {item.question}
               </h3>
               <p className="text-sm">{item.answer}</p>
@@ -218,7 +218,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
 
       {/* H2: Ähnliche Betriebe - Internal Links */}
       <section>
-        <h2 className="text-2xl font-bold text-foreground mb-4">
+        <h2 className="mb-4 text-2xl font-bold text-foreground">
           Ähnliche {typeLabels[productData.type]} auf dem Bordellmarkt
         </h2>
         <div className="prose prose-invert max-w-none">
@@ -247,12 +247,12 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
 
       {/* H2: Kontakt und Reservierung */}
       <section>
-        <h2 className="text-2xl font-bold text-foreground mb-4">
+        <h2 className="mb-4 text-2xl font-bold text-foreground">
           Kontakt und Reservierung
         </h2>
 
         {/* H3: Kontaktmöglichkeiten */}
-        <h3 className="text-xl font-semibold text-foreground mb-3">
+        <h3 className="mb-3 text-xl font-semibold text-foreground">
           So erreichen Sie {productData.name}
         </h3>
         <div className="prose prose-invert max-w-none">
@@ -268,7 +268,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
         </div>
 
         {/* H3: Online-Reservierung */}
-        <h3 className="text-xl font-semibold text-foreground mb-3 mt-6">
+        <h3 className="mt-6 mb-3 text-xl font-semibold text-foreground">
           Online-Reservierung auf dem Bordellmarkt
         </h3>
         <div className="prose prose-invert max-w-none">

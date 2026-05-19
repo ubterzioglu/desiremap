@@ -1,101 +1,320 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import type { ReactElement } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
-import { motion } from 'framer-motion'
-import { Building2, MapPin, Search, Shield, Star, Users } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { Building2, MapPin, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { usePublicCities } from '@/hooks/useQueries'
-import type { Translations } from '@/types'
+import { usePublicCities, usePublicHero } from '@/hooks/useQueries'
+import type { PublicCity, Translations } from '@/types'
 import { getSearchPath } from '@/lib/navigation'
+import { categories } from '@/data/mock-data'
+import { cn } from '@/lib/utils'
 
-const starPositions = [
-  { left: 12, top: 15, dur: 2, delay: 0 }, { left: 25, top: 8, dur: 3, delay: 0.4 },
-  { left: 38, top: 22, dur: 4, delay: 0.8 }, { left: 52, top: 5, dur: 2, delay: 1.2 },
-  { left: 67, top: 18, dur: 3, delay: 1.6 }, { left: 80, top: 12, dur: 4, delay: 0 },
-  { left: 92, top: 25, dur: 2, delay: 0.4 }, { left: 8, top: 42, dur: 3, delay: 0.8 },
-  { left: 22, top: 55, dur: 4, delay: 1.2 }, { left: 35, top: 38, dur: 2, delay: 1.6 },
-  { left: 48, top: 62, dur: 3, delay: 0 }, { left: 62, top: 45, dur: 4, delay: 0.4 },
-  { left: 75, top: 58, dur: 2, delay: 0.8 }, { left: 88, top: 35, dur: 3, delay: 1.2 },
-  { left: 5, top: 72, dur: 4, delay: 1.6 }, { left: 18, top: 85, dur: 2, delay: 0 },
-  { left: 32, top: 68, dur: 3, delay: 0.4 }, { left: 45, top: 92, dur: 4, delay: 0.8 },
-  { left: 58, top: 75, dur: 2, delay: 1.2 }, { left: 72, top: 88, dur: 3, delay: 1.6 },
+const defaultHeroSlides: HeroSlide[] = [
+  { src: '/hero-bg.jpg', fit: 'stretch' },
+  { src: '/hero-bg_old.jpg', fit: 'cover' },
+  { src: '/hero-bg_old_old.jpg', fit: 'cover' }
 ]
 
-type HeroProps = { 
+const defaultHeroSlideSources: HeroSlideSource[] = defaultHeroSlides.map(({ src }) => ({ src }))
+
+const HERO_STRETCH_THRESHOLD = 1.55
+const HERO_MAX_SLIDES = 3
+
+type HeroProps = {
   translations: Translations['hero']
   stats: Translations['stats']
   locale: string
 }
 
-export function HeroSection({ translations, stats, locale }: HeroProps) {
+type HeroSlideSource = {
+  src: string
+}
+
+type HeroSlide = {
+  src: string
+  fit: 'stretch' | 'cover'
+}
+
+type HeroStatItem = {
+  label: string
+  value: string
+  valueClassName: string
+}
+
+type HeroBackgroundProps = {
+  activeSlide: number
+  prefersReducedMotion: boolean
+  slides: HeroSlide[]
+}
+
+type HeroSearchPanelProps = {
+  category: string
+  categoryOptions: { id: string; label: string }[]
+  cities: PublicCity[]
+  location: string
+  onCategoryChange: (value: string) => void
+  onLocationChange: (value: string) => void
+  onSearch: () => void
+  translations: Pick<Translations['hero'], 'search' | 'selectCategory' | 'selectCity'>
+}
+
+type HeroStatsProps = {
+  items: HeroStatItem[]
+}
+
+function resolveHeroSlide(source: HeroSlideSource): Promise<HeroSlide | null> {
+  return new Promise((resolve) => {
+    const image = new window.Image()
+
+    image.onload = () => {
+      const fit = image.naturalWidth / image.naturalHeight >= HERO_STRETCH_THRESHOLD ? 'cover' : 'stretch'
+      resolve({ src: source.src, fit })
+    }
+
+    image.onerror = () => {
+      resolve(null)
+    }
+
+    image.src = source.src
+  })
+}
+
+function HeroBackground({ activeSlide, prefersReducedMotion, slides }: HeroBackgroundProps): ReactElement {
+  return (
+    <div className="absolute inset-0">
+      {slides.map((slide, index) => (
+        <div
+          key={slide.src}
+          aria-hidden="true"
+          className={cn(
+            'absolute inset-0 transition-opacity ease-out',
+            prefersReducedMotion ? 'duration-0' : 'duration-[1400ms]',
+            index === activeSlide ? 'opacity-100' : 'opacity-0'
+          )}
+        >
+          <div
+            className="absolute inset-0 bg-center"
+            style={{
+              backgroundImage: `url("${slide.src}")`,
+              backgroundSize: slide.fit === 'stretch' ? '100% 100%' : 'cover',
+            }}
+          />
+        </div>
+      ))}
+      <div className="absolute inset-0 bg-[#091121]/34" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_74%_26%,rgba(255,177,198,0.18),transparent_30%),linear-gradient(90deg,rgba(7,12,25,0.78)_0%,rgba(8,15,30,0.34)_46%,rgba(7,12,25,0.56)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,13,29,0.16)_0%,rgba(8,13,29,0.5)_100%)]" />
+    </div>
+  )
+}
+
+function HeroSearchPanel({
+  category,
+  categoryOptions,
+  cities,
+  location,
+  onCategoryChange,
+  onLocationChange,
+  onSearch,
+  translations,
+}: HeroSearchPanelProps): ReactElement {
+  return (
+    <div className="max-w-[720px] rounded-[18px] border border-[#2f3c58] bg-[#10192e]/78 p-1.5 shadow-[0_24px_80px_rgba(8,13,29,0.42)] backdrop-blur-xl">
+      <div className="grid gap-1.5 md:grid-cols-[1.02fr_1.08fr_auto]">
+        <div className="relative overflow-hidden rounded-[14px] border border-[#26334f] bg-[#111b31]/86">
+          <MapPin className="pointer-events-none absolute top-1/2 left-4 h-4.5 w-4.5 -translate-y-1/2 text-[#f0b0c0]" />
+          <Select value={location} onValueChange={onLocationChange}>
+            <SelectTrigger aria-label={translations.selectCity} size="lg" className="h-[56px] w-full border-0 bg-transparent pr-4 pl-11 text-left text-[15px] text-[#d8deef] shadow-none">
+              <SelectValue placeholder={translations.selectCity} />
+            </SelectTrigger>
+            <SelectContent className="border-[#2b3653] bg-[#0f172a] text-[#d8deef]">
+              {cities.map((city) => (
+                <SelectItem key={city.slug} value={city.name} className="text-[#d8deef] focus:bg-[#17233f] focus:text-white">
+                  {city.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="relative overflow-hidden rounded-[14px] border border-[#26334f] bg-[#111b31]/86">
+          <Building2 className="pointer-events-none absolute top-1/2 left-4 h-4.5 w-4.5 -translate-y-1/2 text-[#d7dcee]" />
+          <Select value={category} onValueChange={onCategoryChange}>
+            <SelectTrigger aria-label={translations.selectCategory} size="lg" className="h-[56px] w-full border-0 bg-transparent pr-4 pl-11 text-left text-[15px] text-[#d8deef] shadow-none">
+              <SelectValue placeholder={translations.selectCategory} />
+            </SelectTrigger>
+            <SelectContent className="border-[#2b3653] bg-[#0f172a] text-[#d8deef]">
+              <SelectItem value="all" className="text-[#d8deef] focus:bg-[#17233f] focus:text-white">
+                {translations.selectCategory}
+              </SelectItem>
+              {categoryOptions.map((item) => (
+                <SelectItem key={item.id} value={item.id} className="text-[#d8deef] focus:bg-[#17233f] focus:text-white">
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <Button
+          onClick={onSearch}
+          className="h-[56px] min-w-[148px] rounded-[14px] border border-[#b33b6a] bg-[#8b1a4a] px-7 text-[14px] font-bold tracking-[0.06em] text-white uppercase shadow-[0_16px_30px_rgba(139,26,74,0.34)] hover:bg-[#a11f57]"
+        >
+          <Search className="mr-2 h-4 w-4" />
+          {translations.search}
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+function HeroStats({ items }: HeroStatsProps): ReactElement {
+  return (
+    <div className="flex flex-wrap gap-8 pt-3 sm:gap-12">
+      {items.map((item) => (
+        <div key={item.label} className="min-w-[92px] space-y-1">
+          <div className={cn('text-[32px] font-bold leading-none tracking-[-0.04em]', item.valueClassName)}>{item.value}</div>
+          <div className="text-[12px] font-bold tracking-[0.08em] text-[#f1f4ff] uppercase">{item.label}</div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export function HeroSection({ translations, stats, locale }: HeroProps): ReactElement {
   const router = useRouter()
+  const categoryTranslations = useTranslations('categories')
   const [location, setLocation] = useState('')
-  const [searchQuery, setSearchQuery] = useState('')
-  const [expanded, setExpanded] = useState(false)
+  const [category, setCategory] = useState('all')
+  const [activeSlide, setActiveSlide] = useState(0)
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+  const [heroSlides, setHeroSlides] = useState<HeroSlide[]>(defaultHeroSlides)
   const { data: cities = [] } = usePublicCities()
-  const statItems = [{ icon: <Building2 />, value: '847+', label: stats.establishments }, { icon: <Users />, value: '12.000+', label: stats.ladies }, { icon: <Star />, value: '4.6', label: stats.rating }, { icon: <Shield />, value: '100%', label: stats.verified }]
+  const { data: heroSlidesFromApi = [] } = usePublicHero()
+  const heroSlideCandidates = useMemo(() => {
+    const activeHeroSlides = heroSlidesFromApi.filter((slide) => slide.isActive !== false)
+
+    if (activeHeroSlides.length === 0) {
+      return defaultHeroSlideSources
+    }
+
+    return activeHeroSlides
+      .map((slide) => ({ src: slide.imageUrl }))
+      .slice(0, HERO_MAX_SLIDES)
+  }, [heroSlidesFromApi])
+  const categoryLabels: Record<string, string> = {
+    fkk: categoryTranslations('fkk'),
+    laufhaus: categoryTranslations('laufhaus'),
+    bordell: categoryTranslations('bordell'),
+    studio: categoryTranslations('studio'),
+    privat: categoryTranslations('privat')
+  }
+  const categoryOptions = categories.map((item) => ({ id: item.id, label: categoryLabels[item.id] ?? item.name }))
+  const displayedSlide = activeSlide % heroSlides.length
+  const statItems: HeroStatItem[] = [
+    { value: '847+', label: stats.establishments, valueClassName: 'text-[#ffb1c6]' },
+    { value: '12.000+', label: stats.ladies, valueClassName: 'text-[#ffbfd0]' },
+    { value: '4.6', label: stats.rating, valueClassName: 'text-[#e9c349]' },
+    { value: '100%', label: stats.verified, valueClassName: 'text-[#38bdf8]' }
+  ]
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const syncMotionPreferences = () => {
+      setPrefersReducedMotion(mediaQuery.matches)
+    }
+
+    syncMotionPreferences()
+    mediaQuery.addEventListener('change', syncMotionPreferences)
+    return () => mediaQuery.removeEventListener('change', syncMotionPreferences)
+  }, [])
+
+  useEffect(() => {
+    let isCancelled = false
+
+    async function validateSlides(): Promise<void> {
+      const resolvedSlides = await Promise.all(heroSlideCandidates.map(resolveHeroSlide))
+      if (isCancelled) return
+
+      const nextSlides = resolvedSlides
+        .filter((slide): slide is HeroSlide => slide !== null)
+        .slice(0, HERO_MAX_SLIDES)
+
+      setHeroSlides(nextSlides.length > 0 ? nextSlides : defaultHeroSlides)
+    }
+
+    void validateSlides()
+    return () => {
+      isCancelled = true
+    }
+  }, [heroSlideCandidates])
+
+  useEffect(() => {
+    if (prefersReducedMotion || heroSlides.length < 2) {
+      return undefined
+    }
+
+    const intervalId = window.setInterval(() => {
+      setActiveSlide((current) => (current + 1) % heroSlides.length)
+    }, 5200)
+
+    return () => window.clearInterval(intervalId)
+  }, [heroSlides.length, prefersReducedMotion])
 
   const handleSearch = () => {
-    const path = getSearchPath(locale, { q: searchQuery, city: location })
+    const path = getSearchPath(locale, {
+      ...(location ? { city: location } : {}),
+      ...(category !== 'all' ? { category } : {})
+    })
+
     router.push(path)
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSearch()
-    }
-  }
-
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
-      <div className="absolute inset-0 z-0"><Image src="/hero-bg.jpg" alt="Verifizierte Clubs und Locations in Deutschland – DesireMap Plattform Übersicht" fill priority className="absolute inset-0 w-full h-full object-cover md:object-contain md:object-top" /><div className="absolute inset-0 bg-black/40" /><div className="absolute inset-0 bg-linear-to-r from-black/70 via-black/30 to-transparent" /><div className="absolute inset-0 bg-linear-to-b from-black/50 via-transparent to-black/60" /></div>
-      <div className="absolute inset-0 overflow-hidden">{starPositions.map((pos, index) => <div key={index} className="absolute w-1 h-1 bg-white rounded-full animate-[twinkle_var(--star-dur)_ease-in-out_var(--star-delay)_infinite]" style={{ left: `${pos.left}%`, top: `${pos.top}%`, '--star-dur': `${pos.dur}s`, '--star-delay': `${pos.delay}s` } as React.CSSProperties} />)}</div>
-      <div className="relative z-10 text-center px-4 sm:px-6 max-w-5xl mx-auto space-y-4 sm:space-y-8">
-        <motion.h1 initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white tracking-wider">{translations.title}</motion.h1>
-        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-base sm:text-xl md:text-2xl lg:text-3xl text-gray-300 font-light tracking-wide line-clamp-3 md:line-clamp-none">{translations.subtitle}</motion.p>
-        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={`text-gray-400 max-w-2xl mx-auto text-sm md:text-base ${expanded ? '' : 'line-clamp-3 md:line-clamp-none'}`}>{translations.description}</motion.p>
-        <button onClick={() => setExpanded(!expanded)} className="text-[#b76e79] text-sm hover:underline md:hidden">{expanded ? 'Weniger anzeigen ▲' : 'Mehr anzeigen ▼'}</button>
-        <div className="max-w-2xl mx-auto pt-4">
-          <div className="flex flex-col gap-3 p-2 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 sm:flex-row sm:items-stretch">
-            <div className="relative flex-1">
-              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#b76e79]" />
-              <Select value={location} onValueChange={setLocation}>
-                <SelectTrigger size="lg" className="w-full bg-transparent border-0 pl-12 text-white">
-                  <SelectValue placeholder={translations.selectCity} />
-                </SelectTrigger>
-                <SelectContent className="bg-[#1a1a24] border-[#8b1a4a]/20">
-                  {cities.map((city) => (
-                    <SelectItem key={city.slug} value={city.name} className="text-gray-300 focus:bg-[#8b1a4a]/20 focus:text-white">
-                      {city.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="relative flex-[2]">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#b76e79]" />
-              <Input 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={translations.searchPlaceholder} 
-                className="bg-transparent border-0 pl-12 text-white h-12" 
-              />
-            </div>
-            <Button 
-              onClick={handleSearch}
-              className="h-12 shrink-0 px-8 bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] text-white border-0 rounded-xl hover:from-[#a8255c] hover:to-[#7d4fb5] sm:h-auto sm:min-h-12"
-            >
-              <Search className="w-5 h-5 mr-2" />
-              {translations.search}
-            </Button>
+    <section className="relative isolate flex min-h-screen overflow-hidden bg-[#0b1326] pt-28 pb-16 text-[#dae2fd] sm:pt-32">
+      <HeroBackground activeSlide={displayedSlide} prefersReducedMotion={prefersReducedMotion} slides={heroSlides} />
+
+      <div className="relative z-10 flex w-full items-center px-5 sm:px-6 lg:px-8">
+        <div className="max-w-[760px] space-y-8">
+          <div className="inline-flex items-center rounded-full border border-[#d69aa9]/40 bg-[#8b1a4a]/18 px-3 py-1 text-[11px] font-bold tracking-[0.18em] text-[#ffd6de] uppercase shadow-[0_10px_32px_rgba(11,19,38,0.26)]">
+            {translations.eyebrow}
           </div>
+
+          <div className="space-y-5">
+            <h1 className="max-w-[720px] text-[clamp(3.25rem,6vw,5.2rem)] leading-[0.95] font-bold tracking-[-0.045em] text-[#eef2ff]">
+              <span className="block">
+                {translations.titleLine1Start}
+                <span className="text-[#ffb1c6] italic">{translations.titleLine1Accent}</span>
+                {translations.titleLine1End}
+              </span>
+              <span className="block">
+                {translations.titleLine2Start}
+                <span className="text-[#e9c349]">{translations.titleLine2Accent}</span>
+              </span>
+            </h1>
+
+            <p className="max-w-[640px] text-[18px] leading-8 text-[#d7dcee] sm:text-[20px]">
+              {translations.description}
+            </p>
+          </div>
+
+          <HeroSearchPanel
+            category={category}
+            categoryOptions={categoryOptions}
+            cities={cities}
+            location={location}
+            onCategoryChange={setCategory}
+            onLocationChange={setLocation}
+            onSearch={handleSearch}
+            translations={translations}
+          />
+
+          <HeroStats items={statItems} />
         </div>
-        <div className="flex flex-wrap justify-center gap-3 sm:gap-6 md:gap-8 pt-6 sm:pt-8">{statItems.map((stat) => <div key={stat.label} className="flex items-center gap-2 sm:gap-3"><div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-white/5 flex items-center justify-center text-[#b76e79]">{stat.icon}</div><div className="text-left"><div className="text-white font-semibold text-sm sm:text-base md:text-lg">{stat.value}</div><div className="text-gray-500 text-xs sm:text-sm">{stat.label}</div></div></div>)}</div>
       </div>
     </section>
   )

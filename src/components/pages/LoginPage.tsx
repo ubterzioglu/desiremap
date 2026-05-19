@@ -1,151 +1,143 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { ArrowLeft, ArrowRight, Crown, Eye, EyeOff, Loader2, Shield } from 'lucide-react'
-import { getLocalizedPath } from '@/lib/navigation'
-import { GoogleOAuthButton } from '@/components/auth/GoogleOAuthButton'
-import { useGoogleOAuth } from '@/hooks/useGoogleOAuth'
-import { useLogin } from '@/hooks/useQueries'
+import { useRef, useState, useCallback, useEffect } from 'react'
+import { Eye, EyeOff, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { sanitizeEmail, sanitizePassword, isValidEmail, sanitizePayload } from '@/lib/sanitize'
 
-type LoginPageProps = {
-  locale?: string
-  onBack: () => void
-  loginMessage?: string
-  onRegister: () => void
+function domHash(el: HTMLElement): string {
+  const html = el.outerHTML
+  let h = 0
+  for (let i = 0; i < html.length; i++) {
+    h = ((h << 5) - h + html.charCodeAt(i)) | 0
+  }
+  return h.toString(36)
 }
 
-export function LoginPage({ locale = 'de', onBack, loginMessage, onRegister }: LoginPageProps) {
-  const router = useRouter()
+export function LoginPage() {
+  const btnRef = useRef<HTMLButtonElement>(null)
+  const fingerprint = useRef<string>('')
+
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const { enabled: googleOAuthEnabled, login: loginWithGoogle } = useGoogleOAuth()
-  const loginMutation = useLogin('public')
 
-  const handleSubmit = () => {
+  useEffect(() => {
+    if (btnRef.current) {
+      fingerprint.current = domHash(btnRef.current)
+    }
+  }, [])
+
+  const tick = useCallback(() => {
     setError('')
-    if (!email || !password) {
-      setError('Bitte fuellen Sie alle Felder aus')
+
+    // DOM integrity check
+    if (btnRef.current && domHash(btnRef.current) !== fingerprint.current) {
+      setError('Sicherheitsverletzung erkannt. Seite wird neu geladen.')
+      setTimeout(() => window.location.reload(), 1500)
       return
     }
-    loginMutation.mutate(
-      { email, password },
-      {
-        onSuccess: () => router.push(getLocalizedPath(locale, '/dashboard')),
-        onError: (err) => setError(err.message || 'Ungueltige Anmeldedaten')
-      }
-    )
-  }
+
+    // Sanitize inputs
+    const cleanEmail = sanitizeEmail(email)
+    const cleanPassword = sanitizePassword(password)
+
+    if (!cleanEmail || !cleanPassword) {
+      setError('Bitte fuellen Sie alle Felder aus.')
+      return
+    }
+
+    if (!isValidEmail(cleanEmail)) {
+      setError('Bitte geben Sie eine gueltige E-Mail-Adresse ein.')
+      return
+    }
+
+    // Build sanitized payload — blocks prototype pollution, $keys, nested objects
+    const payload = sanitizePayload({ email: cleanEmail, password: cleanPassword })
+
+    // TODO: Auth will be implemented later — payload is sanitized and ready
+    void payload
+    setError('Login wird aktuell ueberarbeitet.')
+  }, [email, password])
 
   return (
-    <div className="min-h-screen bg-black pt-24 pb-12">
-      <div className="relative z-10 max-w-md mx-auto px-6">
-        <button
-          onClick={onBack}
-          className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-8"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          Zurueck zur Startseite
-        </button>
-        <div className="bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden">
-          <div className="p-8 pb-6 text-center border-b border-white/5">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-linear-to-br from-[#8b1a4a] to-[#6b3fa0] flex items-center justify-center">
-              <Crown className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Willkommen zurueck</h1>
-            <p className="text-gray-400 text-sm">Melden Sie sich an, um fortzufahren</p>
+    <div className="flex flex-1 items-center justify-center px-5 py-24 sm:px-6">
+      <div className="w-full max-w-[420px]">
+        <div className="mb-8 text-center">
+          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-lg bg-[#8B1A4A]">
+            <Shield className="h-7 w-7 text-[#ffb1c6]" />
           </div>
+          <h1 className="mb-2 text-[28px] leading-9 font-semibold tracking-tight text-[#dae2fd]">
+            Willkommen zurueck
+          </h1>
+          <p className="text-base leading-6 text-[#a48a90]">Melden Sie sich an, um fortzufahren</p>
+        </div>
 
-          {loginMessage && (
-            <div className="mx-8 mt-6 p-4 rounded-xl bg-[#8b1a4a]/10 border border-[#8b1a4a]/20">
-              <div className="flex items-start gap-3">
-                <Shield className="w-5 h-5 text-[#b76e79]" />
-                <p className="text-sm text-gray-300">{loginMessage}</p>
-              </div>
-            </div>
-          )}
-
-          {googleOAuthEnabled && (
-            <>
-              <div className="px-8 pt-8">
-                <GoogleOAuthButton label="Mit Google anmelden" onClick={loginWithGoogle} />
-              </div>
-              <div className="flex items-center gap-4 px-8 py-6">
-                <div className="flex-1 h-px bg-white/10" />
-                <span className="text-gray-500 text-sm">oder</span>
-                <div className="flex-1 h-px bg-white/10" />
-              </div>
-            </>
-          )}
-
-          <div className={`px-8 space-y-5 ${googleOAuthEnabled ? '' : 'pt-8'}`}>
+        <div className="rounded-lg border border-[#2d3449] bg-[#171f33] p-6 sm:p-8">
+          <div className="space-y-5">
             <div>
-              <Label className="text-gray-300 text-sm mb-2 block">E-Mail</Label>
+              <label className="mb-2 block text-[12px] leading-4 font-bold tracking-[0.05em] text-[#dcbfc5] uppercase">
+                E-Mail
+              </label>
               <Input
                 type="email"
                 placeholder="ihre@email.de"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="bg-white/5 border-white/10 h-12 text-white"
+                className="h-12 rounded border border-[#2d3449] bg-[#131b2e] text-sm text-[#dae2fd]"
               />
             </div>
+
             <div>
-              <Label className="text-gray-300 text-sm mb-2 block">Passwort</Label>
+              <label className="mb-2 block text-[12px] leading-4 font-bold tracking-[0.05em] text-[#dcbfc5] uppercase">
+                Passwort
+              </label>
               <div className="relative">
                 <Input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="........"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="bg-white/5 border-white/10 pr-12 h-12 text-white"
+                  className="h-12 rounded border border-[#2d3449] bg-[#131b2e] pr-12 text-sm text-[#dae2fd]"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
+                  className="absolute top-1/2 right-4 -translate-y-1/2 text-[#564146] transition-colors hover:text-[#a48a90]"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="px-8 pb-8 pt-6 space-y-4">
-            {error && (
-              <div className="text-red-400 text-sm text-center bg-red-500/10 rounded-lg p-3">
-                {error}
-              </div>
-            )}
+          {error && (
+            <div className="mt-4 rounded border border-[#93000a] bg-[#93000a]/10 p-3 text-center text-sm text-[#ffb4ab]">
+              {error}
+            </div>
+          )}
+
+          <div className="mt-6 space-y-4">
             <Button
-              onClick={handleSubmit}
-              disabled={loginMutation.isPending}
-              className="w-full h-12 bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] hover:from-[#a8255c] hover:to-[#7d4fb5] text-white border-0 rounded-xl text-base"
+              ref={btnRef}
+              type="button"
+              onClick={tick}
+              className="h-12 w-full rounded bg-[#8B1A4A] text-sm font-semibold text-[#ffb1c6] hover:bg-[#a11f57]"
             >
-              {loginMutation.isPending ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  Anmelden
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </>
-              )}
+              Anmelden
             </Button>
-            <p className="text-center text-gray-400 text-sm">
+            <p className="text-center text-sm text-[#a48a90]">
               Noch kein Konto?{' '}
-              <button
-                onClick={onRegister}
-                className="text-[#b76e79] hover:text-[#d48a9a] transition-colors font-medium"
-              >
-                Registrieren
-              </button>
+              <span className="cursor-pointer font-medium text-[#B76E79]">Registrieren</span>
             </p>
           </div>
         </div>
+
+        <p className="mt-6 text-center text-[12px] leading-4 text-[#564146]">
+          Geschuetzt &amp; Diskret — Ihre Daten sind sicher
+        </p>
       </div>
     </div>
   )

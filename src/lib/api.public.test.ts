@@ -121,3 +121,103 @@ describe('publicApi establishments fallback', () => {
     }
   })
 })
+
+describe('publicApi hero', () => {
+  test('calls backend hero endpoint directly and normalizes slides', async () => {
+    const originalFetch = globalThis.fetch
+    const originalWindow = globalThis.window
+    const calls: string[] = []
+
+    Object.defineProperty(globalThis, 'window', {
+      value: {},
+      configurable: true,
+    })
+
+    globalThis.fetch = (async (input: RequestInfo | URL) => {
+      const url = String(input)
+      calls.push(url)
+
+      return new Response(JSON.stringify({
+        items: [
+          { image_url: 'https://cdn.example.com/hero-2.jpg', sort_order: 20, is_active: true, updated_at: '2026-05-19T12:00:00.000Z', updated_by: 'admin' },
+          { imageUrl: 'https://images.desiremap.local/private.jpg', sortOrder: 10 },
+          { imageUrl: 'https://cdn.example.com/hero-1.jpg', sortOrder: 5, isActive: false, updatedAt: '2026-05-18T12:00:00.000Z', updatedBy: 'editor01' },
+        ],
+      }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      })
+    }) as unknown as typeof fetch
+
+    try {
+      const result = await publicApi.getHero()
+
+      expect(calls[0]).toBe('https://api.desiremap.de/api/public/hero')
+      expect(result.items).toEqual([
+        {
+          imageUrl: 'https://cdn.example.com/hero-1.jpg',
+          altText: null,
+          sortOrder: 5,
+          isActive: false,
+          updatedAt: '2026-05-18T12:00:00.000Z',
+          updatedBy: 'editor01',
+        },
+        {
+          imageUrl: 'https://cdn.example.com/hero-2.jpg',
+          altText: null,
+          sortOrder: 20,
+          isActive: true,
+          updatedAt: '2026-05-19T12:00:00.000Z',
+          updatedBy: 'admin',
+        },
+      ])
+    } finally {
+      globalThis.fetch = originalFetch
+
+      if (originalWindow === undefined) {
+        delete (globalThis as typeof globalThis & { window?: Window }).window
+      } else {
+        Object.defineProperty(globalThis, 'window', {
+          value: originalWindow,
+          configurable: true,
+        })
+      }
+    }
+  })
+
+  test('returns only valid hero slides from malformed payloads', async () => {
+    const originalFetch = globalThis.fetch
+
+    globalThis.fetch = (async () => {
+      return new Response(JSON.stringify({
+        items: [
+          null,
+          {},
+          { imageUrl: '' },
+          { image_url: 'notaurl' },
+          { imageUrl: 'https://cdn.example.com/hero-valid.jpg', alt_text: 'Hero Alt', sortOrder: 2 },
+        ],
+      }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      })
+    }) as unknown as typeof fetch
+
+    try {
+      const result = await publicApi.getHero()
+
+      expect(result.items).toEqual([
+        {
+          imageUrl: 'https://cdn.example.com/hero-valid.jpg',
+          altText: 'Hero Alt',
+          sortOrder: 2,
+          isActive: true,
+          updatedAt: null,
+          updatedBy: null,
+        },
+      ])
+    } finally {
+      globalThis.fetch = originalFetch
+    }
+  })
+})

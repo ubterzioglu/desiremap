@@ -54,10 +54,11 @@ export default async function StadtIndexPage({
     .catch(() => getFallbackPublicStadtCities())
 
   return (
-    <main className="min-h-screen bg-black flex flex-col">
+    <main className="flex min-h-screen flex-col bg-[#0b1326]">
       <Header
         locale={locale}
         translations={{
+          home: t('home'),
           discover: t('discover'),
           cities: t('cities'),
           premium: t('premium'),
@@ -68,22 +69,25 @@ export default async function StadtIndexPage({
         }}
       />
 
-      <section className="relative pt-32 pb-16 px-4 sm:px-6">
-        <div className="absolute inset-0 z-0 pointer-events-none">
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1a0a14] to-black" />
+      <section className="relative px-4 pt-20 pb-16 sm:px-6">
+        {/* Glassmorphic header section */}
+        <div className="pointer-events-none absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0F172A] to-[#0b1326]" />
         </div>
-        <div className="relative z-10 max-w-7xl mx-auto">
-          <div className="mb-10 sm:mb-14">
-            <span className="inline-block text-[#b76e79] text-xs sm:text-sm font-medium tracking-widest uppercase mb-3">
+
+        <div className="relative z-10 mx-auto max-w-7xl">
+          {/* Header with glassmorphic background */}
+          <div className="mb-10 rounded-2xl border border-white/10 bg-white/[0.02] p-8 backdrop-blur-[20px] sm:mb-14 sm:p-10">
+            <span className="mb-4 inline-block text-xs font-bold tracking-[0.05em] text-[#D4AF37] uppercase sm:text-sm">
               Deutschland
             </span>
-            <h1 className="text-3xl sm:text-5xl font-bold text-white mb-4">Städte</h1>
-            <p className="text-gray-400 max-w-xl text-sm sm:text-base leading-relaxed">
+            <h1 className="mb-4 text-3xl font-bold text-[#dae2fd] sm:text-5xl">Städte</h1>
+            <p className="max-w-xl text-sm leading-relaxed text-[#a48a90] sm:text-base">
               Entdecke FKK Clubs, Laufhäuser und Studios in den größten Städten Deutschlands.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {cities.map((city) => {
               const image = getPublicCityImage(city)
 
@@ -91,7 +95,7 @@ export default async function StadtIndexPage({
               <Link
                 key={city.slug}
                 href={getCityPath(locale, city.slug)}
-                className="group relative overflow-hidden rounded-2xl border border-white/10 hover:border-[#8b1a4a]/50 transition-all duration-300"
+                className="group relative overflow-hidden rounded-2xl border border-[#564146] bg-[#131b2e] transition-all duration-300 hover:border-[#B76E79] hover:bg-[#1a2333]"
               >
                 <div className="absolute inset-0">
                   {image ? (
@@ -99,24 +103,24 @@ export default async function StadtIndexPage({
                       src={image}
                       alt={city.name}
                       fill
-                      className="object-cover opacity-30 group-hover:opacity-45 transition-opacity duration-300"
+                      className="object-cover opacity-25 transition-opacity duration-300 group-hover:opacity-40"
                     />
                   ) : (
-                    <div className="absolute inset-0 bg-linear-to-br from-[#8b1a4a]/30 via-[#1a0a14] to-black" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#8b1a4a]/20 via-[#0F172A] to-[#0b1326]" />
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0b1326] via-[#0b1326]/70 to-transparent" />
                 </div>
-                <div className="relative z-10 p-6 flex items-end justify-between min-h-[160px]">
+                <div className="relative z-10 flex min-h-[160px] items-end justify-between p-6">
                   <div>
-                    <div className="flex items-center gap-1.5 mb-1">
-                      <MapPin className="w-3.5 h-3.5 text-[#b76e79]" />
-                      <span className="text-xs text-gray-400">{getPublicCityVenueCount(city)} Betriebe</span>
+                    <div className="mb-1 flex items-center gap-1.5">
+                      <MapPin className="h-3.5 w-3.5 text-[#D4AF37]" />
+                      <span className="text-xs text-[#a48a90]">{getPublicCityVenueCount(city)} Betriebe</span>
                     </div>
-                    <h2 className="text-xl sm:text-2xl font-bold text-white group-hover:text-[#e8a0b0] transition-colors duration-300">
+                    <h2 className="text-xl font-bold text-[#dae2fd] transition-colors duration-300 group-hover:text-[#ffb1c6] sm:text-2xl">
                       {city.name}
                     </h2>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-gray-500 group-hover:text-[#b76e79] group-hover:translate-x-1 transition-all duration-300" />
+                  <ChevronRight className="h-5 w-5 text-[#564146] transition-all duration-300 group-hover:translate-x-1 group-hover:text-[#B76E79]" />
                 </div>
               </Link>
               )

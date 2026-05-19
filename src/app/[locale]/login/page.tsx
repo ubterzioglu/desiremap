@@ -1,23 +1,24 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { useTranslations, useLocale } from 'next-intl'
+import { Footer } from '@/components/layout/Footer'
+import { Header } from '@/components/layout/Header'
 import { LoginPage } from '@/components/pages/LoginPage'
-import { getLocalizedPath } from '@/lib/navigation'
-import { use } from 'react'
 
-export default function CustomerLoginPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>
-}) {
-  const { locale } = use(params)
-  const router = useRouter()
+function useNavTranslations() {
+  const t = useTranslations('nav')
+  return { home: t('home'), discover: t('discover'), cities: t('cities'), premium: t('premium'), advertise: t('advertise'), login: t('login'), register: t('register'), myAccount: t('myAccount') }
+}
+
+export default function LoginRoute() {
+  const locale = useLocale()
+  const navTranslations = useNavTranslations()
 
   return (
-    <LoginPage
-      locale={locale}
-      onBack={() => router.push(getLocalizedPath(locale, '/'))}
-      onRegister={() => router.push(getLocalizedPath(locale, '/register'))}
-    />
+    <main className="flex min-h-screen flex-col" style={{ background: '#0b1326' }}>
+      <Header locale={locale} translations={navTranslations} isLoggedIn={false} />
+      <LoginPage />
+      <Footer locale={locale} />
+    </main>
   )
 }

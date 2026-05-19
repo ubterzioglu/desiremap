@@ -28,11 +28,11 @@ function SeoIntro({ seo }: { seo: HomeSeoExperience }) {
       viewport={{ once: true, amount: 0.2 }}
       className="grid gap-8 lg:grid-cols-[1.35fr_0.95fr]"
     >
-      <div className="rounded-4xl border border-white/10 bg-white/[0.035] p-8 shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:p-10">
-        <span className="inline-flex rounded-full border border-[#b76e79]/35 bg-[#b76e79]/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-[#f0bec6]">
+      <div className="rounded-[2rem] border border-[#334155]/55 bg-[#131b2e]/76 p-8 shadow-[0_24px_70px_rgba(6,14,32,0.3)] backdrop-blur-xl sm:p-10">
+        <span className="inline-flex rounded-full border border-[#b76e79]/35 bg-[#b76e79]/10 px-4 py-1 text-xs font-semibold tracking-[0.28em] text-[#f0bec6] uppercase">
           {seo.eyebrow}
         </span>
-        <h2 className="mt-6 max-w-4xl text-3xl font-semibold leading-tight text-white sm:text-5xl">
+        <h2 className="mt-6 max-w-4xl text-3xl leading-tight font-semibold text-white sm:text-5xl">
           {seo.title}
         </h2>
         <p className="mt-6 max-w-3xl text-base leading-8 text-gray-300 sm:text-lg" dangerouslySetInnerHTML={{ __html: seo.lead }} />
@@ -52,10 +52,7 @@ function SeoIntro({ seo }: { seo: HomeSeoExperience }) {
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
         {seo.stats.map((stat) => (
-          <div
-            key={stat.label}
-            className="rounded-[1.6rem] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-6"
-          >
+           <div key={stat.label} className="rounded-[1.6rem] border border-[#334155]/55 bg-[#171f33]/72 p-6">
             <div className="text-3xl font-semibold text-white">{stat.value}</div>
             <div className="mt-2 text-sm leading-6 text-gray-400">{stat.label}</div>
           </div>
@@ -73,40 +70,40 @@ function SeoDefinitionBlock({ seo }: { seo: HomeSeoExperience }) {
       viewport={{ once: true, amount: 0.2 }}
       className="grid gap-8 lg:grid-cols-[1fr_1fr]"
     >
-      <div className="rounded-4xl border border-white/10 bg-white/[0.035] p-8 sm:p-10">
+      <div className="rounded-[2rem] border border-[#334155]/55 bg-[#131b2e]/76 p-8 sm:p-10">
         <h3 className="text-2xl font-semibold text-white sm:text-3xl">
           Was ist DesireMap? – Definition und Erklärung
         </h3>
         <div className="mt-5 max-w-3xl text-base leading-8 text-gray-300" dangerouslySetInnerHTML={{ __html: seo.definitionBlock }} />
       </div>
 
-      <div className="rounded-4xl border border-white/10 bg-white/[0.035] p-8 sm:p-10 overflow-x-auto">
+      <div className="overflow-x-auto rounded-[2rem] border border-[#334155]/55 bg-[#131b2e]/76 p-8 sm:p-10">
         <h3 className="text-2xl font-semibold text-white sm:text-3xl">
           {seo.comparisonIntro}
         </h3>
-        <table className="mt-6 w-full text-sm text-left" role="table" aria-label="Vergleich der Etablissement-Kategorien">
+        <table className="mt-6 w-full text-left text-sm" role="table" aria-label="Vergleich der Etablissement-Kategorien">
           <thead>
-            <tr className="border-b border-white/10">
-              <th className="pb-3 pr-4 text-[#f0bec6] font-semibold">Kategorie</th>
-              <th className="pb-3 pr-4 text-[#f0bec6] font-semibold">Preisrahmen</th>
-              <th className="pb-3 pr-4 text-[#f0bec6] font-semibold">Atmosphäre</th>
-              <th className="pb-3 text-[#f0bec6] font-semibold">Am besten für</th>
+              <tr className="border-b border-[#334155]/50">
+              <th className="pr-4 pb-3 font-semibold text-[#f0bec6]">Kategorie</th>
+              <th className="pr-4 pb-3 font-semibold text-[#f0bec6]">Preisrahmen</th>
+              <th className="pr-4 pb-3 font-semibold text-[#f0bec6]">Atmosphäre</th>
+              <th className="pb-3 font-semibold text-[#f0bec6]">Am besten für</th>
             </tr>
           </thead>
           <tbody className="text-gray-300">
-            <tr className="border-b border-white/5">
+            <tr className="border-b border-[#334155]/35">
               <td className="py-3 pr-4 font-medium text-white">FKK Club</td>
               <td className="py-3 pr-4">50 – 150 €</td>
               <td className="py-3 pr-4">Wellness & Spa</td>
               <td className="py-3">Tagesplanung, Entspannung</td>
             </tr>
-            <tr className="border-b border-white/5">
+            <tr className="border-b border-[#334155]/35">
               <td className="py-3 pr-4 font-medium text-white">Laufhaus</td>
               <td className="py-3 pr-4">30 – 80 €</td>
               <td className="py-3 pr-4">Direkt & Variabel</td>
               <td className="py-3">Schnelle Auswahl, Metropolen</td>
             </tr>
-            <tr className="border-b border-white/5">
+            <tr className="border-b border-[#334155]/35">
               <td className="py-3 pr-4 font-medium text-white">Studio</td>
               <td className="py-3 pr-4">40 – 120 €</td>
               <td className="py-3 pr-4">Diskret & Persönlich</td>
@@ -131,18 +128,18 @@ function SeoClusterCard({ cluster }: { cluster: HomeSeoCluster }) {
   return (
     <Link
       href={cluster.href}
-      className="group rounded-[1.75rem] border border-white/10 bg-white/3 p-6 transition-all hover:-translate-y-1 hover:border-[#b76e79]/40 hover:bg-white/4.5"
+      className="group rounded-[1.75rem] border border-[#334155]/55 bg-[#171f33]/72 p-6 transition-all hover:-translate-y-1 hover:border-[#8b1a4a]/45 hover:bg-[#1b2438]"
     >
       <div className="flex items-start justify-between gap-4">
         <div>
-          <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#f0bec6]">
+          <span className="inline-flex rounded-full border border-[#564146] bg-[#0f172a] px-3 py-1 text-[11px] font-semibold tracking-[0.24em] text-[#f0bec6] uppercase">
             {cluster.label}
           </span>
-          <h4 className="mt-4 text-xl font-semibold leading-tight text-white">
+          <h4 className="mt-4 text-xl leading-tight font-semibold text-white">
             {cluster.title}
           </h4>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-3 text-[#f0bec6]">
+        <div className="rounded-2xl border border-[#334155]/55 bg-[#0f172a] p-3 text-[#f0bec6]">
           <Icon className="h-5 w-5" />
         </div>
       </div>
@@ -175,7 +172,7 @@ function SeoClusterAtlas({ seo }: { seo: HomeSeoExperience }) {
       className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr]"
     >
       <div>
-        <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#f0bec6]">
+        <p className="text-sm font-semibold tracking-[0.28em] text-[#f0bec6] uppercase">
           Kategorien im Überblick
         </p>
         <h3 className="mt-4 text-3xl font-semibold text-white sm:text-4xl">
@@ -203,8 +200,8 @@ function SeoTrustAndCities({ seo }: { seo: HomeSeoExperience }) {
       viewport={{ once: true, amount: 0.2 }}
       className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]"
     >
-      <div className="rounded-4xl border border-white/10 bg-[linear-gradient(180deg,rgba(183,110,121,0.12),rgba(255,255,255,0.03))] p-8 sm:p-10">
-        <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#f0bec6]">
+      <div className="rounded-[2rem] border border-[#8b1a4a]/25 bg-[linear-gradient(180deg,rgba(139,26,74,0.16),rgba(19,27,46,0.84))] p-8 shadow-[0_24px_70px_rgba(6,14,32,0.28)] sm:p-10">
+        <p className="text-sm font-semibold tracking-[0.28em] text-[#f0bec6] uppercase">
           Warum DesireMap
         </p>
         <h3 className="mt-4 text-3xl font-semibold text-white sm:text-4xl">
@@ -216,7 +213,7 @@ function SeoTrustAndCities({ seo }: { seo: HomeSeoExperience }) {
 
         <div className="mt-8 grid gap-4 md:grid-cols-2">
           {seo.trustPoints.map((item) => (
-            <div key={item.title} className="rounded-3xl border border-white/10 bg-black/20 p-5">
+            <div key={item.title} className="rounded-3xl border border-[#334155]/55 bg-[#0f172a]/72 p-5">
               <h4 className="text-lg font-semibold text-white">{item.title}</h4>
               <p className="mt-3 text-sm leading-7 text-gray-400" dangerouslySetInnerHTML={{ __html: item.description }} />
             </div>
@@ -224,10 +221,10 @@ function SeoTrustAndCities({ seo }: { seo: HomeSeoExperience }) {
         </div>
       </div>
 
-      <div className="rounded-4xl border border-white/10 bg-white/3 p-8 sm:p-10">
+      <div className="rounded-[2rem] border border-[#334155]/55 bg-[#131b2e]/76 p-8 shadow-[0_24px_70px_rgba(6,14,32,0.28)] sm:p-10">
         <div className="flex items-center gap-3 text-[#f0bec6]">
           <MapPin className="h-5 w-5" />
-          <span className="text-sm font-semibold uppercase tracking-[0.28em]">Stadtcluster</span>
+          <span className="text-sm font-semibold tracking-[0.28em] uppercase">Stadtcluster</span>
         </div>
         <h3 className="mt-4 text-3xl font-semibold text-white">
           Wie funktioniert die Suche nach Städten? – Schritt für Schritt
@@ -241,7 +238,7 @@ function SeoTrustAndCities({ seo }: { seo: HomeSeoExperience }) {
             <Link
               key={city.name}
               href={city.href}
-              className="rounded-[1.35rem] border border-white/10 bg-black/20 px-5 py-4 transition-all hover:border-[#b76e79]/40 hover:bg-[#b76e79]/10"
+              className="rounded-[1.35rem] border border-[#334155]/55 bg-[#0f172a]/72 px-5 py-4 transition-all hover:border-[#8b1a4a]/45 hover:bg-[#171f33]"
             >
               <div className="flex items-center justify-between gap-4">
                 <div>
@@ -268,7 +265,7 @@ function SeoFaqAndCta({ seo }: { seo: HomeSeoExperience }) {
         className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]"
       >
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#f0bec6]">
+          <p className="text-sm font-semibold tracking-[0.28em] text-[#f0bec6] uppercase">
             Häufige Fragen
           </p>
           <h3 className="mt-4 text-3xl font-semibold text-white sm:text-4xl">
@@ -283,7 +280,7 @@ function SeoFaqAndCta({ seo }: { seo: HomeSeoExperience }) {
           {seo.faq.map((item) => (
             <details
               key={item.question}
-              className="group rounded-3xl border border-white/10 bg-white/3 p-6"
+              className="group rounded-3xl border border-[#334155]/55 bg-[#131b2e]/76 p-6"
             >
               <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
                 <h4 className="text-lg font-semibold text-white">{item.question}</h4>
@@ -299,11 +296,11 @@ function SeoFaqAndCta({ seo }: { seo: HomeSeoExperience }) {
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
-        className="rounded-4xl border border-[#b76e79]/20 bg-[linear-gradient(135deg,rgba(183,110,121,0.18),rgba(90,63,126,0.12),rgba(0,0,0,0.4))] p-8 sm:p-10"
+        className="rounded-[2rem] border border-[#8b1a4a]/25 bg-[linear-gradient(135deg,rgba(139,26,74,0.18),rgba(90,63,126,0.12),rgba(19,27,46,0.76))] p-8 shadow-[0_24px_70px_rgba(6,14,32,0.28)] sm:p-10"
       >
         <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#f0bec6]">
+            <p className="text-sm font-semibold tracking-[0.28em] text-[#f0bec6] uppercase">
               Weiter zur Suche
             </p>
             <h3 className="mt-4 text-3xl font-semibold text-white sm:text-4xl">
@@ -317,7 +314,7 @@ function SeoFaqAndCta({ seo }: { seo: HomeSeoExperience }) {
           <div className="flex justify-start lg:justify-end">
             <Link
               href={seo.ctaHref}
-              className="inline-flex items-center gap-3 rounded-full border border-white/15 bg-black/30 px-7 py-4 text-sm font-semibold text-white transition-all hover:border-white/30 hover:bg-black/40"
+              className="inline-flex items-center gap-3 rounded-full border border-[#334155] bg-[#0f172a]/82 px-7 py-4 text-sm font-semibold text-white transition-all hover:border-[#8b1a4a]/45 hover:bg-[#171f33]"
             >
               <span>{seo.ctaLabel}</span>
               <ArrowRight className="h-4 w-4 text-[#f0bec6]" />
@@ -333,11 +330,11 @@ export function SEOContentSection({ locale }: SEOContentSectionProps) {
   const seo = getHomeSeoExperience(locale)
 
   return (
-    <section className="relative overflow-hidden bg-[#050507] py-24">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(183,110,121,0.18),transparent_32%),radial-gradient(circle_at_80%_20%,rgba(102,74,144,0.16),transparent_26%),linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0))]" />
-      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/20 to-transparent" />
+    <section className="relative overflow-hidden border-t border-white/6 bg-[#060e20] py-20 sm:py-24">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(183,110,121,0.18),transparent_32%),radial-gradient(circle_at_80%_20%,rgba(102,74,144,0.16),transparent_26%),linear-gradient(180deg,rgba(19,27,46,0.82),rgba(6,14,32,0.98))]" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#334155] to-transparent" />
 
-      <div className="relative z-10 mx-auto flex max-w-7xl flex-col gap-16 px-6">
+      <div className="relative z-10 mx-auto flex max-w-[1280px] flex-col gap-16 px-5 sm:px-6 lg:px-8">
         <SeoIntro seo={seo} />
         <SeoDefinitionBlock seo={seo} />
         <SeoClusterAtlas seo={seo} />
