@@ -37,6 +37,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
+    //TODO: lang de yapısı dinamik hale getirilecek. bnunun için de generateMetadata fonksiyonu tanımlanıp parametre ile geçecek
     <html lang="de" className="dark" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} bg-background text-foreground antialiased`} suppressHydrationWarning>
         <WebMcpProvider>{children}</WebMcpProvider>
