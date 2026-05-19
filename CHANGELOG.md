@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.7] - 2026-05-19
+
+### Added
+- `@tailwindcss/typography` installed and configured via `@plugin "@tailwindcss/typography"` in `globals.css`
+- Blog page `prose-*:` modifier classes now fully validated by ESLint (no override needed)
+- Auto-fixed `classnames-order` violations introduced by typography plugin
+
+### Changed
+- Removed blog page `no-custom-classname: off` override from `eslint.config.mjs`
+
 ## [0.2.6] - 2026-05-19
 
 ### Added

@@ -4,6 +4,7 @@
     "tagline": "Where Desire Meets Reality"
   },
   "nav": {
+    "home": "Home",
     "discover": "Discover",
     "cities": "Cities",
     "premium": "Premium",
@@ -13,12 +14,23 @@
     "myAccount": "My Account"
   },
   "hero": {
+    "eyebrow": "Germany's largest directory",
+    "titleLine1Start": "Brothel market — ",
+    "titleLine1Accent": "exclusivity",
+    "titleLine1End": " meets",
+    "titleLine2Start": "true ",
+    "titleLine2Accent": "discretion.",
     "title": "DESIREMAP",
     "subtitle": "Where Desire Meets Reality",
-    "description": "Germany's leading directory for exclusive erotic clubs, brothels and FKK saunas. Discreet, verified, elegant.",
+    "description": "Find the right FKK clubs, brothels, and studios in your city in 2026 with verified reviews, current prices, and exclusive insights.",
     "searchPlaceholder": "Search for clubs, services...",
     "selectCity": "Select city...",
+    "selectCategory": "All categories",
     "search": "Search",
+    "slideLabel": "Hero slide",
+    "sliderControls": "Hero slider controls",
+    "pauseSlider": "Pause slider",
+    "playSlider": "Play slider",
     "scrollToExplore": "Scroll to explore"
   },
   "stats": {

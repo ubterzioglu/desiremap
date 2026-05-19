@@ -4,6 +4,7 @@
     "tagline": "Where Desire Meets Reality"
   },
   "nav": {
+    "home": "Ana Sayfa",
     "discover": "Keşfet",
     "cities": "Şehirler",
     "premium": "Premium",
@@ -13,12 +14,23 @@
     "myAccount": "Hesabım"
   },
   "hero": {
+    "eyebrow": "Almanya'nın en büyük rehberi",
+    "titleLine1Start": "Bordellmarkt — ",
+    "titleLine1Accent": "ayrıcalık",
+    "titleLine1End": " ile",
+    "titleLine2Start": "tam ",
+    "titleLine2Accent": "gizliliği buluşturur.",
     "title": "DESIREMAP",
     "subtitle": "Where Desire Meets Reality",
-    "description": "Almanya'nın seçkin erotik kulüpler, genelevler ve FKK saunaları için önde gelen rehberi. Gizli, doğrulanmış, zarif.",
+    "description": "2026'da şehrinizdeki doğru FKK kulüplerini, laufhaus'ları ve stüdyoları doğrulanmış yorumlar, güncel fiyatlar ve özel içgörülerle bulun.",
     "searchPlaceholder": "Kulüp, hizmet ara...",
     "selectCity": "Şehir seç...",
+    "selectCategory": "Tüm kategoriler",
     "search": "Ara",
+    "slideLabel": "Hero slaytı",
+    "sliderControls": "Hero slider kontrolleri",
+    "pauseSlider": "Sliderı duraklat",
+    "playSlider": "Sliderı başlat",
     "scrollToExplore": "Scroll to explore"
   },
   "stats": {

@@ -23,6 +23,7 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'api.desiremap.de' },
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+      { protocol: 'https', hostname: 'i0.web.de' },
     ],
   },
   async headers() {
@@ -42,25 +43,7 @@ const nextConfig: NextConfig = {
     ]
     const restrictedSources = [
       '/search',
-      '/login',
-      '/register',
-      '/auth/login',
-      '/auth/dashboard',
-      '/auth/venues',
-      '/auth/events',
-      '/auth/operators',
-      '/auth/settings',
-      '/auth/:path*',
-      '/admin',
-      '/admin/:path*',
-      '/business',
-      '/business/:path*',
       '/:locale(en|tr|ar)/search',
-      '/:locale(en|tr|ar)/login',
-      '/:locale(en|tr|ar)/register',
-      '/:locale(en|tr|ar)/dashboard',
-      '/:locale(en|tr|ar)/admin',
-      '/:locale(en|tr|ar)/admin/:path*'
     ]
 
     const linkValue = [

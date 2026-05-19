@@ -172,16 +172,16 @@ export default async function BlogPostPage({
         {/* Article Content */}
         <article className="px-4 py-8">
           <div
-            className="prose prose-lg prose-invert prose-headings:text-[#dae2fd] prose-headings:font-bold
-            prose-h2:text-2xl prose-h2:mt-10
-            prose-h2:mb-4 prose-h2:text-[#dae2fd] prose-h2:pb-2 prose-h2:border-b prose-h2:border-[#8b1a4a]/40 prose-h3:text-xl prose-h3:mt-8
-            prose-h3:mb-3 prose-h3:text-[#ffb1c6] prose-h4:text-lg prose-h4:mt-6
-            prose-h4:mb-2 prose-h4:text-[#dae2fd] prose-p:text-[#a48a90] prose-p:leading-relaxed
-            prose-p:mb-4 prose-ul:mb-4 prose-ol:mb-4
-            prose-li:text-[#a48a90] prose-li:mb-1 prose-a:text-[#ffb1c6] prose-a:underline
-            prose-a:underline-offset-2 hover:prose-a:text-[#e8a0b0] prose-strong:text-[#dae2fd] prose-strong:font-semibold
-            prose-blockquote:border-l-[#8b1a4a] prose-blockquote:bg-[#8b1a4a]/15
-            prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:rounded-r-xl prose-blockquote:not-italic mx-auto max-w-4xl
+            className="mx-auto prose prose-lg max-w-4xl prose-invert
+            prose-headings:font-bold prose-headings:text-[#dae2fd]
+            prose-h2:mt-10 prose-h2:mb-4 prose-h2:border-b prose-h2:border-[#8b1a4a]/40 prose-h2:pb-2 prose-h2:text-2xl prose-h2:text-[#dae2fd]
+            prose-h3:mt-8 prose-h3:mb-3 prose-h3:text-xl prose-h3:text-[#ffb1c6]
+            prose-h4:mt-6 prose-h4:mb-2 prose-h4:text-lg prose-h4:text-[#dae2fd]
+            prose-p:mb-4 prose-p:leading-relaxed prose-p:text-[#a48a90]
+            prose-a:text-[#ffb1c6] prose-a:underline prose-a:underline-offset-2 hover:prose-a:text-[#e8a0b0]
+            prose-blockquote:rounded-r-xl prose-blockquote:border-l-[#8b1a4a] prose-blockquote:bg-[#8b1a4a]/15 prose-blockquote:px-6
+            prose-blockquote:py-4 prose-blockquote:not-italic
+            prose-strong:font-semibold prose-strong:text-[#dae2fd] prose-ol:mb-4 prose-ul:mb-4 prose-li:mb-1 prose-li:text-[#a48a90]
             "
             dangerouslySetInnerHTML={{ __html: content }}
           />

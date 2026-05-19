@@ -156,12 +156,7 @@ const eslintConfig = [
     "max-statements": "off",
     "max-depth": "off",
   },
-}, {
-  // Blog uses @tailwindcss/typography prose-*: modifiers — install when typography plugin is added
-  files: ["src/app/**/blog/**/page.tsx"],
-  rules: {
-    "tailwindcss/no-custom-classname": "off",
-  },
+
 }, {
   ignores: [
     "node_modules/**",

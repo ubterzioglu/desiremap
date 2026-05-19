@@ -4,6 +4,7 @@
     "tagline": "Where Desire Meets Reality"
   },
   "nav": {
+    "home": "الرئيسية",
     "discover": "استكشف",
     "cities": "المدن",
     "premium": "بريميوم",
@@ -13,12 +14,23 @@
     "myAccount": "حسابي"
   },
   "hero": {
+    "eyebrow": "أكبر دليل في ألمانيا",
+    "titleLine1Start": "سوق النوادي — ",
+    "titleLine1Accent": "خصوصية راقية",
+    "titleLine1End": " تلتقي مع",
+    "titleLine2Start": "بحث ",
+    "titleLine2Accent": "متكتم.",
     "title": "DESIREMAP",
     "subtitle": "Where Desire Meets Reality",
-    "description": "الدليل الرائد في ألمانيا لأندية الإروتيك الحصرية وبيوت الدعارة وساونات FKK. سرية، موثقة، أنيقة.",
+    "description": "اعثر في عام 2026 على نوادي FKK والبيوت والاستوديوهات المناسبة في مدينتك مع تقييمات موثقة وأسعار حديثة ولمحات حصرية.",
     "searchPlaceholder": "ابحث عن أندية، خدمات...",
     "selectCity": "اختر مدينة...",
+    "selectCategory": "كل الفئات",
     "search": "بحث",
+    "slideLabel": "شريحة البطل",
+    "sliderControls": "عناصر التحكم في سلايدر البطل",
+    "pauseSlider": "إيقاف السلايدر مؤقتًا",
+    "playSlider": "تشغيل السلايدر",
     "scrollToExplore": "Scroll to explore"
   },
   "stats": {

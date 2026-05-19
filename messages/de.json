@@ -4,6 +4,7 @@
     "tagline": "Where Desire Meets Reality"
   },
   "nav": {
+    "home": "Home",
     "discover": "Entdecken",
     "cities": "Städte",
     "premium": "Premium",
@@ -13,12 +14,23 @@
     "myAccount": "Mein Konto"
   },
   "hero": {
+    "eyebrow": "Deutschlands größtes Verzeichnis",
+    "titleLine1Start": "Bordellmarkt — ",
+    "titleLine1Accent": "Exklusivität",
+    "titleLine1End": " trifft",
+    "titleLine2Start": "auf ",
+    "titleLine2Accent": "Diskretion.",
     "title": "Bordellmarkt",
     "subtitle": "DesireMap ist Deutschlands größtes Verzeichnis für verifizierte FKK Clubs, Bordelle, Laufhäuser und Studios. Finden Sie 2026 die passende Adresse in Ihrer Stadt mit Bewertungen, Preisen und Öffnungszeiten.",
-    "description": "Was ist DesireMap? DesireMap ist ein Online-Verzeichnis für Adult-Entertainment-Etablissements in Deutschland. Was ist ein FKK Club? Ein FKK Club ist ein Wellness-Etablissement mit Sauna und Tageseintritt für erotische Dienstleistungen. Was ist ein Bordell? Ein Bordell ist eine feste Einrichtung, in der erotische Dienstleistungen angeboten werden. Was ist ein Laufhaus? Ein Laufhaus ist ein Gebäude, in dem mehrere Anbieterinnen unter einem Dach arbeiten. Was kostet ein Besuch? Preise liegen zwischen 30 und 150 Euro je nach Kategorie. Vergleichen Sie FKK Clubs, Laufhäuser und Studios – diskret, verifiziert und aktuell.",
+    "description": "Finden Sie 2026 die passenden FKK Clubs, Laufhäuser und Studios in Ihrer Stadt mit verifizierten Bewertungen, aktuellen Preisen und exklusiven Einblicken.",
     "searchPlaceholder": "Suche nach Clubs, Services...",
     "selectCity": "Stadt wählen...",
+    "selectCategory": "Alle Kategorien",
     "search": "Suchen",
+    "slideLabel": "Hero Slide",
+    "sliderControls": "Hero Slider Steuerung",
+    "pauseSlider": "Slider pausieren",
+    "playSlider": "Slider starten",
     "scrollToExplore": "Scroll to explore"
   },
   "stats": {

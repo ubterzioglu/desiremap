@@ -4,7 +4,7 @@
     "hash": "675899342e765a4d16acd75a53389101"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/next-env.d.ts": {
-    "mtime": 1778762925.6109936,
+    "mtime": 1779200620.3208048,
     "hash": "2a74d3909800ca5467fa83b0ab4a4890"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/tailwind.config.ts": {
@@ -20,12 +20,12 @@
     "hash": "b937afd97a36dc51eea7bd19f5cf8ab8"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/eslint.config.mjs": {
-    "mtime": 1777618474.6557264,
-    "hash": "8e56d2104ccf956e6ddac15b296d0f8a"
+    "mtime": 1779189646.1485856,
+    "hash": "8c779faf1d4ea46f479db4ae4accab04"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/next.config.ts": {
-    "mtime": 1777574264.7174003,
-    "hash": "2b8fe3d16921f66838b93e6b16cd81a3"
+    "mtime": 1779191571.9243612,
+    "hash": "6c8f3dd20887a9562821505b2e7c4ba4"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/examples/websocket/frontend.tsx": {
     "mtime": 1771052482.0,
@@ -47,6 +47,10 @@
     "mtime": 1776512431.6036263,
     "hash": "6cc5a5fd5992537a3fb7996ea9639bb1"
   },
+  "/Users/admin/Desktop/dev/desiremap/frontend/e2e/public-venue-contract.spec.ts": {
+    "mtime": 1778799037.400805,
+    "hash": "7ba52b2d3b5c36bde6e67912eef1454e"
+  },
   "/Users/admin/Desktop/dev/desiremap/frontend/e2e/home-compare.spec.ts": {
     "mtime": 1777574151.660025,
     "hash": "9315e2e3a8fc191ca90e878d12a9ec10"
@@ -60,16 +64,12 @@
     "hash": "1cd9406794e427cff6057535665a51bf"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/proxy.ts": {
-    "mtime": 1777542606.445983,
-    "hash": "9dc92556062e3b831d275beda2be079b"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/types/admin.ts": {
-    "mtime": 1771787032.3555758,
-    "hash": "cef7ddb7fbaf2d69080403f365d70f09"
+    "mtime": 1779189418.4338632,
+    "hash": "f508cccffa2f750d53287b59fe29730c"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/types/index.ts": {
-    "mtime": 1778518986.70451,
-    "hash": "e761b12148ed0d6b4565b1465caf5e98"
+    "mtime": 1779202240.582006,
+    "hash": "32952b7e987c14d3dbd355c636c6eb0a"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/sitemap.ts": {
     "mtime": 1775942097.4423194,
@@ -80,160 +80,96 @@
     "hash": "74490d7411873f15c4ac7bc2dda41996"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/layout.tsx": {
-    "mtime": 1777539876.5069158,
-    "hash": "32bfa7b6ddc81c57575d73bb1120fed5"
+    "mtime": 1779191479.483015,
+    "hash": "32e90880e2a016aa76bda026f2733d9a"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/page.tsx": {
-    "mtime": 1778761009.2649024,
-    "hash": "ddfa4510d9c8b0adcf98657ad8bddfdd"
+    "mtime": 1779193751.6737325,
+    "hash": "88e4f60c9436f21619612d0c956bf85c"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/bordell/[slug]/ProductSEOContent.tsx": {
-    "mtime": 1778759352.2707887,
-    "hash": "69f73aae57ef6ffe3f5ba10897940990"
+    "mtime": 1778799139.287531,
+    "hash": "3ad011e82f3e7633c8018bc393da3ec9"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/bordell/[slug]/ProductDetailPageContent.tsx": {
-    "mtime": 1778759332.3531687,
-    "hash": "e8e2d9f617e38d668a0f608d7b150a68"
+    "mtime": 1779175509.238108,
+    "hash": "dc15bf6bcb9dcb2d184f8754f039f970"
+  },
+  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/bordell/[slug]/ProductSEOContent.test.tsx": {
+    "mtime": 1778797484.6385672,
+    "hash": "9170305259d9ec508be82c0c97304aec"
+  },
+  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/bordell/[slug]/page.test.ts": {
+    "mtime": 1778799275.0757408,
+    "hash": "09ea59fc0d1118d2aac982d998721a79"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/bordell/[slug]/page.tsx": {
-    "mtime": 1778602258.111479,
-    "hash": "034a7b6924f337a627e3ffd0b3643ed8"
+    "mtime": 1778799306.0496626,
+    "hash": "6ca7d9177cf18371d5edd59dd66044b8"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/stadt/page.tsx": {
-    "mtime": 1776409424.2597206,
-    "hash": "99522fb8f8eafef84cf44b2bd0b735ec"
+    "mtime": 1779185592.1259782,
+    "hash": "204e0d843dc352017af5a1268744adb3"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/stadt/[city]/page.tsx": {
-    "mtime": 1777593431.1364086,
-    "hash": "628550b5f3a0e89e5ba0a223e6a75452"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/admin/page.tsx": {
-    "mtime": 1776360194.4495924,
-    "hash": "6a1afd6c4a870fa139851d912ad9d8ab"
+    "mtime": 1779185640.5836937,
+    "hash": "701d396e011f523691c41a46f959f76e"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/blog/page.tsx": {
-    "mtime": 1775941364.636791,
-    "hash": "58444ecad63eff81f3ffb36b76d17cb7"
+    "mtime": 1779186534.896319,
+    "hash": "988304b049e03d42397c357968a07bee"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/blog/[slug]/page.tsx": {
-    "mtime": 1777593389.8200526,
-    "hash": "7253832e65869724e3b3a14688c9911b"
+    "mtime": 1779186610.988238,
+    "hash": "03988909fcb7dbff22e6e6dea989dfb9"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/search/SearchPageContent.tsx": {
-    "mtime": 1778761025.2713928,
-    "hash": "a12f124621a9bea3067340060d0ef20a"
+    "mtime": 1779185276.7803905,
+    "hash": "7aab6c1838c937f907002c967ff9a733"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/search/page.tsx": {
     "mtime": 1777593389.8223453,
     "hash": "d48efac15456a19827187f4fbf24250b"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/search/components/SearchFilters.tsx": {
-    "mtime": 1776865565.7116287,
-    "hash": "adc9c27122f5fe69dee88edfe3b80f1b"
+    "mtime": 1779185300.767604,
+    "hash": "225c1f6d2577856a7f38432b4b22a8d4"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/search/components/SearchHeader.tsx": {
     "mtime": 1776865704.6024506,
     "hash": "61c464855d4e58f3577ce417e95d7aaa"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/search/components/SearchResults.tsx": {
-    "mtime": 1778760914.8698828,
-    "hash": "a25148c6b911ef8f3e7c5b609c3edfde"
+    "mtime": 1779185312.5004256,
+    "hash": "68c54db62f279eb653fbecacc27b136c"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/search/components/CategoryButtons.tsx": {
-    "mtime": 1776515059.7555363,
-    "hash": "cc33c8a7590097c8751bf35570aa92f0"
+    "mtime": 1779185287.7325861,
+    "hash": "beca669712fa4917111b8683c56da8e8"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/search/hooks/useSearchPage.ts": {
-    "mtime": 1776867073.7918873,
-    "hash": "a4d4b4243015bfff556c341a52b44ba2"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/dashboard/page.tsx": {
-    "mtime": 1772321039.3873644,
-    "hash": "b59b40c092fd1a3f097b2cb170fd700f"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/register/page.tsx": {
-    "mtime": 1775941364.6383078,
-    "hash": "a5361e1d92680aeaf5fb0cb63ade9dcb"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/kunde/login/page.tsx": {
-    "mtime": 1776493411.182288,
-    "hash": "22c460bdbd4df5e1484baaf7e91f24da"
+    "mtime": 1778835452.5520122,
+    "hash": "53360a60354bd2a93ffd6a053a168183"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/venue/[slug]/page.tsx": {
     "mtime": 1776506624.8985426,
     "hash": "c2ddffc980a68bbe478950ce980ae78d"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/[locale]/login/page.tsx": {
-    "mtime": 1776493410.6284316,
-    "hash": "9c48300c4edb1146aedf265f8328b1c5"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/auth/layout.tsx": {
-    "mtime": 1776373482.381259,
-    "hash": "0932d63221ec18cf0893b1120a6abc3e"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/auth/page.tsx": {
-    "mtime": 1776373715.6791542,
-    "hash": "c5b676e4c780785d5c8f63abae4498c2"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/auth/settings/page.tsx": {
-    "mtime": 1776360425.0801072,
-    "hash": "2668064541bf94a9d5db689a3c82d213"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/auth/businesses/page.tsx": {
-    "mtime": 1776515528.3930397,
-    "hash": "7e4346cfb1d58dc534fb547ac83d5a4d"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/auth/operators/page.tsx": {
-    "mtime": 1776360425.079882,
-    "hash": "395734af65ea11bdf267d96011d5c988"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/auth/discovery/page.tsx": {
-    "mtime": 1776506660.9437027,
-    "hash": "498022b54507959c001574ba170b53d7"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/auth/dashboard/page.tsx": {
-    "mtime": 1776360425.0789962,
-    "hash": "6bbd368ad017cbf9c5edd43dcee8b2fb"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/auth/venues/page.tsx": {
-    "mtime": 1776360425.0793228,
-    "hash": "8018ca1d8164f9f35117d406f2cb40b3"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/auth/cities/page.tsx": {
-    "mtime": 1777630514.4923582,
-    "hash": "c5db33eb8f99371114bf1c713fb3285f"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/auth/events/page.tsx": {
-    "mtime": 1776360425.0795236,
-    "hash": "852677761b9f5a1ab21b9757fa57860e"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/auth/login/page.tsx": {
-    "mtime": 1776360425.078849,
-    "hash": "de509f5f38821e79b3b14097bb65751c"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/business/layout.tsx": {
-    "mtime": 1776493424.1095655,
-    "hash": "772019c3821e67e2f5c007dc6979fffc"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/business/dashboard/page.tsx": {
-    "mtime": 1776495286.809142,
-    "hash": "38d4647d4abbdab22d6f3cc9b5699d16"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/business/venues/page.tsx": {
-    "mtime": 1776495288.6765578,
-    "hash": "2e57c8bffe6cd71eb3ca7d3953812ecb"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/business/events/page.tsx": {
-    "mtime": 1776495290.1623988,
-    "hash": "81774c60ded2456ad2f74bec2e59f1ca"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/business/login/page.tsx": {
-    "mtime": 1776493424.5481894,
-    "hash": "1eabd687bdf159fb7d8a865a342c2663"
+    "mtime": 1779194970.1836092,
+    "hash": "a461b23b058cebca816dfabf7ff4354e"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/api/markdown/route.ts": {
     "mtime": 1777542444.1592333,
     "hash": "7657058c0aad18e8dba143dc3e94a7b4"
+  },
+  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/api/public/stadt/cities/route.ts": {
+    "mtime": 1779019720.660839,
+    "hash": "e8c79c20ec114cc77612af5380633810"
+  },
+  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/api/public/stadt/cities/[slug]/route.ts": {
+    "mtime": 1779019720.660418,
+    "hash": "4e0a5399d814eabafcd2bfb71e28e821"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/app/api/public/establishments/route.ts": {
     "mtime": 1778596497.40599,
@@ -255,33 +191,9 @@
     "mtime": 1777546719.8731523,
     "hash": "d8cca1a46fb40075cb7874f072f56df1"
   },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/operator/layout.tsx": {
-    "mtime": 1776412283.611351,
-    "hash": "25af1cd470911bfa4346120d26baeaf0"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/operator/dashboard/page.tsx": {
-    "mtime": 1776493429.833134,
-    "hash": "311041c1bb31e46456012d2858f06773"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/app/operator/login/page.tsx": {
-    "mtime": 1776493429.227088,
-    "hash": "edc0fd693ad334355f5115151b094ef4"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/stores/adminStore.ts": {
-    "mtime": 1776359757.0498672,
-    "hash": "cf34c33aab627cb8718d63d41a961b00"
-  },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/stores/bookingStore.ts": {
     "mtime": 1777593419.2575915,
     "hash": "4b39a244bab25e97ed5c9c11ef84e613"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/stores/authStore.ts": {
-    "mtime": 1776359757.0469735,
-    "hash": "c6d00a1ae4d9e16efffc8e21bd75acf9"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/stores/adminAuthStore.ts": {
-    "mtime": 1776373342.4787297,
-    "hash": "9a91bb7188725ec6047c03f6ff6bca12"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/LanguageSelector.tsx": {
     "mtime": 1771786043.2518885,
@@ -308,8 +220,8 @@
     "hash": "5f465338c9c83716fd67bba76b9852d4"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/ui/slider.tsx": {
-    "mtime": 1771052482.0,
-    "hash": "d72c2e0760fae2d1d586db1f8e2c50f9"
+    "mtime": 1778836068.558588,
+    "hash": "f6a50ebc13dd3350d714d3682381233f"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/ui/popover.tsx": {
     "mtime": 1771052482.0,
@@ -348,8 +260,8 @@
     "hash": "14f124762142b39a666ce10d3b42d28c"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/ui/sonner.tsx": {
-    "mtime": 1771052482.0,
-    "hash": "6ea1f5a74a5c8a3463d405fcd3099771"
+    "mtime": 1778836127.5192182,
+    "hash": "24a2c7eac673a6eb875ad2711d7d8cbd"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/ui/navigation-menu.tsx": {
     "mtime": 1771052482.0,
@@ -400,8 +312,8 @@
     "hash": "19bc4411b724fb504c65550b61a453b1"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/ui/menubar.tsx": {
-    "mtime": 1771052482.0,
-    "hash": "f3836779da2e4f6a90dd7f2755f4c61e"
+    "mtime": 1778836017.224236,
+    "hash": "02cf44761f68e8f7dddb066b554fa021"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/ui/dialog.tsx": {
     "mtime": 1771052482.0,
@@ -444,8 +356,8 @@
     "hash": "3280feca735918afc1e61fa59ba6e3f3"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/ui/dropdown-menu.tsx": {
-    "mtime": 1771052482.0,
-    "hash": "61ed555c8e1fdeb8556a276a1721c8d4"
+    "mtime": 1778836017.1124587,
+    "hash": "395d2fdc00f4ec8f68175ebeaaa8cba4"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/ui/select.tsx": {
     "mtime": 1776865550.814562,
@@ -464,8 +376,8 @@
     "hash": "ee5017bac14efeda715feaceb488382a"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/ui/context-menu.tsx": {
-    "mtime": 1771052482.0,
-    "hash": "ae9a7bdee410df0b5d0380784c3a2d16"
+    "mtime": 1778835952.604437,
+    "hash": "95615db9b4cb1e6bdeefcdacbaaca7a3"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/ui/form.tsx": {
     "mtime": 1771052482.0,
@@ -480,56 +392,52 @@
     "hash": "ab76a76be9c6521310e9fb91c7800ef3"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/home/FeaturedCities.tsx": {
-    "mtime": 1778594365.1817346,
-    "hash": "90942372280c0d2903c1804262f02ec9"
+    "mtime": 1779183000.5464664,
+    "hash": "170f94965e2dcb03b3bc6286d99c139f"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/home/HeroSection.tsx": {
-    "mtime": 1777541173.838023,
-    "hash": "57d1e030372ba2958eaa5f9fc0881d53"
+    "mtime": 1779202293.553203,
+    "hash": "813018f979eb61255f7aa13c2e8a3796"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/home/CategoriesSection.tsx": {
-    "mtime": 1776901609.4014204,
-    "hash": "926a14fa45f10bdbcd9367b87288dd7f"
+    "mtime": 1779182883.2188785,
+    "hash": "620df4891c188eede8dfad4f6292f322"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/home/SEOContentSection.tsx": {
-    "mtime": 1776901630.9286904,
-    "hash": "bdfee6a00002139454413d42fadf0c97"
+    "mtime": 1779183191.3376057,
+    "hash": "9eee3f6840a40a0d5d842389ce81e6e5"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/home/HomePage.tsx": {
-    "mtime": 1776897031.2254431,
-    "hash": "98bc7b5746f9a3a51d045cfd54751d29"
+    "mtime": 1779178361.6220524,
+    "hash": "e41ec73944bb18459e5efca180836583"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/bordell/ProductSEOContent.tsx": {
     "mtime": 1777593389.820786,
     "hash": "f30bf41e62656e4bcdc0350363eacbb5"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/bordell/ProductDetailPageContent.tsx": {
-    "mtime": 1776637740.2126763,
-    "hash": "1f70f051f72a2995a4953db343dba5b5"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/auth/GoogleOAuthButton.tsx": {
-    "mtime": 1775989784.227273,
-    "hash": "b333ca223bcb650cf29fc34e0870706c"
+    "mtime": 1779175509.653368,
+    "hash": "fd6b0f625534ce77ac4f4813dde76bb5"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/layout/LocaleInit.tsx": {
     "mtime": 1776409950.421885,
     "hash": "486ac89db20cc69e3521e0960ef8a656"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/layout/Footer.tsx": {
-    "mtime": 1776029824.4239419,
-    "hash": "1265b98bea1dc38632d585cfaa596790"
+    "mtime": 1779185920.477367,
+    "hash": "e3bc31cb714b344e1acf37aa89414cd5"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/layout/LanguageSelector.tsx": {
-    "mtime": 1777593345.370147,
-    "hash": "20f009899f789c2bc3c6cc52bff29d6d"
+    "mtime": 1778835786.7015917,
+    "hash": "c913fe6847e7cca253ef05e7fa4ec9b5"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/layout/Header.tsx": {
-    "mtime": 1776864645.3426402,
-    "hash": "f1f8954665a7a5bba7e6658940d4027d"
+    "mtime": 1779191787.9915407,
+    "hash": "12478fb811197009045cf4f251664150"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/layout/MobileMenu.tsx": {
-    "mtime": 1776409307.4916186,
-    "hash": "b66467d2fdc2dc1aef725433d8f51674"
+    "mtime": 1779176198.8975673,
+    "hash": "c3097399bb0d8e3d7afa2e123431e177"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/layout/hooks/useScrollHeader.ts": {
     "mtime": 1771798222.8212116,
@@ -539,73 +447,25 @@
     "mtime": 1777547495.9116783,
     "hash": "264f3335526d0ba1b90a01dfce93af08"
   },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/providers/AdminAuthProvider.tsx": {
-    "mtime": 1776409973.7137332,
-    "hash": "ec40df15282d6b6317cc24d64026ccf2"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/providers/SessionProvider.tsx": {
-    "mtime": 1776892918.3780625,
-    "hash": "2a2f2e4a51bf1745186b6323025ad2dc"
-  },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/providers/QueryProvider.tsx": {
     "mtime": 1772320987.6549993,
     "hash": "a99c7ac049e992d1767e286dc0df54ef"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/listings/ListingCard.tsx": {
-    "mtime": 1778790316.0661702,
-    "hash": "bd23871f8bb1f04e5ed5b106d0221a47"
+    "mtime": 1779183684.1148078,
+    "hash": "55c2ee07e711777641a22907f92280aa"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/listings/ReservationModal.tsx": {
-    "mtime": 1777593471.7430494,
-    "hash": "8b38727639b2b79939d9db98b544856d"
+    "mtime": 1779191553.6730611,
+    "hash": "20455e9c7915d25fbdf8f680dd3bae98"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/listings/ListingsSection.tsx": {
-    "mtime": 1778760684.2947147,
-    "hash": "9f99c79baa5cb819a54657a7525a4591"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/admin/AdminShell.tsx": {
-    "mtime": 1777630478.4859679,
-    "hash": "2ce19609c24cbaed12a2697f38be0d52"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/admin/AdminEventsWorkspace.tsx": {
-    "mtime": 1777593559.47961,
-    "hash": "32968bce4847c39e2ebeafec00546b66"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/admin/AdminVenuesWorkspace.tsx": {
-    "mtime": 1778603320.7608771,
-    "hash": "50f7884be5a2c29e7e1cd28d66c0fc0e"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/admin/AdminBusinessesWorkspace.tsx": {
-    "mtime": 1777593623.1822038,
-    "hash": "0b40ecf61d770a09f949e22a7ef9290d"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/admin/AdminSettingsWorkspace.tsx": {
-    "mtime": 1776360425.0782044,
-    "hash": "6e5f91e4043ff573c40b010ba1520d2e"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/admin/AdminOperatorsWorkspace.tsx": {
-    "mtime": 1777593559.4803214,
-    "hash": "155d2e86ce88bf799e3acd655975ffea"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/admin/AdminDiscoveryWorkspace.tsx": {
-    "mtime": 1776506709.2986002,
-    "hash": "8d398c6150e0611f4dbc067634393690"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/admin/AdminLoginPage.tsx": {
-    "mtime": 1776639535.224159,
-    "hash": "b5312230d1e384d4285d9679ccb44ac1"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/admin/AdminCitiesWorkspace.tsx": {
-    "mtime": 1777630566.1597576,
-    "hash": "fda751e21d32aa87351a47ccca293419"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/admin/AdminDashboard.tsx": {
-    "mtime": 1777593559.4861438,
-    "hash": "412d8119c5eda8834a444a803f935860"
+    "mtime": 1779185378.0485258,
+    "hash": "3c5b1044d3416ac5904a0a241877c1b6"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/search/SearchPageContent.tsx": {
-    "mtime": 1778761025.3803167,
-    "hash": "b9c5a6181e3d48d1e73d794f06a967b5"
+    "mtime": 1779175509.546114,
+    "hash": "46713a43a61dc25bf9c5572e4f235df3"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/search/SearchFilters.tsx": {
     "mtime": 1776865557.7592914,
@@ -640,28 +500,16 @@
     "hash": "2cd27954161b20619abc820483a4672b"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/search/hooks/useSearchPage.ts": {
-    "mtime": 1776867075.2368176,
-    "hash": "c630a0c57594cd3396b42feff2c28f2e"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/dashboard/DashboardTabs.tsx": {
-    "mtime": 1777593570.973524,
-    "hash": "65c52da0c6138d7a42427800c309377b"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/dashboard/DashboardSidebar.tsx": {
-    "mtime": 1772323154.479397,
-    "hash": "0afe51ccda2970020508e55f3f9784a8"
+    "mtime": 1778835586.614938,
+    "hash": "09d5657b44f9bb19078fd1e3c42071f0"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/seo/JsonLd.tsx": {
     "mtime": 1776896959.6722753,
     "hash": "3faa1d4a99a19d40c4466ef8d6b4f42c"
   },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/pages/RegisterPage.tsx": {
-    "mtime": 1776890480.9380586,
-    "hash": "5fdc9cf44b37fe2ecd765681cbbbd732"
-  },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/pages/LoginPage.tsx": {
-    "mtime": 1776890459.5336528,
-    "hash": "c1d4829d9601031c862fa05d122e7248"
+    "mtime": 1779196552.627442,
+    "hash": "b14f749f9918a2d4472e581be45081b8"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/components/pages/CityPage.tsx": {
     "mtime": 1778760890.4837506,
@@ -671,65 +519,37 @@
     "mtime": 1777593389.8212621,
     "hash": "f1da782b17a1b22afba973016e657e90"
   },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/pages/AdminPanel.tsx": {
-    "mtime": 1777630485.7370882,
-    "hash": "b34a44056a61a61ccae2f34f88fbdf48"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/pages/DashboardPage.tsx": {
-    "mtime": 1776369442.4821277,
-    "hash": "b61f3e660f9b56198e23fc1bf52b5ff0"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/operator/OperatorLoginPage.tsx": {
-    "mtime": 1777593369.5382528,
-    "hash": "33f37bcb9006da0d95b97fd470fe91d6"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/operator/OperatorDashboardWorkspace.tsx": {
-    "mtime": 1776495229.376816,
-    "hash": "7d213614f8a262fdd061a5481e1d3c39"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/operator/OperatorShell.tsx": {
-    "mtime": 1777618273.9979,
-    "hash": "6bf59e1185df16264ccf9e2bbf10fc09"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/operator/OperatorVenuesWorkspace.tsx": {
-    "mtime": 1777593559.4855587,
-    "hash": "38d2e502760739b3837a7fccbfd7abda"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/components/operator/OperatorEventsWorkspace.tsx": {
-    "mtime": 1777593598.0951178,
-    "hash": "e01fd4695bba48938c71f9a8835768e2"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/hooks/useGoogleOAuth.ts": {
-    "mtime": 1776890292.4955733,
-    "hash": "5d9a3b806d7728028b6676abc4117038"
-  },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/hooks/useQueries.ts": {
-    "mtime": 1778593356.3698602,
-    "hash": "248b8122effb07f39514293aeadc94c4"
+    "mtime": 1779202276.6407683,
+    "hash": "30b3511c93e3232b3911e5e69c885ed7"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/hooks/use-mobile.ts": {
     "mtime": 1777593349.2587404,
     "hash": "fd8f3de46465787a58033d84f01d8769"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/hooks/use-toast.ts": {
-    "mtime": 1777593419.2569563,
-    "hash": "13d1c9f3c9d5d319ec680ddefa134da0"
+    "mtime": 1778836193.7779596,
+    "hash": "bc2c33ec684a0e7d889df2e9977a4949"
   },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/admin-session.ts": {
-    "mtime": 1776359757.0481765,
-    "hash": "55c16531a995baca18a5e1daa2b8f0c0"
+  "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/sanitize.ts": {
+    "mtime": 1779196484.2352598,
+    "hash": "539f5e174a9e4e2997dbab6bc8a003b7"
+  },
+  "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/bordell-type.test.ts": {
+    "mtime": 1778798978.681425,
+    "hash": "b24c1c1c44fdff7433e657edaadbafc8"
+  },
+  "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/public-cities.ts": {
+    "mtime": 1779019720.6679199,
+    "hash": "514fabe5b50b022b94db0bcc1c947bff"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/backend-client.test.ts": {
-    "mtime": 1778757314.021525,
-    "hash": "efea9421803cf74ea93d1a36fdcbf178"
+    "mtime": 1779019720.6661754,
+    "hash": "ee2a982f473cdb6cdeabda295183ff44"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/navigation.ts": {
     "mtime": 1776029550.4859993,
     "hash": "499d9f88bd60a6e7b820e5717287e835"
-  },
-  "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/admin-config.ts": {
-    "mtime": 1776359757.0478709,
-    "hash": "72e697c0a297755d75acdaa7fae48e7d"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/search.ts": {
     "mtime": 1771793103.0868006,
@@ -740,12 +560,12 @@
     "hash": "1e01d3c032ee11bb8082334a18e015f8"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/api.public.test.ts": {
-    "mtime": 1778761986.1061828,
-    "hash": "860b208482acb7651f447dd9be8ee5e6"
+    "mtime": 1779202323.150438,
+    "hash": "b5a50134ccec67f4ed3187fdb80e358c"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/backend-client.ts": {
-    "mtime": 1778757293.0518258,
-    "hash": "e6ec03aae040d47e5117056426f8b850"
+    "mtime": 1779190518.8624723,
+    "hash": "d31bcc187b6678193c4d6d767a520c16"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/utils.ts": {
     "mtime": 1771052483.0,
@@ -756,32 +576,36 @@
     "hash": "9c7d12d11990725d2546964f749f99da"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/api.ts": {
-    "mtime": 1778761931.343941,
-    "hash": "4c64261f1670d7bad6743b690dafee07"
+    "mtime": 1779202261.5632832,
+    "hash": "d5455d0ff97386458edf93b965dcc6e2"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/api-config.ts": {
     "mtime": 1777572788.2486742,
     "hash": "be942f9069eb791a26baaaf89b483dfd"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/structuredData.test.ts": {
-    "mtime": 1777568249.8823912,
-    "hash": "b280ea0fce35e959df409ba037de2514"
+    "mtime": 1778797414.0537043,
+    "hash": "0081f28ba7ddde941ce0454e659d9012"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/public-service-types.test.ts": {
     "mtime": 1776852870.8380024,
     "hash": "5da4b3a44eb46a2f09bed58223bdb1e8"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/public-discovery-fallbacks.ts": {
-    "mtime": 1778594337.2500284,
-    "hash": "b5c67d73a892a97901ed21aa471e6bc8"
+    "mtime": 1779019720.6686666,
+    "hash": "c5d8ad95a6cba5a50477c894aca36fdb"
+  },
+  "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/bordell-type.ts": {
+    "mtime": 1778798997.709948,
+    "hash": "83bda2d4757929bc2ac22d54faa8501f"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/structuredData.ts": {
-    "mtime": 1778518795.2230394,
-    "hash": "f879aaf09972b6de272333c8c8a34372"
+    "mtime": 1778797859.1886187,
+    "hash": "8bc25c222cf665381594e23e7d51da6a"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/hours.ts": {
-    "mtime": 1776866245.743035,
-    "hash": "e8c21758ae0e8dd01eb0c4da54c87147"
+    "mtime": 1778836428.3769987,
+    "hash": "41301a18663efacc79c42826d1b9c80e"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/seo/crawl-controls.test.ts": {
     "mtime": 1775989462.2428038,
@@ -792,8 +616,8 @@
     "hash": "48b2475d60c46ba080dce3f5ece1b748"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/lib/seo/home.ts": {
-    "mtime": 1777593389.8226619,
-    "hash": "b11b5708129e119770a925a3b792f5b0"
+    "mtime": 1778836602.3025732,
+    "hash": "64a5f7e9f1b177a01133a9e7f768912d"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/i18n/routing.ts": {
     "mtime": 1776006638.034656,
@@ -820,8 +644,8 @@
     "hash": "51a576cff4919418464b951f147c6bd0"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/data/mock-data.ts": {
-    "mtime": 1776333204.1892068,
-    "hash": "6ea902096e1d1648adad89ca12ce0db8"
+    "mtime": 1779189578.5933042,
+    "hash": "350db8d84cbb7ec061b2e7e7e1a5c6f8"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/src/data/blog-posts.ts": {
     "mtime": 1772977123.1388118,
@@ -835,9 +659,17 @@
     "mtime": 1777499193.666657,
     "hash": "c0793e4399ceb86b91b28dda0c91a27f"
   },
+  "/Users/admin/Desktop/dev/desiremap/frontend/CHANGELOG.md": {
+    "mtime": 1779191924.9648108,
+    "hash": "4c959a3d614efdcad2927bbea04d9dce"
+  },
   "/Users/admin/Desktop/dev/desiremap/frontend/PROJECT.md": {
     "mtime": 1776374668.0567071,
     "hash": "067a8c79544eb42ac15ed235d14c5848"
+  },
+  "/Users/admin/Desktop/dev/desiremap/frontend/STATE.md": {
+    "mtime": 1779191938.7563338,
+    "hash": "e562662ccca66e391f2d40a85935c973"
   },
   "/Users/admin/Desktop/dev/desiremap/frontend/google0162ffc78d921e4a.html": {
     "mtime": 1774653486.0432858,

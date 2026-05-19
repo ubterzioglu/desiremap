@@ -25,7 +25,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
         <h2 className="mb-4 text-2xl font-bold text-foreground">
           Was ist {productData.name}?
         </h2>
-        <div className="prose prose-invert speakable-description max-w-none">
+        <div className="speakable-description prose max-w-none prose-invert">
           <p className="leading-relaxed">
             {productData.name} ist ein renommierter {typeLabels[productData.type]} im {productData.city}er Rotlichtviertel.
             Als Teil des größten{' '}
@@ -52,7 +52,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
         <h3 className="mb-3 text-xl font-semibold text-foreground">
           Hauptservices von {productData.name}
         </h3>
-        <div className="prose prose-invert speakable-services mb-6 max-w-none">
+        <div className="speakable-services prose mb-6 max-w-none prose-invert">
           <p className="leading-relaxed">
             Der {typeLabels[productData.type]} {productData.name} bietet ein umfangreiches Serviceportfolio.
             Zu den Hauptleistungen gehören: {productData.services.join(', ')}. Alle Services werden
@@ -68,7 +68,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
         <h3 className="mb-3 text-xl font-semibold text-foreground">
           Preise und Eintritt
         </h3>
-        <div className="prose prose-invert max-w-none">
+        <div className="prose max-w-none prose-invert">
           <p className="leading-relaxed">
             Die Preise in {productData.name} beginnen bei {productData.price.toFixed(2)}€.
             Für detaillierte Preisinformationen empfehlen wir einen Besuch oder Anruf.
@@ -91,7 +91,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
         <h3 className="mb-3 text-xl font-semibold text-foreground">
           Adresse von {productData.name}
         </h3>
-        <div className="prose prose-invert max-w-none">
+        <div className="prose max-w-none prose-invert">
           <p className="leading-relaxed">
             {productData.name} befindet sich in {productData.address}. Der {typeLabels[productData.type]}
             ist zentral gelegen und gut mit öffentlichen Verkehrsmitteln erreichbar.
@@ -107,7 +107,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
         <h3 className="mt-6 mb-3 text-xl font-semibold text-foreground">
           Öffnungszeiten
         </h3>
-        <div className="prose prose-invert max-w-none">
+        <div className="prose max-w-none prose-invert">
           <p className="leading-relaxed">
             {productData.name} hat folgende Öffnungszeiten: {productData.openingHours.opens} bis {productData.openingHours.closes} Uhr.
             Der Betrieb ist {productData.openingHours.days.length} Tage die Woche geöffnet.
@@ -129,7 +129,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
         <h3 className="mb-3 text-xl font-semibold text-foreground">
           Damenauswahl in {productData.name}
         </h3>
-        <div className="prose prose-invert max-w-none">
+        <div className="prose max-w-none prose-invert">
           <p className="leading-relaxed">
             In {productData.name} arbeiten derzeit {productData.ladiesCount} Damen.
             Die Auswahl umfasst verschiedene Nationalitäten und Serviceprofile.
@@ -145,7 +145,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
         <h3 className="mt-6 mb-3 text-xl font-semibold text-foreground">
           Ambiente und Ausstattung
         </h3>
-        <div className="prose prose-invert max-w-none">
+        <div className="prose max-w-none prose-invert">
           <p className="leading-relaxed">
             Das Ambiente in {productData.name} ist elegant und diskret.
             Die Räumlichkeiten sind gepflegt und bieten privaten Rückzugsort.
@@ -170,7 +170,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
         <h3 className="mb-3 text-xl font-semibold text-foreground">
           Gesamtbewertung auf dem Bordellmarkt
         </h3>
-        <div className="prose prose-invert max-w-none">
+        <div className="prose max-w-none prose-invert">
           <p className="leading-relaxed">
             {productData.name} hat eine durchschnittliche Bewertung von {productData.ratingValue} Sternen
             basierend auf {productData.reviewCount} Bewertungen auf dem{' '}
@@ -221,7 +221,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
         <h2 className="mb-4 text-2xl font-bold text-foreground">
           Ähnliche {typeLabels[productData.type]} auf dem Bordellmarkt
         </h2>
-        <div className="prose prose-invert max-w-none">
+        <div className="prose max-w-none prose-invert">
           <p className="leading-relaxed">
             Auf dem{' '}
             <Link href={getLocalizedPath(locale, '/')} className="text-primary hover:underline">
@@ -255,7 +255,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
         <h3 className="mb-3 text-xl font-semibold text-foreground">
           So erreichen Sie {productData.name}
         </h3>
-        <div className="prose prose-invert max-w-none">
+        <div className="prose max-w-none prose-invert">
           <p className="leading-relaxed">
             Für Reservierungen und Anfragen kontaktieren Sie {productData.name} telefonisch
             unter {productData.phone}
@@ -271,7 +271,7 @@ export function ProductSEOContent({ productData, locale }: ProductSEOContentProp
         <h3 className="mt-6 mb-3 text-xl font-semibold text-foreground">
           Online-Reservierung auf dem Bordellmarkt
         </h3>
-        <div className="prose prose-invert max-w-none">
+        <div className="prose max-w-none prose-invert">
           <p className="leading-relaxed">
             Die Online-Reservierung über den{' '}
             <Link href={getLocalizedPath(locale, '/')} className="text-primary hover:underline">

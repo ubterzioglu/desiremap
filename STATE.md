@@ -1,5 +1,15 @@
 # STATE
 
+## 2026-05-19 17:55 +0200
+
+- Scope: @tailwindcss/typography kurulumu.
+- Installed: @tailwindcss/typography@0.5.19.
+- Added: `@plugin "@tailwindcss/typography"` to globals.css (Tailwind v4 plugin syntax).
+- Removed: blog page no-custom-classname override (prose-*: now fully linted).
+- Auto-fixed: 12 classnames-order violations from new plugin classes.
+- Verification: lint 0 errors 0 warnings; typecheck 0 errors; build OK.
+- Version: 0.2.6 → 0.2.7 (patch).
+
 ## 2026-05-19 17:45 +0200
 
 - Scope: Tailwind strict lint + prettier class sorting.
