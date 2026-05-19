@@ -1,5 +1,14 @@
 # STATE
 
+## 2026-05-19 19:52 +0200
+
+- Scope: public SEO sitemap endpoint repair.
+- Fixed: `src/app/sitemap.ts` now fetches live public Stadt city and establishment data, emits localized `/venue/{slug}` detail URLs, Stadt pages, blog pages, and hreflang alternates instead of only homepage locale entries.
+- Added: `src/app/sitemap.test.ts` regression test proving public establishments are queried and venue detail URLs are emitted without `/de` prefix.
+- Verified local runtime: `/sitemap.xml` returns `application/xml` and includes `https://desiremap.de/venue/pascha-laufhaus-und-hotel`; `/robots.txt` returns 200 text/plain with sitemap reference.
+- Verification: targeted sitemap test 1/1 pass; `bun run typecheck` pass; `bun run lint` pass; `bun run build` pass.
+- Version: 0.2.7 → 0.2.8 (patch).
+
 ## 2026-05-19 17:55 +0200
 
 - Scope: @tailwindcss/typography kurulumu.

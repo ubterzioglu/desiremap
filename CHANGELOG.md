@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.8] - 2026-05-19
+
+### Added
+- Regression coverage for sitemap venue URL generation from live public establishment data.
+
+### Fixed
+- Sitemap now includes Stadt, blog, and localized venue detail URLs instead of only homepage locale entries.
+- Sitemap generation now emits canonical German URLs without `/de` prefixes and hreflang alternates for supported locales.
+- Robots endpoint remains available with sitemap reference for crawler discovery.
+
 ## [0.2.7] - 2026-05-19
 
 ### Added
