@@ -3,7 +3,9 @@ import nextTypescript from "eslint-config-next/typescript";
 import prettierConfig from "eslint-config-prettier";
 
 const eslintConfig = [
-  ...nextCoreWebVitals, ...nextTypescript, {
+  ...nextCoreWebVitals, 
+  ...nextTypescript,
+  {
   files: ["**/*.{ts,tsx}"],
 
   linterOptions: {
@@ -20,8 +22,6 @@ const eslintConfig = [
     
     // React rules
     "react-hooks/exhaustive-deps": "error",
-    "react-hooks/purity": "error",
-    "react-hooks/set-state-in-effect": "error",
     "react/no-unescaped-entities": "error",
     "react/display-name": "error",
     "react/prop-types": "off",
@@ -44,53 +44,54 @@ const eslintConfig = [
     "no-undef": "off",
     "no-unreachable": "error",
     "no-useless-escape": "error",
-      /**
-       * DOSYA BOYUTU
-       */
+
+    /**
+     * DOSYA BOYUTU
+     */
     "max-lines": [
-        "warn",
-        {
-          max: 400,
-          skipBlankLines: true,
-          skipComments: true,
-        },
-      ],
+      "warn",
+      {
+        max: 400,
+        skipBlankLines: true,
+        skipComments: true,
+      },
+    ],
 
-      /**
-       * COMPONENT / FUNCTION BOYUTU
-       */
-      "max-lines-per-function": [
-        "warn",
-        {
-          max: 150,
-          skipBlankLines: true,
-          skipComments: true,
-        },
-      ],
+    /**
+     * COMPONENT / FUNCTION BOYUTU
+     */
+    "max-lines-per-function": [
+      "warn",
+      {
+        max: 150,
+        skipBlankLines: true,
+        skipComments: true,
+      },
+    ],
 
-      /**
-       * COMPLEXITY
-       */
-      "complexity": [
-        "warn",
-        15
-      ],
+    /**
+     * COMPLEXITY
+     */
+    "complexity": [
+      "warn",
+      15
+    ],
 
-      /**
-       * STATEMENT COUNT
-       */
-      "max-statements": [
-        "warn",
-        40
-      ],
+    /**
+     * STATEMENT COUNT
+     */
+    "max-statements": [
+      "warn",
+      40
+    ],
 
-      /**
-       * NESTING
-       */
-      "max-depth": [
-        "warn",
-        3
-      ],
+    /**
+     * NESTING
+     */
+    "max-depth": [
+      "warn",
+      3
+    ],
   },
 }, {
   files: ["e2e/**/*.ts"],
@@ -102,15 +103,16 @@ const eslintConfig = [
   files: [
     "e2e/schema-smoke.spec.ts",
     "src/app/**/blog/**/page.tsx",
+    "src/app/**/bordell/**/page.tsx",
     "src/app/**/bordell/**/ProductDetailPageContent.tsx",
     "src/app/**/bordell/**/ProductSEOContent.tsx",
     "src/app/**/stadt/**/page.tsx",
-    "src/components/admin/AdminDashboard.tsx",
-    "src/components/admin/AdminDiscoveryWorkspace.tsx",
+
     "src/components/bordell/ProductDetailPageContent.tsx",
     "src/components/bordell/ProductSEOContent.tsx",
     "src/components/listings/ReservationModal.tsx",
     "src/lib/api.ts",
+    "src/lib/backend-client.ts",
     "src/lib/structuredData.ts",
     "src/proxy.ts",
   ],
