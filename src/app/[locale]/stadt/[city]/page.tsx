@@ -34,6 +34,10 @@ async function getStadtCity(slug: string): Promise<PublicCity | null> {
 }
 
 export async function generateStaticParams() {
+  if (process.env.NODE_ENV === 'development') {
+    return []
+  }
+
   const cities = await getStadtCities()
 
   return cities.flatMap((city) =>

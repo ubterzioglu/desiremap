@@ -1,7 +1,7 @@
 import { getAllBlogPostSlugs, getBlogPostBySlug } from '@/data/blog-posts'
 import { backendApi } from '@/lib/backend-client'
 import { getCityPath, getLocalizedPath, getVenuePath } from '@/lib/navigation'
-import type { PublicCity, PublicEstablishment } from '@/types'
+import type { PublicCity } from '@/types'
 
 const siteUrl = 'https://desiremap.de'
 const locales = ['de', 'en', 'ar', 'tr'] as const
@@ -64,21 +64,25 @@ async function fetchPublicCities() {
   }
 }
 
-async function fetchPublicEstablishments() {
+async function fetchPublicEstablishmentSlugs(): Promise<string[]> {
   const pageSize = 100
-  const establishments: PublicEstablishment[] = []
+  const slugs: string[] = []
+  const seen = new Set<string>()
   let offset = 0
   let total = Number.POSITIVE_INFINITY
 
   try {
-    while (offset < total && establishments.length < maxSitemapItems) {
+    while (offset < total && slugs.length < maxSitemapItems) {
       const response = await backendApi.getPublicEstablishments({ limit: pageSize, offset })
-      const page = response.results.filter((establishment) => (
-        establishment.slug && establishment.isActive !== false
-      ))
 
-      establishments.push(...page)
-      total = Number.isFinite(response.total) ? response.total : establishments.length
+      for (const e of response.results) {
+        if (e.slug && e.isActive !== false && !seen.has(e.slug)) {
+          seen.add(e.slug)
+          slugs.push(e.slug)
+        }
+      }
+
+      total = Number.isFinite(response.total) ? response.total : slugs.length
 
       if (response.results.length === 0) {
         break
@@ -87,25 +91,17 @@ async function fetchPublicEstablishments() {
       offset += response.results.length
     }
   } catch {
-    return [] satisfies PublicEstablishment[]
+    return []
   }
 
-  const seen = new Set<string>()
-  return establishments.filter((establishment) => {
-    if (seen.has(establishment.slug)) {
-      return false
-    }
-
-    seen.add(establishment.slug)
-    return true
-  })
+  return slugs
 }
 
 export async function getSitemapEntries() {
   const now = new Date()
-  const [cities, establishments] = await Promise.all([
+  const [cities, establishmentSlugs] = await Promise.all([
     fetchPublicCities(),
-    fetchPublicEstablishments(),
+    fetchPublicEstablishmentSlugs(),
   ])
 
   const staticEntries = [
@@ -121,8 +117,8 @@ export async function getSitemapEntries() {
     priority: 0.8,
   }))
 
-  const venueEntries = establishments.flatMap((establishment) => localizedEntries({
-    path: getVenuePath(defaultLocale, establishment.slug),
+  const venueEntries = establishmentSlugs.flatMap((slug) => localizedEntries({
+    path: getVenuePath(defaultLocale, slug),
     lastModified: now,
     changeFrequency: 'daily',
     priority: 0.9,

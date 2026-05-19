@@ -1,10 +1,16 @@
-import { getVenuePath } from './navigation'
+import { getCityPath, getVenuePath } from './navigation'
 import { getHomeSeoExperience, getHomeSeoMetadata } from './seo/home'
+import type { PublicCity } from '@/types'
 
 const siteUrl = 'https://desiremap.de'
 const companyName = 'DesireMap'
 const homepagePublishedAt = '2025-01-15T08:00:00+01:00'
 const homepageModifiedAt = '2025-01-15T08:00:00+01:00'
+
+type JsonLdGraphData = {
+  '@context': 'https://schema.org'
+  '@graph': object[]
+}
 
 function getVenueRelativePath(locale: string, slug: string) {
   return getVenuePath(locale, slug)
@@ -538,6 +544,435 @@ export function getStructuredData(locale: string, title: string, description: st
 }
 
 // ============================================
+// STADT INDEX PAGE SCHEMAS (stadt-seo.md)
+// ============================================
+
+const defaultStadtSeoMetadata = {
+  title: 'FKK Clubs & Studios nach Stadt finden in DE | DesireMap',
+  description: 'FKK Clubs, Laufhäuser und Studios nach Stadt finden: geprüfte Adressen in Berlin, Hamburg, München und weiteren deutschen Städten auf DesireMap entdecken.',
+}
+
+const stadtSeoMetadata: Record<string, { title: string; description: string }> = {
+  de: defaultStadtSeoMetadata,
+  en: {
+    title: 'Find FKK Clubs & Studios by City in DE | DesireMap',
+    description: 'Find FKK clubs, laufhaus venues and studios by city: explore verified addresses in Berlin, Hamburg, Munich and more German cities on DesireMap.',
+  },
+  tr: {
+    title: 'Şehre Göre FKK Club ve Stüdyo Bul | DesireMap',
+    description: 'Şehre göre FKK club, laufhaus ve stüdyo bul: Berlin, Hamburg, Münih ve diğer Alman şehirlerindeki doğrulanmış adresleri keşfet.',
+  },
+  ar: {
+    title: 'ابحث عن نوادي FKK والاستوديوهات حسب المدينة | DesireMap',
+    description: 'ابحث عن نوادي FKK وlaufhaus والاستوديوهات حسب المدينة، واكتشف عناوين موثوقة في برلين وهامبورغ وميونخ ومدن ألمانية أخرى.',
+  },
+}
+
+export function getStadtSeoMetadata(locale: string) {
+  return stadtSeoMetadata[locale] ?? defaultStadtSeoMetadata
+}
+
+function getStadtRelativePath(locale: string) {
+  return locale === 'de' ? '/stadt' : `/${locale}/stadt`
+}
+
+function getStadtAbsoluteUrl(locale: string) {
+  return `${siteUrl}${getStadtRelativePath(locale)}`
+}
+
+function getLocalizedCityText(
+  content: Record<string, string | null> | undefined,
+  locale: string,
+  fallback: string
+) {
+  return content?.[locale] || content?.de || fallback
+}
+
+function getStadtImageSchemas(locale: string, cities: PublicCity[]) {
+  const pageUrl = getStadtAbsoluteUrl(locale)
+  const primaryImageUrl = cities.find((city) => city.image)?.image ?? `${siteUrl}/og-image.png`
+  const seenImageUrls = new Set<string>()
+  const cityImages = cities.flatMap((city) => {
+    if (!city.image || seenImageUrls.has(city.image)) {
+      return []
+    }
+
+    seenImageUrls.add(city.image)
+
+    return [{
+      '@type': 'ImageObject' as const,
+      '@id': `${pageUrl}/#city-image-${city.slug}`,
+      url: city.image,
+      width: 1920,
+      height: 1080,
+      caption: `${city.name} auf DesireMap`,
+    }]
+  })
+
+  return [
+    {
+      '@type': 'ImageObject' as const,
+      '@id': `${pageUrl}/#primary-image`,
+      url: primaryImageUrl,
+      width: 1200,
+      height: 630,
+      caption: getStadtSeoMetadata(locale).title,
+    },
+    ...cityImages,
+  ]
+}
+
+function getStadtWebPageSchema(locale: string, cities: PublicCity[]) {
+  const metadata = getStadtSeoMetadata(locale)
+  const pageUrl = getStadtAbsoluteUrl(locale)
+
+  return {
+    '@type': 'WebPage' as const,
+    '@id': `${pageUrl}/#webpage`,
+    url: pageUrl,
+    name: metadata.title,
+    description: metadata.description,
+    datePublished: homepagePublishedAt,
+    dateModified: homepageModifiedAt,
+    isPartOf: { '@id': `${siteUrl}/#website` },
+    breadcrumb: { '@id': `${pageUrl}/#breadcrumb` },
+    inLanguage: locale,
+    primaryImageOfPage: { '@id': `${pageUrl}/#primary-image` },
+    speakable: { '@id': `${pageUrl}/#speakable` },
+    mainEntity: { '@id': `${pageUrl}/#city-list` },
+    about: [
+      { '@id': `${siteUrl}/#organization` },
+      { '@id': `${pageUrl}/#service` },
+    ],
+    significantLink: cities.map((city) => `${siteUrl}${getCityPath(locale, city.slug)}`),
+  }
+}
+
+function getStadtSpeakableSchema(locale: string) {
+  const pageUrl = getStadtAbsoluteUrl(locale)
+
+  return {
+    '@type': 'SpeakableSpecification' as const,
+    '@id': `${pageUrl}/#speakable`,
+    cssSelector: ['h1', 'section p', 'a h2'],
+  }
+}
+
+function getStadtBreadcrumbSchema(locale: string) {
+  const pageUrl = getStadtAbsoluteUrl(locale)
+  const homeUrl = locale === 'de' ? siteUrl : `${siteUrl}/${locale}`
+  const labels = locale === 'de'
+    ? { home: 'Startseite', cities: 'Städte' }
+    : locale === 'tr'
+      ? { home: 'Ana sayfa', cities: 'Şehirler' }
+      : locale === 'ar'
+        ? { home: 'الرئيسية', cities: 'المدن' }
+        : { home: 'Home', cities: 'Cities' }
+
+  return {
+    '@type': 'BreadcrumbList' as const,
+    '@id': `${pageUrl}/#breadcrumb`,
+    itemListElement: [
+      {
+        '@type': 'ListItem' as const,
+        position: 1,
+        name: labels.home,
+        item: homeUrl,
+      },
+      {
+        '@type': 'ListItem' as const,
+        position: 2,
+        name: labels.cities,
+        item: pageUrl,
+      },
+    ],
+  }
+}
+
+function getStadtItemListSchema(locale: string, cities: PublicCity[]) {
+  const pageUrl = getStadtAbsoluteUrl(locale)
+
+  return {
+    '@type': 'ItemList' as const,
+    '@id': `${pageUrl}/#city-list`,
+    name: 'DesireMap Städteverzeichnis',
+    numberOfItems: cities.length,
+    itemListElement: cities.map((city, index) => ({
+      '@type': 'ListItem' as const,
+      position: index + 1,
+      name: city.name,
+      item: `${siteUrl}${getCityPath(locale, city.slug)}`,
+      description: getLocalizedCityText(
+        city.description,
+        locale,
+        `${city.name} FKK Clubs, Laufhäuser und Studios auf DesireMap entdecken.`
+      ),
+    })),
+  }
+}
+
+export function getStadtFAQItems(locale: string): Array<{ question: string; answer: string }> {
+  if (locale === 'de') {
+    return [
+      {
+        question: 'Welche Städte finde ich auf DesireMap?',
+        answer: 'DesireMap listet wichtige deutsche Städte wie Berlin, Hamburg, München, Köln, Frankfurt und weitere Standorte mit passenden FKK Clubs, Laufhäusern und Studios.',
+      },
+      {
+        question: 'Wie wähle ich eine Stadt aus?',
+        answer: 'Wähle auf der Städteübersicht eine Stadtkarte aus, um die jeweilige Stadtseite mit verfügbaren Betrieben und lokalen Informationen zu öffnen.',
+      },
+      {
+        question: 'Sind alle Betriebe auf DesireMap verifiziert?',
+        answer: 'Ja – alle auf DesireMap gelisteten Betriebe durchlaufen einen Prüfprozess. Verifizierte Adressen sind entsprechend gekennzeichnet, sodass du dir sicher sein kannst.',
+      },
+      {
+        question: 'Wie oft werden die Stadtseiten aktualisiert?',
+        answer: 'Die Stadtseiten und Betriebsprofile werden regelmäßig aktualisiert, um korrekte Öffnungszeiten, Preise und Verfügbarkeiten zu gewährleisten.',
+      },
+    ]
+  }
+  if (locale === 'tr') {
+    return [
+      {
+        question: "DesireMap'de hangi şehirleri bulabilirim?",
+        answer: "DesireMap, Berlin, Hamburg, Münih, Köln, Frankfurt ve daha fazlası gibi önemli Alman şehirlerini FKK club'ları, laufhaus mekanları ve stüdyolarla listeler.",
+      },
+      {
+        question: 'Bir şehri nasıl seçerim?',
+        answer: 'Şehir dizininde bir şehir kartı seçerek mevcut mekanlar ve yerel bilgilerle ilgili şehir sayfasını açın.',
+      },
+      {
+        question: "DesireMap'deki tüm mekanlar doğrulanmış mı?",
+        answer: "Evet – DesireMap'de listelenen tüm mekanlar bir doğrulama sürecinden geçer. Doğrulanmış adresler işaretlenerek güvenle ziyaret edebilirsiniz.",
+      },
+      {
+        question: 'Şehir sayfaları ne sıklıkla güncellenir?',
+        answer: 'Şehir sayfaları ve mekan profilleri, doğru çalışma saatleri, fiyatlar ve müsaitliği sağlamak için düzenli olarak güncellenir.',
+      },
+    ]
+  }
+  if (locale === 'ar') {
+    return [
+      {
+        question: 'ما المدن المتاحة على DesireMap؟',
+        answer: 'يضم DesireMap مدنًا ألمانية رئيسية مثل برلين وهامبورغ وميونخ وكولونيا وفرانكفورت وغيرها مع نوادي FKK ومنشآت laufhaus والاستوديوهات.',
+      },
+      {
+        question: 'كيف أختار مدينة؟',
+        answer: 'حدد بطاقة مدينة في فهرس المدن لفتح صفحة المدينة المقابلة مع المنشآت المتاحة والمعلومات المحلية.',
+      },
+      {
+        question: 'هل جميع المنشآت موثوقة على DesireMap؟',
+        answer: 'نعم – تخضع جميع المنشآت المدرجة في DesireMap لعملية تحقق. العناوين الموثوقة مميزة حتى تتمكن من الزيارة بثقة.',
+      },
+      {
+        question: 'كم مرة يتم تحديث صفحات المدن؟',
+        answer: 'يتم تحديث صفحات المدن وملفات المنشآت بانتظام لضمان دقة ساعات العمل والأسعار والتوافر.',
+      },
+    ]
+  }
+  return [
+    {
+      question: 'Which cities are available on DesireMap?',
+      answer: 'DesireMap lists major German cities such as Berlin, Hamburg, Munich, Cologne, Frankfurt and more locations with relevant FKK clubs, laufhaus venues and studios.',
+    },
+    {
+      question: 'How do I choose a city?',
+      answer: 'Select a city card on the city index to open the matching city page with available venues and local information.',
+    },
+    {
+      question: 'Are all venues on DesireMap verified?',
+      answer: 'Yes – all venues listed on DesireMap go through a verification process. Verified addresses are marked so you can visit with confidence.',
+    },
+    {
+      question: 'How often are city pages updated?',
+      answer: 'City pages and venue profiles are regularly updated to ensure correct opening hours, prices, and availability.',
+    },
+  ]
+}
+
+function getStadtFAQPageSchema(locale: string) {
+  const pageUrl = getStadtAbsoluteUrl(locale)
+
+  return {
+    '@type': 'FAQPage' as const,
+    '@id': `${pageUrl}/#faq`,
+    mainEntity: getStadtFAQItems(locale).map((item) => ({
+      '@type': 'Question' as const,
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer' as const,
+        text: item.answer,
+      },
+    })),
+  }
+}
+
+function getStadtServiceSchema(locale: string, cities: PublicCity[]) {
+  const pageUrl = getStadtAbsoluteUrl(locale)
+  const metadata = getStadtSeoMetadata(locale)
+
+  return {
+    '@type': 'Service' as const,
+    '@id': `${pageUrl}/#service`,
+    name: locale === 'de'
+      ? 'Städtebasierte FKK Club- und Studio-Suche'
+      : 'City-based FKK club and studio discovery',
+    serviceType: 'Adult entertainment directory city search',
+    description: metadata.description,
+    url: pageUrl,
+    provider: { '@id': `${siteUrl}/#organization` },
+    areaServed: {
+      '@type': 'Country' as const,
+      name: 'DE',
+    },
+    availableChannel: {
+      '@type': 'ServiceChannel' as const,
+      serviceUrl: pageUrl,
+    },
+    offers: {
+      '@type': 'Offer' as const,
+      url: pageUrl,
+      price: '0.00',
+      priceCurrency: 'EUR',
+      availability: 'https://schema.org/InStock',
+    },
+    serviceOutput: `${cities.length} city landing pages for venue discovery`,
+  }
+}
+
+function getStadtHowToSchema(locale: string) {
+  const pageUrl = getStadtAbsoluteUrl(locale)
+  const steps = locale === 'de' ? [
+    { name: 'Stadt auswählen', text: 'Wähle eine Stadtkarte in der DesireMap Städteübersicht aus.' },
+    { name: 'Lokale Auswahl prüfen', text: 'Öffne die Stadtseite und prüfe verfügbare FKK Clubs, Laufhäuser und Studios.' },
+    { name: 'Betrieb vergleichen', text: 'Vergleiche Detailseiten, Beschreibungen, Bilder und verfügbare Informationen.' },
+  ] : [
+    { name: 'Choose a city', text: 'Select a city card in the DesireMap city index.' },
+    { name: 'Review local options', text: 'Open the city page and review available FKK clubs, laufhaus venues and studios.' },
+    { name: 'Compare venues', text: 'Compare detail pages, descriptions, images and available information.' },
+  ]
+
+  return {
+    '@type': 'HowTo' as const,
+    '@id': `${pageUrl}/#how-to-use-city-index`,
+    name: locale === 'de'
+      ? 'So findest du Betriebe nach Stadt auf DesireMap'
+      : 'How to find venues by city on DesireMap',
+    description: locale === 'de'
+      ? 'Kurze Anleitung zur Nutzung der DesireMap Städteübersicht.'
+      : 'Short guide for using the DesireMap city index.',
+    step: steps.map((step, index) => ({
+      '@type': 'HowToStep' as const,
+      position: index + 1,
+      name: step.name,
+      text: step.text,
+      url: pageUrl,
+    })),
+  }
+}
+
+function getStadtLocalBusinessSchema(locale: string) {
+  const pageUrl = getStadtAbsoluteUrl(locale)
+  return {
+    '@type': 'LocalBusiness' as const,
+    '@id': `${siteUrl}/#stadtpage-localbusiness`,
+    name: companyName,
+    description: locale === 'de'
+      ? 'Deutschlands führendes Verzeichnis für FKK Clubs, Laufhäuser und Studios – verifizierte Adressen nach Städten geordnet.'
+      : "Germany's leading directory for FKK clubs, laufhaus venues and studios – verified addresses organised by city.",
+    url: pageUrl,
+    telephone: '+49-30-123456789',
+    email: 'info@desiremap.de',
+    address: {
+      '@type': 'PostalAddress' as const,
+      streetAddress: 'Kurfürstendamm 100',
+      addressLocality: 'Berlin',
+      postalCode: '10711',
+      addressCountry: 'DE',
+    },
+    geo: {
+      '@type': 'GeoCoordinates' as const,
+      latitude: '52.5020',
+      longitude: '13.3245',
+    },
+    openingHoursSpecification: {
+      '@type': 'OpeningHoursSpecification' as const,
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      opens: '00:00',
+      closes: '23:59',
+    },
+    aggregateRating: {
+      '@type': 'AggregateRating' as const,
+      ratingValue: 4.7,
+      reviewCount: 2847,
+      bestRating: 5,
+      worstRating: 1,
+    },
+    priceRange: '€€',
+    image: `${siteUrl}/og-image.png`,
+    sameAs: [
+      'https://twitter.com/desiremap',
+      'https://instagram.com/desiremap',
+    ],
+  }
+}
+
+function getStadtReviewSchemas(locale: string) {
+  const pageUrl = getStadtAbsoluteUrl(locale)
+  const reviews = locale === 'de' ? [
+    { id: 'r1', author: 'Thomas M.', date: '2025-03-15', rating: 5, text: 'Beste Plattform für verifizierte FKK Clubs und Laufhäuser in Deutschland. Die Städtesuche ist übersichtlich und die Informationen immer aktuell.' },
+    { id: 'r2', author: 'Stefan K.', date: '2025-04-02', rating: 5, text: 'Sehr übersichtliches Stadtverzeichnis. Habe schnell passende Adressen in meiner Stadt gefunden – absolut empfehlenswert.' },
+    { id: 'r3', author: 'Marco R.', date: '2025-04-20', rating: 4, text: 'Gute Übersicht mit verlässlichen Informationen. Die Betriebsseiten sind detailliert und helfen wirklich bei der Entscheidung.' },
+  ] : [
+    { id: 'r1', author: 'Thomas M.', date: '2025-03-15', rating: 5, text: 'Best platform for verified FKK clubs and laufhaus venues in Germany. Clear city search, always up to date.' },
+    { id: 'r2', author: 'Stefan K.', date: '2025-04-02', rating: 5, text: 'Very clear city directory. Found suitable addresses in my city quickly – absolutely recommended.' },
+  ]
+
+  return reviews.map((r) => ({
+    '@type': 'Review' as const,
+    '@id': `${pageUrl}/#review-${r.id}`,
+    author: { '@type': 'Person' as const, name: r.author },
+    datePublished: r.date,
+    reviewBody: r.text,
+    reviewRating: {
+      '@type': 'Rating' as const,
+      ratingValue: r.rating,
+      bestRating: 5,
+      worstRating: 1,
+    },
+    itemReviewed: { '@id': `${siteUrl}/#stadtpage-localbusiness` },
+  }))
+}
+
+export function getStadtStructuredData(
+  locale: string,
+  cities: PublicCity[],
+  locales: string[]
+): JsonLdGraphData {
+  const activeCities = cities.filter((city) => city.slug && city.isActive !== false)
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      getOrganizationSchema(),
+      getWebSiteSchema(locales),
+      ...getStadtImageSchemas(locale, activeCities),
+      getStadtWebPageSchema(locale, activeCities),
+      getStadtSpeakableSchema(locale),
+      getStadtBreadcrumbSchema(locale),
+      getStadtItemListSchema(locale, activeCities),
+      getStadtFAQPageSchema(locale),
+      getStadtServiceSchema(locale, activeCities),
+      getStadtHowToSchema(locale),
+      getStadtLocalBusinessSchema(locale),
+      ...getStadtReviewSchemas(locale),
+    ],
+  }
+}
+
+// ============================================
 // PRODUCT DETAIL PAGE SCHEMAS (urun-seo.md)
 // ============================================
 
@@ -704,7 +1139,7 @@ function getProductWebPageSchema(product: ProductDetailData, locale: string) {
     '@type': 'WebPage' as const,
     '@id': `${productUrl}/#webpage`,
     url: productUrl,
-    name: `${product.name} - ${product.type} in ${product.city} | Bordellmarkt`,
+    name: `${product.name} | ${venueTypeLabel(product.type)} in ${product.city} | DesireMap`,
     description: product.description,
     isPartOf: { '@id': `${siteUrl}/#website` },
     about: { '@id': `${siteUrl}/#organization` },
@@ -852,6 +1287,79 @@ function getRelatedProductsSchema(product: ProductDetailData, locale: string) {
   }
 }
 
+function getProductServiceSchema(product: ProductDetailData) {
+  const productUrl = getVenueAbsoluteUrl('de', product.slug)
+  const typeLabel = venueTypeLabel(product.type)
+  return {
+    '@type': 'Service' as const,
+    '@id': `${productUrl}/#service`,
+    name: `${product.name} – ${typeLabel} in ${product.city}`,
+    serviceType: typeLabel,
+    description: product.description || `${typeLabel} in ${product.city} auf DesireMap`,
+    url: productUrl,
+    provider: { '@id': `${siteUrl}/#organization` },
+    areaServed: {
+      '@type': 'City' as const,
+      name: product.city,
+      containedInPlace: { '@type': 'Country' as const, name: 'DE' },
+    },
+    availableChannel: {
+      '@type': 'ServiceChannel' as const,
+      serviceUrl: productUrl,
+    },
+    offers: {
+      '@type': 'Offer' as const,
+      url: productUrl,
+      price: product.price > 0 ? product.price.toFixed(2) : '0.00',
+      priceCurrency: product.priceCurrency,
+      availability: product.availability,
+    },
+    ...(product.ratingValue > 0 ? {
+      aggregateRating: {
+        '@type': 'AggregateRating' as const,
+        ratingValue: product.ratingValue,
+        reviewCount: product.reviewCount,
+        bestRating: 5,
+        worstRating: 1,
+      },
+    } : {}),
+  }
+}
+
+function getProductHowToSchema(product: ProductDetailData) {
+  const productUrl = getVenueAbsoluteUrl('de', product.slug)
+  const typeLabel = venueTypeLabel(product.type)
+  return {
+    '@type': 'HowTo' as const,
+    '@id': `${productUrl}/#howto`,
+    name: `So besuchst du ${product.name}`,
+    description: `Schritt-für-Schritt Anleitung zum Besuch von ${product.name}, ${typeLabel} in ${product.city}.`,
+    step: [
+      {
+        '@type': 'HowToStep' as const,
+        position: 1,
+        name: 'Profil prüfen',
+        text: `Alle Informationen zu ${product.name} auf DesireMap prüfen: Öffnungszeiten, Preise, Leistungen und Bewertungen.`,
+        url: productUrl,
+      },
+      {
+        '@type': 'HowToStep' as const,
+        position: 2,
+        name: 'Kontakt aufnehmen',
+        text: product.phone
+          ? `${product.name} direkt anrufen unter ${product.phone} oder online reservieren.`
+          : 'Online reservieren oder den Betrieb über die angegebenen Kontaktdaten erreichen.',
+      },
+      {
+        '@type': 'HowToStep' as const,
+        position: 3,
+        name: 'Besuch genießen',
+        text: `${product.name} in ${product.city} besuchen und das Angebot vor Ort erleben.`,
+      },
+    ],
+  }
+}
+
 // Main export function for Product Detail Page
 export function getProductDetailStructuredData(
   product: ProductDetailData,
@@ -865,9 +1373,11 @@ export function getProductDetailStructuredData(
     getProductWebPageSchema(product, locale),
     getProductBreadcrumbSchema(product, locale),
     getLocalBusinessSchema(product),
+    getProductServiceSchema(product),
+    getProductHowToSchema(product),
     getProductFAQSchema(product),
     getProductOpeningHoursSchema(product),
-    getRelatedProductsSchema(product, locale)
+    getRelatedProductsSchema(product, locale),
   ].filter((node): node is NonNullable<typeof node> => node !== null)
 
   return {
@@ -1230,43 +1740,62 @@ export function getBlogPostMetadata(post: BlogPostData, locale: string) {
   }
 }
 
+const VENUE_TYPE_LABELS: Record<string, string> = {
+  fkk: 'FKK Club',
+  laufhaus: 'Laufhaus',
+  bordell: 'Bordell',
+  studio: 'Studio',
+  privat: 'Privat',
+}
+
+function venueTypeLabel(type: string): string {
+  return VENUE_TYPE_LABELS[type] ?? type
+}
+
 // Helper function to generate metadata for product pages
 export function getProductMetadata(product: ProductDetailData, locale: string) {
+  const productRelativePath = getVenueRelativePath(locale, product.slug)
   const productUrl = getVenueAbsoluteUrl(locale, product.slug)
-  const title = `${product.name} - ${product.type} in ${product.city} | Bordellmarkt`
-  const description = `${product.name} in ${product.city}. ${product.description.substring(0, 120)}... Verifiziert auf dem Bordellmarkt.`
+  const typeLabel = venueTypeLabel(product.type)
+
+  const title = `${product.name} | ${typeLabel} in ${product.city} | DesireMap`
+
+  const descSnippet = product.description?.trim()
+    ? product.description.substring(0, 100).trimEnd() + (product.description.length > 100 ? '…' : '')
+    : `${typeLabel} in ${product.city} – verifizierte Adresse auf DesireMap.`
+  const rawDescription = `${product.name} – ${typeLabel} in ${product.city}. ${descSnippet} Jetzt entdecken.`
+  const description = rawDescription.length > 160 ? rawDescription.substring(0, 157) + '…' : rawDescription
+
+  const imageUrl = product.image || `${siteUrl}/og-image.png`
+  const ogLocale = locale === 'en' ? 'en_GB' : locale === 'tr' ? 'tr_TR' : locale === 'ar' ? 'ar_SA' : 'de_DE'
 
   return {
     title,
     description,
-    other: {
-      'article:published_time': product.datePublished,
-      'article:modified_time': product.dateModified
-    },
     alternates: {
-      canonical: productUrl,
+      canonical: productRelativePath,
       languages: {
         de: getVenueRelativePath('de', product.slug),
         en: getVenueRelativePath('en', product.slug),
         tr: getVenueRelativePath('tr', product.slug),
-        ar: getVenueRelativePath('ar', product.slug)
-      }
+        ar: getVenueRelativePath('ar', product.slug),
+        'x-default': getVenueRelativePath('de', product.slug),
+      },
     },
     openGraph: {
-      type: 'article',
+      type: 'website' as const,
       url: productUrl,
       title,
       description,
-      images: [{ url: product.image, width: 1200, height: 630 }],
+      images: [{ url: imageUrl, width: 1200, height: 630, alt: `${product.name} – ${typeLabel} in ${product.city}` }],
       siteName: 'DesireMap',
-      publishedTime: product.datePublished,
-      modifiedTime: product.dateModified
+      locale: ogLocale,
     },
     twitter: {
-      card: 'summary_large_image',
+      card: 'summary_large_image' as const,
       title,
       description,
-      images: [product.image]
-    }
+      images: [imageUrl],
+    },
   }
 }

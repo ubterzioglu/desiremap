@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1776342581307,
+  "lastScanned": 1779229761767,
   "projectRoot": "/Users/admin/Desktop/dev/desiremap/frontend",
   "techStack": {
     "languages": [
@@ -24,18 +24,23 @@
     "frameworks": [
       {
         "name": "next",
-        "version": "16.1.1",
+        "version": "16.2.6",
         "category": "fullstack"
       },
       {
         "name": "react",
-        "version": "19.0.0",
+        "version": "19.2.6",
         "category": "frontend"
       },
       {
         "name": "react-dom",
-        "version": "19.0.0",
+        "version": "19.2.6",
         "category": "frontend"
+      },
+      {
+        "name": "@playwright/test",
+        "version": "1.59.1",
+        "category": "testing"
       },
       {
         "name": "playwright",
@@ -47,7 +52,7 @@
     "runtime": null
   },
   "build": {
-    "buildCommand": "bun run build 2>&1 | tail -30",
+    "buildCommand": "npm run build 2>&1 | tail -20",
     "testCommand": "npm test",
     "lintCommand": "npm run lint",
     "devCommand": "npm run dev",
@@ -55,8 +60,11 @@
       "dev": "next dev -p 3000 2>&1 | tee dev.log",
       "build": "next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/",
       "start": "NODE_ENV=production bun .next/standalone/server.js 2>&1 | tee server.log",
-      "lint": "eslint .",
-      "test": "bun test"
+      "lint": "eslint . --ext .js,.ts,.tsx --max-warnings 0",
+      "test": "bun test",
+      "typecheck": "tsc --noEmit",
+      "test:e2e": "playwright test",
+      "format": "prettier --write ."
     }
   },
   "conventions": {
@@ -74,42 +82,61 @@
       "public",
       "src"
     ],
-    "gitBranches": null
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
   },
   "customNotes": [],
   "directoryMap": {
     "docs": {
       "path": "docs",
       "purpose": "Documentation",
-      "fileCount": 9,
-      "lastAccessed": 1776342581262,
+      "fileCount": 4,
+      "lastAccessed": 1779229761720,
       "keyFiles": [
         "anasayfa-seo.md",
-        "backend-architecture.md",
-        "backend-architecture.xml",
         "blog-seo.md",
-        "desiremap-cms-prd.xml"
+        "urun-seo.md"
+      ]
+    },
+    "e2e": {
+      "path": "e2e",
+      "purpose": null,
+      "fileCount": 7,
+      "lastAccessed": 1779229761728,
+      "keyFiles": [
+        "debug-test.spec.ts",
+        "home-compare.spec.ts",
+        "home-data.spec.ts",
+        "listing-card.spec.ts",
+        "login-pages.spec.ts"
       ]
     },
     "examples": {
       "path": "examples",
       "purpose": "Example code",
       "fileCount": 0,
-      "lastAccessed": 1776342581262,
+      "lastAccessed": 1779229761730,
       "keyFiles": []
     },
     "graphify-out": {
       "path": "graphify-out",
       "purpose": null,
-      "fileCount": 0,
-      "lastAccessed": 1776342581263,
-      "keyFiles": []
+      "fileCount": 5,
+      "lastAccessed": 1779229761737,
+      "keyFiles": [
+        "GRAPH_REPORT.md",
+        "graph.html",
+        "graph.json",
+        "manifest.json"
+      ]
     },
     "messages": {
       "path": "messages",
       "purpose": null,
       "fileCount": 5,
-      "lastAccessed": 1776342581268,
+      "lastAccessed": 1779229761737,
       "keyFiles": [
         "AGENTS.md",
         "ar.json",
@@ -118,53 +145,53 @@
         "tr.json"
       ]
     },
-    "mini-services": {
-      "path": "mini-services",
-      "purpose": null,
-      "fileCount": 1,
-      "lastAccessed": 1776342581269,
-      "keyFiles": []
-    },
     "public": {
       "path": "public",
       "purpose": "Public files",
-      "fileCount": 10,
-      "lastAccessed": 1776342581269,
+      "fileCount": 12,
+      "lastAccessed": 1779229761737,
       "keyFiles": [
         "AGENTS.md",
         "categories-bg.jpg",
         "featured-bg.jpg",
         "hero-bg.jpg",
-        "hero-woman.png"
+        "hero-bg_old.jpg"
       ]
     },
     "src": {
       "path": "src",
       "purpose": "Source code",
       "fileCount": 2,
-      "lastAccessed": 1776342581269,
+      "lastAccessed": 1779229761737,
       "keyFiles": [
         "proxy.ts"
       ]
     },
+    "test-results": {
+      "path": "test-results",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1779229761738,
+      "keyFiles": []
+    },
     "upload": {
       "path": "upload",
       "purpose": null,
-      "fileCount": 5,
-      "lastAccessed": 1776342581269,
+      "fileCount": 8,
+      "lastAccessed": 1779229761738,
       "keyFiles": [
         "Ekran Resmi 2026-02-21 23.37.46.png",
         "Ekran Resmi 2026-02-22 00.11.25.png",
         "Ekran Resmi 2026-02-22 00.25.18.png",
         "Ekran Resmi 2026-02-22 00.26.26.png",
-        "desiremap_hero.jpg"
+        "asda.jpg"
       ]
     },
     "src/app": {
       "path": "src/app",
       "purpose": "Application code",
-      "fileCount": 5,
-      "lastAccessed": 1776342581271,
+      "fileCount": 4,
+      "lastAccessed": 1779229761742,
       "keyFiles": [
         "AGENTS.md",
         "globals.css",
@@ -175,7 +202,7 @@
       "path": "src/components",
       "purpose": "UI components",
       "fileCount": 1,
-      "lastAccessed": 1776342581273,
+      "lastAccessed": 1779229761743,
       "keyFiles": [
         "LanguageSelector.tsx"
       ]
@@ -184,7 +211,7 @@
       "path": "src/data",
       "purpose": "Data files",
       "fileCount": 6,
-      "lastAccessed": 1776342581273,
+      "lastAccessed": 1779229761743,
       "keyFiles": [
         "AGENTS.md",
         "blog-content.ts",
@@ -194,325 +221,96 @@
     "src/lib": {
       "path": "src/lib",
       "purpose": "Library code",
-      "fileCount": 6,
-      "lastAccessed": 1776342581274,
+      "fileCount": 19,
+      "lastAccessed": 1779229761743,
       "keyFiles": [
-        "api.ts",
-        "backend-client.ts",
-        "navigation.ts"
+        "api-config.ts",
+        "api.public.test.ts",
+        "api.ts"
       ]
     },
     "src/types": {
       "path": "src/types",
       "purpose": "Type definitions",
-      "fileCount": 3,
-      "lastAccessed": 1776342581274,
+      "fileCount": 2,
+      "lastAccessed": 1779229761744,
       "keyFiles": [
         "AGENTS.md",
-        "admin.ts",
         "index.ts"
       ]
     }
   },
   "hotPaths": [
     {
-      "path": "",
-      "accessCount": 18,
-      "lastAccessed": 1776373323214,
-      "type": "directory"
-    },
-    {
-      "path": "src/lib/api.ts",
-      "accessCount": 11,
-      "lastAccessed": 1776372744867,
-      "type": "file"
-    },
-    {
-      "path": "src",
-      "accessCount": 11,
-      "lastAccessed": 1776375133977,
-      "type": "directory"
-    },
-    {
-      "path": "src/components/admin/AdminShell.tsx",
-      "accessCount": 10,
-      "lastAccessed": 1776375235540,
-      "type": "file"
-    },
-    {
-      "path": "src/components/admin/AdminLoginPage.tsx",
-      "accessCount": 10,
-      "lastAccessed": 1776375236430,
-      "type": "file"
-    },
-    {
-      "path": "src/components/providers/SessionProvider.tsx",
+      "path": "src/components/listings/ListingCard.tsx",
       "accessCount": 7,
-      "lastAccessed": 1776372604358,
+      "lastAccessed": 1779230469058,
       "type": "file"
     },
     {
-      "path": "src/components/pages/AdminPanel.tsx",
+      "path": "src/lib/structuredData.ts",
       "accessCount": 7,
-      "lastAccessed": 1776375300923,
-      "type": "directory"
-    },
-    {
-      "path": "src/proxy.ts",
-      "accessCount": 7,
-      "lastAccessed": 1777542606787,
+      "lastAccessed": 1779231586979,
       "type": "file"
     },
     {
-      "path": "PLAN.md",
+      "path": "src/components/layout/Header.tsx",
       "accessCount": 5,
-      "lastAccessed": 1776356638808,
+      "lastAccessed": 1779230197857,
       "type": "file"
     },
     {
-      "path": "src/hooks/useQueries.ts",
+      "path": "src/app/[locale]/stadt/page.tsx",
       "accessCount": 5,
-      "lastAccessed": 1776372691204,
-      "type": "directory"
-    },
-    {
-      "path": "src/lib/admin-config.ts",
-      "accessCount": 5,
-      "lastAccessed": 1776375083509,
+      "lastAccessed": 1779231001810,
       "type": "file"
     },
     {
-      "path": "src/stores/authStore.ts",
+      "path": "src/components/layout/LanguageSwitcher.tsx",
       "accessCount": 4,
-      "lastAccessed": 1776372601648,
+      "lastAccessed": 1779230205609,
       "type": "file"
     },
     {
-      "path": "src/types/index.ts",
+      "path": "src/components/layout/MobileMenu.tsx",
       "accessCount": 3,
-      "lastAccessed": 1776372637117,
+      "lastAccessed": 1779229998048,
       "type": "file"
     },
     {
-      "path": "src/types/admin.ts",
+      "path": "src/app/[locale]/bordell/[slug]/ProductSEOContent.tsx",
       "accessCount": 3,
-      "lastAccessed": 1776372744325,
+      "lastAccessed": 1779231647426,
       "type": "file"
     },
     {
-      "path": "src/app/auth/layout.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1776373482701,
-      "type": "file"
-    },
-    {
-      "path": "src/app/auth/page.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1776373716163,
-      "type": "file"
-    },
-    {
-      "path": "src/components/dashboard/DashboardTabs.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1776351983358,
-      "type": "file"
-    },
-    {
-      "path": "src/lib/backend-client.ts",
-      "accessCount": 2,
-      "lastAccessed": 1776372444766,
-      "type": "file"
-    },
-    {
-      "path": "src/app/auth/dashboard/page.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1776372653447,
-      "type": "file"
-    },
-    {
-      "path": "src/app/auth/login/page.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1776372654752,
-      "type": "file"
-    },
-    {
-      "path": "src/app/auth/settings/page.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1776372655906,
-      "type": "file"
-    },
-    {
-      "path": "src/app/auth/operators/page.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1776372656544,
-      "type": "file"
-    },
-    {
-      "path": "src/components/admin/AdminSettingsWorkspace.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1776372758925,
-      "type": "file"
-    },
-    {
-      "path": "src/components/pages/DashboardPage.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1776375268667,
-      "type": "file"
-    },
-    {
-      "path": "src/i18n/routing.ts",
-      "accessCount": 2,
-      "lastAccessed": 1777542277899,
-      "type": "file"
-    },
-    {
-      "path": "src/app/api/auth/me/route.ts",
+      "path": "src/lib/navigation.ts",
       "accessCount": 1,
-      "lastAccessed": 1776342595978,
+      "lastAccessed": 1779229908165,
       "type": "file"
     },
     {
-      "path": "src/hooks",
+      "path": "src/components/listings/ListingsSection.tsx",
       "accessCount": 1,
-      "lastAccessed": 1776349939276,
-      "type": "directory"
-    },
-    {
-      "path": "src/app/api/customer/route.ts",
-      "accessCount": 1,
-      "lastAccessed": 1776350044595,
+      "lastAccessed": 1779230381917,
       "type": "file"
     },
     {
-      "path": "src/app/api/customer/visits/route.ts",
+      "path": "src/app/[locale]/venue/[slug]/page.tsx",
       "accessCount": 1,
-      "lastAccessed": 1776350048163,
+      "lastAccessed": 1779231420986,
       "type": "file"
     },
     {
-      "path": "src/app/api/customer/addresses/route.ts",
+      "path": "src/app/[locale]/bordell/[slug]/page.tsx",
       "accessCount": 1,
-      "lastAccessed": 1776350050722,
+      "lastAccessed": 1779231425993,
       "type": "file"
     },
     {
-      "path": "src/app/api/customer/badges/route.ts",
+      "path": "src/app/[locale]/bordell/[slug]/ProductDetailPageContent.tsx",
       "accessCount": 1,
-      "lastAccessed": 1776350054277,
-      "type": "file"
-    },
-    {
-      "path": "test-login.mjs",
-      "accessCount": 1,
-      "lastAccessed": 1776350091602,
-      "type": "file"
-    },
-    {
-      "path": "test-dashboard.mjs",
-      "accessCount": 1,
-      "lastAccessed": 1776350148057,
-      "type": "file"
-    },
-    {
-      "path": "src/app/api/admin/stats/route.ts",
-      "accessCount": 1,
-      "lastAccessed": 1776350358238,
-      "type": "file"
-    },
-    {
-      "path": "src/app/api/admin/establishments/route.ts",
-      "accessCount": 1,
-      "lastAccessed": 1776350361415,
-      "type": "file"
-    },
-    {
-      "path": "src/app/api/admin/customers/route.ts",
-      "accessCount": 1,
-      "lastAccessed": 1776350364027,
-      "type": "file"
-    },
-    {
-      "path": "src/app/api/admin/bookings/route.ts",
-      "accessCount": 1,
-      "lastAccessed": 1776350366600,
-      "type": "file"
-    },
-    {
-      "path": "src/app/api/admin/reviews/route.ts",
-      "accessCount": 1,
-      "lastAccessed": 1776350369791,
-      "type": "file"
-    },
-    {
-      "path": "src/components/dashboard/DashboardSidebar.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1776351945684,
-      "type": "file"
-    },
-    {
-      "path": "src/app/[locale]/admin/page.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1776351947159,
-      "type": "file"
-    },
-    {
-      "path": "src/components/pages",
-      "accessCount": 1,
-      "lastAccessed": 1776351992306,
-      "type": "directory"
-    },
-    {
-      "path": "src/app/layout.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1776370879335,
-      "type": "file"
-    },
-    {
-      "path": "src/i18n/request.ts",
-      "accessCount": 1,
-      "lastAccessed": 1776370951621,
-      "type": "file"
-    },
-    {
-      "path": "src/app/[locale]/layout.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1776370987696,
-      "type": "file"
-    },
-    {
-      "path": "src/app/api/auth/login/route.ts",
-      "accessCount": 1,
-      "lastAccessed": 1776371387948,
-      "type": "file"
-    },
-    {
-      "path": ".env.example",
-      "accessCount": 1,
-      "lastAccessed": 1776372437540,
-      "type": "file"
-    },
-    {
-      "path": "src/stores/adminStore.ts",
-      "accessCount": 1,
-      "lastAccessed": 1776372602376,
-      "type": "file"
-    },
-    {
-      "path": "src/components/providers/QueryProvider.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1776372617610,
-      "type": "file"
-    },
-    {
-      "path": "src/app/auth/venues/page.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1776372654917,
-      "type": "file"
-    },
-    {
-      "path": "src/app/auth/events/page.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1776372655400,
+      "lastAccessed": 1779231431079,
       "type": "file"
     }
   ],

@@ -1,5 +1,15 @@
 # STATE
 
+## 2026-05-19 21:29 +0200
+
+- Scope: `/stadt` SEO metadata and JSON-LD schema implementation.
+- Added: `getStadtStructuredData()` graph for Organization, WebSite/SearchAction/EntryPoint, WebPage, ImageObject, SpeakableSpecification, BreadcrumbList, ItemList, FAQPage, Service, and HowTo.
+- Changed: `src/app/[locale]/stadt/page.tsx` now uses `/stadt` SEO metadata, absolute Open Graph URL fields, and renders JSON-LD through `JsonLd`.
+- Fixed: `JsonLd` serialization now escapes script-breaking characters before injection.
+- Added: regression tests for `/stadt` metadata, structured data graph shape, and JSON-LD escaping.
+- Verification: targeted `/stadt` structured-data and metadata tests pass; `bun run typecheck` pass; `bun run lint` pass; `bun run build` pass.
+- Version: 0.2.10 → 0.2.11 (patch).
+
 ## 2026-05-19 20:43 +0200
 
 - Scope: explicit sitemap XML route repair.

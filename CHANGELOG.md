@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.11] - 2026-05-19
+
+### Added
+- `/stadt` now renders JSON-LD graph data for Organization, WebSite/SearchAction, WebPage, ImageObject, BreadcrumbList, ItemList, FAQPage, Service, and HowTo schemas.
+- Regression coverage for `/stadt` metadata and structured data schema output.
+
+### Changed
+- `/stadt` metadata now includes SEO title, meta description, canonical alternates, and absolute Open Graph URL fields for city index URLs.
+
+### Fixed
+- JSON-LD script serialization now escapes script-breaking characters before injection.
+
 ## [0.2.10] - 2026-05-19
 
 ### Fixed

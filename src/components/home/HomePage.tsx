@@ -1,16 +1,14 @@
 'use client'
 
-import dynamic from 'next/dynamic'
 import { useTranslations } from 'next-intl'
 import { CategoriesSection } from './CategoriesSection'
 import { FeaturedCities } from './FeaturedCities'
 import { HeroSection } from './HeroSection'
 import { SEOContentSection } from './SEOContentSection'
+import { ListingsSection } from '@/components/listings/ListingsSection'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { getHomeSeoMetadata } from '@/lib/seo/home'
 import { getStructuredData } from '@/lib/structuredData'
-
-const ListingsSection = dynamic(() => import('@/components/listings/ListingsSection').then(m => m.ListingsSection), { ssr: false })
 
 type HomePageProps = { locale: string }
 

@@ -3,10 +3,11 @@
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { LogIn, Menu, Search, User, X } from 'lucide-react'
+import { LogIn, Menu, User, X } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher'
 import { MobileMenu } from '@/components/layout/MobileMenu'
 import { useScrollHeader } from '@/components/layout/hooks/useScrollHeader'
 import { getLocalizedPath } from '@/lib/navigation'
@@ -71,16 +72,9 @@ export function Header({ locale, onLoginClick, isLoggedIn, onDashboardClick, tra
         </nav>
 
         <div className="flex items-center gap-2.5 sm:gap-3">
-          <Button
-            asChild
-            variant="ghost"
-            size="icon"
-            className="hidden rounded-full border border-transparent text-[#f0b0c0] hover:bg-white/6 hover:text-white lg:inline-flex"
-          >
-            <Link href={searchPath} aria-label={translations.discover}>
-              <Search className="h-4 w-4" />
-            </Link>
-          </Button>
+          <div className="hidden lg:block">
+            <LanguageSwitcher locale={locale} />
+          </div>
 
           {isLoggedIn ? (
             <Button

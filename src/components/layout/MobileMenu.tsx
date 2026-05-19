@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 import Link from 'next/link'
 import { citiesData } from '@/data/cities'
+import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher'
 import { getCityPath, getLocalizedPath } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
@@ -89,6 +90,10 @@ export function MobileMenu({ isOpen, locale, translations, onLoginClick, onClose
         <button onClick={() => { onClose(); onLoginClick?.('advertise') }} className="py-2 text-left text-gray-300 transition-colors hover:text-white">
           {translations.advertise}
         </button>
+
+        <div className="border-t border-white/8 pt-4">
+          <LanguageSwitcher locale={locale} variant="mobile" />
+        </div>
       </nav>
     </motion.div>
   )

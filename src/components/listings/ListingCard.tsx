@@ -20,10 +20,8 @@ type ListingCardLabels = {
 
 type ListingCardMediaProps = {
   bordell: Bordell
-  detailLabel: string
   favoriteLabel: string
   isFavorite: boolean
-  onDetailClickAction: (bordell: Bordell) => void
   onToggleFavorite: () => void
   premiumLabel: string
   typeLabel: string
@@ -62,10 +60,8 @@ function getListingCardLabels(bordell: Bordell, isFavorite: boolean, t: ReturnTy
 
 function ListingCardMedia({
   bordell,
-  detailLabel,
   favoriteLabel,
   isFavorite,
-  onDetailClickAction,
   onToggleFavorite,
   premiumLabel,
   typeLabel,
@@ -129,13 +125,6 @@ function ListingCardMedia({
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={() => onDetailClickAction(bordell)}
-        aria-label={detailLabel}
-        className="absolute inset-0 z-0 cursor-pointer rounded-[1.6rem]"
-        tabIndex={-1}
-      />
     </div>
   )
 }
@@ -247,7 +236,7 @@ export function ListingCard({ bordell, index, onDetailClickAction }: ListingCard
 
   return (
     <>
-      <div className="group relative" style={{ animationDelay: `${index * 70}ms` }}>
+      <div className="group relative cursor-pointer" style={{ animationDelay: `${index * 70}ms` }} onClick={() => onDetailClickAction(bordell)}>
         {bordell.sponsored ? (
           <div className="absolute -top-2 left-5 z-10">
             <Badge className="rounded-full border-0 bg-linear-to-r from-amber-500 to-orange-500 text-xs text-white">
@@ -258,13 +247,11 @@ export function ListingCard({ bordell, index, onDetailClickAction }: ListingCard
         ) : null}
 
         <div className="relative overflow-hidden rounded-[1.6rem] border border-[#334155]/60 bg-[#171f33]/80 shadow-[0_24px_60px_rgba(6,14,32,0.24)] transition-all duration-300 group-hover:-translate-y-1 group-hover:border-[#8b1a4a]/45 group-hover:shadow-[0_28px_70px_rgba(139,26,74,0.16)]">
-          <div className="pointer-events-none relative z-10">
+          <div className="relative z-10">
             <ListingCardMedia
               bordell={bordell}
-              detailLabel={labels.detailLabel}
               favoriteLabel={labels.favoriteLabel}
               isFavorite={isFavorite}
-              onDetailClickAction={onDetailClickAction}
               onToggleFavorite={() => setIsFavorite((value) => !value)}
               typeLabel={typeLabels[bordell.type]}
               premiumLabel={t('premium')}
