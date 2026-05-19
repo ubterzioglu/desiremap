@@ -59,7 +59,9 @@ describe('sitemap', () => {
 
       expect(calls.some((url) => url.includes('/public/establishments'))).toBe(true)
       expect(urls).toContain('https://desiremap.de/venue/pascha-laufhaus-und-hotel')
+      expect(urls).toContain('https://desiremap.de/en')
       expect(urls).toContain('https://desiremap.de/en/venue/pascha-laufhaus-und-hotel')
+      expect(urls).not.toContain('https://desiremap.de/en/')
       expect(urls).not.toContain('https://desiremap.de/de/venue/pascha-laufhaus-und-hotel')
 
       const venueEntry = entries.find(
@@ -72,6 +74,12 @@ describe('sitemap', () => {
       expect(venueEntry?.alternates?.languages?.en).toBe(
         'https://desiremap.de/en/venue/pascha-laufhaus-und-hotel'
       )
+
+      const englishStadtEntry = entries.find(
+        (entry) => entry.url === 'https://desiremap.de/en/stadt'
+      )
+
+      expect(englishStadtEntry?.priority).toBe(0.7)
     } finally {
       globalThis.fetch = originalFetch
     }

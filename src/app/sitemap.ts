@@ -18,7 +18,15 @@ function absoluteUrl(path: string) {
 }
 
 function localizedPath(locale: Locale, path: string) {
+  if (path === '/') {
+    return locale === defaultLocale ? '/' : `/${locale}`
+  }
+
   return getLocalizedPath(locale, path)
+}
+
+function sitemapPriority(priority: number) {
+  return Number(priority.toFixed(1))
 }
 
 function languageAlternates(path: string) {
@@ -45,7 +53,7 @@ function localizedEntries({
     url: absoluteUrl(localizedPath(locale, path)),
     lastModified,
     changeFrequency,
-    priority: locale === defaultLocale ? priority : Math.max(priority - 0.1, 0.1),
+    priority: sitemapPriority(locale === defaultLocale ? priority : Math.max(priority - 0.1, 0.1)),
     alternates: {
       languages: alternates,
     },

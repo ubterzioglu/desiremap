@@ -1,5 +1,14 @@
 # STATE
 
+## 2026-05-19 20:23 +0200
+
+- Scope: sitemap output cleanup after production inspection.
+- Fixed: non-default locale homepage URLs now emit as `/en`, `/ar`, `/tr` instead of `/en/`, `/ar/`, `/tr/`.
+- Fixed: sitemap priorities are rounded to one decimal place to avoid JavaScript float artifacts (`0.7000000000000001`).
+- Evidence: production `/sitemap.xml` already returns `Content-Type: application/xml`, starts with XML declaration, and parses as XML; browser copy output drops tags from rendered XML tree.
+- Verification: targeted sitemap test 1/1 pass.
+- Version: 0.2.8 → 0.2.9 (patch).
+
 ## 2026-05-19 19:52 +0200
 
 - Scope: public SEO sitemap endpoint repair.

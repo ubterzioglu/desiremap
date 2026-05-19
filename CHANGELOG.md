@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.9] - 2026-05-19
+
+### Fixed
+- Sitemap root locale URLs no longer emit trailing slashes for non-default locales.
+- Sitemap priority values are rounded to one decimal place, removing floating-point artifacts like `0.7000000000000001`.
+
 ## [0.2.8] - 2026-05-19
 
 ### Added
