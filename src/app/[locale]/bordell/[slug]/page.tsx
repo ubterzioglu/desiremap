@@ -200,8 +200,6 @@ export function bordellToProductData(bordell: Bordell, relatedItems: PublicEstab
     ...(bordell.email ? { email: bordell.email } : {}),
     ...(bordell.website ? { website: bordell.website } : {}),
     price: bordell.minPrice,
-    priceCurrency: 'EUR',
-    availability: 'https://schema.org/InStock',
     ratingValue: bordell.rating,
     reviewCount: bordell.reviewCount,
     reviews: [],

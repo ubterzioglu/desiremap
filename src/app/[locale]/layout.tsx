@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
+import { AgeGate } from '@/components/layout/AgeGate'
 import { Toaster } from '@/components/ui/toaster'
 import { QueryProvider } from '@/components/providers/QueryProvider'
 import { LocaleInit } from '@/components/layout/LocaleInit'
@@ -94,6 +95,7 @@ export default async function LocaleLayout({
       <LocaleInit locale={locale} />
       <QueryProvider>
         <NextIntlClientProvider messages={messages}>
+          <AgeGate />
           {children}
           <Toaster />
         </NextIntlClientProvider>

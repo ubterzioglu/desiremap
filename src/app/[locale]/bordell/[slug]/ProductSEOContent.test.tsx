@@ -18,8 +18,6 @@ describe('ProductSEOContent', () => {
       city: 'Berlin',
       address: 'Berlin',
       price: 0,
-      priceCurrency: 'EUR',
-      availability: 'https://schema.org/InStock',
       ratingValue: 0,
       reviewCount: 0,
       reviews: [],

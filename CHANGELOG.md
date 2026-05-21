@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2026-05-21
+
+### Added
+- Added a client-only `AgeGate` modal using `/18plus.png`, browser-side cookie persistence, and bot-aware bypass so search engines can still read SSR content directly.
+- Added regression coverage for age-gate helpers, bot bypass, cookie persistence, and locale layout wiring.
+
+### Changed
+- Homepage platform schema now stays at `Organization` + `WebSite`; featured venue list items now emit `EntertainmentBusiness` instead of ecommerce-style entities.
+- Venue detail JSON-LD now emits `EntertainmentBusiness` and service/business metadata without ecommerce offer semantics.
+
+### Fixed
+- Removed ecommerce structured-data spam risk from homepage, stadt index, and venue detail outputs (`Product`, `ProductGroup`, `Offer`, shipping, return policy, stock availability fields).
+- Stadt `Service` schema no longer emits fake `Offer` / `InStock` values.
+- Proxy hardening now labels known bots, bypasses age gate for bots, rejects empty user-agents with `403`, and extracts the first public IPv4 from spoofed forwarded chains.
+
 ## [0.2.11] - 2026-05-19
 
 ### Added

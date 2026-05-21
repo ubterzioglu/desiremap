@@ -125,5 +125,13 @@
     "premium": "Premium",
     "filters": "Filtreler",
     "clearFilters": "Filtreleri Temizle"
+  },
+  "ageGate": {
+    "title": "Yalnızca yetişkinlere özel",
+    "description": "Bu platform yalnızca reşit kişilere yöneliktir. Lütfen en az 18 yaşında olduğunuzu onaylayın.",
+    "legalNote": "Yaş doğrulaması yalnızca tarayıcıda gösterilir. Arama motoru botları sayfa içeriğini doğrudan okumaya devam eder.",
+    "confirm": "18 yaşındayım veya daha büyüğüm",
+    "leave": "Siteden ayrıl",
+    "imageAlt": "18 artı simgesi"
   }
 }

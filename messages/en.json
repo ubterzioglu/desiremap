@@ -125,5 +125,13 @@
     "premium": "Premium",
     "filters": "Filters",
     "clearFilters": "Clear Filters"
+  },
+  "ageGate": {
+    "title": "Adults only",
+    "description": "This platform is intended exclusively for adults. Please confirm that you are at least 18 years old.",
+    "legalNote": "The age gate is rendered in the browser only. Search engine bots can still access the underlying page content directly.",
+    "confirm": "I am 18 or older",
+    "leave": "Leave website",
+    "imageAlt": "18 plus symbol"
   }
 }

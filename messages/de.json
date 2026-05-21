@@ -14,15 +14,15 @@
     "myAccount": "Mein Konto"
   },
   "hero": {
-    "eyebrow": "Deutschlands größtes Verzeichnis",
+    "eyebrow": "FKK · Laufhaus · Bordell · Studio — 847+ Adressen",
     "titleLine1Start": "Bordellmarkt — ",
     "titleLine1Accent": "Exklusivität",
     "titleLine1End": " trifft",
     "titleLine2Start": "auf ",
     "titleLine2Accent": "Diskretion.",
     "title": "Bordellmarkt",
-    "subtitle": "DesireMap ist Deutschlands größtes Verzeichnis für verifizierte FKK Clubs, Bordelle, Laufhäuser und Studios. Finden Sie 2026 die passende Adresse in Ihrer Stadt mit Bewertungen, Preisen und Öffnungszeiten.",
-    "description": "Finden Sie 2026 die passenden FKK Clubs, Laufhäuser und Studios in Ihrer Stadt mit verifizierten Bewertungen, aktuellen Preisen und exklusiven Einblicken.",
+    "subtitle": "FKK Clubs, Laufhäuser & Bordelle in Köln, Berlin, Frankfurt, Hamburg, München, Stuttgart und Düsseldorf — 847+ verifizierte Adressen mit Preisen, Öffnungszeiten und Bewertungen direkt vergleichen.",
+    "description": "FKK Clubs, Laufhäuser & Bordelle in Köln, Berlin, Frankfurt, Hamburg, München, Stuttgart, Düsseldorf, Karlsruhe und weiteren Städten. Verifizierte Adressen, aktuelle Preise, Öffnungszeiten — kostenlos vergleichen.",
     "searchPlaceholder": "Suche nach Clubs, Services...",
     "selectCity": "Stadt wählen...",
     "selectCategory": "Alle Kategorien",
@@ -125,5 +125,13 @@
     "premium": "Premium",
     "filters": "Filter",
     "clearFilters": "Filter entfernen"
+  },
+  "ageGate": {
+    "title": "Zutritt nur für Erwachsene",
+    "description": "Diese Plattform richtet sich ausschließlich an volljährige Personen. Bitte bestätige, dass du mindestens 18 Jahre alt bist.",
+    "legalNote": "Die Altersprüfung wird ausschließlich im Browser angezeigt. Suchmaschinen-Bots können die eigentlichen Seiteninhalte weiterhin direkt lesen.",
+    "confirm": "Ich bin 18 oder älter",
+    "leave": "Website verlassen",
+    "imageAlt": "18 Plus Symbol"
   }
 }

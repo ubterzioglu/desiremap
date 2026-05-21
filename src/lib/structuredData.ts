@@ -29,12 +29,6 @@ const productListings = [
     description: 'Berlins größtes FKK Club mit exklusivem Wellness-Bereich, mehreren Saunen und einer eleganten Bar. Diskretes Ambiente mit höchsten Standards.',
     image: `${siteUrl}/covers/artemis-bg.jpg`,
     url: getVenueAbsoluteUrl('de', 'artemis-berlin'),
-    brand: companyName,
-    sku: 'FKK-BERLIN-001',
-    mpn: 'ARTEMIS-001',
-    price: '80.00',
-    priceCurrency: 'EUR',
-    availability: 'https://schema.org/InStock',
     ratingValue: 4.8,
     reviewCount: 1247
   },
@@ -45,12 +39,6 @@ const productListings = [
     description: 'Europas größtes Laufhaus mit 7 Etagen und über 120 Damen. 24 Stunden geöffnet, perfekte Erreichbarkeit im Zentrum von Köln.',
     image: `${siteUrl}/covers/pascha-bg.jpg`,
     url: getVenueAbsoluteUrl('de', 'pascha-koln'),
-    brand: companyName,
-    sku: 'LAUF-KOELN-001',
-    mpn: 'PASCHA-001',
-    price: '30.00',
-    priceCurrency: 'EUR',
-    availability: 'https://schema.org/InStock',
     ratingValue: 4.6,
     reviewCount: 892
   },
@@ -61,12 +49,6 @@ const productListings = [
     description: 'Exklusives Bordell in Hamburg mit diskreter Atmosphäre, privaten Zimmern und einer gemütlichen Bar.',
     image: `${siteUrl}/covers/cafe-del-sol-bg.jpg`,
     url: getVenueAbsoluteUrl('de', 'cafe-del-sol-hamburg'),
-    brand: companyName,
-    sku: 'BORD-HAMBURG-001',
-    mpn: 'CAFE-001',
-    price: '50.00',
-    priceCurrency: 'EUR',
-    availability: 'https://schema.org/InStock',
     ratingValue: 4.5,
     reviewCount: 423
   },
@@ -77,12 +59,6 @@ const productListings = [
     description: 'Premium FKK Club in Stuttgart mit großzügigem Außenbereich, Pool und entspannter Gartenlandschaft.',
     image: `${siteUrl}/covers/paradise-bg.jpg`,
     url: getVenueAbsoluteUrl('de', 'paradise-stuttgart'),
-    brand: companyName,
-    sku: 'FKK-STUTTGART-001',
-    mpn: 'PARADISE-001',
-    price: '60.00',
-    priceCurrency: 'EUR',
-    availability: 'https://schema.org/InStock',
     ratingValue: 4.7,
     reviewCount: 678
   },
@@ -93,12 +69,6 @@ const productListings = [
     description: 'Zentrales Laufhaus in München mit 3 Etagen und einer einladenden Bar.',
     image: `${siteUrl}/covers/royal-bg.jpg`,
     url: getVenueAbsoluteUrl('de', 'royal-munchen'),
-    brand: companyName,
-    sku: 'LAUF-MUENCHEN-001',
-    mpn: 'ROYAL-001',
-    price: '40.00',
-    priceCurrency: 'EUR',
-    availability: 'https://schema.org/LimitedAvailability',
     ratingValue: 4.4,
     reviewCount: 312
   },
@@ -109,12 +79,6 @@ const productListings = [
     description: 'Exklusives Ambiente im Herzen von Frankfurt. VIP Suiten mit höchstem Komfort und absoluter Diskretion.',
     image: `${siteUrl}/covers/diamond-bg.jpg`,
     url: getVenueAbsoluteUrl('de', 'diamond-frankfurt'),
-    brand: companyName,
-    sku: 'BORD-FRANKFURT-001',
-    mpn: 'DIAMOND-001',
-    price: '50.00',
-    priceCurrency: 'EUR',
-    availability: 'https://schema.org/InStock',
     ratingValue: 4.6,
     reviewCount: 534
   },
@@ -125,12 +89,6 @@ const productListings = [
     description: 'Premium FKK Saunaclub in Ettlingen bei Karlsruhe mit über 4.000 m², Sauna- und Wellnessbereich, Innen- und Außenpools, Restaurant sowie großer Lounge & Bar.',
     image: `${siteUrl}/listing-bg.jpg`,
     url: getVenueAbsoluteUrl('de', 'flamingo-fkk-club-karlsruhe'),
-    brand: companyName,
-    sku: 'FKK-KARLSRUHE-001',
-    mpn: 'FLAMINGO-001',
-    price: '54.00',
-    priceCurrency: 'EUR',
-    availability: 'https://schema.org/InStock',
     ratingValue: 4.6,
     reviewCount: 39
   }
@@ -148,6 +106,13 @@ function getOrganizationSchema() {
       url: `${siteUrl}/logo.svg`,
       width: 200,
       height: 60
+    },
+    address: {
+      '@type': 'PostalAddress' as const,
+      streetAddress: 'Kurfürstendamm 100',
+      addressLocality: 'Berlin',
+      postalCode: '10711',
+      addressCountry: 'DE'
     },
     sameAs: [
       'https://twitter.com/desiremap',
@@ -228,7 +193,7 @@ function getBreadcrumbSchema(locale: string) {
   }
 }
 
-// 10. ItemList Schema mit Product Schemas
+// 10. ItemList Schema mit venue/business Schemas
 function getItemListSchema() {
   return {
     '@type': 'ItemList' as const,
@@ -240,69 +205,12 @@ function getItemListSchema() {
       '@type': 'ListItem' as const,
       position: index + 1,
       item: {
-        '@type': 'Product' as const,
-        '@id': `${siteUrl}/#product-${product.id}`,
+        '@type': 'EntertainmentBusiness' as const,
+        '@id': `${siteUrl}/#venue-${product.id}`,
         name: product.name,
         image: product.image,
         description: product.description,
-        brand: {
-          '@type': 'Brand' as const,
-          name: product.brand
-        },
         url: product.url,
-        sku: product.sku,
-        mpn: product.mpn,
-        offers: {
-          '@type': 'Offer' as const,
-          url: product.url,
-          priceCurrency: product.priceCurrency,
-          price: product.price,
-          priceValidUntil: '2026-12-31',
-          availability: product.availability,
-          itemCondition: 'https://schema.org/NewCondition',
-          seller: {
-            '@type': 'Organization' as const,
-            name: companyName
-          },
-          hasMerchantReturnPolicy: {
-            '@type': 'MerchantReturnPolicy' as const,
-            applicableCountry: {
-              '@type': 'Country' as const,
-              name: 'DE'
-            },
-            returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
-            merchantReturnDays: 14,
-            returnMethod: 'https://schema.org/ReturnByMail',
-            returnFees: 'https://schema.org/FreeReturn'
-          },
-          shippingDetails: {
-            '@type': 'OfferShippingDetails' as const,
-            shippingRate: {
-              '@type': 'MonetaryAmount' as const,
-              value: '0.00',
-              currency: 'EUR'
-            },
-            shippingDestination: {
-              '@type': 'DefinedRegion' as const,
-              addressCountry: 'DE'
-            },
-            deliveryTime: {
-              '@type': 'ShippingDeliveryTime' as const,
-              handlingTime: {
-                '@type': 'QuantitativeValue' as const,
-                minValue: 0,
-                maxValue: 1,
-                unitCode: 'DAY'
-              },
-              transitTime: {
-                '@type': 'QuantitativeValue' as const,
-                minValue: 0,
-                maxValue: 0,
-                unitCode: 'DAY'
-              }
-            }
-          }
-        },
         aggregateRating: {
           '@type': 'AggregateRating' as const,
           ratingValue: product.ratingValue,
@@ -329,55 +237,6 @@ function getFAQPageSchema(locale: string) {
         text: item.answer
       }
     }))
-  }
-}
-
-// OpeningHoursSpecification Schema
-function getOpeningHoursSchema() {
-  return {
-    '@type': 'OpeningHoursSpecification' as const,
-    dayOfWeek: [
-      'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
-    ],
-    opens: '00:00',
-    closes: '23:59'
-  }
-}
-
-// Main export function for Homepage
-function getHomepageLocalBusinessSchema() {
-  return {
-    '@type': 'LocalBusiness' as const,
-    '@id': `${siteUrl}/#localbusiness`,
-    name: 'DesireMap',
-    description: 'Deutschlands führende Plattform für Adult-Entertainment-Etablissements. Entdecken Sie Saunaclubs, FKK-Clubs, Bars und mehr.',
-    url: siteUrl,
-    telephone: '+49-30-123456789',
-    email: 'info@desiremap.de',
-    address: {
-      '@type': 'PostalAddress' as const,
-      streetAddress: 'Kurfürstendamm 100',
-      addressLocality: 'Berlin',
-      postalCode: '10711',
-      addressCountry: 'DE'
-    },
-    geo: {
-      '@type': 'GeoCoordinates' as const,
-      latitude: '52.5020',
-      longitude: '13.3245'
-    },
-    openingHoursSpecification: {
-      '@type': 'OpeningHoursSpecification' as const,
-      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      opens: '00:00',
-      closes: '23:59'
-    },
-    priceRange: '€€',
-    image: `${siteUrl}/og-image.png`,
-    sameAs: [
-      'https://twitter.com/desiremap',
-      'https://instagram.com/desiremap'
-    ]
   }
 }
 
@@ -449,54 +308,6 @@ function getHomepageHowToSchema(locale: string) {
   }
 }
 
-function getHomepageProductGroupSchema(locale: string) {
-  const categories = [
-    {
-      name: locale === 'de' ? 'FKK & Saunaclub' : locale === 'en' ? 'FKK & Sauna Club' : 'FKK & Saunaclub',
-      description: locale === 'de' ? 'Erstklassige FKK- und Saunaclubs in Deutschland' : 'Premium FKK and sauna clubs in Germany',
-      url: `${siteUrl}/de/search?type=fkk`
-    },
-    {
-      name: locale === 'de' ? 'Bordell & Laufhaus' : locale === 'en' ? 'Brothel & Walk-through' : 'Bordell & Laufhaus',
-      description: locale === 'de' ? 'Diskrete Bordelle und Laufhäuser' : 'Discreet brothels and walk-through establishments',
-      url: `${siteUrl}/de/search?type=bordell`
-    },
-    {
-      name: locale === 'de' ? 'Nightclub & Bar' : locale === 'en' ? 'Nightclub & Bar' : 'Nightclub & Bar',
-      description: locale === 'de' ? 'Stimmungsvolle Nightclubs und Bars' : 'Vibrant nightclubs and bars',
-      url: `${siteUrl}/de/search?type=nightclub`
-    },
-    {
-      name: locale === 'de' ? 'Massage Studio' : locale === 'en' ? 'Massage Studio' : 'Masaj Stüdyosu',
-      description: locale === 'de' ? 'Professionelle Massage-Studios' : 'Professional massage studios',
-      url: `${siteUrl}/de/search?type=massage`
-    },
-    {
-      name: locale === 'de' ? 'Escort Service' : locale === 'en' ? 'Escort Service' : 'Escort Hizmeti',
-      description: locale === 'de' ? 'Exklusive Escort-Services' : 'Exclusive escort services',
-      url: `${siteUrl}/de/search?type=escort`
-    }
-  ]
-
-  return {
-    '@type': 'ProductGroup' as const,
-    '@id': `${siteUrl}/#product-group-venues`,
-    name: locale === 'de' ? 'Adult Entertainment Etablissements' : 'Adult Entertainment Establishments',
-    description: locale === 'de'
-      ? 'Entdecken Sie verschiedene Arten von Adult-Entertainment-Etablissements in Deutschland'
-      : 'Discover various types of adult entertainment establishments in Germany',
-    url: siteUrl,
-    variesBy: ['https://schema.org/category'],
-    hasVariant: categories.map(cat => ({
-      '@type': 'ProductGroup' as const,
-      '@id': `${cat.url}/#variant`,
-      name: cat.name,
-      description: cat.description,
-      url: cat.url
-    }))
-  }
-}
-
 function getHomepagePersonSchema() {
   return {
     '@type': 'Person' as const,
@@ -532,12 +343,9 @@ export function getStructuredData(locale: string, title: string, description: st
       getBreadcrumbSchema(locale),
       getItemListSchema(),
       getFAQPageSchema(locale),
-      getOpeningHoursSchema(),
-      getHomepageLocalBusinessSchema(),
       getHomepageSpeakableSchema(),
       getHomepageVideoSchema(),
       getHomepageHowToSchema(locale),
-      getHomepageProductGroupSchema(locale),
       getHomepagePersonSchema()
     ]
   }
@@ -787,7 +595,7 @@ export function getStadtFAQItems(locale: string): Array<{ question: string; answ
     },
     {
       question: 'How often are city pages updated?',
-      answer: 'City pages and venue profiles are regularly updated to ensure correct opening hours, prices, and availability.',
+      answer: 'City pages and venue profiles are regularly updated to keep opening hours, price notes, and listing information current.',
     },
   ]
 }
@@ -831,13 +639,6 @@ function getStadtServiceSchema(locale: string, cities: PublicCity[]) {
       '@type': 'ServiceChannel' as const,
       serviceUrl: pageUrl,
     },
-    offers: {
-      '@type': 'Offer' as const,
-      url: pageUrl,
-      price: '0.00',
-      priceCurrency: 'EUR',
-      availability: 'https://schema.org/InStock',
-    },
     serviceOutput: `${cities.length} city landing pages for venue discovery`,
   }
 }
@@ -873,79 +674,6 @@ function getStadtHowToSchema(locale: string) {
   }
 }
 
-function getStadtLocalBusinessSchema(locale: string) {
-  const pageUrl = getStadtAbsoluteUrl(locale)
-  return {
-    '@type': 'LocalBusiness' as const,
-    '@id': `${siteUrl}/#stadtpage-localbusiness`,
-    name: companyName,
-    description: locale === 'de'
-      ? 'Deutschlands führendes Verzeichnis für FKK Clubs, Laufhäuser und Studios – verifizierte Adressen nach Städten geordnet.'
-      : "Germany's leading directory for FKK clubs, laufhaus venues and studios – verified addresses organised by city.",
-    url: pageUrl,
-    telephone: '+49-30-123456789',
-    email: 'info@desiremap.de',
-    address: {
-      '@type': 'PostalAddress' as const,
-      streetAddress: 'Kurfürstendamm 100',
-      addressLocality: 'Berlin',
-      postalCode: '10711',
-      addressCountry: 'DE',
-    },
-    geo: {
-      '@type': 'GeoCoordinates' as const,
-      latitude: '52.5020',
-      longitude: '13.3245',
-    },
-    openingHoursSpecification: {
-      '@type': 'OpeningHoursSpecification' as const,
-      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      opens: '00:00',
-      closes: '23:59',
-    },
-    aggregateRating: {
-      '@type': 'AggregateRating' as const,
-      ratingValue: 4.7,
-      reviewCount: 2847,
-      bestRating: 5,
-      worstRating: 1,
-    },
-    priceRange: '€€',
-    image: `${siteUrl}/og-image.png`,
-    sameAs: [
-      'https://twitter.com/desiremap',
-      'https://instagram.com/desiremap',
-    ],
-  }
-}
-
-function getStadtReviewSchemas(locale: string) {
-  const pageUrl = getStadtAbsoluteUrl(locale)
-  const reviews = locale === 'de' ? [
-    { id: 'r1', author: 'Thomas M.', date: '2025-03-15', rating: 5, text: 'Beste Plattform für verifizierte FKK Clubs und Laufhäuser in Deutschland. Die Städtesuche ist übersichtlich und die Informationen immer aktuell.' },
-    { id: 'r2', author: 'Stefan K.', date: '2025-04-02', rating: 5, text: 'Sehr übersichtliches Stadtverzeichnis. Habe schnell passende Adressen in meiner Stadt gefunden – absolut empfehlenswert.' },
-    { id: 'r3', author: 'Marco R.', date: '2025-04-20', rating: 4, text: 'Gute Übersicht mit verlässlichen Informationen. Die Betriebsseiten sind detailliert und helfen wirklich bei der Entscheidung.' },
-  ] : [
-    { id: 'r1', author: 'Thomas M.', date: '2025-03-15', rating: 5, text: 'Best platform for verified FKK clubs and laufhaus venues in Germany. Clear city search, always up to date.' },
-    { id: 'r2', author: 'Stefan K.', date: '2025-04-02', rating: 5, text: 'Very clear city directory. Found suitable addresses in my city quickly – absolutely recommended.' },
-  ]
-
-  return reviews.map((r) => ({
-    '@type': 'Review' as const,
-    '@id': `${pageUrl}/#review-${r.id}`,
-    author: { '@type': 'Person' as const, name: r.author },
-    datePublished: r.date,
-    reviewBody: r.text,
-    reviewRating: {
-      '@type': 'Rating' as const,
-      ratingValue: r.rating,
-      bestRating: 5,
-      worstRating: 1,
-    },
-    itemReviewed: { '@id': `${siteUrl}/#stadtpage-localbusiness` },
-  }))
-}
-
 export function getStadtStructuredData(
   locale: string,
   cities: PublicCity[],
@@ -966,8 +694,6 @@ export function getStadtStructuredData(
       getStadtFAQPageSchema(locale),
       getStadtServiceSchema(locale, activeCities),
       getStadtHowToSchema(locale),
-      getStadtLocalBusinessSchema(locale),
-      ...getStadtReviewSchemas(locale),
     ],
   }
 }
@@ -999,8 +725,6 @@ export interface ProductDetailData {
   email?: string
   website?: string
   price: number
-  priceCurrency: string
-  availability: string
   ratingValue: number
   reviewCount: number
   reviews: Array<{
@@ -1054,80 +778,34 @@ function getReviewSchemas(reviews: ProductDetailData['reviews'], productUrl: str
   }))
 }
 
-// Product Schema for Detail Page (7)
+// Venue business Schema for Detail Page (7)
 function getProductDetailSchema(product: ProductDetailData) {
   const productUrl = getVenueAbsoluteUrl('de', product.slug)
+  const openingHours = getProductOpeningHoursSchema(product)
   return {
-    '@type': 'Product' as const,
-    '@id': `${productUrl}/#product`,
+    '@type': 'EntertainmentBusiness' as const,
+    '@id': `${productUrl}/#venue`,
     name: product.name,
     image: product.images ? [product.image, ...product.images] : product.image,
     description: product.description,
-    brand: {
-      '@type': 'Brand' as const,
-      name: companyName
-    },
     url: productUrl,
-    sku: `${product.type.toUpperCase()}-${product.city.toUpperCase()}-${product.id}`,
-    mpn: `${product.name.toUpperCase().replace(/\s+/g, '-')}-${product.id}`,
-    offers: {
-      '@type': 'Offer' as const,
-      url: productUrl,
-      priceCurrency: product.priceCurrency,
-      price: product.price.toFixed(2),
-      priceValidUntil: '2026-12-31',
-      availability: product.availability,
-      itemCondition: 'https://schema.org/NewCondition',
-      seller: {
-        '@type': 'Organization' as const,
-        name: companyName
-      },
-      hasMerchantReturnPolicy: {
-        '@type': 'MerchantReturnPolicy' as const,
-        applicableCountry: {
-          '@type': 'Country' as const,
-          name: 'DE'
-        },
-        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
-        merchantReturnDays: 14,
-        returnMethod: 'https://schema.org/ReturnByMail',
-        returnFees: 'https://schema.org/FreeReturn'
-      },
-      shippingDetails: {
-        '@type': 'OfferShippingDetails' as const,
-        shippingRate: {
-          '@type': 'MonetaryAmount' as const,
-          value: '0.00',
-          currency: 'EUR'
-        },
-        shippingDestination: {
-          '@type': 'DefinedRegion' as const,
-          addressCountry: 'DE'
-        },
-        deliveryTime: {
-          '@type': 'ShippingDeliveryTime' as const,
-          handlingTime: {
-            '@type': 'QuantitativeValue' as const,
-            minValue: 0,
-            maxValue: 1,
-            unitCode: 'DAY'
-          },
-          transitTime: {
-            '@type': 'QuantitativeValue' as const,
-            minValue: 0,
-            maxValue: 0,
-            unitCode: 'DAY'
-          }
-        }
-      }
+    telephone: product.phone,
+    email: product.email,
+    address: {
+      '@type': 'PostalAddress' as const,
+      streetAddress: product.address,
+      addressLocality: product.city,
+      addressCountry: 'DE'
     },
-    aggregateRating: {
+    ...(openingHours ? { openingHoursSpecification: openingHours } : {}),
+    ...(product.ratingValue > 0 ? { aggregateRating: {
       '@type': 'AggregateRating' as const,
       ratingValue: product.ratingValue,
       reviewCount: product.reviewCount,
       bestRating: 5,
       worstRating: 1
-    },
+    } } : {}),
+    sameAs: product.website ? [product.website] : [],
     review: getReviewSchemas(product.reviews, productUrl)
   }
 }
@@ -1157,7 +835,7 @@ function getProductWebPageSchema(product: ProductDetailData, locale: string) {
       '@type': 'SpeakableSpecification' as const,
       cssSelector: ['.speakable-description', '.speakable-services', '.speakable-faq']
     },
-    mainEntity: { '@id': `${productUrl}/#product` }
+    mainEntity: { '@id': `${productUrl}/#venue` }
   }
 }
 
@@ -1234,42 +912,6 @@ function getProductOpeningHoursSchema(product: ProductDetailData) {
   }
 }
 
-// LocalBusiness Schema (additional for product pages)
-function getLocalBusinessSchema(product: ProductDetailData) {
-  const productUrl = getVenueAbsoluteUrl('de', product.slug)
-  const openingHours = getProductOpeningHoursSchema(product)
-
-  return {
-    '@type': 'LocalBusiness' as const,
-    '@id': `${productUrl}/#localbusiness`,
-    name: product.name,
-    description: product.description,
-    url: productUrl,
-    telephone: product.phone,
-    email: product.email,
-    address: {
-      '@type': 'PostalAddress' as const,
-      streetAddress: product.address,
-      addressLocality: product.city,
-      addressCountry: 'DE'
-    },
-    geo: {
-      '@type': 'GeoCoordinates' as const,
-      latitude: '52.5200', // Default - should be dynamic
-      longitude: '13.4050'
-    },
-    ...(openingHours ? { openingHoursSpecification: openingHours } : {}),
-    priceRange: `€${product.price}`,
-    aggregateRating: {
-      '@type': 'AggregateRating' as const,
-      ratingValue: product.ratingValue,
-      reviewCount: product.reviewCount
-    },
-    image: product.image,
-    sameAs: product.website ? [product.website] : []
-  }
-}
-
 // Related Products ItemList Schema
 function getRelatedProductsSchema(product: ProductDetailData, locale: string) {
   const productUrl = getVenueAbsoluteUrl(locale, product.slug)
@@ -1306,13 +948,6 @@ function getProductServiceSchema(product: ProductDetailData) {
     availableChannel: {
       '@type': 'ServiceChannel' as const,
       serviceUrl: productUrl,
-    },
-    offers: {
-      '@type': 'Offer' as const,
-      url: productUrl,
-      price: product.price > 0 ? product.price.toFixed(2) : '0.00',
-      priceCurrency: product.priceCurrency,
-      availability: product.availability,
     },
     ...(product.ratingValue > 0 ? {
       aggregateRating: {
@@ -1372,7 +1007,6 @@ export function getProductDetailStructuredData(
     getProductDetailSchema(product),
     getProductWebPageSchema(product, locale),
     getProductBreadcrumbSchema(product, locale),
-    getLocalBusinessSchema(product),
     getProductServiceSchema(product),
     getProductHowToSchema(product),
     getProductFAQSchema(product),

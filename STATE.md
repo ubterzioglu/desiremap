@@ -1,5 +1,14 @@
 # STATE
 
+## 2026-05-21 14:10 +0200
+
+- Scope: client-only 18+ age gate + SEO schema cleanup + proxy hardening.
+- Added: `AgeGate` client component in `[locale]/layout` using `/18plus.png`, browser-only cookie persistence (`dm_age_verified=1`), and localized copy in `de/en/tr/ar` message files.
+- Changed: homepage JSON-LD now keeps only platform-safe `Organization` + `WebSite` entities; homepage venue list items emit `EntertainmentBusiness`; temporary Berlin office address remains under `Organization.address` only.
+- Fixed: venue detail JSON-LD no longer emits `Product` / shipping / merchant return / stock-style ecommerce fields; stadt service schema no longer emits fake `Offer`/`InStock`; proxy rejects empty `User-Agent` requests with `403` after logging and resolves first public IPv4 from spoofed proxy chains.
+- Verification: `bun test src/lib/ageGate.test.ts src/lib/structuredData.test.ts src/middleware.test.ts "src/app/[locale]/bordell/[slug]/ProductSEOContent.test.tsx"` passed (`17/17`); `bun run typecheck` passed; scoped ESLint on touched files passed; `bun run build` passed. Full `bun run lint` still blocked by 6 unrelated pre-existing errors in `ProductSEOContent.tsx`, `stadt/page.tsx`, `sitemap.xml/route.ts`, and `LanguageSwitcher.tsx`.
+- Version: 0.2.11 → 0.3.0 (minor).
+
 ## 2026-05-19 21:29 +0200
 
 - Scope: `/stadt` SEO metadata and JSON-LD schema implementation.
