@@ -32,11 +32,13 @@ type HeroProps = {
 
 type HeroSlideSource = {
   src: string
+  altText?: string | null
 }
 
 type HeroSlide = {
   src: string
   fit: 'stretch' | 'cover'
+  altText?: string | null
 }
 
 type HeroStatItem = {
@@ -48,6 +50,7 @@ type HeroStatItem = {
 type HeroBackgroundProps = {
   activeSlide: number
   prefersReducedMotion: boolean
+  slideLabel: string
   slides: HeroSlide[]
 }
 
@@ -72,7 +75,7 @@ function resolveHeroSlide(source: HeroSlideSource): Promise<HeroSlide | null> {
 
     image.onload = () => {
       const fit = image.naturalWidth / image.naturalHeight >= HERO_STRETCH_THRESHOLD ? 'cover' : 'stretch'
-      resolve({ src: source.src, fit })
+      resolve({ src: source.src, fit, altText: source.altText ?? null })
     }
 
     image.onerror = () => {
@@ -83,7 +86,7 @@ function resolveHeroSlide(source: HeroSlideSource): Promise<HeroSlide | null> {
   })
 }
 
-function HeroBackground({ activeSlide, prefersReducedMotion, slides }: HeroBackgroundProps): ReactElement {
+function HeroBackground({ activeSlide, prefersReducedMotion, slideLabel, slides }: HeroBackgroundProps): ReactElement {
   return (
     <div className="absolute inset-0">
       {slides.map((slide, index) => (
@@ -98,7 +101,7 @@ function HeroBackground({ activeSlide, prefersReducedMotion, slides }: HeroBackg
         >
           <Image
             src={slide.src}
-            alt=""
+            alt={slide.altText?.trim() || `${slideLabel} ${index + 1}`}
             fill
             priority={index === 0}
             unoptimized
@@ -206,7 +209,7 @@ export function HeroSection({ translations, stats, locale }: HeroProps): ReactEl
     }
 
     return activeHeroSlides
-      .map((slide) => ({ src: slide.imageUrl }))
+      .map((slide) => (slide.altText == null ? { src: slide.imageUrl } : { src: slide.imageUrl, altText: slide.altText }))
       .slice(0, HERO_MAX_SLIDES)
   }, [heroSlidesFromApi])
   const categoryLabels: Record<string, string> = {
@@ -270,7 +273,7 @@ export function HeroSection({ translations, stats, locale }: HeroProps): ReactEl
 
   return (
     <section className="relative isolate flex min-h-screen overflow-hidden bg-[#0b1326] pt-28 pb-16 text-[#dae2fd] sm:pt-32">
-      <HeroBackground activeSlide={displayedSlide} prefersReducedMotion={prefersReducedMotion} slides={heroSlides} />
+      <HeroBackground activeSlide={displayedSlide} prefersReducedMotion={prefersReducedMotion} slideLabel={translations.slideLabel} slides={heroSlides} />
 
       <div className="relative z-10 flex w-full items-center px-5 sm:px-6 lg:px-8">
         <div className="max-w-[760px] space-y-8">

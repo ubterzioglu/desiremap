@@ -64,8 +64,8 @@ export function SearchPageContent({ locale, initialQuery, initialCity, initialCa
       <div className="pt-24">
         {/* Search Page Header */}
         <section className="relative overflow-hidden border-b border-[#2d3449] py-32">
-          <div className="absolute inset-0">
-            <Image src="/search-bg.jpg" alt="" fill className="h-full w-full object-cover" />
+          <div aria-hidden="true" className="absolute inset-0">
+            <Image src="/search-bg.jpg" alt={t('results')} fill className="h-full w-full object-cover" />
             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
             <div className="absolute inset-0 bg-gradient-to-b from-[#8b1a4a]/10 to-[#0b1326]" />
           </div>

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.5] - 2026-05-21
+
+### Fixed
+- Hero and search background `next/image` nodes no longer ship empty `alt` attributes; hero slides now fall back to localized slide labels and search headers use the localized results label while decorative wrappers stay `aria-hidden`.
+- Added regression coverage to keep empty `alt=""` background images from returning in hero and search page sections.
+
 ## [0.3.4] - 2026-05-21
 
 ### Fixed

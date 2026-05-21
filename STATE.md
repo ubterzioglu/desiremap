@@ -1,5 +1,14 @@
 # STATE
 
+## 2026-05-21 23:38 +0200
+
+- Scope: homepage/search image alt-attribute repair after live production inspection.
+- Root cause: decorative hero and search header background images were rendered with empty `alt=""` attributes, while production `_rsc` console noise came from normal Next.js link-prefetch requests rather than failing route responses.
+- Fixed: `HeroSection` now propagates API `altText` and falls back to localized slide labels for hero images; both search-page header background wrappers stay `aria-hidden` while their `next/image` nodes use localized non-empty alt text.
+- Added: regression coverage in `src/components/home/HeroSection.test.ts` and `src/components/search/SearchPageContent.test.ts` to block empty background-image alt attributes from returning.
+- Verification: `bun test src/components/home/HeroSection.test.ts src/components/search/SearchPageContent.test.ts` passed; `bun run typecheck` passed; `bun run build` passed; local Playwright smoke on `/` and `/search` showed 0 console errors, 0 network failures, 0 empty/missing `img[alt]`. Full `bun run lint` still fails on 4 pre-existing unrelated errors in `ProductSEOContent.tsx`, `stadt/page.tsx`, `sitemap.xml/route.ts`, and `public-service-types.ts`.
+- Version: 0.3.4 → 0.3.5 (patch).
+
 ## 2026-05-21 21:24 +0200
 
 - Scope: listing card Playwright verification repair after client-only age gate landed.
