@@ -1,5 +1,13 @@
 # STATE
 
+## 2026-05-21 15:05 +0200
+
+- Scope: default-locale `/de` SEO surface cleanup after live smoke.
+- Fixed: homepage JSON-LD `WebSite/SearchAction` and `WebPage/BreadcrumbList` no longer emit `/de` default-locale URLs; venue detail breadcrumb search links now use unprefixed German search paths.
+- Fixed: search page metadata/schema, blog index metadata/schema, and footer legal links no longer output `/de` default-locale links.
+- Verification: targeted frontend tests (`18/18`), `bun run typecheck`, scoped ESLint, grep for `/de` in touched SEO files, and `bun run build` all passed.
+- Version: 0.3.0 → 0.3.1 (patch).
+
 ## 2026-05-21 14:10 +0200
 
 - Scope: client-only 18+ age gate + SEO schema cleanup + proxy hardening.

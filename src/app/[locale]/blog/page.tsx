@@ -5,6 +5,7 @@ import { blogPosts } from '@/data/blog-posts'
 import { Calendar, Clock, User } from 'lucide-react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
+import { JsonLd } from '@/components/seo/JsonLd'
 
 export async function generateMetadata({
   params
@@ -13,14 +14,15 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params
   const siteUrl = 'https://desiremap.de'
+  const blogUrl = locale === 'de' ? `${siteUrl}/blog` : `${siteUrl}/${locale}/blog`
 
   return {
     title: 'Blog | DesireMap - Premium Erotik Guide',
     description: 'Der DesireMap Blog bietet Guides, Tipps und Informationen zu FKK Clubs, Laufhäusern und Bordellen in Deutschland. Entdecken Sie verifizierte Premium-Betriebe.',
     alternates: {
-      canonical: `${siteUrl}/${locale}/blog`,
+      canonical: blogUrl,
       languages: {
-        de: '/de/blog',
+        de: '/blog',
         en: '/en/blog',
         tr: '/tr/blog',
         ar: '/ar/blog'
@@ -28,11 +30,18 @@ export async function generateMetadata({
     },
     openGraph: {
       type: 'website',
-      url: `${siteUrl}/${locale}/blog`,
+      url: blogUrl,
       title: 'Blog | DesireMap',
       description: 'Guides und Tipps zu erotischen Dienstleistungen in Deutschland.',
-      siteName: 'DesireMap'
-    }
+      siteName: 'DesireMap',
+      images: [{ url: `${siteUrl}/hero-bg.jpg`, width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Blog | DesireMap',
+      description: 'Guides und Tipps zu erotischen Dienstleistungen in Deutschland.',
+      images: [`${siteUrl}/hero-bg.jpg`],
+    },
   }
 }
 
@@ -43,9 +52,40 @@ export default async function BlogPage({
 }) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'nav' })
+  const siteUrl = 'https://desiremap.de'
+  const blogUrl = locale === 'de' ? `${siteUrl}/blog` : `${siteUrl}/${locale}/blog`
+
+  const blogSchemas = [
+    {
+      '@type': 'Blog',
+      '@id': `${blogUrl}#blog`,
+      url: blogUrl,
+      name: 'DesireMap Blog',
+      description: 'Guides und Tipps zu FKK Clubs, Laufhäusern und Bordellen in Deutschland.',
+      isPartOf: { '@id': `${siteUrl}/#website` },
+      inLanguage: locale,
+      blogPost: blogPosts.map((post) => ({
+        '@type': 'BlogPosting',
+        headline: post.headline,
+        url: locale === 'de' ? `${siteUrl}/blog/${post.slug}` : `${siteUrl}/${locale}/blog/${post.slug}`,
+        datePublished: post.datePublished,
+        author: { '@type': 'Person', name: post.author.name },
+        description: post.description,
+      })),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: locale === 'de' ? siteUrl : `${siteUrl}/${locale}` },
+        { '@type': 'ListItem', position: 2, name: 'Blog', item: blogUrl },
+      ],
+    },
+  ]
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#0F172A] to-[#0b1326]">
+    <>
+      <JsonLd schemas={blogSchemas} />
+      <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#0F172A] to-[#0b1326]">
       <Header
         locale={locale}
         translations={{
@@ -166,5 +206,6 @@ export default async function BlogPage({
       </main>
       <Footer locale={locale} />
     </div>
+    </>
   )
 }

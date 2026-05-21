@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.1] - 2026-05-21
+
+### Fixed
+- Removed remaining default-locale `/de` SEO surface leaks from homepage/search/blog structured data, metadata, and footer legal links.
+- Default-locale search and blog canonicals now use unprefixed paths (`/search`, `/blog`, `/blog/:slug`) instead of `/de/*`.
+
 ## [0.3.0] - 2026-05-21
 
 ### Added

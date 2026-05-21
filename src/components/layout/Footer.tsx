@@ -54,7 +54,7 @@ export function Footer({ locale }: FooterProps) {
             <ul className="space-y-2">
               {['Impressum', 'Datenschutz', 'AGB', 'Kontakt'].map((link) => (
                 <li key={link}>
-                  <Link href={`/${locale}`} className="text-sm text-[#a48a90] transition-colors hover:text-[#ffb1c6]">
+                  <Link href={locale === 'de' ? '/' : `/${locale}`} className="text-sm text-[#a48a90] transition-colors hover:text-[#ffb1c6]">
                     {link}
                   </Link>
                 </li>

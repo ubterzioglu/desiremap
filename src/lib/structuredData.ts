@@ -1,4 +1,4 @@
-import { getCityPath, getVenuePath } from './navigation'
+import { getCityPath, getSearchPath, getVenuePath } from './navigation'
 import { getHomeSeoExperience, getHomeSeoMetadata } from './seo/home'
 import type { PublicCity } from '@/types'
 
@@ -18,6 +18,22 @@ function getVenueRelativePath(locale: string, slug: string) {
 
 function getVenueAbsoluteUrl(locale: string, slug: string) {
   return `${siteUrl}${getVenueRelativePath(locale, slug)}`
+}
+
+function getLocaleRootAbsoluteUrl(locale: string) {
+  return locale === 'de' ? siteUrl : `${siteUrl}/${locale}`
+}
+
+function getSearchAbsoluteUrl(locale: string, params?: { q?: string; city?: string; category?: string }) {
+  return `${siteUrl}${getSearchPath(locale, params)}`
+}
+
+function getBlogIndexAbsoluteUrl(locale: string) {
+  return locale === 'de' ? `${siteUrl}/blog` : `${siteUrl}/${locale}/blog`
+}
+
+function getBlogPostAbsoluteUrl(locale: string, slug: string) {
+  return locale === 'de' ? `${siteUrl}/blog/${slug}` : `${siteUrl}/${locale}/blog/${slug}`
 }
 
 // Product Listings für Homepage - URLs point to actual product detail pages
@@ -145,7 +161,7 @@ function getWebSiteSchema(locales: string[]) {
       '@type': 'SearchAction' as const,
       target: {
         '@type': 'EntryPoint' as const,
-        urlTemplate: `${siteUrl}/de/search?q={search_term_string}`
+        urlTemplate: `${siteUrl}/search?q={search_term_string}`
       },
       'query-input': 'required name=search_term_string'
     }
@@ -154,7 +170,7 @@ function getWebSiteSchema(locales: string[]) {
 
 // 7. WebPage Schema
 function getWebPageSchema(locale: string, title: string, description: string) {
-  const pageUrl = `${siteUrl}/${locale}`
+  const pageUrl = getLocaleRootAbsoluteUrl(locale)
   return {
     '@type': 'WebPage' as const,
     '@id': `${pageUrl}/#webpage`,
@@ -178,7 +194,7 @@ function getWebPageSchema(locale: string, title: string, description: string) {
 
 // 8. BreadcrumbList Schema
 function getBreadcrumbSchema(locale: string) {
-  const pageUrl = `${siteUrl}/${locale}`
+  const pageUrl = getLocaleRootAbsoluteUrl(locale)
   return {
     '@type': 'BreadcrumbList' as const,
     '@id': `${pageUrl}/#breadcrumb`,
@@ -850,19 +866,19 @@ function getProductBreadcrumbSchema(product: ProductDetailData, locale: string) 
         '@type': 'ListItem' as const,
         position: 1,
         name: 'Home',
-        item: `${siteUrl}/${locale}`
+        item: getLocaleRootAbsoluteUrl(locale)
       },
       {
         '@type': 'ListItem' as const,
         position: 2,
         name: product.city,
-        item: `${siteUrl}/${locale}/search?city=${encodeURIComponent(product.city)}`
+        item: getSearchAbsoluteUrl(locale, { city: product.city })
       },
       {
         '@type': 'ListItem' as const,
         position: 3,
         name: product.type.charAt(0).toUpperCase() + product.type.slice(1),
-        item: `${siteUrl}/${locale}/search?category=${product.type}`
+        item: getSearchAbsoluteUrl(locale, { category: product.type })
       },
       {
         '@type': 'ListItem' as const,
@@ -1070,7 +1086,7 @@ export interface BlogPostData {
 
 // 1. Article Schema
 function getArticleSchema(post: BlogPostData, locale: string) {
-  const postUrl = `${siteUrl}/${locale}/blog/${post.slug}`
+  const postUrl = getBlogPostAbsoluteUrl(locale, post.slug)
   return {
     '@type': 'Article' as const,
     '@id': `${postUrl}/#article`,
@@ -1118,7 +1134,7 @@ function getArticleSchema(post: BlogPostData, locale: string) {
 
 // 2. BlogPosting Schema (Article'ın blog versiyonu)
 function getBlogPostingSchema(post: BlogPostData, locale: string) {
-  const postUrl = `${siteUrl}/${locale}/blog/${post.slug}`
+  const postUrl = getBlogPostAbsoluteUrl(locale, post.slug)
   return {
     '@type': 'BlogPosting' as const,
     '@id': `${postUrl}/#blogposting`,
@@ -1170,7 +1186,7 @@ function getAuthorSchema(post: BlogPostData) {
 
 // 5. BreadcrumbList Schema for Blog
 function getBlogBreadcrumbSchema(post: BlogPostData, locale: string) {
-  const postUrl = `${siteUrl}/${locale}/blog/${post.slug}`
+  const postUrl = getBlogPostAbsoluteUrl(locale, post.slug)
   return {
     '@type': 'BreadcrumbList' as const,
     '@id': `${postUrl}/#breadcrumb`,
@@ -1179,19 +1195,19 @@ function getBlogBreadcrumbSchema(post: BlogPostData, locale: string) {
         '@type': 'ListItem' as const,
         position: 1,
         name: 'Home',
-        item: `${siteUrl}/${locale}`
+        item: getLocaleRootAbsoluteUrl(locale)
       },
       {
         '@type': 'ListItem' as const,
         position: 2,
         name: 'Blog',
-        item: `${siteUrl}/${locale}/blog`
+        item: getBlogIndexAbsoluteUrl(locale)
       },
       {
         '@type': 'ListItem' as const,
         position: 3,
         name: post.category,
-        item: `${siteUrl}/${locale}/blog?category=${encodeURIComponent(post.category)}`
+        item: `${getBlogIndexAbsoluteUrl(locale)}?category=${encodeURIComponent(post.category)}`
       },
       {
         '@type': 'ListItem' as const,
@@ -1205,7 +1221,7 @@ function getBlogBreadcrumbSchema(post: BlogPostData, locale: string) {
 // 6. FAQPage Schema for Blog
 function getBlogFAQSchema(post: BlogPostData, locale: string) {
   if (!post.faq || post.faq.length === 0) return null
-  const postUrl = `${siteUrl}/${locale}/blog/${post.slug}`
+  const postUrl = getBlogPostAbsoluteUrl(locale, post.slug)
   return {
     '@type': 'FAQPage' as const,
     '@id': `${postUrl}/#faq`,
@@ -1234,7 +1250,7 @@ function getBlogImageSchema(post: BlogPostData) {
 
 // 8. SpeakableSpecification Schema
 function getBlogSpeakableSchema(post: BlogPostData, locale: string) {
-  const postUrl = `${siteUrl}/${locale}/blog/${post.slug}`
+  const postUrl = getBlogPostAbsoluteUrl(locale, post.slug)
   return {
     '@type': 'SpeakableSpecification' as const,
     '@id': `${postUrl}/#speakable`,
@@ -1244,7 +1260,7 @@ function getBlogSpeakableSchema(post: BlogPostData, locale: string) {
 
 // 9. WebPage Schema for Blog
 function getBlogWebPageSchema(post: BlogPostData, locale: string) {
-  const postUrl = `${siteUrl}/${locale}/blog/${post.slug}`
+  const postUrl = getBlogPostAbsoluteUrl(locale, post.slug)
   return {
     '@type': 'WebPage' as const,
     '@id': `${postUrl}/#webpage`,
@@ -1252,7 +1268,7 @@ function getBlogWebPageSchema(post: BlogPostData, locale: string) {
     name: post.title,
     description: post.description,
     isPartOf: {
-      '@id': `${siteUrl}/${locale}/blog/#blog-section`
+      '@id': `${getBlogIndexAbsoluteUrl(locale)}/#blog-section`
     },
     breadcrumb: {
       '@id': `${postUrl}/#breadcrumb`
@@ -1276,12 +1292,13 @@ function getBlogWebPageSchema(post: BlogPostData, locale: string) {
 
 // 11. Blog Section Schema (isPartOf)
 function getBlogSectionSchema(locale: string) {
+  const blogUrl = getBlogIndexAbsoluteUrl(locale)
   return {
     '@type': 'Blog' as const,
-    '@id': `${siteUrl}/${locale}/blog/#blog-section`,
+    '@id': `${blogUrl}/#blog-section`,
     name: 'DesireMap Blog',
     description: 'Premium Erotik Hizmetler Pazar Yeri - DesireMap Blog',
-    url: `${siteUrl}/${locale}/blog`,
+    url: blogUrl,
     inLanguage: locale,
     publisher: {
       '@id': `${siteUrl}/#organization`
@@ -1338,7 +1355,7 @@ export function getBlogPostStructuredData(
 
 // Helper function to generate metadata for blog posts
 export function getBlogPostMetadata(post: BlogPostData, locale: string) {
-  const postUrl = `${siteUrl}/${locale}/blog/${post.slug}`
+  const postUrl = getBlogPostAbsoluteUrl(locale, post.slug)
   const title = `${post.headline} | DesireMap Blog`
   const description = post.description
 
@@ -1348,7 +1365,7 @@ export function getBlogPostMetadata(post: BlogPostData, locale: string) {
     alternates: {
       canonical: postUrl,
       languages: {
-        de: `/de/blog/${post.slug}`,
+        de: `/blog/${post.slug}`,
         en: `/en/blog/${post.slug}`,
         tr: `/tr/blog/${post.slug}`,
         ar: `/ar/blog/${post.slug}`

@@ -1,13 +1,14 @@
 import type { Metadata } from 'next'
 import { SearchPageContent } from './SearchPageContent'
+import { getSearchPath } from '@/lib/navigation'
 
 const siteUrl = 'https://desiremap.de'
 
 const localeTitles: Record<string, string> = {
-  de: 'Suchergebnisse | DesireMap',
-  en: 'Search Results | DesireMap',
-  tr: 'Arama Sonuçları | DesireMap',
-  ar: 'نتائج البحث | DesireMap'
+  de: 'Bordelle, FKK Clubs & Laufhäuser suchen – DesireMap',
+  en: 'Search FKK Clubs, Brothels & Laufhaus in Germany – DesireMap',
+  tr: "Almanya'da FKK Kulübü & Laufhaus Arayın – DesireMap",
+  ar: 'ابحث عن نوادي FKK ومنشآت Laufhaus في ألمانيا – DesireMap'
 }
 
 const localeDescriptions: Record<string, string> = {
@@ -34,15 +35,18 @@ export async function generateMetadata({
   const cityPart = city ? ` in ${city}` : ''
   const title = `${baseTitle}${queryPart}${cityPart}`
   
-  const canonicalUrl = `${siteUrl}/${locale}/search${q ? `?q=${encodeURIComponent(q)}` : ''}${city ? `${q ? '&' : '?'}city=${encodeURIComponent(city)}` : ''}`
+  const canonicalUrl = `${siteUrl}${getSearchPath(locale, {
+    ...(q ? { q } : {}),
+    ...(city ? { city } : {}),
+  })}`
 
   return {
     title,
     description,
     alternates: {
-      canonical: canonicalUrl,
-      languages: {
-        de: `/de/search`,
+        canonical: canonicalUrl,
+        languages: {
+        de: `/search`,
         en: `/en/search`,
         tr: `/tr/search`,
         ar: `/ar/search`
@@ -53,7 +57,8 @@ export async function generateMetadata({
       url: canonicalUrl,
       title,
       description,
-      siteName: 'DesireMap'
+      siteName: 'DesireMap',
+      images: [{ url: 'https://desiremap.de/hero-bg.jpg', width: 1200, height: 630 }],
     },
     robots: {
       index: false,
@@ -63,7 +68,7 @@ export async function generateMetadata({
 }
 
 function getSearchSchema(locale: string, query?: string, city?: string, resultCount?: number) {
-  const searchUrl = `${siteUrl}/${locale}/search`
+  const searchUrl = `${siteUrl}${getSearchPath(locale)}`
   const locationPhrase = city ? ` in ${city}` : ''
   const resultPhrase = typeof resultCount === 'number' ? ` with ${resultCount} results` : ''
   
@@ -87,7 +92,7 @@ function getSearchSchema(locale: string, query?: string, city?: string, resultCo
             '@type': 'ListItem',
             position: 1,
             name: 'Home',
-            item: `${siteUrl}/${locale}`
+            item: locale === 'de' ? siteUrl : `${siteUrl}/${locale}`
           },
           {
             '@type': 'ListItem',
