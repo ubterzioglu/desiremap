@@ -60,7 +60,7 @@ export function SearchPageContent({ locale, initialQuery, initialCity, initialCa
         {/* Search page arama sonuçları kısım */}
         <section className="py-12">
           <div className="mx-auto max-w-7xl px-6">
-            <SearchResults sponsoredResults={searchState.sponsoredResults} regularResults={searchState.regularResults} totalCount={searchState.searchResults.length} isLoading={searchState.isLoading} translations={resultsTranslations} onBordellClickAction={searchState.handleBordellClick} onClearFiltersAction={searchState.clearFilters} />
+            <SearchResults sponsoredResults={searchState.sponsoredResults} regularResults={searchState.regularResults} totalCount={searchState.searchResults.length} isLoading={searchState.isLoading} translations={resultsTranslations} locale={locale} onBordellClickAction={searchState.handleBordellClick} onClearFiltersAction={searchState.clearFilters} />
           </div>
         </section>
       </div>

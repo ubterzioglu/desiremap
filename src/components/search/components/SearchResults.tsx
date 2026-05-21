@@ -4,6 +4,7 @@ import { Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ListingCard } from '@/components/listings/ListingCard'
+import { getVenuePath } from '@/lib/navigation'
 import type { Bordell } from '@/types'
 
 type SearchResultsProps = {
@@ -19,6 +20,7 @@ type SearchResultsProps = {
     noResultsHint: string
     clearFilters: string
   }
+  locale: string
   onBordellClickAction: (bordell: { id: string }) => void
   onClearFiltersAction: () => void
 }
@@ -29,6 +31,7 @@ export function SearchResults({
   totalCount,
   isLoading,
   translations,
+  locale,
   onBordellClickAction,
   onClearFiltersAction
 }: SearchResultsProps) {
@@ -67,7 +70,13 @@ export function SearchResults({
           </div>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {sponsoredResults.map((item, index) => (
-              <ListingCard key={item.id} bordell={item} index={index} onDetailClickAction={onBordellClickAction} />
+              <ListingCard
+                key={item.id}
+                bordell={item}
+                detailHref={getVenuePath(locale, item.id)}
+                index={index}
+                onDetailClickAction={onBordellClickAction}
+              />
             ))}
           </div>
         </div>
@@ -84,7 +93,13 @@ export function SearchResults({
           )}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {regularResults.map((item, index) => (
-              <ListingCard key={item.id} bordell={item} index={index} onDetailClickAction={onBordellClickAction} />
+              <ListingCard
+                key={item.id}
+                bordell={item}
+                detailHref={getVenuePath(locale, item.id)}
+                index={index}
+                onDetailClickAction={onBordellClickAction}
+              />
             ))}
           </div>
         </div>
