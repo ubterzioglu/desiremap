@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { Calendar, Check, Clock, Crown, Eye, Heart, MapPin, Star, TrendingUp, Users } from 'lucide-react'
@@ -10,7 +11,7 @@ import { cn } from '@/lib/utils'
 import { ReservationModal } from '@/components/listings/ReservationModal'
 import type { Bordell } from '@/types'
 
-type ListingCardProps = { bordell: Bordell; index: number; onDetailClickAction: (bordell: Bordell) => void }
+type ListingCardProps = { bordell: Bordell; detailHref: string; index: number; onDetailClickAction: (bordell: Bordell) => void }
 
 type ListingCardLabels = {
   detailLabel: string
@@ -32,6 +33,7 @@ type ListingCardMediaProps = {
 
 type ListingCardContentProps = {
   bordell: Bordell
+  detailHref: string
   detailLabel: string
   onDetailClickAction: (bordell: Bordell) => void
   onReserve: () => void
@@ -131,6 +133,7 @@ function ListingCardMedia({
 
 function ListingCardContent({
   bordell,
+  detailHref,
   detailLabel,
   onDetailClickAction,
   onReserve,
@@ -144,9 +147,14 @@ function ListingCardContent({
     <div className="p-5">
       <div className="mb-4 flex items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <h3 className="truncate text-xl font-semibold tracking-[-0.02em] text-[#dae2fd] transition-colors duration-300 group-hover:text-white">
+          <Link
+            href={detailHref}
+            aria-label={detailLabel}
+            onClick={() => onDetailClickAction(bordell)}
+            className="block truncate text-xl font-semibold tracking-[-0.02em] text-[#dae2fd] transition-colors duration-300 group-hover:text-white hover:text-white"
+          >
             {bordell.name}
-          </h3>
+          </Link>
           <div className="mt-1.5 flex items-center gap-2 text-sm text-[#dcbfc5]">
             <MapPin className="h-4 w-4 flex-shrink-0 text-[#ffb1c6]" />
             <span className="truncate">{bordell.location}</span>
@@ -186,20 +194,13 @@ function ListingCardContent({
           <div className="mt-1 text-base font-bold text-[#e9c349]">{priceLabel}</div>
         </div>
         <div className="flex gap-2">
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            onClick={(event) => {
-              event.stopPropagation()
-              onDetailClickAction(bordell)
-            }}
+          <Link
+            href={detailHref}
             aria-label={detailLabel}
-            data-testid="listing-card-detail-button"
-            className="pointer-events-auto h-9 w-9 border-[#334155] bg-transparent p-0 text-[#dcbfc5] hover:bg-[#0f172a] hover:text-white"
-          >
-            <Eye className="h-4 w-4" />
-          </Button>
+            onClick={() => onDetailClickAction(bordell)}
+            data-testid="listing-card-detail-link"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-[#334155] bg-transparent p-0 text-[#dcbfc5] transition-colors hover:bg-[#0f172a] hover:text-white"
+          ><Eye className="h-4 w-4" /></Link>
           <Button
             type="button"
             size="sm"
@@ -220,7 +221,7 @@ function ListingCardContent({
   )
 }
 
-export function ListingCard({ bordell, index, onDetailClickAction }: ListingCardProps) {
+export function ListingCard({ bordell, detailHref, index, onDetailClickAction }: ListingCardProps) {
   const t = useTranslations('listing')
   const [isFavorite, setIsFavorite] = useState(false)
   const [showReservation, setShowReservation] = useState(false)
@@ -236,7 +237,7 @@ export function ListingCard({ bordell, index, onDetailClickAction }: ListingCard
 
   return (
     <>
-      <div className="group relative cursor-pointer" style={{ animationDelay: `${index * 70}ms` }} onClick={() => onDetailClickAction(bordell)}>
+      <div className="group relative" style={{ animationDelay: `${index * 70}ms` }}>
         {bordell.sponsored ? (
           <div className="absolute -top-2 left-5 z-10">
             <Badge className="rounded-full border-0 bg-linear-to-r from-amber-500 to-orange-500 text-xs text-white">
@@ -261,6 +262,7 @@ export function ListingCard({ bordell, index, onDetailClickAction }: ListingCard
             />
             <ListingCardContent
               bordell={bordell}
+              detailHref={detailHref}
               detailLabel={labels.detailLabel}
               onDetailClickAction={onDetailClickAction}
               onReserve={() => setShowReservation(true)}

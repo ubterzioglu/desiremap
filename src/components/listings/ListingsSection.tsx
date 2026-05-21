@@ -1,7 +1,8 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -9,7 +10,7 @@ import { ListingCard } from '@/components/listings/ListingCard'
 import { usePublicEstablishments, usePublicServiceTypes } from '@/hooks/useQueries'
 import { useParams, useRouter } from 'next/navigation'
 import { toBordellType } from '@/lib/bordell-type'
-import { getVenuePath } from '@/lib/navigation'
+import { getCategoryPath, getSearchPath, getVenuePath } from '@/lib/navigation'
 import type { Bordell, PublicEstablishment } from '@/types'
 
 const LOADING_SKELETON_KEYS = [
@@ -78,11 +79,10 @@ function ListingsHeader({ resultCount: _resultCount }: { resultCount: number | u
 }
 
 export function ListingsSection() {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const params = useParams()
   const router = useRouter()
   const locale = (params?.locale as string) || 'de'
-  const establishmentParams = selectedCategory ? { limit: 12, type: selectedCategory } : { limit: 12 }
+  const establishmentParams = { limit: 12 }
   const { data: result, isLoading } = usePublicEstablishments(establishmentParams)
   const { data: serviceTypes = [] } = usePublicServiceTypes()
   const bordells = useMemo(() => (result?.items ?? []).map(toListingCardBordell), [result])
@@ -98,34 +98,26 @@ export function ListingsSection() {
         <ListingsHeader resultCount={result?.total ?? bordells.length} />
 
         <div className="mb-10 flex flex-wrap gap-3 rounded-[1.6rem] border border-[#334155]/55 bg-[#131b2e]/72 p-4 shadow-[0_20px_50px_rgba(6,14,32,0.22)] backdrop-blur-xl">
-          <Button
-            onClick={() => setSelectedCategory(null)}
-            size="sm"
-            variant={selectedCategory === null ? 'default' : 'outline'}
-            className={cn(
-              'rounded-full px-5',
-              selectedCategory === null
-                ? 'border-0 bg-[#8b1a4a] text-white shadow-[0_14px_28px_rgba(139,26,74,0.28)]'
-                : 'border-[#334155] bg-transparent text-[#dcbfc5] hover:bg-[#171f33] hover:text-white'
-            )}
-          >
-            Alle
-          </Button>
-          {serviceTypes.map((cat) => (
-            <Button
-              key={cat.id}
-              onClick={() => setSelectedCategory(cat.slug)}
-              size="sm"
-              variant={selectedCategory === cat.slug ? 'default' : 'outline'}
+          <Link
+            href={getSearchPath(locale)}
               className={cn(
-                'rounded-full px-5',
-                selectedCategory === cat.slug
-                  ? 'border-0 bg-[#8b1a4a] text-white shadow-[0_14px_28px_rgba(139,26,74,0.28)]'
-                  : 'border-[#334155] bg-transparent text-[#dcbfc5] hover:bg-[#171f33] hover:text-white'
+                'inline-flex rounded-full px-5 py-2 text-sm',
+                'border-0 bg-[#8b1a4a] text-white shadow-[0_14px_28px_rgba(139,26,74,0.28)]'
               )}
             >
-              {cat.name}
-            </Button>
+              Alle
+          </Link>
+          {serviceTypes.map((cat) => (
+            <Link
+              key={cat.id}
+              href={getCategoryPath(locale, cat.slug)}
+                className={cn(
+                  'inline-flex rounded-full px-5 py-2 text-sm',
+                  'border border-[#334155] bg-transparent text-[#dcbfc5] hover:bg-[#171f33] hover:text-white'
+                )}
+              >
+                {cat.name}
+            </Link>
           ))}
         </div>
 
@@ -149,6 +141,7 @@ export function ListingsSection() {
               <ListingCard
                 key={bordell.id}
                 bordell={bordell}
+                detailHref={getVenuePath(locale, bordell.id)}
                 index={index}
                 onDetailClickAction={(selectedBordell) => router.push(getVenuePath(locale, selectedBordell.id))}
               />

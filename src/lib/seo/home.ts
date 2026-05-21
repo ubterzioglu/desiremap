@@ -1,4 +1,4 @@
-import { getSearchPath, getCityPath } from '@/lib/navigation'
+import { getCategoryPath, getSearchPath, getCityPath } from '@/lib/navigation'
 import { citiesData } from '@/data/cities'
 
 export type HomeSeoLocale = 'de' | 'en' | 'tr' | 'ar'
@@ -62,9 +62,9 @@ export type HomeSeoExperience = {
 
 const HOME_SEO_METADATA: Record<HomeSeoLocale, HomeSeoMetadata> = {
   de: {
-    title: 'DesireMap | Bordelle, FKK Clubs & Studios in Deutschland',
+    title: 'DesireMap | FKK Clubs, Laufhäuser & Bordelle – Köln, Berlin, Frankfurt',
     description:
-      'Entdecken Sie verifizierte FKK Clubs, Bordelle, Laufhäuser und Studios in Deutschland. Filtern nach Stadt, Kategorie und Bewertung auf DesireMap.'
+      'FKK Clubs, Laufhäuser & Bordelle in Köln, Berlin, Frankfurt, Hamburg, München, Stuttgart. 847+ verifizierte Adressen mit Preisen & Bewertungen — kostenlos vergleichen auf DesireMap.'
   },
   en: {
     title: 'DesireMap | FKK Clubs & Studios in Germany',
@@ -128,10 +128,10 @@ export function getHomeSeoExperience(locale: string): HomeSeoExperience {
   const currentLocale = (locale as HomeSeoLocale) || 'de'
 
   return {
-    eyebrow: 'Verifizierte Orientierung für Deutschlands diskrete Suche',
+    eyebrow: 'Deutschlands größtes Verzeichnis für FKK Clubs, Bordelle & Laufhäuser',
     title: 'FKK Clubs, Bordelle und Laufhäuser in Deutschland: Preise vergleichen, die besten Adressen finden und richtig auswählen',
     lead:
-      '<strong>DesireMap</strong> ist Deutschlands führende Plattform für verifizierte Adult-Entertainment-Etablissements und hilft Ihnen, schnell und diskret den passenden Betrieb zu finden. Ob <strong>FKK Club</strong>, <strong>Laufhaus</strong>, <strong>Studio</strong> oder <strong>Privat-Adresse</strong> – unsere strukturierte Datenbank mit über <strong>847 geprüften Adressen</strong> (Stand 2026) bietet Filteroptionen nach Stadt, Kategorie, Preisrahmen und Bewertung für eine fundierte Entscheidung.',
+      '<strong>DesireMap</strong> ist das größte deutsche Verzeichnis verifizierter Bordelle, FKK Clubs und Laufhäuser. Ob <strong>FKK Club</strong>, <strong>Laufhaus</strong>, <strong>Studio</strong> oder <strong>Privat-Adresse</strong> – finde diskret den passenden Betrieb, gefiltert nach Stadt, Kategorie, Preisrahmen und Bewertung. Über <strong>847 geprüfte Adressen</strong> (Stand 2026).',
     supportingCopy:
       'Statt einer langen Textwand führt die Startseite direkt in die wichtigsten Suchpfade: <strong>FKK Clubs</strong> mit Wellness-Fokus, <strong>Laufhäuser</strong> mit großer Auswahl, <strong>diskrete Studios</strong> und <strong>Privat-Adressen</strong> für persönlichere Termine. So bleibt der Bereich lesbar, hochwertig und inhaltlich klar. Im Jahr 2026 verzeichnet DesireMap durchschnittlich <strong>15.000 monatliche Besucher</strong>, die gezielt nach verifizierten Adressen in Deutschlands Metropolregionen suchen.',
     definitionBlock:
@@ -159,7 +159,7 @@ export function getHomeSeoExperience(locale: string): HomeSeoExperience {
         title: 'Wellness, Tagesbesuch und Club-Atmosphäre',
         description:
           '<strong>FKK Clubs</strong> sind ideal für Nutzer, die größere Clubs, Spa-Atmosphäre, Tagesplanung und verifizierte Rahmenbedingungen vergleichen möchten. Der durchschnittliche Tageseintrittspreis liegt zwischen <strong>50 € und 150 €</strong> je nach Ausstattung und Region.',
-        href: getSearchPath(currentLocale, { category: 'fkk' }),
+        href: getCategoryPath(currentLocale, 'fkk'),
         highlights: ['Sauna und Wellness-Fokus', 'Beliebt in großen Städten', 'Gut für planbare Besuche']
       },
       {
@@ -168,7 +168,7 @@ export function getHomeSeoExperience(locale: string): HomeSeoExperience {
         title: 'Große Auswahl in starken Stadtlagen',
         description:
           '<strong>Laufhäuser</strong> sind besonders relevant für Suchanfragen aus Köln, Frankfurt und anderen urbanen Märkten mit klarer Vergleichsabsicht. Mit über <strong>200 gelisteten Laufhäusern</strong> bundesweit gehört dies zu den meistgesuchten Kategorien.',
-        href: getSearchPath(currentLocale, { category: 'laufhaus' }),
+        href: getCategoryPath(currentLocale, 'laufhaus'),
         highlights: ['Hohe Nachfrage in Metropolen', 'Gut für direkte Vergleiche', 'Starker Stadtbezug']
       },
       {
@@ -177,7 +177,7 @@ export function getHomeSeoExperience(locale: string): HomeSeoExperience {
         title: 'Diskret, planbar und persönlicher',
         description:
           '<strong>Studios</strong> sind oft lokaler, diskreter und persönlicher. Dieser Einstieg passt zu Nutzern, die gezielt und ohne Umwege suchen möchten. Die durchschnittliche Bewertung liegt bei <strong>4,2 von 5 Sternen</strong>.',
-        href: getSearchPath(currentLocale, { category: 'studio' }),
+        href: getCategoryPath(currentLocale, 'studio'),
         highlights: ['Hoher Diskretionsbedarf', 'Klarer lokaler Intent', 'Geeignet für konkrete Terminplanung']
       },
       {
@@ -186,7 +186,7 @@ export function getHomeSeoExperience(locale: string): HomeSeoExperience {
         title: 'Persönliche Adressen im privaten Rahmen',
         description:
           'Der <strong>Privat-Bereich</strong> richtet sich an Nutzer, die bewusst kleinere, persönlichere und weniger clubartige Angebote suchen. Ca. <strong>15 % aller gelisteten Adressen</strong> fallen in diese Kategorie.',
-        href: getSearchPath(currentLocale, { category: 'privat' }),
+        href: getCategoryPath(currentLocale, 'privat'),
         highlights: ['Klare persönliche Ausrichtung', 'Besonders vertrauensabhängig', 'Gut für intent-getriebene Filterung']
       }
     ],

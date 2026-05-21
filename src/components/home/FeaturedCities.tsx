@@ -35,12 +35,14 @@ export function FeaturedCities({ translations }: FeaturedCitiesProps) {
   const { data: backendCities } = usePublicStadtCities()
 
   const cities = useMemo<FeaturedCity[]>(() => {
-    return (backendCities ?? []).map((city: PublicCity) => ({
-      slug: city.slug,
-      name: city.name,
-      count: getPublicCityVenueCount(city),
-      image: city.image ?? null,
-    }))
+    return (backendCities ?? [])
+      .filter((city) => getPublicCityVenueCount(city) > 0)
+      .map((city: PublicCity) => ({
+        slug: city.slug,
+        name: city.name,
+        count: getPublicCityVenueCount(city),
+        image: city.image ?? null,
+      }))
   }, [backendCities])
 
   return (

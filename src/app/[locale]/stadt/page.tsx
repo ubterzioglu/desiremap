@@ -18,7 +18,7 @@ import { JsonLd } from '@/components/seo/JsonLd'
 const stadtIntro: Record<string, { heading: string; lead: string; why: string; whyText: string }> = {
   de: {
     heading: 'FKK Clubs & Laufhäuser in deutschen Städten',
-    lead: 'DesireMap ist Deutschlands umfassendes Verzeichnis für verifizierte Adult-Entertainment-Betriebe. Ob FKK Club, Laufhaus, Studio oder Privatadresse – hier findest du geprüfte Adressen sortiert nach Stadt.',
+    lead: 'DesireMap verzeichnet Deutschlands größte Sammlung geprüfter Bordelle, FKK Clubs und Laufhäuser. Ob FKK Club, Laufhaus, Studio oder Privatadresse – hier findest du verifizierte Adressen sortiert nach Stadt.',
     why: 'Warum DesireMap?',
     whyText: 'Alle Betriebe durchlaufen einen manuellen Prüfprozess. Verifizierte Einträge sind gekennzeichnet. Informationen zu Preisen, Öffnungszeiten und Angeboten werden regelmäßig aktualisiert. Die Plattform ist 24/7 verfügbar und in vier Sprachen nutzbar.',
   },
@@ -104,6 +104,7 @@ export async function generateMetadata({
       title: metadata.title,
       description: metadata.description,
       url: canonicalUrl,
+      images: [{ url: 'https://desiremap.de/hero-bg.jpg', width: 1200, height: 630 }],
     },
   }
 }

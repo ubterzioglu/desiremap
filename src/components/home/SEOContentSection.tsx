@@ -81,7 +81,7 @@ function SeoDefinitionBlock({ seo }: { seo: HomeSeoExperience }) {
         <h3 className="text-2xl font-semibold text-white sm:text-3xl">
           {seo.comparisonIntro}
         </h3>
-        <table className="mt-6 w-full text-left text-sm" role="table" aria-label="Vergleich der Etablissement-Kategorien">
+        <table className="mt-6 w-full min-w-[500px] text-left text-sm" role="table" aria-label="Vergleich der Etablissement-Kategorien">
           <thead>
               <tr className="border-b border-[#334155]/50">
               <th className="pr-4 pb-3 font-semibold text-[#f0bec6]">Kategorie</th>

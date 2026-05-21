@@ -16,6 +16,7 @@ import {
   getPublicCityVenueCount,
   selectLocalizedCityText,
 } from '@/lib/public-cities'
+import { JsonLd } from '@/components/seo/JsonLd'
 
 const siteUrl = 'https://desiremap.de'
 const locales = ['de', 'en', 'tr', 'ar']
@@ -121,8 +122,41 @@ export default async function CityPage({
   const description = selectLocalizedCityText(cityData.description, locale)
   const subtitle = selectLocalizedCityText(cityData.subtitle, locale)
   const image = getPublicCityImage(cityData)
+  const canonical = locale === 'de' ? `/stadt/${cityData.slug}` : `/${locale}/stadt/${cityData.slug}`
+
+  const citySchemas = [
+    {
+      '@type': 'CollectionPage',
+      '@id': `${siteUrl}${canonical}#webpage`,
+      url: `${siteUrl}${canonical}`,
+      name: `${cityData.name} — FKK Clubs, Laufhäuser & Studios`,
+      ...(description ? { description } : {}),
+      isPartOf: { '@id': `${siteUrl}/#website` },
+      inLanguage: locale,
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: locale === 'de' ? siteUrl : `${siteUrl}/${locale}` },
+        { '@type': 'ListItem', position: 2, name: 'Städte', item: locale === 'de' ? `${siteUrl}/stadt` : `${siteUrl}/${locale}/stadt` },
+        { '@type': 'ListItem', position: 3, name: cityData.name, item: `${siteUrl}${canonical}` },
+      ],
+    },
+    ...(cityBordells.length > 0 ? [{
+      '@type': 'ItemList',
+      name: `Betriebe in ${cityData.name}`,
+      url: `${siteUrl}${canonical}`,
+      itemListElement: cityBordells.map((est, idx) => ({
+        '@type': 'ListItem',
+        position: idx + 1,
+        name: est.name,
+      })),
+    }] : []),
+  ]
 
   return (
+    <>
+      <JsonLd schemas={citySchemas} />
     <main className="flex min-h-screen flex-col bg-[#0b1326]">
       <Header
         locale={locale}
@@ -293,5 +327,6 @@ export default async function CityPage({
 
       <Footer locale={locale} />
     </main>
+    </>
   )
 }

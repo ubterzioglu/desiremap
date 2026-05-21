@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
-import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { Building2, MapPin, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -56,9 +56,9 @@ type HeroSearchPanelProps = {
   categoryOptions: { id: string; label: string }[]
   cities: PublicCity[]
   location: string
+  locale: string
   onCategoryChange: (value: string) => void
   onLocationChange: (value: string) => void
-  onSearch: () => void
   translations: Pick<Translations['hero'], 'search' | 'selectCategory' | 'selectCity'>
 }
 
@@ -96,12 +96,14 @@ function HeroBackground({ activeSlide, prefersReducedMotion, slides }: HeroBackg
             index === activeSlide ? 'opacity-100' : 'opacity-0'
           )}
         >
-          <div
-            className="absolute inset-0 bg-center"
-            style={{
-              backgroundImage: `url("${slide.src}")`,
-              backgroundSize: slide.fit === 'stretch' ? '100% 100%' : 'cover',
-            }}
+          <Image
+            src={slide.src}
+            alt=""
+            fill
+            priority={index === 0}
+            unoptimized
+            sizes="100vw"
+            className={cn('object-center', slide.fit === 'stretch' ? 'object-fill' : 'object-cover')}
           />
         </div>
       ))}
@@ -117,13 +119,15 @@ function HeroSearchPanel({
   categoryOptions,
   cities,
   location,
+  locale,
   onCategoryChange,
   onLocationChange,
-  onSearch,
   translations,
 }: HeroSearchPanelProps): ReactElement {
   return (
-    <div className="max-w-[720px] rounded-[18px] border border-[#2f3c58] bg-[#10192e]/78 p-1.5 shadow-[0_24px_80px_rgba(8,13,29,0.42)] backdrop-blur-xl">
+    <form action={getSearchPath(locale)} method="get" className="max-w-[720px] rounded-[18px] border border-[#2f3c58] bg-[#10192e]/78 p-1.5 shadow-[0_24px_80px_rgba(8,13,29,0.42)] backdrop-blur-xl">
+      <input type="hidden" name="city" value={location} />
+      <input type="hidden" name="category" value={category === 'all' ? '' : category} />
       <div className="grid gap-1.5 md:grid-cols-[1.02fr_1.08fr_auto]">
         <div className="relative overflow-hidden rounded-[14px] border border-[#26334f] bg-[#111b31]/86">
           <MapPin className="pointer-events-none absolute top-1/2 left-4 h-4.5 w-4.5 -translate-y-1/2 text-[#f0b0c0]" />
@@ -161,14 +165,14 @@ function HeroSearchPanel({
         </div>
 
         <Button
-          onClick={onSearch}
+          type="submit"
           className="h-[56px] min-w-[148px] rounded-[14px] border border-[#b33b6a] bg-[#8b1a4a] px-7 text-[14px] font-bold tracking-[0.06em] text-white uppercase shadow-[0_16px_30px_rgba(139,26,74,0.34)] hover:bg-[#a11f57]"
         >
           <Search className="mr-2 h-4 w-4" />
           {translations.search}
         </Button>
       </div>
-    </div>
+    </form>
   )
 }
 
@@ -186,7 +190,6 @@ function HeroStats({ items }: HeroStatsProps): ReactElement {
 }
 
 export function HeroSection({ translations, stats, locale }: HeroProps): ReactElement {
-  const router = useRouter()
   const categoryTranslations = useTranslations('categories')
   const [location, setLocation] = useState('')
   const [category, setCategory] = useState('all')
@@ -265,15 +268,6 @@ export function HeroSection({ translations, stats, locale }: HeroProps): ReactEl
     return () => window.clearInterval(intervalId)
   }, [heroSlides.length, prefersReducedMotion])
 
-  const handleSearch = () => {
-    const path = getSearchPath(locale, {
-      ...(location ? { city: location } : {}),
-      ...(category !== 'all' ? { category } : {})
-    })
-
-    router.push(path)
-  }
-
   return (
     <section className="relative isolate flex min-h-screen overflow-hidden bg-[#0b1326] pt-28 pb-16 text-[#dae2fd] sm:pt-32">
       <HeroBackground activeSlide={displayedSlide} prefersReducedMotion={prefersReducedMotion} slides={heroSlides} />
@@ -307,9 +301,9 @@ export function HeroSection({ translations, stats, locale }: HeroProps): ReactEl
             categoryOptions={categoryOptions}
             cities={cities}
             location={location}
+            locale={locale}
             onCategoryChange={setCategory}
             onLocationChange={setLocation}
-            onSearch={handleSearch}
             translations={translations}
           />
 
