@@ -1,4 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
+import { AGE_VERIFICATION_COOKIE_NAME } from '../src/lib/ageGate'
+
+const defaultBaseUrl = 'http://127.0.0.1:3000'
 
 const establishment = {
   slug: 'e2e-studio',
@@ -46,33 +49,51 @@ async function mockPublicDiscovery(page: Page) {
   })
 }
 
-async function gotoListingCard(page: Page, locale: 'de' | 'en') {
+async function gotoListingCard(page: Page, locale: 'de' | 'en', baseURL: string | undefined) {
   await mockPublicDiscovery(page)
+  await page.context().addCookies([
+    {
+      name: AGE_VERIFICATION_COOKIE_NAME,
+      value: '1',
+      url: baseURL ?? defaultBaseUrl,
+    },
+  ])
   await page.goto(`/${locale}`, { waitUntil: 'domcontentloaded' })
 
-  const card = page.getByTestId('listing-card-e2e-studio')
-  await expect(card.getByRole('heading', { name: 'E2E Studio' })).toBeVisible()
+  const card = page.getByTestId(`listing-card-${establishment.slug}`)
+  await expect(card).toHaveCount(1)
 
-  return card
+  const detailLabel = locale === 'en' ? 'Show details: E2E Studio' : 'Details anzeigen: E2E Studio'
+  const titleLink = card.getByRole('link', { name: detailLabel }).filter({ hasText: 'E2E Studio' })
+  await expect(titleLink).toBeVisible()
+
+  return {
+    card,
+    titleLink,
+    detailButton: card.getByTestId('listing-card-detail-link'),
+    reserveButton: card.getByTestId('listing-card-reserve-button'),
+    favoriteButton: card.getByTestId('listing-card-favorite-button'),
+  }
 }
 
 test.describe('ListingCard interactions', () => {
-  test('reservation CTA opens the auth modal without navigating to details', async ({ page }) => {
-    const card = await gotoListingCard(page, 'de')
+  test('reservation CTA opens the reservation modal without navigating to details', async ({ page, baseURL }) => {
+    const listing = await gotoListingCard(page, 'de', baseURL)
 
     const startingUrl = page.url()
-    const reserveButton = card.getByTestId('listing-card-reserve-button')
+    const reserveButton = listing.reserveButton
 
     await expect(reserveButton).toHaveAccessibleName('Reservierung fuer E2E Studio starten')
     await reserveButton.click()
 
     await expect(page).toHaveURL(startingUrl)
-    await expect(page.getByRole('dialog')).toContainText('Anmeldung erforderlich')
+    await expect(page.getByRole('dialog')).toContainText('Reservierung')
+    await expect(page.getByRole('dialog')).toContainText('E2E Studio - Berlin')
   })
 
-  test('card details action is keyboard accessible', async ({ page }) => {
-    const card = await gotoListingCard(page, 'de')
-    const detailAction = card.getByTestId('listing-card-detail-surface')
+  test('card details action is keyboard accessible', async ({ page, baseURL }) => {
+    const listing = await gotoListingCard(page, 'de', baseURL)
+    const detailAction = listing.titleLink
 
     await expect(detailAction).toHaveAccessibleName('Details anzeigen: E2E Studio')
     await detailAction.focus()
@@ -81,29 +102,29 @@ test.describe('ListingCard interactions', () => {
     await expect(page).toHaveURL(/\/venue\/e2e-studio/)
   })
 
-  test('card surface click navigates to details', async ({ page }) => {
-    const card = await gotoListingCard(page, 'de')
+  test('card title link click navigates to details', async ({ page, baseURL }) => {
+    const listing = await gotoListingCard(page, 'de', baseURL)
 
-    await card.getByTestId('listing-card-detail-surface').click()
-
-    await expect(page).toHaveURL(/\/venue\/e2e-studio/)
-  })
-
-  test('eye detail CTA click navigates to details', async ({ page }) => {
-    const card = await gotoListingCard(page, 'de')
-
-    await card.getByTestId('listing-card-detail-button').click()
+    await listing.titleLink.click()
 
     await expect(page).toHaveURL(/\/venue\/e2e-studio/)
   })
 
-  test('English locale renders translated labels and stateful favorite button labels', async ({ page }) => {
-    const card = await gotoListingCard(page, 'en')
-    const reserveButton = card.getByTestId('listing-card-reserve-button')
-    const saveFavorite = card.getByTestId('listing-card-favorite-button')
+  test('eye detail CTA click navigates to details', async ({ page, baseURL }) => {
+    const listing = await gotoListingCard(page, 'de', baseURL)
+
+    await listing.detailButton.click()
+
+    await expect(page).toHaveURL(/\/venue\/e2e-studio/)
+  })
+
+  test('English locale renders translated labels and stateful favorite button labels', async ({ page, baseURL }) => {
+    const listing = await gotoListingCard(page, 'en', baseURL)
+    const reserveButton = listing.reserveButton
+    const saveFavorite = listing.favoriteButton
 
     await expect(reserveButton).toHaveAccessibleName('Start reservation for E2E Studio')
-    await expect(card.getByText('Price')).toBeVisible()
+    await expect(listing.card.getByText('Price', { exact: true })).toBeVisible()
 
     await expect(saveFavorite).toHaveAccessibleName('Save E2E Studio to favorites')
     await expect(saveFavorite).toHaveAttribute('aria-pressed', 'false')

@@ -59,6 +59,13 @@ function getListingCardLabels(bordell: Bordell, isFavorite: boolean, t: ReturnTy
   }
 }
 
+function getListingCardTestId(detailHref: string, fallbackId: string): string {
+  const segments = detailHref.split('/').filter(Boolean)
+  const slug = segments[segments.length - 1] ?? fallbackId
+
+  return `listing-card-${slug}`
+}
+
 function ListingCardMedia({
   bordell,
   favoriteLabel,
@@ -222,6 +229,7 @@ export function ListingCard({ bordell, detailHref, index }: ListingCardProps) {
   const [isFavorite, setIsFavorite] = useState(false)
   const [showReservation, setShowReservation] = useState(false)
   const labels = getListingCardLabels(bordell, isFavorite, t)
+  const cardTestId = getListingCardTestId(detailHref, bordell.id)
   const priceLabel = getPriceLabel(bordell, t('priceOnRequest'))
   const typeLabels = {
     laufhaus: t('types.laufhaus'),
@@ -233,7 +241,7 @@ export function ListingCard({ bordell, detailHref, index }: ListingCardProps) {
 
   return (
     <>
-      <div className="group relative" style={{ animationDelay: `${index * 70}ms` }}>
+      <div className="group relative" data-testid={cardTestId} style={{ animationDelay: `${index * 70}ms` }}>
         {bordell.sponsored ? (
           <div className="absolute -top-2 left-5 z-10">
             <Badge className="rounded-full border-0 bg-linear-to-r from-amber-500 to-orange-500 text-xs text-white">

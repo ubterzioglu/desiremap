@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.4] - 2026-05-21
+
+### Fixed
+- Listing card Playwright coverage now seeds the `dm_age_verified` cookie before navigation and scopes assertions to the current card so the client-only age gate and duplicate controls do not make interaction tests flaky.
+
 ## [0.3.3] - 2026-05-21
 
 ### Changed

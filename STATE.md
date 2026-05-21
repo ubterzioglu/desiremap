@@ -1,5 +1,13 @@
 # STATE
 
+## 2026-05-21 21:24 +0200
+
+- Scope: listing card Playwright verification repair after client-only age gate landed.
+- Root cause: `e2e/listing-card.spec.ts` navigated without the `dm_age_verified=1` cookie, so the 18+ modal blocked the mocked listing card from rendering.
+- Fixed: listing card E2E helper seeds the age verification cookie on the Playwright browser context before visiting `/de` or `/en`, then scopes controls through `data-testid="listing-card-e2e-studio"`.
+- Verification: initial `bun run test:e2e -- e2e/listing-card.spec.ts` failed RED on the age gate dialog; after seeding the cookie and aligning assertions with the current link/modal DOM, the same Playwright spec passed 5/5 with a clean exit.
+- Version: 0.3.3 → 0.3.4 (patch).
+
 ## 2026-05-21 20:58 +0200
 
 - Scope: public Stadt city image source unification.
