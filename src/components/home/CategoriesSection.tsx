@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { ChevronRight, Flame, Building2, Crown, Gem, Shield } from 'lucide-react'
+import { ChevronRight, Flame, Building2, Crown, Gem, Hand, Shield, Sparkles, Waves } from 'lucide-react'
 import type { ReactNode } from 'react'
 import type { Translations } from '@/types'
 import { getSearchPath } from '@/lib/navigation'
@@ -12,8 +12,12 @@ const CATEGORY_ICONS: Record<string, ReactNode> = {
   fkk: <Flame className="h-5 w-5" />,
   laufhaus: <Building2 className="h-5 w-5" />,
   bordell: <Crown className="h-5 w-5" />,
+  massage: <Hand className="h-5 w-5" />,
+  sauna: <Flame className="h-5 w-5" />,
   studio: <Gem className="h-5 w-5" />,
+  thermal: <Waves className="h-5 w-5" />,
   privat: <Shield className="h-5 w-5" />,
+  wellness: <Sparkles className="h-5 w-5" />,
 }
 
 type CategoriesProps = { translations: Translations['categories']; locale: string }
@@ -36,7 +40,7 @@ export function CategoriesSection({ translations, locale }: CategoriesProps) {
 
       <div className="relative z-10 mx-auto max-w-[1280px] px-5 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="mb-10 grid gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-end"
@@ -61,7 +65,7 @@ export function CategoriesSection({ translations, locale }: CategoriesProps) {
             <motion.a
               key={category.id}
               href={getSearchPath(locale, { category: category.slug })}
-              initial={{ opacity: 0, y: 32 }}
+              initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.06, duration: 0.45 }}

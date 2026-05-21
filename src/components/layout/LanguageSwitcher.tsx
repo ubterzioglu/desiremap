@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { ChevronDown, Globe } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
@@ -74,44 +74,44 @@ export function LanguageSwitcher({ locale, variant = 'desktop' }: LanguageSwitch
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-haspopup="listbox"
-        className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2.5 text-[13px] font-bold uppercase tracking-[0.06em] text-[#d7ddee] transition-colors hover:bg-white/8 hover:text-white"
+        className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2.5 text-[13px] font-bold tracking-[0.06em] text-[#d7ddee] uppercase transition-colors hover:bg-white/8 hover:text-white"
       >
         <Globe className="h-4 w-4 text-[#f0b0c0]" />
         <span>{current.code.toUpperCase()}</span>
         <ChevronDown className={cn('h-3 w-3 transition-transform duration-200', open && 'rotate-180')} />
       </button>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: -6, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -6, scale: 0.96 }}
-            transition={{ duration: 0.15 }}
-            role="listbox"
-            className="absolute right-0 top-full mt-2 min-w-[148px] overflow-hidden rounded-xl border border-white/10 bg-[#0e1628] shadow-xl shadow-black/40"
-          >
-            {LANGUAGES.map((lang) => (
-              <Link
-                key={lang.code}
-                href={getLocalizedPath(lang.code, basePath)}
-                onClick={() => setOpen(false)}
-                role="option"
-                aria-selected={lang.code === locale}
-                className={cn(
-                  'flex items-center gap-3 px-4 py-2.5 text-[12px] font-medium transition-colors hover:bg-white/6',
-                  lang.code === locale ? 'text-[#ffb1c6]' : 'text-[#d7ddee]'
-                )}
-              >
-                <span className="w-7 text-[10px] font-bold uppercase tracking-wider text-[#a0aabf]">
-                  {lang.code.toUpperCase()}
-                </span>
-                <span>{lang.label}</span>
-              </Link>
-            ))}
-          </motion.div>
+      <motion.div
+        initial={false}
+        animate={open ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: -6, scale: 0.96 }}
+        transition={{ duration: 0.15 }}
+        role="listbox"
+        aria-hidden={!open}
+        className={cn(
+          'absolute right-0 top-full mt-2 min-w-[148px] overflow-hidden rounded-xl border border-white/10 bg-[#0e1628] shadow-xl shadow-black/40',
+          open ? 'pointer-events-auto visible' : 'pointer-events-none invisible'
         )}
-      </AnimatePresence>
+      >
+        {LANGUAGES.map((lang) => (
+          <Link
+            key={lang.code}
+            href={getLocalizedPath(lang.code, basePath)}
+            onClick={() => setOpen(false)}
+            role="option"
+            aria-selected={lang.code === locale}
+            tabIndex={open ? 0 : -1}
+            className={cn(
+              'flex items-center gap-3 px-4 py-2.5 text-[12px] font-medium transition-colors hover:bg-white/6',
+              lang.code === locale ? 'text-[#ffb1c6]' : 'text-[#d7ddee]'
+            )}
+          >
+            <span className="w-7 text-[10px] font-bold tracking-wider text-[#a0aabf] uppercase">
+              {lang.code.toUpperCase()}
+            </span>
+            <span>{lang.label}</span>
+          </Link>
+        ))}
+      </motion.div>
     </div>
   )
 }

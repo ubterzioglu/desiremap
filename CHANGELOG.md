@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.2] - 2026-05-21
+
+### Changed
+- Desktop language switcher now keeps locale `<a>` links mounted in the DOM even when the dropdown is visually closed, improving crawlable locale discovery.
+- Home section reveal animations now use SSR-safe motion defaults (`initial={false}`) so homepage text and links are not server-rendered in hidden `opacity: 0` states.
+
+### Fixed
+- Added explicit category icons for massage, sauna, thermal, and wellness cards instead of falling back to the same gem icon.
+
 ## [0.3.1] - 2026-05-21
 
 ### Fixed

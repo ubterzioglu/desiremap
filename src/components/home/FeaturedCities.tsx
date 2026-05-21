@@ -49,7 +49,7 @@ export function FeaturedCities({ translations }: FeaturedCitiesProps) {
 
       <div className="relative z-10 mx-auto max-w-[1280px] px-5 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="mb-10 grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-end"
@@ -73,7 +73,7 @@ export function FeaturedCities({ translations }: FeaturedCitiesProps) {
           {cities.map((city, index) => (
             <motion.div
               key={city.slug}
-              initial={{ opacity: 0, y: 24 }}
+              initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.05, duration: 0.4 }}

@@ -1,5 +1,14 @@
 # STATE
 
+## 2026-05-21 16:05 +0200
+
+- Scope: homepage language-switcher crawlability + home section SSR visibility/icon polish.
+- Fixed: desktop `LanguageSwitcher` keeps `/en`, `/tr`, `/ar` links mounted in DOM while visually hidden when closed, so bots can discover alternate locale links from page HTML.
+- Fixed: `CategoriesSection`, `FeaturedCities`, `SEOContentSection`, and `PromoSections` no longer SSR hidden `initial opacity:0` motion states.
+- Fixed: category icon mapping now includes distinct icons for `massage`, `sauna`, `thermal`, and `wellness` instead of repeated gem fallback.
+- Verification: `bun test src/components/home/HomeSectionsSeo.test.ts src/components/layout/LanguageSwitcher.test.ts` passed; `bun run typecheck` passed; scoped ESLint on touched files passed; `bun run build` passed.
+- Version: 0.3.1 → 0.3.2 (patch).
+
 ## 2026-05-21 15:05 +0200
 
 - Scope: default-locale `/de` SEO surface cleanup after live smoke.

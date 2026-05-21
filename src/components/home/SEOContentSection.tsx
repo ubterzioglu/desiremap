@@ -23,7 +23,7 @@ const clusterIcons = {
 function SeoIntro({ seo }: { seo: HomeSeoExperience }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={false}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       className="grid gap-8 lg:grid-cols-[1.35fr_0.95fr]"
@@ -65,7 +65,7 @@ function SeoIntro({ seo }: { seo: HomeSeoExperience }) {
 function SeoDefinitionBlock({ seo }: { seo: HomeSeoExperience }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={false}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       className="grid gap-8 lg:grid-cols-[1fr_1fr]"
@@ -166,7 +166,7 @@ function SeoClusterCard({ cluster }: { cluster: HomeSeoCluster }) {
 function SeoClusterAtlas({ seo }: { seo: HomeSeoExperience }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={false}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr]"
@@ -195,7 +195,7 @@ function SeoClusterAtlas({ seo }: { seo: HomeSeoExperience }) {
 function SeoTrustAndCities({ seo }: { seo: HomeSeoExperience }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={false}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]"
@@ -259,7 +259,7 @@ function SeoFaqAndCta({ seo }: { seo: HomeSeoExperience }) {
   return (
     <>
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
+        initial={false}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
         className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]"
@@ -293,7 +293,7 @@ function SeoFaqAndCta({ seo }: { seo: HomeSeoExperience }) {
       </motion.div>
 
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
+        initial={false}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
         className="rounded-[2rem] border border-[#8b1a4a]/25 bg-[linear-gradient(135deg,rgba(139,26,74,0.18),rgba(90,63,126,0.12),rgba(19,27,46,0.76))] p-8 shadow-[0_24px_70px_rgba(6,14,32,0.28)] sm:p-10"
