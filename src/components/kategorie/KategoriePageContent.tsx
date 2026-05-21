@@ -118,7 +118,6 @@ export function KategoriePageContent({
               isLoading={page.isLoading}
               translations={resultsTranslations}
               locale={locale}
-              onBordellClickAction={page.handleVenueClick}
               onClearFiltersAction={page.clearFilters}
             />
           </div>

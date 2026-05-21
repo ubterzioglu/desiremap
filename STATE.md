@@ -1,5 +1,15 @@
 # STATE
 
+## 2026-05-21 20:58 +0200
+
+- Scope: public Stadt city image source unification.
+- Fixed: `normalizePublicCity()` accepts `publicHeroImageUrl` / `public_hero_image_url` and uses it before legacy `publicImageUrl` / `image` values.
+- Fixed: `/uploads/*` backend asset paths normalize to `https://api.desiremap.de/uploads/*`, matching `next.config.ts` image remote pattern and avoiding broken relative frontend URLs.
+- Changed: `getPublicCityImage()` and `FeaturedCities` now feed homepage Stadt cards and `/stadt/:slug` hero from the same helper.
+- Changed: ListingCard detail links no longer depend on JS `onClick` navigation, keeping real crawlable `<Link href>` behavior.
+- Verification: frontend public city tests first failed RED, then `bun test src/lib/backend-client.test.ts src/components/home/HomeDiscoverySeo.test.ts` passed; `bun run typecheck` passed; `bun run build` passed. Full `bun test` / `bun run lint` remain blocked by existing unrelated test/lint debt.
+- Version: 0.3.2 → 0.3.3 (patch).
+
 ## 2026-05-21 16:05 +0200
 
 - Scope: homepage language-switcher crawlability + home section SSR visibility/icon polish.

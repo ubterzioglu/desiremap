@@ -20,7 +20,6 @@ type SearchResultsProps = {
     clearFilters: string
   }
   locale: string
-  onBordellClickAction: (bordell: { id: string }) => void
   onClearFiltersAction: () => void
 }
 
@@ -30,7 +29,6 @@ export function SearchResults({
   totalCount,
   translations,
   locale,
-  onBordellClickAction,
   onClearFiltersAction
 }: SearchResultsProps) {
   if (totalCount === 0) {
@@ -64,7 +62,6 @@ export function SearchResults({
                 bordell={item}
                 detailHref={getVenuePath(locale, item.id)}
                 index={index}
-                onDetailClickAction={onBordellClickAction}
               />
             ))}
           </div>
@@ -87,7 +84,6 @@ export function SearchResults({
                 bordell={item}
                 detailHref={getVenuePath(locale, item.id)}
                 index={index}
-                onDetailClickAction={onBordellClickAction}
               />
             ))}
           </div>

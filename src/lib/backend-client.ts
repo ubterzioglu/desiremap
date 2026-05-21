@@ -10,6 +10,15 @@ export function normalizePublicImageUrl(value: string | null | undefined) {
   }
 
   if (value.startsWith('/')) {
+    if (value.startsWith('/uploads/')) {
+      try {
+        const backendUrl = new URL(SERVER_BACKEND_API_URL)
+        return `${backendUrl.origin}${value}`
+      } catch {
+        return value
+      }
+    }
+
     return value
   }
 
@@ -44,22 +53,30 @@ export function normalizePublicCity(item: PublicCity): PublicCity {
     count?: number | string | null
     venue_count?: number | string | null
     venueCount?: number | string | null
+    public_hero_image_url?: string | null
+    publicHeroImageUrl?: string | null
     public_image_url?: string | null
     publicImageUrl?: string | null
   }
   const id = Number(raw.id ?? raw.cityId)
   const normalizedId = Number.isFinite(id) ? id : 0
   const cityId = raw.cityId ?? (normalizedId > 0 ? normalizedId : null)
+  const publicHeroImageUrl =
+    normalizePublicImageUrl(raw.publicHeroImageUrl)
+    ?? normalizePublicImageUrl(raw.public_hero_image_url)
+  const publicImageUrl =
+    normalizePublicImageUrl(raw.publicImageUrl)
+    ?? normalizePublicImageUrl(raw.public_image_url)
+  const image = publicHeroImageUrl ?? publicImageUrl ?? normalizePublicImageUrl(raw.image)
 
   return {
     ...item,
     id: normalizedId,
     ...(cityId !== null ? { cityId } : {}),
     venueCount: normalizeNullableNumber(raw.venueCount ?? raw.venue_count ?? raw.count) ?? 0,
-    image:
-      normalizePublicImageUrl(raw.image)
-      ?? normalizePublicImageUrl(raw.publicImageUrl)
-      ?? normalizePublicImageUrl(raw.public_image_url),
+    image,
+    publicHeroImageUrl,
+    publicImageUrl,
     latitude: normalizeNullableNumber(raw.latitude),
     longitude: normalizeNullableNumber(raw.longitude),
     subtitle: raw.subtitle ?? {},

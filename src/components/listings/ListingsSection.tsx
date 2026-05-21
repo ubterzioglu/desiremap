@@ -143,7 +143,6 @@ export function ListingsSection() {
                 bordell={bordell}
                 detailHref={getVenuePath(locale, bordell.id)}
                 index={index}
-                onDetailClickAction={(selectedBordell) => router.push(getVenuePath(locale, selectedBordell.id))}
               />
             ))}
           </div>

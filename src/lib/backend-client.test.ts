@@ -1,7 +1,39 @@
 import { describe, expect, test } from 'bun:test'
 
-import { normalizePublicEstablishment } from './backend-client'
-import type { PublicEstablishment } from '@/types'
+import { normalizePublicCity, normalizePublicEstablishment } from './backend-client'
+import type { PublicCity, PublicEstablishment } from '@/types'
+
+describe('normalizePublicCity', () => {
+  test('uses public hero image as the canonical city image before legacy public image fields', () => {
+    const result = normalizePublicCity({
+      id: 1,
+      cityId: 1,
+      slug: 'berlin',
+      name: 'Berlin',
+      venueCount: 12,
+      image: null,
+      publicHeroImageUrl: '/uploads/city-images/berlin-hero.jpg',
+      publicImageUrl: 'https://example.com/legacy-card.jpg',
+    } as PublicCity)
+
+    expect(result.image).toBe('https://api.desiremap.de/uploads/city-images/berlin-hero.jpg')
+    expect(result.publicHeroImageUrl).toBe('https://api.desiremap.de/uploads/city-images/berlin-hero.jpg')
+    expect(result.publicImageUrl).toBe('https://example.com/legacy-card.jpg')
+  })
+
+  test('normalizes snake_case city hero image from the public API', () => {
+    const result = normalizePublicCity({
+      id: 2,
+      cityId: 2,
+      slug: 'hamburg',
+      name: 'Hamburg',
+      venueCount: 4,
+      public_hero_image_url: '/uploads/city-images/hamburg-hero.webp',
+    } as PublicCity & { public_hero_image_url: string })
+
+    expect(result.image).toBe('https://api.desiremap.de/uploads/city-images/hamburg-hero.webp')
+  })
+})
 
 describe('normalizePublicEstablishment', () => {
   test('drops internal .local image URLs and keeps public-safe images', () => {

@@ -3,7 +3,7 @@
 import { useCallback, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { usePublicEstablishments } from '@/hooks/useQueries'
-import { getCategoryPath, getVenuePath } from '@/lib/navigation'
+import { getCategoryPath } from '@/lib/navigation'
 import type { PublicEstablishment } from '@/types'
 import type { Bordell, BordellType } from '@/types'
 
@@ -84,13 +84,6 @@ export function useKategoriePage(
     router.push(getCategoryPath(locale, slug), { scroll: false })
   }, [locale, slug, router])
 
-  const handleVenueClick = useCallback(
-    (venue: { id: string }) => {
-      router.push(getVenuePath(locale, venue.id))
-    },
-    [locale, router],
-  )
-
   const { data: result, isLoading } = usePublicEstablishments({
     type: slug,
     ...(initialQuery ? { q: initialQuery } : {}),
@@ -107,7 +100,6 @@ export function useKategoriePage(
     handleSearch,
     handleCityChange,
     clearFilters,
-    handleVenueClick,
     sponsoredResults: allResults.filter((b) => b.sponsored),
     regularResults: allResults.filter((b) => !b.sponsored),
     totalCount: allResults.length,

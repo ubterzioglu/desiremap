@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils'
 import { ReservationModal } from '@/components/listings/ReservationModal'
 import type { Bordell } from '@/types'
 
-type ListingCardProps = { bordell: Bordell; detailHref: string; index: number; onDetailClickAction: (bordell: Bordell) => void }
+type ListingCardProps = { bordell: Bordell; detailHref: string; index: number }
 
 type ListingCardLabels = {
   detailLabel: string
@@ -35,7 +35,6 @@ type ListingCardContentProps = {
   bordell: Bordell
   detailHref: string
   detailLabel: string
-  onDetailClickAction: (bordell: Bordell) => void
   onReserve: () => void
   priceCaption: string
   priceLabel: string
@@ -135,7 +134,6 @@ function ListingCardContent({
   bordell,
   detailHref,
   detailLabel,
-  onDetailClickAction,
   onReserve,
   priceCaption,
   priceLabel,
@@ -150,7 +148,6 @@ function ListingCardContent({
           <Link
             href={detailHref}
             aria-label={detailLabel}
-            onClick={() => onDetailClickAction(bordell)}
             className="block truncate text-xl font-semibold tracking-[-0.02em] text-[#dae2fd] transition-colors duration-300 group-hover:text-white hover:text-white"
           >
             {bordell.name}
@@ -197,7 +194,6 @@ function ListingCardContent({
           <Link
             href={detailHref}
             aria-label={detailLabel}
-            onClick={() => onDetailClickAction(bordell)}
             data-testid="listing-card-detail-link"
             className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-[#334155] bg-transparent p-0 text-[#dcbfc5] transition-colors hover:bg-[#0f172a] hover:text-white"
           ><Eye className="h-4 w-4" /></Link>
@@ -221,7 +217,7 @@ function ListingCardContent({
   )
 }
 
-export function ListingCard({ bordell, detailHref, index, onDetailClickAction }: ListingCardProps) {
+export function ListingCard({ bordell, detailHref, index }: ListingCardProps) {
   const t = useTranslations('listing')
   const [isFavorite, setIsFavorite] = useState(false)
   const [showReservation, setShowReservation] = useState(false)
@@ -264,7 +260,6 @@ export function ListingCard({ bordell, detailHref, index, onDetailClickAction }:
               bordell={bordell}
               detailHref={detailHref}
               detailLabel={labels.detailLabel}
-              onDetailClickAction={onDetailClickAction}
               onReserve={() => setShowReservation(true)}
               priceCaption={t('price')}
               priceLabel={priceLabel}

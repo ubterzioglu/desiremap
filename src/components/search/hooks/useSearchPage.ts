@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { getSearchPath, getVenuePath } from '@/lib/navigation'
+import { getSearchPath } from '@/lib/navigation'
 import { usePublicEstablishments } from '@/hooks/useQueries'
 import type { Bordell, BordellType, PublicEstablishment } from '@/types'
 
@@ -72,13 +72,9 @@ export function useSearchPage(locale: string, initialQuery: string, initialCity:
     router.push(getSearchPath(locale))
   }, [locale, router])
 
-  const handleBordellClick = useCallback((bordell: { id: string }) => {
-    router.push(getVenuePath(locale, bordell.id))
-  }, [locale, router])
-
   return {
     query, selectedCity, selectedCategory,
-    setQuery, handleSearch, handleCityChange, handleCategoryChange, clearFilters, handleBordellClick,
+    setQuery, handleSearch, handleCityChange, handleCategoryChange, clearFilters,
     searchResults: allResults,
     sponsoredResults,
     regularResults,

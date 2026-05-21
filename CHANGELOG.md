@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.3] - 2026-05-21
+
+### Changed
+- Public city image selection now uses one helper for homepage Stadt cards, `/stadt`, and `/stadt/:slug` hero images.
+- Backend upload paths under `/uploads/*` are normalized to `https://api.desiremap.de/uploads/*` before rendering with Next image.
+
+### Fixed
+- `publicHeroImageUrl` is now preferred over legacy public image fields in public city API normalization.
+- Listing card detail links stay crawlable without extra JS click-handler navigation.
+
 ## [0.3.2] - 2026-05-21
 
 ### Changed

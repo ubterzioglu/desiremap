@@ -116,6 +116,8 @@ export interface PublicCity {
   name: string
   venueCount?: number
   image?: string | null
+  publicImageUrl?: string | null
+  publicHeroImageUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   subtitle?: Record<string, string | null>

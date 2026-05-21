@@ -106,7 +106,6 @@ export function SearchPageContent({ locale, initialQuery, initialCity, initialCa
               totalCount={searchState.searchResults.length}
               translations={resultsTranslations}
               locale={locale}
-              onBordellClickAction={searchState.handleBordellClick}
               onClearFiltersAction={searchState.clearFilters}
             />
           </div>

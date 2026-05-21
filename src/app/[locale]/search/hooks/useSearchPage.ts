@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { getSearchPath, getVenuePath } from '@/lib/navigation'
+import { getSearchPath } from '@/lib/navigation'
 import { usePublicEstablishments } from '@/hooks/useQueries'
 import type { Bordell, BordellType, PublicEstablishment } from '@/types'
 
@@ -76,10 +76,6 @@ export function useSearchPage(locale: string, initialQuery: string, initialCity:
     router.push(getSearchPath(locale))
   }, [locale, router])
 
-  const handleBordellClick = useCallback((bordell: { id: string }) => {
-    router.push(getVenuePath(locale, bordell.id))
-  }, [locale, router])
-
   const { data: result, isLoading } = usePublicEstablishments({
     ...(initialQuery.length > 0 ? { q: initialQuery } : {}),
     ...(initialCity.length > 0 ? { city: initialCity } : {}),
@@ -100,7 +96,6 @@ export function useSearchPage(locale: string, initialQuery: string, initialCity:
     handleCityChange,
     handleCategoryChange,
     clearFilters,
-    handleBordellClick,
     searchResults,
     sponsoredResults,
     regularResults,

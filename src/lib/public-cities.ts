@@ -49,7 +49,7 @@ export function selectLocalizedCityText(
 }
 
 export function getPublicCityImage(city: PublicCity) {
-  return city.image ?? null
+  return city.image ?? city.publicHeroImageUrl ?? city.publicImageUrl ?? null
 }
 
 export function getPublicCityVenueCount(city: PublicCity) {

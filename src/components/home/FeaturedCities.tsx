@@ -7,7 +7,7 @@ import { ChevronRight, MapPin } from 'lucide-react'
 import { useLocale } from 'next-intl'
 import { usePublicStadtCities } from '@/hooks/useQueries'
 import { getCityPath } from '@/lib/navigation'
-import { getPublicCityVenueCount } from '@/lib/public-cities'
+import { getPublicCityImage, getPublicCityVenueCount } from '@/lib/public-cities'
 import type { PublicCity, Translations } from '@/types'
 import { cn } from '@/lib/utils'
 
@@ -41,7 +41,7 @@ export function FeaturedCities({ translations }: FeaturedCitiesProps) {
         slug: city.slug,
         name: city.name,
         count: getPublicCityVenueCount(city),
-        image: city.image ?? null,
+        image: getPublicCityImage(city),
       }))
   }, [backendCities])
 
