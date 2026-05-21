@@ -4,6 +4,10 @@ type RawPublicServiceType = Partial<PublicServiceType> & {
   serviceTypeId?: number
   code?: string
   label?: string
+  venueCount?: number
+  count?: number
+  establishmentCount?: number
+  _count?: { establishments?: number; venues?: number }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -33,10 +37,19 @@ function normalizePublicServiceType(item: RawPublicServiceType): PublicServiceTy
       ? item.label
       : slugSource
 
+  const venueCount =
+    typeof item.venueCount === 'number' ? item.venueCount
+    : typeof item.count === 'number' ? item.count
+    : typeof item.establishmentCount === 'number' ? item.establishmentCount
+    : typeof item._count?.establishments === 'number' ? item._count.establishments
+    : typeof item._count?.venues === 'number' ? item._count.venues
+    : undefined
+
   return {
     id,
     slug: slugSource.trim().toLowerCase(),
     name,
+    ...(venueCount !== undefined && { venueCount }),
   }
 }
 

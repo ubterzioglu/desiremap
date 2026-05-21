@@ -41,7 +41,9 @@
   },
   "categories": {
     "title": "Kategoriye Göre Keşfet",
+    "badge": "Kategoriye Göre Keşfet",
     "subtitle": "Aradığınızı tam olarak bulun",
+    "discover": "Keşfet",
     "fkk": "FKK Kulüpler",
     "laufhaus": "Laufhaus",
     "bordell": "Genelevler",

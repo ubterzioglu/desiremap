@@ -72,7 +72,7 @@ export interface Translations {
     playSlider: string
   }
   stats: { establishments: string; ladies: string; rating: string; verified: string }
-  categories: { title: string; subtitle: string }
+  categories: { title: string; subtitle: string; badge?: string; discover?: string }
   cities: { title: string; subtitle: string }
 }
 
@@ -130,6 +130,7 @@ export interface PublicServiceType {
   id: number
   slug: string
   name: string
+  venueCount?: number
 }
 
 export interface PublicHeroSlide {

@@ -36,6 +36,16 @@ export function getCityPath(locale: string, slug: string): string {
   return `/${locale}${basePath}`
 }
 
+export function getCategoryPath(locale: string, slug: string): string {
+  const basePath = `/kategorie/${slug}`
+
+  if (locale === 'de') {
+    return basePath
+  }
+
+  return `/${locale}${basePath}`
+}
+
 /**
  * Get localized path - handles localePrefix: 'as-needed' for German
  */

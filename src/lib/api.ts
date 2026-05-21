@@ -7,7 +7,6 @@ import {
 } from '@/lib/backend-client'
 import {
   getFallbackPublicCities,
-  getFallbackPublicServiceTypes,
 } from '@/lib/public-discovery-fallbacks'
 import {
   getFallbackPublicStadtCities,
@@ -392,7 +391,7 @@ export const publicApi = {
     try {
       return { items: normalizePublicServiceTypes(await publicApiCall<unknown>('/public/service-types')) }
     } catch {
-      return { items: getFallbackPublicServiceTypes() }
+      return { items: [] }
     }
   },
 

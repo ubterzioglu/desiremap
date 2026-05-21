@@ -41,7 +41,9 @@
   },
   "categories": {
     "title": "Explore by Category",
+    "badge": "Explore by Category",
     "subtitle": "Find exactly what you're looking for",
+    "discover": "Explore",
     "fkk": "FKK Clubs",
     "laufhaus": "Laufhaus",
     "bordell": "Brothels",

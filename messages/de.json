@@ -41,6 +41,8 @@
   },
   "categories": {
     "title": "Nach Kategorie entdecken",
+    "badge": "Nach Kategorie entdecken",
+    "discover": "Entdecken",
     "subtitle": "Finde genau das, was du suchst",
     "fkk": "FKK Clubs",
     "laufhaus": "Laufhaus",
