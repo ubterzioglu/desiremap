@@ -14,7 +14,15 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: { default: 'DesireMap - Premium Erotik Guide', template: '%s ' },
   description: 'Entdecken Sie 847+ verifizierte FKK Clubs, Bordelle und Laufhäuser in ganz Deutschland.',
-  icons: { icon: '/icon.svg', apple: '/icon.svg' },
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
+  manifest: '/site.webmanifest',
   robots: { index: true, follow: true },
   alternates: {
     canonical: '/',

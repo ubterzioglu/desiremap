@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { LogIn, Menu, User, X } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -46,8 +47,15 @@ export function Header({ locale, onLoginClick, isLoggedIn, onDashboardClick, tra
       )}
     >
       <div className="flex h-[72px] w-full items-center justify-between px-5 sm:px-6 lg:px-8">
-        <Link href={homePath} className="text-[30px] font-bold tracking-[-0.04em] text-[#f3c2cf]">
-          DesireMap
+        <Link href={homePath} aria-label="DesireMap - Startseite">
+          <Image
+            src="/desiremap_strict1_neon_flicker.webp"
+            alt="DesireMap"
+            width={180}
+            height={44}
+            priority
+            className="h-9 w-auto"
+          />
         </Link>
 
         <nav className="hidden items-center gap-7 lg:flex">
