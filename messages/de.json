@@ -128,6 +128,10 @@
     "filters": "Filter",
     "clearFilters": "Filter entfernen"
   },
+  "cityTags": {
+    "heading": "Tags",
+    "description": "Beliebte Suchanfragen für {city}"
+  },
   "ageGate": {
     "title": "Zutritt nur für Erwachsene",
     "description": "Diese Plattform richtet sich ausschließlich an volljährige Personen. Bitte bestätige, dass du mindestens 18 Jahre alt bist.",

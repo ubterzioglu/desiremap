@@ -1,7 +1,9 @@
 import { describe, expect, test } from 'bun:test'
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
 import type { PublicCity } from '@/types'
 
-import { generateMetadata, getStadtCardCopy, getStadtSeoContent, getStadtSeoWordCount } from './page'
+import { generateMetadata, getStadtCardCopy, getStadtSeoContent, getStadtSeoWordCount, StadtSeoSection } from './page'
 
 describe('stadt page metadata', () => {
   test('includes canonical, description, and Open Graph metadata for the German index URL', async () => {
@@ -54,12 +56,22 @@ describe('stadt page metadata', () => {
       slug: 'berlin',
       name: 'Berlin',
       subtitle: { de: 'Diskret suchen, schneller finden' },
-      description: { de: 'Geprüfte FKK Clubs, Bordelle, Laufhäuser und Studios für Berlin.' },
+      description: { de: 'Geprüfte FKK Clubs, Bordelle, Laufhäuser und Studios für Berlin. {#berlin bordell} {#berlin fkk club}' },
     }
 
     expect(getStadtCardCopy(city, 'de')).toEqual({
       subtitle: 'Diskret suchen, schneller finden',
       description: 'Geprüfte FKK Clubs, Bordelle, Laufhäuser und Studios für Berlin.',
     })
+  })
+
+  test('renders faq section with details and summary semantics', () => {
+    const html = renderToStaticMarkup(createElement(StadtSeoSection, { locale: 'de' }))
+
+    expect(html).toContain('<details')
+    expect(html).toContain('<summary')
+    expect(html).toContain('<p')
+    expect(html).not.toContain('<dt')
+    expect(html).not.toContain('<dd')
   })
 })

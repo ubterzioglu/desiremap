@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { MapPin, ChevronRight } from 'lucide-react'
 import type { PublicCity } from '@/types'
 import { backendApi } from '@/lib/backend-client'
+import { getTaggedCityDescription, stripSearchTags } from '@/lib/city-search-tags'
 import { getCityPath } from '@/lib/navigation'
 import {
   getFallbackPublicStadtCities,
@@ -141,7 +142,7 @@ export function getStadtSeoContent(locale: string): StadtSeoContent {
 export function getStadtCardCopy(city: PublicCity, locale: string) {
   return {
     subtitle: selectLocalizedCityText(city.subtitle, locale, ''),
-    description: selectLocalizedCityText(city.description, locale, ''),
+    description: stripSearchTags(getTaggedCityDescription(city, locale)),
   }
 }
 
@@ -165,7 +166,7 @@ export function getStadtSeoWordCount(locale: string) {
   return textBlocks.reduce((total, text) => total + countWords(text), 0)
 }
 
-function StadtSeoSection({ locale }: { locale: string }) {
+export function StadtSeoSection({ locale }: { locale: string }) {
   const content = getStadtSeoContent(locale)
   const faqItems = getStadtFAQItems(locale)
   const faqHeading = locale === 'de' ? 'Häufig gestellte Fragen' : locale === 'tr' ? 'Sıkça Sorulan Sorular' : locale === 'ar' ? 'الأسئلة الشائعة' : 'Frequently Asked Questions'
@@ -201,14 +202,16 @@ function StadtSeoSection({ locale }: { locale: string }) {
 
         <div className="space-y-4">
           <h2 className="text-xl font-bold text-[#dae2fd] sm:text-2xl">{faqHeading}</h2>
-          <dl className="space-y-4">
+          <div className="space-y-4">
             {faqItems.map((item) => (
-              <div key={item.question} className="rounded-xl border border-white/8 bg-white/[0.02] p-5">
-                <dt className="mb-2 font-semibold text-[#dae2fd]">{item.question}</dt>
-                <dd className="text-sm leading-relaxed text-[#a48a90]">{item.answer}</dd>
-              </div>
+              <details key={item.question} className="rounded-xl border border-white/8 bg-white/[0.02] p-5">
+                <summary className="cursor-pointer list-none font-semibold text-[#dae2fd] marker:hidden">
+                  {item.question}
+                </summary>
+                <p className="mt-3 text-sm leading-relaxed text-[#a48a90]">{item.answer}</p>
+              </details>
             ))}
-          </dl>
+          </div>
         </div>
       </div>
     </section>

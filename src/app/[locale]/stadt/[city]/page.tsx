@@ -8,6 +8,11 @@ import { backendApi } from '@/lib/backend-client'
 import type { PublicCity, PublicEstablishment } from '@/types'
 import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
+import {
+  extractSearchTags,
+  getTaggedCityDescription,
+  stripSearchTags,
+} from '@/lib/city-search-tags'
 import { getSearchPath, getCityPath } from '@/lib/navigation'
 import {
   getFallbackPublicStadtCities,
@@ -20,6 +25,60 @@ import { JsonLd } from '@/components/seo/JsonLd'
 
 const siteUrl = 'https://desiremap.de'
 const locales = ['de', 'en', 'tr', 'ar']
+
+export function getCityDescriptionContent(
+  city: Pick<PublicCity, 'slug' | 'name' | 'description'>,
+  locale: string,
+) {
+  const descriptionWithTags = getTaggedCityDescription(city, locale)
+
+  return {
+    descriptionWithTags,
+    normalizedDescription: stripSearchTags(descriptionWithTags),
+    searchTags: extractSearchTags(descriptionWithTags),
+  }
+}
+
+export function CitySearchTagsSection({
+  heading,
+  description,
+  tags,
+  locale,
+  citySlug,
+}: {
+  heading: string
+  description: string
+  tags: string[]
+  locale: string
+  citySlug: string
+}) {
+  if (tags.length === 0) {
+    return null
+  }
+
+  return (
+    <section className="border-t border-[#564146] bg-[#0F172A] py-14">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="mb-6 max-w-3xl space-y-2">
+          <h2 className="text-2xl font-bold text-[#dae2fd] sm:text-3xl">{heading}</h2>
+          <p className="text-sm leading-relaxed text-[#a48a90] sm:text-base">{description}</p>
+        </div>
+
+        <div className="flex flex-wrap gap-3">
+          {tags.map((tag) => (
+            <Link
+              key={tag}
+              href={getSearchPath(locale, { q: tag, city: citySlug })}
+              className="inline-flex rounded-full border border-[#564146] bg-white/[0.03] px-4 py-2 text-sm text-[#dae2fd] transition-colors hover:border-[#B76E79] hover:text-[#ffb1c6]"
+            >
+              {tag}
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
 
 async function getStadtCities(): Promise<PublicCity[]> {
   return backendApi
@@ -54,6 +113,7 @@ export async function generateMetadata({
   const { locale, city } = await params
   const cityData = await getStadtCity(city)
   if (!cityData) return {}
+  const { normalizedDescription } = getCityDescriptionContent(cityData, locale)
 
   const title =
     selectLocalizedCityText(cityData.seoTitle, locale)
@@ -61,7 +121,7 @@ export async function generateMetadata({
   const description = selectLocalizedCityText(
     cityData.seoDescription,
     locale,
-    selectLocalizedCityText(cityData.description, locale)
+    normalizedDescription
   )
   const image = getPublicCityImage(cityData)
 
@@ -109,6 +169,7 @@ export default async function CityPage({
   }
 
   const t = await getTranslations({ locale, namespace: 'nav' })
+  const tagT = await getTranslations({ locale, namespace: 'cityTags' })
   const allCities = await getStadtCities()
   const cityResult = await backendApi.getPublicEstablishments({ city: cityData.slug, limit: 12 }).catch(() => ({ results: [] as PublicEstablishment[], total: 0 }))
   const cityBordells = (Array.isArray(cityResult?.results) ? cityResult.results : []).map((est, index) => ({
@@ -119,7 +180,7 @@ export default async function CityPage({
     rating: typeof est?.rating === 'number' ? est.rating : null,
     typeLabel: typeof est?.type === 'string' && est.type.length > 0 ? est.type.toUpperCase() : 'BETRIEB',
   }))
-  const description = selectLocalizedCityText(cityData.description, locale)
+  const { normalizedDescription, searchTags } = getCityDescriptionContent(cityData, locale)
   const subtitle = selectLocalizedCityText(cityData.subtitle, locale)
   const image = getPublicCityImage(cityData)
   const canonical = locale === 'de' ? `/stadt/${cityData.slug}` : `/${locale}/stadt/${cityData.slug}`
@@ -130,7 +191,7 @@ export default async function CityPage({
       '@id': `${siteUrl}${canonical}#webpage`,
       url: `${siteUrl}${canonical}`,
       name: `${cityData.name} — FKK Clubs, Laufhäuser & Studios`,
-      ...(description ? { description } : {}),
+      ...(normalizedDescription ? { description: normalizedDescription } : {}),
       isPartOf: { '@id': `${siteUrl}/#website` },
       inLanguage: locale,
     },
@@ -200,9 +261,9 @@ export default async function CityPage({
             {cityData.name}
           </h1>
 
-          {description && (
+          {normalizedDescription && (
             <p className="mx-auto mb-8 max-w-2xl text-base leading-relaxed text-[#a48a90] sm:text-lg">
-              {description}
+              {normalizedDescription}
             </p>
           )}
 
@@ -324,6 +385,14 @@ export default async function CityPage({
           </div>
         </div>
       </section>
+
+      <CitySearchTagsSection
+        heading={tagT('heading')}
+        description={tagT('description', { city: cityData.name })}
+        tags={searchTags}
+        locale={locale}
+        citySlug={cityData.slug}
+      />
 
       <Footer locale={locale} />
     </main>

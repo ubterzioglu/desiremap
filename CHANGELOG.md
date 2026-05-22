@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2026-05-22
+
+### Added
+- Locale-aware city search tag helpers now derive visible tag links from Stadt descriptions without backend/admin changes.
+- `/stadt/[city]` now shows a footer-adjacent tags section that routes search traffic through existing localized `/search` URLs.
+- Added regression coverage for tag parsing/normalization, Stadt city-page rendering, and production-style Playwright smoke checks.
+
+### Changed
+- `/stadt` FAQ cards now use semantic `details > summary + p` disclosure markup instead of `dl > dt/dd`.
+- Stadt card and city hero descriptions now strip embedded `{#...}` tag blocks before visible rendering while keeping search tags available for UI extraction.
+
+### Fixed
+- Prevented visible hashtag leakage in localized Stadt descriptions and ensured city-page metadata/schema descriptions stay normalized plain text.
+
 ## [0.4.0] - 2026-05-22
 
 ### Added

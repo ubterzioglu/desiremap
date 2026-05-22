@@ -1,5 +1,15 @@
 # STATE
 
+## 2026-05-22 03:42 +0200
+
+- Scope: `/stadt` FAQ semantics repair + locale-based city search tags on `/stadt/[city]`.
+- Fixed: `frontend/src/app/[locale]/stadt/page.tsx` FAQ cards now render as semantic `details > summary + p` instead of `dl > dt/dd`; city-card descriptions now strip `{#...}` tag blocks before visible render.
+- Added: `frontend/src/lib/city-search-tags.ts` and tests for locale-aware phrase generation, `{#tag}` extraction, deduplication, and normalization; `frontend/e2e/stadt-seo-tags.spec.ts` for `/stadt` FAQ semantics and `/stadt/berlin` tag-link smoke coverage.
+- Added: `/stadt/[city]` footer-adjacent tags section with locale copy from `messages/{de,en,tr,ar}.json`; city detail hero description stays clean while tag links expose localized search phrases via existing `/search` URL flow.
+- Verification: `bun test "src/lib/city-search-tags.test.ts" "src/app/[locale]/stadt/page.test.ts" "src/app/[locale]/stadt/[city]/page.test.tsx"` passed; `bun run typecheck` passed; `bun run lint` passed; `bun run build` passed; `bun run test:e2e -- e2e/stadt-seo-tags.spec.ts` passed; `graphify update .` passed.
+- Note: full `bun test` still fails on pre-existing unrelated suites (`e2e/*.spec.ts` under Bun, `src/i18n/routing.test.ts`, `src/components/home/HomeSectionsSeo.test.ts`, `src/lib/seo/home.test.ts`) outside this task scope.
+- Version: 0.4.0 → 0.5.0 (minor).
+
 ## 2026-05-22 02:55 +0200
 
 - Scope: `/stadt` SEO/content/schema expansion plus header login CTA recovery on server-rendered public pages.
