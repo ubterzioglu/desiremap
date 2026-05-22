@@ -65,7 +65,7 @@ export function SearchPageContent({ locale, initialQuery, initialCity, initialCa
         {/* Search Page Header */}
         <section className="relative overflow-hidden border-b border-[#2d3449] py-32">
           <div aria-hidden="true" className="absolute inset-0">
-            <Image src="/search-bg.jpg" alt={t('results')} fill className="h-full w-full object-cover" />
+            <Image src="/search-bg.jpg" alt={t('results')} fill sizes="100vw" className="h-full w-full object-cover" />
             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
             <div className="absolute inset-0 bg-gradient-to-b from-[#8b1a4a]/10 to-[#0b1326]" />
           </div>
@@ -79,7 +79,7 @@ export function SearchPageContent({ locale, initialQuery, initialCity, initialCa
               {t('backToHome')}
             </Button>
             <h1
-              className="mb-12 text-5xl font-bold text-[#dae2fd] sm:text-6xl"
+              className="mb-12 text-5xl font-semibold text-[#dae2fd] sm:text-6xl"
               style={{ letterSpacing: '-0.02em' }}
             >
               {t('results')}
@@ -104,6 +104,7 @@ export function SearchPageContent({ locale, initialQuery, initialCity, initialCa
               sponsoredResults={searchState.sponsoredResults}
               regularResults={searchState.regularResults}
               totalCount={searchState.searchResults.length}
+              isLoading={searchState.isLoading}
               translations={resultsTranslations}
               locale={locale}
               onClearFiltersAction={searchState.clearFilters}

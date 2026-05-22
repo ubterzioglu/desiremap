@@ -1,6 +1,12 @@
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 import { SearchPageContent } from './SearchPageContent'
 import { getSearchPath } from '@/lib/navigation'
+import {
+  getSearchCategoryLabel,
+  getSearchCityDisplayName,
+  normalizeIncomingSearchParams,
+} from '@/lib/search-routing'
 
 const siteUrl = 'https://desiremap.de'
 
@@ -23,21 +29,26 @@ export async function generateMetadata({
   searchParams 
 }: { 
   params: Promise<{ locale: string }>
-  searchParams: Promise<{ q?: string; city?: string }>
+  searchParams: Promise<{ q?: string; city?: string; category?: string }>
 }): Promise<Metadata> {
-  const { locale } = await params
-  const { q, city } = await searchParams
+  const [{ locale }, resolvedSearchParams] = await Promise.all([params, searchParams])
+  const normalizedSearchParams = normalizeIncomingSearchParams({
+    ...resolvedSearchParams,
+  })
+  const { q, city, category } = normalizedSearchParams
   
   const baseTitle = localeTitles[locale] || localeTitles.de
   const description = localeDescriptions[locale] || localeDescriptions.de
   
+  const displayCity = getSearchCityDisplayName(city)
   const queryPart = q ? ` - "${q}"` : ''
-  const cityPart = city ? ` in ${city}` : ''
+  const cityPart = displayCity ? ` in ${displayCity}` : ''
   const title = `${baseTitle}${queryPart}${cityPart}`
   
   const canonicalUrl = `${siteUrl}${getSearchPath(locale, {
     ...(q ? { q } : {}),
     ...(city ? { city } : {}),
+    ...(category ? { category } : {}),
   })}`
 
   return {
@@ -67,9 +78,11 @@ export async function generateMetadata({
   }
 }
 
-function getSearchSchema(locale: string, query?: string, city?: string, resultCount?: number) {
+function getSearchSchema(locale: string, query?: string, city?: string, category?: string, resultCount?: number) {
   const searchUrl = `${siteUrl}${getSearchPath(locale)}`
-  const locationPhrase = city ? ` in ${city}` : ''
+  const locationPhrase = city ? ` in ${getSearchCityDisplayName(city)}` : ''
+  const categoryLabel = getSearchCategoryLabel(category)
+  const categoryPhrase = categoryLabel ? ` for ${categoryLabel}` : ''
   const resultPhrase = typeof resultCount === 'number' ? ` with ${resultCount} results` : ''
   
   return {
@@ -80,7 +93,7 @@ function getSearchSchema(locale: string, query?: string, city?: string, resultCo
         '@id': `${searchUrl}/#webpage`,
         url: searchUrl,
         name: query ? `Search results for "${query}"` : 'Search',
-        description: `Search FKK clubs, brothels and laufhaus${locationPhrase} in Germany${resultPhrase}`,
+        description: `Search FKK clubs, brothels and laufhaus${locationPhrase}${categoryPhrase} in Germany${resultPhrase}`,
         isPartOf: { '@id': `${siteUrl}/#website` },
         inLanguage: locale
       },
@@ -112,10 +125,21 @@ export default async function SearchPage({
   params: Promise<{ locale: string }>
   searchParams: Promise<{ q?: string; city?: string; category?: string }>
 }) {
-  const { locale } = await params
-  const { q, city, category } = await searchParams
+  const [{ locale }, rawSearchParams] = await Promise.all([params, searchParams])
+  const { q, city, category } = rawSearchParams
+  const normalizedSearchParams = normalizeIncomingSearchParams({
+    ...rawSearchParams,
+  })
+
+  if (
+    q !== normalizedSearchParams.q
+    || city !== normalizedSearchParams.city
+    || category !== normalizedSearchParams.category
+  ) {
+    redirect(getSearchPath(locale, normalizedSearchParams))
+  }
   
-  const structuredData = getSearchSchema(locale, q, city)
+  const structuredData = getSearchSchema(locale, normalizedSearchParams.q, normalizedSearchParams.city, normalizedSearchParams.category)
 
   return (
     <>
@@ -125,9 +149,9 @@ export default async function SearchPage({
       />
       <SearchPageContent 
         locale={locale}
-        initialQuery={q || ''}
-        initialCity={city || ''}
-        initialCategory={category || ''}
+        initialQuery={normalizedSearchParams.q || ''}
+        initialCity={normalizedSearchParams.city || ''}
+        initialCategory={normalizedSearchParams.category || ''}
       />
     </>
   )

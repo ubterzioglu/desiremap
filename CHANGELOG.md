@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.1] - 2026-05-22
+
+### Added
+- Added canonical search-routing helpers for city slug/name normalization, raw tag query repair, and structured city/category tag navigation.
+- Added regression coverage for search metadata normalization, loading-state rendering, canonical redirect handling, and Köln tag click-through flow.
+
+### Changed
+- Search URLs now canonicalize city filters to stable slugs while still rendering user-facing city labels like `Köln`.
+- Stadt tag links now open structured search states (`city` + `category` / sanitized `q`) instead of raw phrase queries that returned empty results.
+
+### Fixed
+- Fixed old tag URLs like `?q=Köln bordell&city=koeln` by redirecting them to canonical result-bearing search URLs.
+- Fixed search-page city dropdown desync, removed false no-results flash during React Query hydration, and restored working category state for tag-driven search visits.
+
 ## [0.5.0] - 2026-05-22
 
 ### Added

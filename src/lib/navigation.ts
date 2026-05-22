@@ -1,10 +1,12 @@
 /**
  * Get localized search path - handles localePrefix: 'as-needed' for German
  */
+import { normalizeSearchCityParam } from './search-routing'
+
 export function getSearchPath(locale: string, params?: { q?: string; city?: string; category?: string }): string {
   const searchParams = new URLSearchParams()
   if (params?.q) searchParams.set('q', params.q)
-  if (params?.city) searchParams.set('city', params.city)
+  if (params?.city) searchParams.set('city', normalizeSearchCityParam(params.city))
   if (params?.category) searchParams.set('category', params.category)
   
   const queryString = searchParams.toString()

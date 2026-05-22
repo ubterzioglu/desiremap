@@ -14,6 +14,7 @@ import {
   stripSearchTags,
 } from '@/lib/city-search-tags'
 import { getSearchPath, getCityPath } from '@/lib/navigation'
+import { buildSearchTagParams } from '@/lib/search-routing'
 import {
   getFallbackPublicStadtCities,
   getFallbackPublicStadtCity,
@@ -45,12 +46,14 @@ export function CitySearchTagsSection({
   tags,
   locale,
   citySlug,
+  cityName,
 }: {
   heading: string
   description: string
   tags: string[]
   locale: string
   citySlug: string
+  cityName: string
 }) {
   if (tags.length === 0) {
     return null
@@ -68,7 +71,14 @@ export function CitySearchTagsSection({
           {tags.map((tag) => (
             <Link
               key={tag}
-              href={getSearchPath(locale, { q: tag, city: citySlug })}
+              href={getSearchPath(
+                locale,
+                buildSearchTagParams({
+                  tag,
+                  citySlug,
+                  cityName,
+                }),
+              )}
               className="inline-flex rounded-full border border-[#564146] bg-white/[0.03] px-4 py-2 text-sm text-[#dae2fd] transition-colors hover:border-[#B76E79] hover:text-[#ffb1c6]"
             >
               {tag}
@@ -392,6 +402,7 @@ export default async function CityPage({
         tags={searchTags}
         locale={locale}
         citySlug={cityData.slug}
+        cityName={cityData.name}
       />
 
       <Footer locale={locale} />
