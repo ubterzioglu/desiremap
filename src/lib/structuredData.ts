@@ -1,4 +1,5 @@
 import { getCityPath, getSearchPath, getVenuePath } from './navigation'
+import { getPublicCityImage } from './public-cities'
 import { getHomeSeoExperience, getHomeSeoMetadata } from './seo/home'
 import type { PublicCity } from '@/types'
 
@@ -373,7 +374,7 @@ export function getStructuredData(locale: string, title: string, description: st
 
 const defaultStadtSeoMetadata = {
   title: 'FKK Clubs & Studios nach Stadt finden in DE | DesireMap',
-  description: 'FKK Clubs, Laufhäuser und Studios nach Stadt finden: geprüfte Adressen in Berlin, Hamburg, München und weiteren deutschen Städten auf DesireMap entdecken.',
+  description: 'FKK Clubs, Laufhäuser und Studios nach Stadt finden: geprüfte Adressen in Berlin, Hamburg, München und weitere Städte auf DesireMap – schneller zum passenden Treffer.',
 }
 
 const stadtSeoMetadata: Record<string, { title: string; description: string }> = {
@@ -414,19 +415,23 @@ function getLocalizedCityText(
 
 function getStadtImageSchemas(locale: string, cities: PublicCity[]) {
   const pageUrl = getStadtAbsoluteUrl(locale)
-  const primaryImageUrl = cities.find((city) => city.image)?.image ?? `${siteUrl}/og-image.png`
+  const primaryImageUrl = cities
+    .map((city) => getPublicCityImage(city))
+    .find((image): image is string => typeof image === 'string' && image.length > 0) ?? `${siteUrl}/og-image.png`
   const seenImageUrls = new Set<string>()
   const cityImages = cities.flatMap((city) => {
-    if (!city.image || seenImageUrls.has(city.image)) {
+    const image = getPublicCityImage(city)
+
+    if (!image || seenImageUrls.has(image)) {
       return []
     }
 
-    seenImageUrls.add(city.image)
+    seenImageUrls.add(image)
 
     return [{
       '@type': 'ImageObject' as const,
       '@id': `${pageUrl}/#city-image-${city.slug}`,
-      url: city.image,
+      url: image,
       width: 1920,
       height: 1080,
       caption: `${city.name} auf DesireMap`,
@@ -554,6 +559,22 @@ export function getStadtFAQItems(locale: string): Array<{ question: string; answ
         question: 'Wie oft werden die Stadtseiten aktualisiert?',
         answer: 'Die Stadtseiten und Betriebsprofile werden regelmäßig aktualisiert, um korrekte Öffnungszeiten, Preise und Verfügbarkeiten zu gewährleisten.',
       },
+      {
+        question: 'Kann ich über DesireMap auch reservieren?',
+        answer: 'Ja. DesireMap verbindet die Städteübersicht mit Detailseiten und Reservierungsoberflächen, damit du nach der lokalen Auswahl ohne Umweg in den passenden Anfrage- oder Buchungsprozess wechseln kannst.',
+      },
+      {
+        question: 'Wie zuverlässig ist das Reservierungssystem auf DesireMap?',
+        answer: 'Der Reservierungsfluss ist auf klare Schritte, nachvollziehbare Bestätigungen und eine verlässliche Übergabe zwischen Suche, Detailseite und Anfrage ausgelegt, damit du schneller und strukturierter zum passenden Ergebnis kommst.',
+      },
+      {
+        question: 'Was passiert mit meinen Reservierungs- und Kontaktdaten?',
+        answer: 'Reservierungs- und Kontaktdaten werden innerhalb des DesireMap Flows vertraulich behandelt. Der Prozess ist darauf ausgelegt, nur notwendige Angaben abzufragen und sensible Informationen nicht unnötig offenzulegen.',
+      },
+      {
+        question: 'Warum kann ich DesireMap mehr vertrauen als vielen anderen Branchenverzeichnissen?',
+        answer: 'Weil DesireMap bewusst gegen die oft qualitativ schwachen, unübersichtlichen Brancheninhalte arbeitet: mit kuratierteren Informationen, diskreter Nutzerführung, vertrauensbetonter Produktlogik und einem Team, das seit Jahren an großen Digitalprodukten arbeitet.',
+      },
     ]
   }
   if (locale === 'tr') {
@@ -662,13 +683,17 @@ function getStadtServiceSchema(locale: string, cities: PublicCity[]) {
 function getStadtHowToSchema(locale: string) {
   const pageUrl = getStadtAbsoluteUrl(locale)
   const steps = locale === 'de' ? [
-    { name: 'Stadt auswählen', text: 'Wähle eine Stadtkarte in der DesireMap Städteübersicht aus.' },
-    { name: 'Lokale Auswahl prüfen', text: 'Öffne die Stadtseite und prüfe verfügbare FKK Clubs, Laufhäuser und Studios.' },
-    { name: 'Betrieb vergleichen', text: 'Vergleiche Detailseiten, Beschreibungen, Bilder und verfügbare Informationen.' },
+    { name: 'Stadt auswählen', text: 'Wähle eine Stadtkarte in der DesireMap Städteübersicht aus, um lokale FKK Clubs, Bordelle, Laufhäuser und Studios gebündelt zu öffnen.' },
+    { name: 'Kategorien gezielt eingrenzen', text: 'Nutze die Städte-Struktur, um schneller zu passenden lokalen Ergebnissen zu kommen statt allgemeine Listen manuell zu durchsuchen.' },
+    { name: 'Qualitätsgeprüfte Inhalte prüfen', text: 'Arbeite mit kuratierten Detailseiten, weil DesireMap sich bewusst von den oft schwachen und unübersichtlichen Brancheninhalten absetzt.' },
+    { name: '3-stufig geschützte Reservierung starten', text: 'Wenn ein passender Betrieb gefunden ist, starte den Reservierungsfluss über Auswahl, Bestätigung und Übergabe als klar getrennten 3-stufigen Prozess.' },
+    { name: 'Vertraulich und sicher abschließen', text: 'Teile nur notwendige Daten und bewege dich in einem Flow, der auf vertrauliche Behandlung, Vertrauen und Produktqualität durch ein erfahrenes Team aus großen Digitalprojekten ausgelegt ist.' },
   ] : [
     { name: 'Choose a city', text: 'Select a city card in the DesireMap city index.' },
     { name: 'Review local options', text: 'Open the city page and review available FKK clubs, laufhaus venues and studios.' },
     { name: 'Compare venues', text: 'Compare detail pages, descriptions, images and available information.' },
+    { name: 'Start a protected reservation flow', text: 'Continue into the reservation flow after selecting a suitable venue.' },
+    { name: 'Keep details confidential', text: 'Move through the booking steps with privacy-aware handling of the information you share.' },
   ]
 
   return {
@@ -678,7 +703,7 @@ function getStadtHowToSchema(locale: string) {
       ? 'So findest du Betriebe nach Stadt auf DesireMap'
       : 'How to find venues by city on DesireMap',
     description: locale === 'de'
-      ? 'Kurze Anleitung zur Nutzung der DesireMap Städteübersicht.'
+      ? 'Anleitung zur DesireMap Städteübersicht mit 3-stufigen Schutzsystem, vertraulicher Datenbehandlung, hochwertig kuratierten Brancheninhalten und einem Team mit langjähriger Erfahrung aus großen Digitalprodukten.'
       : 'Short guide for using the DesireMap city index.',
     step: steps.map((step, index) => ({
       '@type': 'HowToStep' as const,

@@ -30,6 +30,7 @@ export function Header({ locale, onLoginClick, isLoggedIn, onDashboardClick, tra
   const searchPath = getLocalizedPath(locale, '/search')
   const cityPath = getLocalizedPath(locale, '/stadt')
   const blogPath = getLocalizedPath(locale, '/blog')
+  const loginPath = getLocalizedPath(locale, '/login')
   const navigationItems = [
     { href: homePath, label: translations.home, active: pathname === homePath },
     { href: searchPath, label: translations.discover, active: pathname.startsWith(searchPath) },
@@ -104,7 +105,18 @@ export function Header({ locale, onLoginClick, isLoggedIn, onDashboardClick, tra
               <LogIn className="mr-2 h-4 w-4" />
               {translations.login}
             </Button>
-          ) : null}
+          ) : (
+            <Button
+              asChild
+              size="sm"
+              className="hidden h-10 rounded-full border border-[#b33b6a] bg-[#8b1a4a] px-5 text-[12px] font-bold tracking-[0.08em] text-white uppercase shadow-[0_10px_24px_rgba(139,26,74,0.35)] hover:bg-[#a11f57] sm:inline-flex"
+            >
+              <Link href={loginPath}>
+                <LogIn className="mr-2 h-4 w-4" />
+                {translations.login}
+              </Link>
+            </Button>
+          )}
 
           <Button variant="ghost" size="icon" aria-label="Open menu" aria-expanded={mobileMenuOpen} className="text-white lg:hidden" onClick={() => setMobileMenuOpen((v) => !v)}>
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}

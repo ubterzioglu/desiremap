@@ -1,5 +1,15 @@
 # STATE
 
+## 2026-05-22 02:55 +0200
+
+- Scope: `/stadt` SEO/content/schema expansion plus header login CTA recovery on server-rendered public pages.
+- Changed: `/stadt` now uses a category-rich H1, stronger German SEO copy, city-card subtitle/description text, and richer FAQ/HowTo structured data focused on easier city discovery, trust, privacy, and reservation flow messaging.
+- Fixed: Stadt `ImageObject` schema now follows city-specific public hero/public image URLs before legacy fallback images; localized login CTA now renders in `Header`/`MobileMenu` even when a server page cannot pass a client callback.
+- Fixed: restored crawl protection for `/login`, localized login routes, and `/admin/:path*` via `X-Robots-Tag: noindex, nofollow`.
+- Maintenance: removed three pre-existing frontend lint blockers in `ProductSEOContent.tsx`, `sitemap.xml/route.ts`, and `public-service-types.ts` without changing their external behavior.
+- Verification: `bun test src/app/[locale]/stadt/page.test.ts src/lib/structuredData.test.ts src/lib/seo/crawl-controls.test.ts src/components/layout/Header.test.ts` passed; `bun run typecheck` passed; `bun run lint` passed; `bun run build` passed; local Playwright on `/stadt` confirmed visible `Anmelden` CTA, category-rich H1, city-card subtitle/description copy, and expanded FAQ blocks.
+- Version: 0.3.5 → 0.4.0 (minor).
+
 ## 2026-05-21 23:38 +0200
 
 - Scope: homepage/search image alt-attribute repair after live production inspection.

@@ -16,16 +16,18 @@ type MobileMenuProps = {
     home: string
     discover: string
     cities: string
+    login: string
     premium: string
     advertise: string
   }
-  onLoginClick?: (message: string) => void
+  onLoginClick?: (message?: string) => void
   onClose: () => void
 }
 
 export function MobileMenu({ isOpen, locale, translations, onLoginClick, onClose }: MobileMenuProps) {
   const [citiesExpanded, setCitiesExpanded] = useState(false)
   const cityPanelId = 'mobile-menu-cities-panel'
+  const loginPath = getLocalizedPath(locale, '/login')
 
   if (!isOpen) return null
 
@@ -90,6 +92,15 @@ export function MobileMenu({ isOpen, locale, translations, onLoginClick, onClose
         <button onClick={() => { onClose(); onLoginClick?.('advertise') }} className="py-2 text-left text-gray-300 transition-colors hover:text-white">
           {translations.advertise}
         </button>
+        {onLoginClick ? (
+          <button onClick={() => { onClose(); onLoginClick() }} className="py-2 text-left text-gray-300 transition-colors hover:text-white">
+            {translations.login}
+          </button>
+        ) : (
+          <Link href={loginPath} onClick={onClose} className="py-2 text-gray-300 transition-colors hover:text-white">
+            {translations.login}
+          </Link>
+        )}
 
         <div className="border-t border-white/8 pt-4">
           <LanguageSwitcher locale={locale} variant="mobile" />

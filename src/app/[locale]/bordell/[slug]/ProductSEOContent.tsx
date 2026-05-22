@@ -29,6 +29,12 @@ function SectionShell({ children, className }: SectionShellProps) {
   )
 }
 
+const defaultTypeMeta = {
+  label: 'Bordell',
+  intro: 'Bordelle sind in Deutschland lizenzierte Betriebe, in denen sexuelle Dienstleistungen unter geregelten und gesetzlichen Bedingungen angeboten werden.',
+  what: 'Als lizenzierter Betrieb unterliegt ein Bordell der staatlichen Kontrolle und muss gesundheitliche sowie sicherheitstechnische Mindeststandards erfüllen. Bordelle bieten ihren Gästen eine diskrete und professionelle Umgebung. Alle tätigen Personen sind beim Finanzamt registriert und erfüllen die Meldepflichten nach dem Prostituiertenschutzgesetz. Seriöse Bordelle legen großen Wert auf die Gesundheit und das Wohlergehen der beschäftigten Damen sowie auf den Komfort und die Sicherheit der Gäste.',
+}
+
 const TYPE_META: Record<string, { label: string; intro: string; what: string }> = {
   fkk: {
     label: 'FKK Club',
@@ -40,11 +46,7 @@ const TYPE_META: Record<string, { label: string; intro: string; what: string }> 
     intro: 'Laufhäuser sind in Deutschland legale Einrichtungen, in denen Sexarbeiterinnen selbständig tätig sind und eigene Räumlichkeiten mieten.',
     what: 'Der Begriff "Laufhaus" beschreibt mehrstöckige Gebäude, in denen Besucher die verschiedenen Etagen begehen und direkt mit den Damen Kontakt aufnehmen können. Laufhäuser sind durch das Prostituiertenschutzgesetz reguliert und unterliegen regelmäßigen Kontrollen durch Gesundheits- und Ordnungsbehörden. Jede Sexarbeiterin ist selbständig tätig, angemeldet und arbeitet auf eigene Rechnung. Die Nutzung eines Laufhauses ist für Besucher in der Regel kostenlos – Vereinbarungen werden direkt mit den Damen getroffen.',
   },
-  bordell: {
-    label: 'Bordell',
-    intro: 'Bordelle sind in Deutschland lizenzierte Betriebe, in denen sexuelle Dienstleistungen unter geregelten und gesetzlichen Bedingungen angeboten werden.',
-    what: 'Als lizenzierter Betrieb unterliegt ein Bordell der staatlichen Kontrolle und muss gesundheitliche sowie sicherheitstechnische Mindeststandards erfüllen. Bordelle bieten ihren Gästen eine diskrete und professionelle Umgebung. Alle tätigen Personen sind beim Finanzamt registriert und erfüllen die Meldepflichten nach dem Prostituiertenschutzgesetz. Seriöse Bordelle legen großen Wert auf die Gesundheit und das Wohlergehen der beschäftigten Damen sowie auf den Komfort und die Sicherheit der Gäste.',
-  },
+  bordell: defaultTypeMeta,
   studio: {
     label: 'Studio',
     intro: 'Studios sind kleinere, privat geführte Einrichtungen, in denen individuelle Dienstleistungen in einem diskreten und persönlichen Rahmen angeboten werden.',
@@ -58,7 +60,7 @@ const TYPE_META: Record<string, { label: string; intro: string; what: string }> 
 }
 
 function FallbackAboutSection({ productData }: { productData: ProductDetailData }) {
-  const meta = TYPE_META[productData.type] ?? TYPE_META.bordell!
+  const meta = TYPE_META[productData.type] ?? defaultTypeMeta
   const hasServices = productData.services.length > 0
   const hasPricing = productData.price > 0
   const hasRating = productData.ratingValue > 0 && productData.reviewCount > 0

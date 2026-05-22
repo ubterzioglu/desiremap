@@ -126,7 +126,8 @@ describe('stadt structured data', () => {
       slug: 'berlin',
       name: 'Berlin',
       venueCount: 124,
-      image: 'https://images.example.com/berlin.jpg',
+      image: 'https://images.example.com/legacy-berlin.jpg',
+      publicHeroImageUrl: 'https://images.example.com/berlin.jpg',
       description: {
         de: 'Berlin bietet die größte Dichte an Premium-Adressen in Deutschland.',
       },
@@ -146,10 +147,15 @@ describe('stadt structured data', () => {
     },
   ]
 
-  test('builds a city index graph with page, search, list, FAQ, service, and how-to schemas', () => {
+  function getStadtGraph() {
     const structuredData = getStadtStructuredData('de', cities, ['de', 'en', 'tr', 'ar'])
     const graph = structuredData['@graph'] as Array<Record<string, unknown>>
-    const graphTypes = graph.map((node) => node['@type'])
+
+    return { structuredData, graph, graphTypes: graph.map((node) => node['@type']) }
+  }
+
+  test('builds a city index graph with page, search, list, FAQ, service, and how-to schemas', () => {
+    const { structuredData, graphTypes } = getStadtGraph()
 
     expect(graphTypes).toContain('Organization')
     expect(graphTypes).toContain('WebSite')
@@ -165,6 +171,10 @@ describe('stadt structured data', () => {
     expect(hasKeyDeep(structuredData, 'availability')).toBe(false)
     expect(graphTypes).not.toContain('LocalBusiness')
     expect(graphTypes).not.toContain('Review')
+  })
+
+  test('keeps search action, webpage, and item list wired to the stadt index URL', () => {
+    const { graph } = getStadtGraph()
 
     const website = graph.find((node) => node['@type'] === 'WebSite') as Record<string, unknown>
     const searchAction = website.potentialAction as Record<string, unknown>
@@ -187,5 +197,29 @@ describe('stadt structured data', () => {
       name: 'Berlin',
       item: 'https://desiremap.de/stadt/berlin',
     })
+  })
+
+  test('uses primary city imagery plus expanded FAQ and how-to guidance', () => {
+    const { graph } = getStadtGraph()
+
+    const primaryImage = graph.find((node) => node['@id'] === 'https://desiremap.de/stadt/#primary-image') as Record<string, unknown>
+    expect(primaryImage.url).toBe('https://images.example.com/berlin.jpg')
+
+    const faqPage = graph.find((node) => node['@type'] === 'FAQPage') as Record<string, unknown>
+    const mainEntity = faqPage.mainEntity as Array<Record<string, unknown>>
+    expect(mainEntity.length).toBeGreaterThanOrEqual(8)
+    expect(mainEntity.map((item) => item.name)).toEqual(expect.arrayContaining([
+      'Kann ich über DesireMap auch reservieren?',
+      'Wie zuverlässig ist das Reservierungssystem auf DesireMap?',
+      'Was passiert mit meinen Reservierungs- und Kontaktdaten?',
+      'Warum kann ich DesireMap mehr vertrauen als vielen anderen Branchenverzeichnissen?',
+    ]))
+
+    const howTo = graph.find((node) => node['@type'] === 'HowTo') as Record<string, unknown>
+    const steps = howTo.step as Array<Record<string, unknown>>
+    expect(String(howTo.description)).toContain('3-stufigen Schutzsystem')
+    expect(String(howTo.description)).toContain('vertraulich')
+    expect(String(howTo.description)).toContain('großen Digitalprodukten')
+    expect(steps.length).toBeGreaterThanOrEqual(5)
   })
 })

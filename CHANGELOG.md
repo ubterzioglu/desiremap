@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2026-05-22
+
+### Added
+- Stadt index cards now surface localized subtitle and description text so category-driven city discovery is richer directly on `/stadt`.
+- Expanded `/stadt` FAQPage and HowTo structured data with reservation-flow, privacy, trust, and city-discovery guidance, plus regression coverage for schema richness and header login fallback.
+
+### Changed
+- `/stadt` H1 and long-form SEO copy now target broader category intent (`FKK Clubs`, `Bordelle`, `Laufhäuser`, `Studios`) and keep German city-index copy above the 700-word floor.
+- Stadt ImageObject schema and public city helpers now prefer city-specific public hero/public image URLs before legacy fallback images.
+
+### Fixed
+- `/stadt` and other server-rendered public pages once again show the localized `Anmelden` CTA in the header even when no client callback is provided.
+- Restored explicit `X-Robots-Tag: noindex, nofollow` coverage for `/login`, localized login routes, and `/admin/:path*` after the Stadt crawl-controls update.
+- Cleared existing frontend lint blockers in `ProductSEOContent.tsx`, `sitemap.xml/route.ts`, and `public-service-types.ts` so typecheck, lint, and build all pass cleanly.
+
 ## [0.3.5] - 2026-05-21
 
 ### Fixed

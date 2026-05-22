@@ -71,16 +71,22 @@ async function fetchPublicEstablishmentSlugs(): Promise<string[]> {
   let offset = 0
   let total = Number.POSITIVE_INFINITY
 
+  function addUniqueSlugs(items: Array<{ slug: string; isActive?: boolean }>) {
+    for (const item of items) {
+      if (!item.slug || item.isActive === false || seen.has(item.slug)) {
+        continue
+      }
+
+      seen.add(item.slug)
+      slugs.push(item.slug)
+    }
+  }
+
   try {
     while (offset < total && slugs.length < maxSitemapItems) {
       const response = await backendApi.getPublicEstablishments({ limit: pageSize, offset })
 
-      for (const e of response.results) {
-        if (e.slug && e.isActive !== false && !seen.has(e.slug)) {
-          seen.add(e.slug)
-          slugs.push(e.slug)
-        }
-      }
+      addUniqueSlugs(response.results)
 
       total = Number.isFinite(response.total) ? response.total : slugs.length
 

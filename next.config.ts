@@ -33,17 +33,22 @@ const nextConfig: NextConfig = {
       '/blog/:slug',
       '/venue/:slug',
       '/bordell/:slug',
+      '/stadt',
       '/stadt/:city',
       '/:locale(en|tr|ar)',
       '/:locale(en|tr|ar)/blog',
       '/:locale(en|tr|ar)/blog/:slug',
       '/:locale(en|tr|ar)/venue/:slug',
       '/:locale(en|tr|ar)/bordell/:slug',
+      '/:locale(en|tr|ar)/stadt',
       '/:locale(en|tr|ar)/stadt/:city'
     ]
     const restrictedSources = [
       '/search',
       '/:locale(en|tr|ar)/search',
+      '/login',
+      '/:locale(en|tr|ar)/login',
+      '/admin/:path*',
     ]
 
     const linkValue = [
