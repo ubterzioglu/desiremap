@@ -1,5 +1,13 @@
 # STATE
 
+## 2026-05-22 05:17 +0200
+
+- Scope: final fallback hardening after code review found one remaining legacy explicit-tag gap.
+- Root cause: `normalizeIncomingSearchParams()` repaired old raw tag URLs, but without city inventory context it still normalized explicit phrases like `Berlin sikiş` into `category=bordell`, which could empty out cities that only had FKK/Sauna inventory.
+- Changed: `buildSearchTagParams()` now distinguishes structural category terms from broader explicit-intent phrases and falls back to city-only search when no city-specific category availability is known or when the inferred category is unavailable for the current city.
+- Verification: `bun test src/lib/search-routing.test.ts "src/app/[locale]/search/page.test.ts" "src/app/[locale]/search/components/SearchResults.test.tsx" "src/app/[locale]/stadt/[city]/page.test.tsx"` passed; `bun run test:e2e -- e2e/search-tag-flow.spec.ts e2e/stadt-seo-tags.spec.ts` passed with new legacy Turkish raw-URL coverage; `bun run typecheck`, `bun run lint`, and `bun run build` all passed.
+- Version: 0.5.2 → 0.5.3 (patch).
+
 ## 2026-05-22 05:01 +0200
 
 - Scope: post-deploy follow-up on search-tag normalization after live verification caught one remaining Berlin fallback bug.

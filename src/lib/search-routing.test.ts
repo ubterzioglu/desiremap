@@ -24,7 +24,6 @@ describe('search routing helpers', () => {
 
     expect(buildSearchTagParams({ tag: 'Berlin sikiş', citySlug: 'berlin', cityName: 'Berlin' })).toEqual({
       city: 'berlin',
-      category: 'bordell',
     })
   })
 
@@ -39,6 +38,12 @@ describe('search routing helpers', () => {
     expect(normalizeIncomingSearchParams({ q: 'Köln bordell', city: 'koeln' })).toEqual({
       city: 'koeln',
       category: 'bordell',
+    })
+  })
+
+  test('normalizes legacy explicit raw URLs into city-only fallback when inventory is unknown', () => {
+    expect(normalizeIncomingSearchParams({ q: 'Berlin sikiş', city: 'berlin' })).toEqual({
+      city: 'berlin',
     })
   })
 

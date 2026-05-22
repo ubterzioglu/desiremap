@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.3] - 2026-05-22
+
+### Added
+- Added regression coverage for legacy explicit raw URLs like `/tr/search?q=Berlin sikiş&city=berlin` so city-only fallback stays protected.
+
+### Fixed
+- Fixed the remaining fallback gap where legacy explicit raw URLs without city inventory context could still normalize into empty `bordell` category pages.
+- Fixed `/stadt/berlin` and `/tr/stadt/berlin` generic adult-intent tags to fall back to city-level result pages when Berlin has no matching `bordell` inventory.
+
 ## [0.5.2] - 2026-05-22
 
 ### Added

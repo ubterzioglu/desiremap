@@ -70,22 +70,32 @@ const supportedCategorySlugs = new Set([
 const categoryMatchers = [
   {
     category: 'bordell',
-    patterns: ['bordell', 'brothel', 'genelev', 'kerhane', 'orospu', 'sikiş', 'red light', 'بيت دعارة', 'سكس'],
+    mode: 'always',
+    patterns: ['bordell', 'brothel'],
+  },
+  {
+    category: 'bordell',
+    mode: 'inventory-aware',
+    patterns: ['genelev', 'kerhane', 'orospu', 'sikiş', 'red light', 'بيت دعارة', 'سكس'],
   },
   {
     category: 'laufhaus',
+    mode: 'always',
     patterns: ['laufhaus'],
   },
   {
     category: 'fkk',
+    mode: 'always',
     patterns: ['fkk club', 'fkk kulübü', 'نادي fkk'],
   },
   {
     category: 'sauna',
+    mode: 'always',
     patterns: ['saunaclub', 'sauna club', 'fkk sauna', 'ساونا كلوب'],
   },
   {
     category: 'studio',
+    mode: 'always',
     patterns: ['studio', 'استوديو'],
   },
 ] as const
@@ -124,16 +134,18 @@ function stripLeadingCityToken(tag: string, city: ResolvedSearchCity): string {
   return tag.trim()
 }
 
-function detectSearchCategory(rawTag: string): string | undefined {
+function detectSearchCategory(rawTag: string): { category: string; mode: 'always' | 'inventory-aware' } | null {
   const normalizedTag = rawTag.trim().toLowerCase()
 
   for (const matcher of categoryMatchers) {
     if (matcher.patterns.some((pattern) => normalizedTag.includes(pattern.toLowerCase()))) {
-      return supportedCategorySlugs.has(matcher.category) ? matcher.category : undefined
+      return supportedCategorySlugs.has(matcher.category)
+        ? { category: matcher.category, mode: matcher.mode }
+        : null
     }
   }
 
-  return undefined
+  return null
 }
 
 export function resolveSearchCity(city?: string): ResolvedSearchCity | null {
@@ -195,13 +207,22 @@ export function buildSearchTagParams({
 }): SearchPathParams {
   const city = resolveSearchCity(citySlug) ?? resolveSearchCity(cityName) ?? { slug: citySlug, name: cityName }
   const strippedTag = stripLeadingCityToken(tag, city)
-  const category = detectSearchCategory(strippedTag)
+  const detectedCategory = detectSearchCategory(strippedTag)
   const normalizedAvailableCategories = availableCategories
     .map((value) => normalizeSearchCategoryParam(value))
     .filter(Boolean)
 
-  if (category) {
-    if (normalizedAvailableCategories.length > 0 && !normalizedAvailableCategories.includes(category)) {
+  if (detectedCategory) {
+    if (detectedCategory.mode === 'inventory-aware' && normalizedAvailableCategories.length === 0) {
+      return {
+        city: city.slug,
+      }
+    }
+
+    if (
+      normalizedAvailableCategories.length > 0
+      && !normalizedAvailableCategories.includes(detectedCategory.category)
+    ) {
       return {
         city: city.slug,
       }
@@ -209,7 +230,7 @@ export function buildSearchTagParams({
 
     return {
       city: city.slug,
-      category,
+      category: detectedCategory.category,
     }
   }
 

@@ -20,6 +20,15 @@ test.describe('search tag flow', () => {
     await expect(page.getByRole('combobox')).toContainText('Köln')
   })
 
+  test('legacy explicit turkish raw url redirects into city-only fallback', async ({ page }) => {
+    await bypassAgeGate(page)
+    await page.goto('/tr/search?q=Berlin%20siki%C5%9F&city=berlin', { waitUntil: 'networkidle' })
+
+    await expect(page).toHaveURL(/\/tr\/search\?city=berlin$/)
+    await expect(page.getByText('Artemis Berlin')).toBeVisible({ timeout: 10000 })
+    await expect(page.getByText('Sonuç bulunamadı')).toHaveCount(0)
+  })
+
   test('koeln bordell tag opens structured search state with results', async ({ page }) => {
     await bypassAgeGate(page)
     await page.goto('/stadt/koeln', { waitUntil: 'networkidle' })
