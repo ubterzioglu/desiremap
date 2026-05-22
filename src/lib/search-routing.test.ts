@@ -48,4 +48,13 @@ describe('search routing helpers', () => {
       category: 'bordell',
     })
   })
+
+  test('falls back to city-only route when detected category is unavailable for the city', () => {
+    expect(buildSearchTagParams({
+      tag: 'Berlin sikiş',
+      citySlug: 'berlin',
+      cityName: 'Berlin',
+      availableCategories: ['fkk', 'sauna'],
+    })).toEqual({ city: 'berlin' })
+  })
 })

@@ -186,16 +186,27 @@ export function buildSearchTagParams({
   tag,
   citySlug,
   cityName,
+  availableCategories = [],
 }: {
   tag: string
   citySlug: string
   cityName: string
+  availableCategories?: string[]
 }): SearchPathParams {
   const city = resolveSearchCity(citySlug) ?? resolveSearchCity(cityName) ?? { slug: citySlug, name: cityName }
   const strippedTag = stripLeadingCityToken(tag, city)
   const category = detectSearchCategory(strippedTag)
+  const normalizedAvailableCategories = availableCategories
+    .map((value) => normalizeSearchCategoryParam(value))
+    .filter(Boolean)
 
   if (category) {
+    if (normalizedAvailableCategories.length > 0 && !normalizedAvailableCategories.includes(category)) {
+      return {
+        city: city.slug,
+      }
+    }
+
     return {
       city: city.slug,
       category,

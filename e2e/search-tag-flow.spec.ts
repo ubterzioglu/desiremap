@@ -42,4 +42,16 @@ test.describe('search tag flow', () => {
     await expect(page.getByText('Keine Ergebnisse gefunden')).toHaveCount(0)
     await expect(page.getByRole('combobox')).toContainText('Köln')
   })
+
+  test('turkish explicit Berlin tag falls back to result-bearing city search', async ({ page }) => {
+    await bypassAgeGate(page)
+    await page.goto('/tr/stadt/berlin', { waitUntil: 'networkidle' })
+
+    await page.getByRole('link', { name: 'Berlin sikiş' }).click()
+
+    await expect(page).toHaveURL(/\/tr\/search\?city=berlin$/)
+    await expect(page.getByText('Artemis Berlin')).toBeVisible({ timeout: 10000 })
+    await expect(page.getByText('Sonuç bulunamadı')).toHaveCount(0)
+    await expect(page.getByRole('combobox')).toContainText('Berlin')
+  })
 })

@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.2] - 2026-05-22
+
+### Added
+- Added city-result-aware tag routing so locale-specific explicit tags fall back to city-level searches when a stricter category would return nothing.
+- Added Playwright coverage for Turkish explicit-tag fallback (`Berlin sikiş` → `/tr/search?city=berlin`) and legacy raw tag redirect repair.
+
+### Fixed
+- Fixed Berlin/locale explicit tags that still produced empty search pages after the first 0.5.1 rollout.
+- Fixed `/stadt/berlin` and `/tr/stadt/berlin` generic adult-intent tags to land on result-bearing search states instead of empty `bordell` category filters.
+
 ## [0.5.1] - 2026-05-22
 
 ### Added
@@ -14,7 +24,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Fixed old tag URLs like `?q=Köln bordell&city=koeln` by redirecting them to canonical result-bearing search URLs.
-- Fixed search-page city dropdown desync, removed false no-results flash during React Query hydration, and restored working category state for tag-driven search visits.
+- Fixed search-page city dropdown desync, removed false no-results flash during React Query hydration, restored working category state for tag-driven search visits, and made unsupported explicit tags fall back to city-level result pages instead of empty states.
 
 ## [0.5.0] - 2026-05-22
 

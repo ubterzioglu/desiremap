@@ -30,7 +30,7 @@ test.describe('stadt seo tags', () => {
     await page.goto('/stadt/berlin', { waitUntil: 'networkidle' })
 
     await expect(page.getByRole('heading', { name: /tags|suchanfragen|etiketler|الوسوم/i })).toBeVisible()
-    await expect(page.locator('a[href*="/search?city=berlin&category=bordell"]')).toBeVisible()
+    await expect(page.locator('a[href="/search?city=berlin"]').filter({ hasText: 'Berlin bordell' })).toBeVisible()
     await expect(page.locator('a[href*="/search?city=berlin&category=fkk"]')).toBeVisible()
     await expect(page.locator('main p').filter({ hasText: '{#' })).toHaveCount(0)
   })

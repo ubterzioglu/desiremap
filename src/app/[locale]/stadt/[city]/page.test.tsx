@@ -30,19 +30,21 @@ describe('City page search tags', () => {
       <CitySearchTagsSection
         heading="Tags"
         description="Popular phrases"
-        tags={['Berlin genelev', 'Berlin sikiş']}
+        tags={['Berlin genelev', 'Berlin fkk kulübü']}
         locale="tr"
         citySlug="berlin"
         cityName="Berlin"
+        availableCategories={['fkk', 'sauna']}
       />,
     )
 
     expect(html).toContain('Berlin genelev')
-    expect(html).toContain('Berlin sikiş')
+    expect(html).toContain('Berlin fkk kulübü')
     expect(html).not.toContain('{#')
-    expect(html).toContain('/tr/search?city=berlin&amp;category=bordell')
+    expect(html).toContain('/tr/search?city=berlin')
+    expect(html).toContain('/tr/search?city=berlin&amp;category=fkk')
     expect(html).not.toContain('/tr/search?q=Berlin+genelev&amp;city=berlin')
-    expect(html).not.toContain('/tr/search?q=Berlin+siki%C5%9F&amp;city=berlin')
+    expect(html).not.toContain('/tr/search?q=Berlin+fkk+kul%C3%BCb%C3%BC&amp;city=berlin')
   })
 
   test('returns no markup when tag list is empty', () => {
@@ -54,6 +56,7 @@ describe('City page search tags', () => {
         locale="de"
         citySlug="berlin"
         cityName="Berlin"
+        availableCategories={[]}
       />,
     )
 

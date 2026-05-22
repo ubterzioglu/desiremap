@@ -14,7 +14,7 @@ import {
   stripSearchTags,
 } from '@/lib/city-search-tags'
 import { getSearchPath, getCityPath } from '@/lib/navigation'
-import { buildSearchTagParams } from '@/lib/search-routing'
+import { buildSearchTagParams, normalizeSearchCategoryParam } from '@/lib/search-routing'
 import {
   getFallbackPublicStadtCities,
   getFallbackPublicStadtCity,
@@ -47,6 +47,7 @@ export function CitySearchTagsSection({
   locale,
   citySlug,
   cityName,
+  availableCategories,
 }: {
   heading: string
   description: string
@@ -54,6 +55,7 @@ export function CitySearchTagsSection({
   locale: string
   citySlug: string
   cityName: string
+  availableCategories: string[]
 }) {
   if (tags.length === 0) {
     return null
@@ -77,6 +79,7 @@ export function CitySearchTagsSection({
                   tag,
                   citySlug,
                   cityName,
+                  availableCategories,
                 }),
               )}
               className="inline-flex rounded-full border border-[#564146] bg-white/[0.03] px-4 py-2 text-sm text-[#dae2fd] transition-colors hover:border-[#B76E79] hover:text-[#ffb1c6]"
@@ -190,6 +193,18 @@ export default async function CityPage({
     rating: typeof est?.rating === 'number' ? est.rating : null,
     typeLabel: typeof est?.type === 'string' && est.type.length > 0 ? est.type.toUpperCase() : 'BETRIEB',
   }))
+  const availableSearchCategories = Array.from(new Set(
+    (Array.isArray(cityResult?.results) ? cityResult.results : []).flatMap((est) => {
+      const rawValues = [
+        typeof est?.type === 'string' ? est.type : '',
+        ...(Array.isArray(est?.tags) ? est.tags.filter((tag): tag is string => typeof tag === 'string') : []),
+      ]
+
+      return rawValues
+        .map((value) => normalizeSearchCategoryParam(value))
+        .filter(Boolean)
+    }),
+  ))
   const { normalizedDescription, searchTags } = getCityDescriptionContent(cityData, locale)
   const subtitle = selectLocalizedCityText(cityData.subtitle, locale)
   const image = getPublicCityImage(cityData)
@@ -403,6 +418,7 @@ export default async function CityPage({
         locale={locale}
         citySlug={cityData.slug}
         cityName={cityData.name}
+        availableCategories={availableSearchCategories}
       />
 
       <Footer locale={locale} />

@@ -1,12 +1,20 @@
 # STATE
 
+## 2026-05-22 05:01 +0200
+
+- Scope: post-deploy follow-up on search-tag normalization after live verification caught one remaining Berlin fallback bug.
+- Root cause: generic explicit tags (`Berlin bordell`, `Berlin sikiş`, `Berlin genelev`) were still hard-mapped to `category=bordell`, but Berlin currently has only result-bearing `fkk` / `sauna` categories, so those locale tags could still empty out the search page.
+- Changed: city-page tag routing now derives available search categories from the city’s fetched establishments (`type` + category-like tags) and falls back to city-only search whenever the inferred category would be unsupported for that city.
+- Verification: `bun test src/lib/search-routing.test.ts "src/app/[locale]/search/page.test.ts" "src/app/[locale]/search/components/SearchResults.test.tsx" "src/app/[locale]/stadt/[city]/page.test.tsx"` passed; `bun run test:e2e -- e2e/search-tag-flow.spec.ts e2e/stadt-seo-tags.spec.ts` passed with the new Turkish fallback case; `bun run typecheck`, `bun run lint`, and `bun run build` all passed again.
+- Version: 0.5.1 → 0.5.2 (patch).
+
 ## 2026-05-22 04:46 +0200
 
 - Scope: search tag / city-filter bugfix after `/stadt/[city]` hashtag rollout.
 - Root cause: tag links sent raw phrase queries like `Köln bordell` together with inconsistent city params (`koeln` vs `Köln`), while `/search` rendered a false empty-state before React Query hydration finished.
 - Added: `src/lib/search-routing.ts` + tests for canonical city normalization, tag-param shaping, and legacy raw-URL repair.
 - Changed: `/search` now normalizes/redirects raw incoming params, shows canonical city labels in metadata/UI, and keeps city filter values slug-based internally for consistent dropdown state.
-- Fixed: `CitySearchTagsSection` now routes tags to result-bearing structured search states; `SearchResults` now shows loading skeletons instead of misleading empty-state flashes; old raw URLs like `?q=Köln bordell&city=koeln` self-heal via redirect.
+- Fixed: `CitySearchTagsSection` now routes tags to result-bearing structured search states; unsupported explicit tags fall back to city-only results when a stricter category would empty the page; `SearchResults` now shows loading skeletons instead of misleading empty-state flashes; old raw URLs like `?q=Köln bordell&city=koeln` self-heal via redirect.
 - Verification: `bun test src/lib/search-routing.test.ts "src/app/[locale]/search/page.test.ts" "src/app/[locale]/search/components/SearchResults.test.tsx" "src/app/[locale]/stadt/[city]/page.test.tsx"` passed; `bun run test:e2e -- e2e/search-tag-flow.spec.ts e2e/stadt-seo-tags.spec.ts` passed; `bun run typecheck` passed; `bun run lint` passed; `bun run build` passed; React Doctor score `96/100` with only non-blocking legacy/taste warnings.
 - Version: 0.5.0 → 0.5.1 (patch).
 
