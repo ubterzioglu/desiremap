@@ -80,7 +80,7 @@ function ListingsHeader({ resultCount: _resultCount }: { resultCount: number | u
 
 export function ListingsSection() {
   const params = useParams()
-  const router = useRouter()
+  const { push } = useRouter()
   const locale = (params?.locale as string) || 'de'
   const establishmentParams = { limit: 12 }
   const { data: result, isLoading } = usePublicEstablishments(establishmentParams)
@@ -150,13 +150,13 @@ export function ListingsSection() {
 
         <div className="mt-14 flex justify-center">
           <Button
-            onClick={() => router.push(`/${locale}/search`)}
+            onClick={() => push(getSearchPath(locale))}
             size="lg"
             variant="outline"
             className="group rounded-full border-[#334155] bg-[#131b2e]/72 px-10 text-white backdrop-blur-xl hover:bg-[#171f33]"
           >
             Mehr anzeigen
-            <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+            <ChevronRight className="ml-2 size-4 transition-transform group-hover:translate-x-1" />
           </Button>
         </div>
       </div>

@@ -1,14 +1,18 @@
-'use client'
+ 'use client'
 
+import Link from 'next/link'
+import { useLocale, useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { ArrowRight, Bell, Calendar, Check, Crown, Loader2, Shield } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
+import { getLocalizedPath } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 import { useCreateBooking } from '@/hooks/useQueries'
 import type { Bordell } from '@/types'
@@ -32,7 +36,7 @@ function StepIndicator({ step }: { step: number }) {
       {[1, 2, 3].map((item) => (
         <div key={item} className="flex items-center">
           <div className={cn(
-            'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all',
+            'flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-all',
             step >= item
               ? 'bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] text-white'
               : 'bg-white/5 text-gray-500'
@@ -41,7 +45,7 @@ function StepIndicator({ step }: { step: number }) {
           </div>
           {item < 3 && (
             <div className={cn(
-              'w-12 h-0.5 mx-2',
+              'mx-2 h-0.5 w-12',
               step > item ? 'bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0]' : 'bg-white/10'
             )} />
           )}
@@ -51,12 +55,12 @@ function StepIndicator({ step }: { step: number }) {
   )
 }
 
-function Step1({ 
+function Step1({
   bordell, selectedDate, selectedTime, duration, autoReserve, isPremium,
-  onDateChange, onTimeChange, onDurationChange, onAutoReserveChange 
+  onDateChange, onTimeChange, onDurationChange, onAutoReserveChange
 }: StepProps) {
   const timeSlots = bordell.availableSlots || ['10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '18:00', '19:00', '20:00', '21:00', '22:00']
-  
+
   return (
     <div className="space-y-4">
       <div>
@@ -77,7 +81,7 @@ function Step1({
               key={time}
               onClick={() => onTimeChange(time)}
               className={cn(
-                'py-2 rounded-lg text-sm font-medium transition-all',
+                'rounded-lg py-2 text-sm font-medium transition-all',
                 selectedTime === time
                   ? 'bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] text-white'
                   : 'bg-white/5 text-gray-300 hover:bg-white/10'
@@ -114,7 +118,7 @@ function Step1({
           />
           <div className="flex-1">
             <Label htmlFor="autoReserve" className={cn(
-              'text-sm font-medium flex items-center gap-2',
+              'flex items-center gap-2 text-sm font-medium',
               !isPremium && 'text-gray-500'
             )}>
               <Bell className="h-4 w-4" />
@@ -189,9 +193,30 @@ function Step2({ name, email, phone, notes, onNameChange, onEmailChange, onPhone
   )
 }
 
-function Step3({ 
-  bordell, selectedDate, selectedTime, duration, autoReserve 
-}: Pick<StepProps, 'bordell' | 'selectedDate' | 'selectedTime' | 'duration' | 'autoReserve'>) {
+type Step3Props = Pick<StepProps, 'bordell' | 'selectedDate' | 'selectedTime' | 'duration' | 'autoReserve'> & {
+  acceptedTerms: boolean
+  agbPath: string
+  legacyReservationNotice: string
+  termsDescription: string
+  termsLabel: string
+  termsLinkLabel: string
+  onAcceptedTermsChange: (value: boolean) => void
+}
+
+function Step3({
+  bordell,
+  selectedDate,
+  selectedTime,
+  duration,
+  autoReserve,
+  acceptedTerms,
+  agbPath,
+  legacyReservationNotice,
+  onAcceptedTermsChange,
+  termsDescription,
+  termsLabel,
+  termsLinkLabel,
+}: Step3Props) {
   const durationNum = parseInt(duration)
   const pricePerHour = bordell.minPrice || 50
   const estimatedPrice = (durationNum / 60) * pricePerHour
@@ -230,22 +255,44 @@ function Step3({
           Automatische Reservierung aktiv
         </div>
       )}
+      <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+        <div className="flex items-start gap-3">
+          <Checkbox
+            id="acceptedTerms"
+            checked={acceptedTerms}
+            aria-invalid={!acceptedTerms}
+            onCheckedChange={(checked) => onAcceptedTermsChange(Boolean(checked))}
+            className="mt-1 border-white/20 bg-white/10 text-white"
+          />
+          <div className="space-y-2">
+            <Label htmlFor="acceptedTerms" className="text-sm font-medium text-white">
+              {termsLabel}
+            </Label>
+            <p className="text-xs leading-6 text-gray-400">
+              {termsDescription.replace(/\s*AGB\.?$/, '')}{' '}
+              <Link href={agbPath} className="font-medium text-[#ffb1c6] underline underline-offset-2 hover:text-[#ffd1dc]">
+                {termsLinkLabel}
+              </Link>.
+            </p>
+          </div>
+        </div>
+      </div>
       <div className="flex items-start gap-2 text-xs text-gray-400">
         <Shield className="mt-0.5 h-4 w-4 flex-shrink-0 text-[#b76e79]" />
-        <p>Diskrete Abrechnung. Stornierung bis 2h vorher kostenlos.</p>
+        <p>{legacyReservationNotice}</p>
       </div>
     </div>
   )
 }
 
-function StepButtons({ 
-  step, 
+function StepButtons({
+  step,
   canProceed,
-  onBack, 
-  onNext, 
+  onBack,
+  onNext,
   onSubmit,
-  isLoading 
-}: { 
+  isLoading
+}: {
   step: number
   canProceed: boolean
   onBack: () => void
@@ -276,7 +323,7 @@ function StepButtons({
       ) : (
         <Button
           onClick={onSubmit}
-          disabled={isLoading}
+          disabled={!canProceed || isLoading}
           className="flex-1 border-0 bg-linear-to-r from-[#8b1a4a] to-[#6b3fa0] text-white hover:from-[#a8255c] hover:to-[#7d4fb5]"
         >
           {isLoading ? (
@@ -298,7 +345,10 @@ type ReservationModalProps = {
 
 export function ReservationModal({ open, onOpenChange, bordell }: ReservationModalProps) {
   const createBooking = useCreateBooking()
-  
+  const locale = useLocale()
+  const tReservation = useTranslations('reservation')
+  const agbPath = getLocalizedPath(locale, '/agb')
+
   const [step, setStep] = useState(1)
   const [selectedDate, setSelectedDate] = useState('')
   const [selectedTime, setSelectedTime] = useState('')
@@ -308,6 +358,7 @@ export function ReservationModal({ open, onOpenChange, bordell }: ReservationMod
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [notes, setNotes] = useState('')
+  const [acceptedTerms, setAcceptedTerms] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
 
@@ -323,6 +374,7 @@ export function ReservationModal({ open, onOpenChange, bordell }: ReservationMod
     setEmail('')
     setPhone('')
     setNotes('')
+    setAcceptedTerms(false)
     setSuccess(false)
     setError('')
   }
@@ -334,14 +386,17 @@ export function ReservationModal({ open, onOpenChange, bordell }: ReservationMod
     if (step === 2) {
       return !!(name && email)
     }
-    return true
+    return acceptedTerms
   }
 
   const handleSubmit = async () => {
-    if (!bordell) return
-    
+    if (!bordell || !acceptedTerms) {
+      setError(tReservation('termsRequired'))
+      return
+    }
+
     setError('')
-    
+
     const durationNum = parseInt(duration)
     const pricePerHour = bordell.minPrice || 50
     const estimatedPrice = (durationNum / 60) * pricePerHour
@@ -355,7 +410,7 @@ export function ReservationModal({ open, onOpenChange, bordell }: ReservationMod
         price: estimatedPrice,
         ...(notes.length > 0 ? { notes } : {}),
       })
-      
+
       setSuccess(true)
       setTimeout(() => {
         onOpenChange(false)
@@ -398,9 +453,9 @@ export function ReservationModal({ open, onOpenChange, bordell }: ReservationMod
   }
 
   return (
-    <Dialog open={open} onOpenChange={(open) => {
-      if (!open) resetForm()
-      onOpenChange(open)
+    <Dialog open={open} onOpenChange={(nextOpen) => {
+      if (!nextOpen) resetForm()
+      onOpenChange(nextOpen)
     }}>
       <DialogContent className="max-w-md border-white/10 bg-[#0f0f14] text-white">
         <DialogHeader>
@@ -412,7 +467,7 @@ export function ReservationModal({ open, onOpenChange, bordell }: ReservationMod
             {bordell.name} - {bordell.location}
           </DialogDescription>
         </DialogHeader>
-        
+
         {isPremium && (
           <div className="flex items-center gap-2 rounded-lg border border-[#8b1a4a]/30 bg-[#8b1a4a]/20 p-3 text-sm">
             <Crown className="h-4 w-4 text-[#b76e79]" />
@@ -420,9 +475,9 @@ export function ReservationModal({ open, onOpenChange, bordell }: ReservationMod
             <span className="text-gray-400">- Prioritaets-Reservierung aktiv</span>
           </div>
         )}
-        
+
         <StepIndicator step={step} />
-        
+
         {step === 1 && <Step1 {...stepProps} />}
         {step === 2 && (
           <Step2
@@ -443,20 +498,32 @@ export function ReservationModal({ open, onOpenChange, bordell }: ReservationMod
             selectedTime={selectedTime}
             duration={duration}
             autoReserve={autoReserve}
+            acceptedTerms={acceptedTerms}
+            agbPath={agbPath}
+            legacyReservationNotice={tReservation('legacyReservationNotice')}
+            onAcceptedTermsChange={(value) => {
+              setAcceptedTerms(value)
+              if (value) {
+                setError('')
+              }
+            }}
+            termsDescription={tReservation('termsDescription')}
+            termsLabel={tReservation('termsLabel')}
+            termsLinkLabel={tReservation('termsLinkLabel')}
           />
         )}
-        
+
         {error && (
           <div className="rounded-lg bg-red-500/10 p-3 text-sm text-red-400">
             {error}
           </div>
         )}
-        
+
         <StepButtons
           step={step}
           canProceed={canProceed()}
-          onBack={() => setStep((v) => v - 1)}
-          onNext={() => setStep((v) => v + 1)}
+          onBack={() => setStep((value) => value - 1)}
+          onNext={() => setStep((value) => value + 1)}
           onSubmit={handleSubmit}
           isLoading={createBooking.isPending}
         />

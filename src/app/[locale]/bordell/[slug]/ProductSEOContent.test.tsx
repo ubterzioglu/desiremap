@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test'
 import { renderToStaticMarkup } from 'react-dom/server'
 
 import { ProductSEOContent } from './ProductSEOContent'
-import type { ProductDetailData } from '@/lib/structuredData'
+import type { ProductDetailData } from '@/lib/page-metadata'
 
 describe('ProductSEOContent', () => {
   test('does not generate venue-specific SEO copy when public sections are empty', () => {

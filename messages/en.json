@@ -91,7 +91,12 @@
     "confirm": "Confirm",
     "cancel": "Cancel",
     "complete": "Reservation successful!",
-    "completeMessage": "Your reservation has been confirmed."
+    "completeMessage": "Your reservation has been confirmed.",
+    "termsLabel": "I accept all terms",
+    "termsDescription": "By submitting, you confirm reservation terms, cancellation, refunds, payments, late cancellations, and no-show rules. Full details are available in the Terms.",
+    "termsRequired": "Please accept the Terms before continuing.",
+    "legacyReservationNotice": "Billing stays discreet. Online reservations are currently being migrated to the new DesireMap reservation system.",
+    "termsLinkLabel": "Terms"
   },
   "durations": {
     "30min": "30 Min",

@@ -49,15 +49,9 @@ export const blogPosts: BlogPost[] = [
     datePublished: '2026-03-08T10:00:00+01:00',
     dateModified: '2026-03-08T10:00:00+01:00',
     author: {
-      name: 'Max Weber',
-      url: 'https://desiremap.de/autoren/max-weber',
-      image: 'https://desiremap.de/autoren/max-weber.jpg',
-      sameAs: [
-        'https://www.linkedin.com/in/maxweber',
-        'https://twitter.com/maxweber'
-      ],
-      jobTitle: 'Senior Content Editor',
-      description: 'Max Weber ist Content-Editor bei DesireMap mit über 10 Jahren Erfahrung in der Erotikbranche. Er spezialisiert sich auf die Bewertung und Vorstellung von Premium-Betrieben.'
+      name: 'Shahindzhan Yozbakar',
+      jobTitle: 'Software developer',
+      description: 'Shahindzhan Yozbakar entwickelt DesireMap als Produkt und Software-Plattform mit Fokus auf Routing, SEO, Datenqualität und stabile Nutzerpfade.'
     },
     wordCount: 2500,
     keywords: [
@@ -99,34 +93,34 @@ export const blogPosts: BlogPost[] = [
     ],
     mentions: [
       {
-        name: 'Artemis Berlin',
-        url: 'https://desiremap.de/de/bordell/artemis-berlin',
-        type: 'Product'
+        name: 'FKK Clubs in Deutschland',
+        url: 'https://desiremap.de/kategorie/fkk',
+        type: 'Service'
       },
       {
-        name: 'Pascha Köln',
-        url: 'https://desiremap.de/de/bordell/pascha-koln',
-        type: 'Product'
+        name: 'Laufhäuser in Deutschland',
+        url: 'https://desiremap.de/kategorie/laufhaus',
+        type: 'Service'
       },
       {
-        name: 'Paradise Stuttgart',
-        url: 'https://desiremap.de/de/bordell/paradise-stuttgart',
-        type: 'Product'
+        name: 'Bordelle in Deutschland',
+        url: 'https://desiremap.de/kategorie/bordell',
+        type: 'Service'
       },
       {
-        name: 'Café del Sol Hamburg',
-        url: 'https://desiremap.de/de/bordell/cafe-del-sol-hamburg',
-        type: 'Product'
+        name: 'Berlin',
+        url: 'https://desiremap.de/stadt/berlin',
+        type: 'Thing'
       },
       {
-        name: 'Royal München',
-        url: 'https://desiremap.de/de/bordell/royal-munchen',
-        type: 'Product'
+        name: 'Hamburg',
+        url: 'https://desiremap.de/stadt/hamburg',
+        type: 'Thing'
       },
       {
-        name: 'Diamond Frankfurt',
-        url: 'https://desiremap.de/de/bordell/diamond-frankfurt',
-        type: 'Product'
+        name: 'Frankfurt',
+        url: 'https://desiremap.de/stadt/frankfurt',
+        type: 'Thing'
       }
     ],
     commentCount: 47

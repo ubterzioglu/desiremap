@@ -91,7 +91,12 @@
     "confirm": "Onayla",
     "cancel": "İptal",
     "complete": "Rezervasyon başarılı!",
-    "completeMessage": "Rezervasyonunuz onaylandı."
+    "completeMessage": "Rezervasyonunuz onaylandı.",
+    "termsLabel": "Tüm şartları kabul ediyorum",
+    "termsDescription": "Göndererek rezervasyon koşulları, iptal, iade, ödeme, geç iptal ve gelmeme kurallarını kabul etmiş olursunuz. Tüm detaylar AGB sayfasındadır.",
+    "termsRequired": "Devam etmeden önce AGB şartlarını kabul edin.",
+    "legacyReservationNotice": "Faturalama gizli kalır. Online rezervasyonlar şu anda yeni DesireMap rezervasyon sistemine taşınıyor.",
+    "termsLinkLabel": "AGB"
   },
   "durations": {
     "30min": "30 Dak",

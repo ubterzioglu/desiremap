@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { usePublicCities, usePublicHero } from '@/hooks/useQueries'
 import type { PublicCity, Translations } from '@/types'
 import { getSearchPath } from '@/lib/navigation'
-import { categories } from '@/data/mock-data'
+import { categoriesData } from '@/data/categories'
 import { cn } from '@/lib/utils'
 
 const defaultHeroSlides: HeroSlide[] = [
@@ -219,7 +219,7 @@ export function HeroSection({ translations, stats, locale }: HeroProps): ReactEl
     studio: categoryTranslations('studio'),
     privat: categoryTranslations('privat')
   }
-  const categoryOptions = categories.map((item) => ({ id: item.id, label: categoryLabels[item.id] ?? item.name }))
+  const categoryOptions = categoriesData.map((item) => ({ id: item.slug, label: categoryLabels[item.slug] ?? item.name.de ?? item.slug }))
   const displayedSlide = activeSlide % heroSlides.length
   const statItems: HeroStatItem[] = [
     { value: '847+', label: stats.establishments, valueClassName: 'text-[#ffb1c6]' },

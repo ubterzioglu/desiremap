@@ -1,8 +1,37 @@
-// Blog yazısı içeriği - Premium Erotik Plattform (ALMANCA)
-// Ana kelime: DesireMap (%7)
-// Yan kelimeler: FKK Club, Laufhaus, Bordell, Berlin, Hamburg, München (%3)
+import { getCategoryPath, getCityPath, getLocalizedPath } from '@/lib/navigation'
 
-export const premiumErotikPlattformContent = `
+type PremiumContentLinks = {
+  homePath: string
+  berlinCityPath: string
+  hamburgCityPath: string
+  muenchenCityPath: string
+  koelnCityPath: string
+  frankfurtCityPath: string
+  stuttgartCityPath: string
+  duesseldorfCityPath: string
+  laufhausPath: string
+  bordellPath: string
+  fkkPath: string
+}
+
+function getPremiumContentLinks(locale: string): PremiumContentLinks {
+  return {
+    homePath: getLocalizedPath(locale, '/'),
+    berlinCityPath: getCityPath(locale, 'berlin'),
+    hamburgCityPath: getCityPath(locale, 'hamburg'),
+    muenchenCityPath: getCityPath(locale, 'muenchen'),
+    koelnCityPath: getCityPath(locale, 'koeln'),
+    frankfurtCityPath: getCityPath(locale, 'frankfurt'),
+    stuttgartCityPath: getCityPath(locale, 'stuttgart'),
+    duesseldorfCityPath: getCityPath(locale, 'duesseldorf'),
+    laufhausPath: getCategoryPath(locale, 'laufhaus'),
+    bordellPath: getCategoryPath(locale, 'bordell'),
+    fkkPath: getCategoryPath(locale, 'fkk'),
+  }
+}
+
+function buildPremiumIntroContent() {
+  return `
 <p class="blog-intro"><strong>DesireMap</strong> ist Deutschlands führende Plattform für Premium-Erotik. Wir verbinden anspruchsvolle Gäste mit den besten <strong>FKK Clubs</strong>, <strong>Laufhäusern</strong> und <strong>Bordellen</strong> in ganz Deutschland. Auf <strong>DesireMap</strong> finden Sie ausschließlich verifizierte Betriebe mit höchsten Qualitätsstandards.</p>
 
 <h2>Was ist DesireMap?</h2>
@@ -32,7 +61,21 @@ export const premiumErotikPlattformContent = `
 <h3>Die Vision hinter DesireMap</h3>
 
 <p><strong>DesireMap</strong> wurde gegründet, um Transparenz in eine Branche zu bringen, die sie braucht. Wir glauben, dass jeder Anspruch auf <strong>Qualität</strong>, <strong>Diskretion</strong> und <strong>Sicherheit</strong> hat – ohne Kompromisse.</p>
+`
+}
 
+function buildPremiumCategorySections({
+  berlinCityPath,
+  duesseldorfCityPath,
+  fkkPath,
+  koelnCityPath,
+  muenchenCityPath,
+  laufhausPath,
+  frankfurtCityPath,
+  hamburgCityPath,
+  bordellPath,
+}: PremiumContentLinks) {
+  return `
 <h2>Unsere Premium-Betriebe</h2>
 
 <p>Auf <strong>DesireMap</strong> finden Sie drei Hauptkategorien von Etablissements. Jede Kategorie bietet einzigartige Erlebnisse:</p>
@@ -42,15 +85,15 @@ export const premiumErotikPlattformContent = `
 <p><strong>FKK Clubs</strong> auf <strong>DesireMap</strong> bieten ein ganzheitliches Erlebnis. Saunen, Pools, Bars und private Bereiche schaffen eine entspannte Atmosphäre. Das Konzept: Ein Eintrittspreis gewährt Zugang zu allen Annehmlichkeiten.</p>
 
 <div class="highlight-box">
-  <p><strong>Unser Tipp:</strong> Der <a href="/de/bordell/artemis-berlin">Artemis Berlin</a> ist mit 4.8⭐ einer der bestbewerteten FKK Clubs auf <strong>DesireMap</strong>. 1.247 Gäste haben bereits ihre Erfahrungen geteilt.</p>
+  <p><strong>Unser Tipp:</strong> In <a href="${berlinCityPath}">Berlin</a> finden Sie verifizierte FKK Clubs mit transparenten Bewertungen und diskreter Orientierung.</p>
 </div>
 
-<p>Weitere Top-Adressen auf <strong>DesireMap</strong>:</p>
+<p>Weitere starke Einstiege auf <strong>DesireMap</strong>:</p>
 
 <ul>
-  <li><a href="/de/bordell/paradise-stuttgart">Paradise Stuttgart</a> – Großer Außenbereich mit Pool (4.7⭐)</li>
-  <li>FKK Clubs in <a href="/de/search?city=Berlin">Berlin</a> entdecken</li>
-  <li>Alle <a href="/de/search?category=fkk">FKK Clubs</a> auf einen Blick</li>
+  <li><a href="${duesseldorfCityPath}">Düsseldorf</a> – eleganter Wellness-Fokus und hochwertige Club-Auswahl</li>
+  <li>FKK Clubs in <a href="${berlinCityPath}">Berlin</a> entdecken</li>
+  <li>Alle <a href="${fkkPath}">FKK Clubs</a> auf einen Blick</li>
 </ul>
 
 <h3>Laufhäuser – Vielfalt auf mehreren Etagen</h3>
@@ -58,14 +101,14 @@ export const premiumErotikPlattformContent = `
 <p><strong>Laufhäuser</strong> sind auf <strong>DesireMap</strong> besonders beliebt wegen ihrer Flexibilität. Mehrere Etagen, verschiedene Damen – Sie wählen, was Ihnen gefällt. Kein Eintritt, Sie zahlen nur für die Dienstleistung.</p>
 
 <div class="highlight-box">
-  <p><strong>Rekordhalter:</strong> Das <a href="/de/bordell/pascha-koln">Pascha Köln</a> ist Europas größtes Laufhaus. 7 Etagen, 120+ Damen, 24 Stunden geöffnet. <strong>DesireMap</strong>-Gäste bewerten es mit 4.6⭐.</p>
+  <p><strong>Rekordhalter:</strong> <a href="${koelnCityPath}">Köln</a> bleibt einer der wichtigsten Laufhaus-Märkte in Deutschland – mit hoher Dichte und klarer Vergleichsintention.</p>
 </div>
 
 <p>Mehr <strong>Laufhäuser</strong> auf <strong>DesireMap</strong>:</p>
 
 <ul>
-  <li><a href="/de/bordell/royal-munchen">Royal München</a> – Zentral gelegen, gemütliche Bar (4.4⭐)</li>
-  <li>Alle <a href="/de/search?category=laufhaus">Laufhäuser</a> durchsuchen</li>
+  <li><a href="${muenchenCityPath}">München</a> – zentrale Lage, diskrete Häuser und planbare Besuche</li>
+  <li>Alle <a href="${laufhausPath}">Laufhäuser</a> durchsuchen</li>
 </ul>
 
 <h3>Bordelle – Diskretion und Privatsphäre</h3>
@@ -73,16 +116,27 @@ export const premiumErotikPlattformContent = `
 <p><strong>Bordelle</strong> auf <strong>DesireMap</strong> stehen für maximale Diskretion. Private Zimmer, persönliche Beratung, individuelle Dienstleistungen. Ideal für Gäste, die Wert auf Privatsphäre legen.</p>
 
 <div class="highlight-box">
-  <p><strong>Premium-Empfehlung:</strong> Das <a href="/de/bordell/diamond-frankfurt">Diamond Frankfurt</a> bietet VIP-Suiten mit höchstem Komfort. <strong>DesireMap</strong>-Bewertung: 4.6⭐</p>
+  <p><strong>Premium-Empfehlung:</strong> <a href="${frankfurtCityPath}">Frankfurt</a> bietet hochwertige Bordell- und Club-Adressen mit klarer Orientierung für diskrete Besuche.</p>
 </div>
 
 <p>Weitere <strong>Bordelle</strong> auf <strong>DesireMap</strong>:</p>
 
 <ul>
-  <li><a href="/de/bordell/cafe-del-sol-hamburg">Café del Sol Hamburg</a> – Diskretes Ambiente, private Räume (4.5⭐)</li>
-  <li>Alle <a href="/de/search?category=bordell">Bordelle</a> erkunden</li>
+  <li><a href="${hamburgCityPath}">Hamburg</a> – diskretes Ambiente und starke Innenstadt-Lagen</li>
+  <li>Alle <a href="${bordellPath}">Bordelle</a> erkunden</li>
 </ul>
+`
+}
 
+function buildPremiumCitySections({
+  berlinCityPath,
+  hamburgCityPath,
+  muenchenCityPath,
+  koelnCityPath,
+  frankfurtCityPath,
+  stuttgartCityPath,
+}: PremiumContentLinks) {
+  return `
 <h2>Städte auf DesireMap</h2>
 
 <p><strong>DesireMap</strong> ist in allen deutschen Großstädten vertreten. Entdecken Sie die erotischen Hotspots:</p>
@@ -91,34 +145,38 @@ export const premiumErotikPlattformContent = `
 
 <p>Berlin auf <strong>DesireMap</strong>: Über 150 Betriebe, von FKK Clubs bis zu exklusiven Bordellen. Die Hauptstadt bietet für jeden Geschmack etwas.</p>
 
-<p><strong>Top-Adresse:</strong> <a href="/de/bordell/artemis-berlin">Artemis Berlin</a> – Berlins größter FKK Club mit Wellness-Bereich und eleganter Bar.</p>
+<p><strong>Stadtfokus:</strong> <a href="${berlinCityPath}">Berlin auf DesireMap</a> – großer Markt mit Wellness-Clubs, Studios und diskreten Adressen.</p>
 
-<p>→ <a href="/de/search?city=Berlin">Alle Berliner Betriebe auf DesireMap</a></p>
+<p>→ <a href="${berlinCityPath}">Alle Berliner Betriebe auf DesireMap</a></p>
 
 <h3>Hamburg – Der Norden genießt</h3>
 
 <p>Hamburg auf <strong>DesireMap</strong>: Die Reeperbahn ist legendär, aber auch abseits der Partymeile finden Sie Premium-Adressen.</p>
 
-<p><strong>Geheimtipp:</strong> <a href="/de/bordell/cafe-del-sol-hamburg">Café del Sol</a> – Ein Bordell mit Stil in zentraler Lage.</p>
+<p><strong>Stadtfokus:</strong> <a href="${hamburgCityPath}">Hamburg auf DesireMap</a> – diskrete Betriebe und klare Orientierung in zentralen Lagen.</p>
 
-<p>→ <a href="/de/search?city=Hamburg">Alle Hamburger Betriebe auf DesireMap</a></p>
+<p>→ <a href="${hamburgCityPath}">Alle Hamburger Betriebe auf DesireMap</a></p>
 
 <h3>München – Bayerische Exklusivität</h3>
 
 <p>München auf <strong>DesireMap</strong>: Etwas exklusiver, etwas privater. Die bayerische Hauptstadt setzt auf Qualität statt Quantität.</p>
 
-<p><strong>Bestbewertet:</strong> <a href="/de/bordell/royal-munchen">Royal München</a> – Ein Laufhaus mit Herz in der Innenstadt.</p>
+<p><strong>Stadtfokus:</strong> <a href="${muenchenCityPath}">München auf DesireMap</a> – private, hochwertige und planbare Angebote.</p>
 
-<p>→ Alle Münchner Betriebe auf DesireMap</p>
+<p>→ <a href="${muenchenCityPath}">Alle Münchner Betriebe auf DesireMap</a></p>
 
 <h3>Weitere Städte</h3>
 
 <ul>
-  <li><a href="/de/bordell/pascha-koln">Köln</a> – Heimat des legendären Pascha</li>
-  <li><a href="/de/bordell/diamond-frankfurt">Frankfurt</a> – Finanzmetropole mit erotischem Angebot</li>
-  <li>Stuttgart – <a href="/de/bordell/paradise-stuttgart">Paradise</a> und mehr</li>
+  <li><a href="${koelnCityPath}">Köln</a> – Heimat eines der bekanntesten Laufhaus-Märkte</li>
+  <li><a href="${frankfurtCityPath}">Frankfurt</a> – Finanzmetropole mit starkem Erotik-Angebot</li>
+  <li><a href="${stuttgartCityPath}">Stuttgart</a> – etablierte Adressen und diskrete Auswahl</li>
 </ul>
+`
+}
 
+function buildPremiumProcessAndCta({ homePath }: PremiumContentLinks) {
+  return `
 <h2>So funktioniert DesireMap</h2>
 
 <h3>Schritt 1: Suchen</h3>
@@ -217,14 +275,28 @@ export const premiumErotikPlattformContent = `
   <li>✓ <strong>Komfort</strong> durch einfache Suche und Buchung</li>
 </ul>
 
-<p>Entdecken Sie jetzt auf <a href="/de/"><strong>DesireMap</strong></a>, was Deutschland zu bieten hat. Ihr nächstes unvergessliches Erlebnis wartet.</p>
+<p>Entdecken Sie jetzt auf <a href="${homePath}"><strong>DesireMap</strong></a>, was Deutschland zu bieten hat. Ihr nächstes unvergessliches Erlebnis wartet.</p>
 
 <p style="text-align: center; margin-top: 2rem;">
-  <a href="/de/" class="cta-button">Jetzt auf DesireMap stöbern</a>
+  <a href="${homePath}" class="cta-button">Jetzt auf DesireMap stöbern</a>
 </p>
 `
+}
 
-// FAQ içeriği ayrı tutuluyor (schema için)
+function buildPremiumErotikPlattformContent(locale: string): string {
+  const links = getPremiumContentLinks(locale)
+
+  return [
+    buildPremiumIntroContent(),
+    buildPremiumCategorySections(links),
+    buildPremiumCitySections(links),
+    buildPremiumProcessAndCta(links),
+  ].join('')
+}
+
+export const premiumErotikPlattformContent = buildPremiumErotikPlattformContent('de')
+export const getPremiumErotikPlattformContent = buildPremiumErotikPlattformContent
+
 export const premiumErotikPlattformFAQ = [
   {
     question: 'Ist DesireMap kostenlos?',

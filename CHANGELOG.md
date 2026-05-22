@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.0] - 2026-05-22
+
+### Added
+- Added detailed `/agb` and `/datenschutz` legal pages with cross-references for reservation, cancellation, refund, no-show, payment, and privacy handling.
+- Added reservation step-3 terms acceptance with a localized AGB checkbox gate and regression coverage for footer, blog, legal, booking, and content-safety flows.
+- Added safe metadata helper surfaces (`src/lib/page-metadata.ts`, `src/lib/stadt-seo-metadata.ts`) after removing unsafe mock structured-data sources.
+
+### Changed
+- Blog list/detail links, footer category/legal links, and city/search flows now use canonical helper paths instead of stale or hardcoded URLs.
+- Blog author identity for `premium-erotik-plattform` now uses Shahindzhan Yozbakar / Software developer.
+- Footer copyright now reflects 2026 and legal pages are reachable from all public surfaces.
+
+### Fixed
+- Fixed broken `/de`-prefixed blog/detail/footer link surfaces and removed stale venue references like `diamond-frankfurt` from blog SEO content.
+- Fixed the legacy reservation 404 surface by blocking the obsolete `/api/bookings` create path before any network call and surfacing an explicit migration message instead.
+
+### Removed
+- Removed `src/lib/structuredData.ts` and `src/lib/structuredData.test.ts` to stop emitting unsafe synthetic schema surfaces.
+- Removed `src/data/mock-data.ts`; frontend fake establishment fallback now returns zero results instead of indexable fake venue content.
+
 ## [0.5.3] - 2026-05-22
 
 ### Added

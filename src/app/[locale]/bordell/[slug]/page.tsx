@@ -3,13 +3,11 @@ import { notFound } from 'next/navigation'
 import { backendApi, normalizePublicEstablishment } from '@/lib/backend-client'
 import { PRODUCTION_PUBLIC_API_BASE_URL, joinApiUrl } from '@/lib/api-config'
 import { toBordellType } from '@/lib/bordell-type'
-import { getProductDetailStructuredData, getProductMetadata, type ProductDetailData } from '@/lib/structuredData'
+import { getProductMetadata, type ProductDetailData } from '@/lib/page-metadata'
 import { ProductDetailPageContent } from './ProductDetailPageContent'
 import type { Bordell, PublicEstablishment } from '@/types'
 
 const siteUrl = 'https://desiremap.de'
-const locales = ['de', 'en', 'ar', 'tr']
-
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -136,7 +134,6 @@ function getIsOpen(hours: Record<string, string>): boolean {
   const currentMinutes = now.getHours() * 60 + now.getMinutes()
   const openMinutes = openH * 60 + openM
   const closeMinutes = closeH * 60 + closeM
-  // Handle past-midnight closing (e.g. 11:00 - 03:00 means open until 3 AM next day)
   if (closeMinutes < openMinutes) {
     return currentMinutes >= openMinutes || currentMinutes <= closeMinutes
   }
@@ -248,21 +245,13 @@ export default async function BordellDetailPage({
   const bordell = publicEstablishmentToBordell(establishment)
   const relatedResult = await getPublicEstablishmentsByCityWithFallback(establishment.city)
   const relatedItems = relatedResult.results.filter((e) => e.slug !== slug)
-
   const productData = bordellToProductData(bordell, relatedItems)
-  const structuredData = getProductDetailStructuredData(productData, locale, locales)
 
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
-      <ProductDetailPageContent
-        bordell={bordell}
-        productData={productData}
-        locale={locale}
-      />
-    </>
+    <ProductDetailPageContent
+      bordell={bordell}
+      productData={productData}
+      locale={locale}
+    />
   )
 }

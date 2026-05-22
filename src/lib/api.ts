@@ -295,8 +295,10 @@ export const customerApi = {
   }
 }
 
+const LEGACY_BOOKING_API_ERROR = 'Die Online-Reservierung wird auf das neue DesireMap-Reservierungssystem umgestellt. Bitte kontaktieren Sie den Betrieb direkt, bis der neue Checkout live ist.'
+
 export const bookingApi = {
-  create: async (data: {
+  create: async (_data: {
     bordellId: string
     date: string
     time: string
@@ -304,10 +306,7 @@ export const bookingApi = {
     price: number
     notes?: string
   }) => {
-    return apiCall<unknown>('/bookings', {
-      method: 'POST',
-      body: JSON.stringify(data)
-    })
+    throw new Error(LEGACY_BOOKING_API_ERROR)
   },
 
   getById: async (id: string) => {

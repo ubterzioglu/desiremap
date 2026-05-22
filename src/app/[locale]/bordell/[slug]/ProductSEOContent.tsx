@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import type { ProductDetailData } from '@/lib/structuredData'
+import type { ProductDetailData } from '@/lib/page-metadata'
 import { cn } from '@/lib/utils'
 import { getVenuePath } from '@/lib/navigation'
 

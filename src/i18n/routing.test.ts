@@ -65,6 +65,13 @@ describe('locale middleware root routing', () => {
     expect(source).not.toContain("router.push(`/${locale}/search")
   })
 
+  test('homepage listings CTA uses shared search path helper for German URLs', () => {
+    const source = readLocalFile('../components/listings/ListingsSection.tsx')
+
+    expect(source).toContain('push(getSearchPath(locale))')
+    expect(source).not.toContain("router.push(`/${locale}/search`)")
+  })
+
   test('search result clicks use shared venue path helper', () => {
     const source = readLocalFile('../app/[locale]/search/hooks/useSearchPage.ts')
 

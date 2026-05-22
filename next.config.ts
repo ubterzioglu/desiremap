@@ -26,6 +26,20 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'i0.web.de' },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/de',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/de/:path*',
+        destination: '/:path*',
+        permanent: true,
+      },
+    ]
+  },
   async headers() {
     const publicSources = [
       '/',

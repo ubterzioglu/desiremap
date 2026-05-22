@@ -127,4 +127,22 @@ describe('crawl controls contracts', () => {
       ])
     )
   })
+  test('next config permanently redirects /de-prefixed paths to canonical URLs', async () => {
+    const redirects = typeof nextConfig.redirects === 'function' ? await nextConfig.redirects() : []
+
+    expect(redirects).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          source: '/de',
+          destination: '/',
+          permanent: true,
+        }),
+        expect.objectContaining({
+          source: '/de/:path*',
+          destination: '/:path*',
+          permanent: true,
+        })
+      ])
+    )
+  })
 })

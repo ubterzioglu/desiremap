@@ -3,7 +3,7 @@
 import { MapPin, Search, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { germanCities } from '@/data/mock-data'
+import { citiesData } from '@/data/cities'
 import { CategoryButtons } from './CategoryButtons'
 
 type SearchFiltersProps = {
@@ -72,7 +72,7 @@ export function SearchFilters({
             </SelectTrigger>
             <SelectContent className="border-[#8b1a4a]/20 bg-[#1a1a24]">
               <SelectItem value="_all" className="text-gray-300">{translations.allCities}</SelectItem>
-              {germanCities.map((city) => (
+              {citiesData.map((city) => (
                 <SelectItem key={city.name} value={city.name} className="text-gray-300 focus:bg-[#8b1a4a]/20 focus:text-white">
                   {city.name} ({city.count})
                 </SelectItem>

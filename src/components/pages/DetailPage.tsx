@@ -6,7 +6,6 @@ import { ArrowLeft, Calendar, Check, Heart, MapPin, Phone, Star } from 'lucide-r
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { bordells } from '@/data/mock-data'
 import { ReservationModal } from '@/components/listings/ReservationModal'
 import type { Bordell } from '@/types'
 
@@ -25,7 +24,7 @@ type DetailPageProps = { bordell: Bordell; onBack: () => void }
 export function DetailPage({ bordell, onBack }: DetailPageProps) {
   const [isFavorite, setIsFavorite] = useState(false)
   const [showReservation, setShowReservation] = useState(false)
-  const similarPlaces = bordells.filter((item) => item.city === bordell.city && item.id !== bordell.id).slice(0, 3)
+  const similarPlaces: Bordell[] = []
   return (
     <div className="min-h-screen bg-black">
       <DetailHero bordell={bordell} onBack={onBack} isFavorite={isFavorite} onFavoriteToggle={() => setIsFavorite((v) => !v)} onReservationOpen={() => setShowReservation(true)} />

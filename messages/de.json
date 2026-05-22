@@ -91,7 +91,12 @@
     "confirm": "Bestätigen",
     "cancel": "Abbrechen",
     "complete": "Reservierung erfolgreich!",
-    "completeMessage": "Ihre Reservierung wurde bestätigt."
+    "completeMessage": "Ihre Reservierung wurde bestätigt.",
+    "termsLabel": "Ich akzeptiere alle Bedingungen",
+    "termsDescription": "Mit dem Absenden bestätigen Sie Reservierungsbedingungen, Stornierung, Rückerstattung, Zahlungen, Spätabsagen und No-Show-Regeln. Details stehen in den AGB.",
+    "termsRequired": "Bitte akzeptieren Sie zuerst die AGB, bevor Sie fortfahren.",
+    "legacyReservationNotice": "Diskrete Abrechnung. Online-Reservierungen werden aktuell auf das neue DesireMap-Reservierungssystem umgestellt.",
+    "termsLinkLabel": "AGB"
   },
   "durations": {
     "30min": "30 Min",

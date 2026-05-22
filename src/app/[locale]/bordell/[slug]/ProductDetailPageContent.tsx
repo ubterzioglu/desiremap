@@ -12,7 +12,7 @@ import { Footer } from '@/components/layout/Footer'
 import { ReservationModal } from '@/components/listings/ReservationModal'
 import { ProductSEOContent } from './ProductSEOContent'
 import type { Bordell } from '@/types'
-import type { ProductDetailData } from '@/lib/structuredData'
+import type { ProductDetailData } from '@/lib/page-metadata'
 import { getSearchPath, getLocalizedPath } from '@/lib/navigation'
 
 type ProductDetailPageContentProps = {

@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import type { ProductDetailData } from '@/lib/structuredData'
+import type { ProductDetailData } from '@/lib/page-metadata'
 import { getSearchPath, getLocalizedPath, getVenuePath } from '@/lib/navigation'
 
 type ProductSEOContentProps = {

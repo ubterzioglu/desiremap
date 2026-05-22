@@ -6,9 +6,6 @@ import { FeaturedCities } from './FeaturedCities'
 import { HeroSection } from './HeroSection'
 import { SEOContentSection } from './SEOContentSection'
 import { ListingsSection } from '@/components/listings/ListingsSection'
-import { JsonLd } from '@/components/seo/JsonLd'
-import { getHomeSeoMetadata } from '@/lib/seo/home'
-import { getStructuredData } from '@/lib/structuredData'
 
 type HomePageProps = { locale: string }
 
@@ -17,13 +14,9 @@ export function HomePage({ locale }: HomePageProps) {
   const stats = useTranslations('stats')
   const categories = useTranslations('categories')
   const cities = useTranslations('cities')
-  const meta = getHomeSeoMetadata(locale)
-  const structuredData = getStructuredData(locale, meta.title, meta.description, ['de', 'en', 'tr', 'ar'])
-  const schemas = (structuredData['@graph'] || []) as object[]
 
   return (
     <>
-      <JsonLd schemas={schemas} />
       <HeroSection
         locale={locale}
         translations={{

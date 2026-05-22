@@ -13,10 +13,9 @@ import {
   getPublicCityVenueCount,
   selectLocalizedCityText,
 } from '@/lib/public-cities'
-import { getStadtSeoMetadata, getStadtStructuredData, getStadtFAQItems } from '@/lib/structuredData'
+import { getStadtSeoMetadata, getStadtFAQItems } from '@/lib/stadt-seo-metadata'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
-import { JsonLd } from '@/components/seo/JsonLd'
 
 type StadtSeoContent = {
   heading: string
@@ -265,12 +264,66 @@ export default async function StadtIndexPage({
     .getPublicStadtCities()
     .then((response) => response.items)
     .catch(() => getFallbackPublicStadtCities())
-  const structuredData = getStadtStructuredData(locale, cities, ['de', 'en', 'tr', 'ar'])
-  const schemas = structuredData['@graph']
+  const canonicalPath = locale === 'de' ? '/stadt' : `/${locale}/stadt`
+  const canonicalUrl = `https://desiremap.de${canonicalPath}`
+  const primaryImage = cities
+    .map((city) => getPublicCityImage(city))
+    .find((image): image is string => typeof image === 'string' && image.length > 0) ?? 'https://desiremap.de/hero-bg.jpg'
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebPage',
+        '@id': `${canonicalUrl}#webpage`,
+        url: canonicalUrl,
+        name: seoContent.heroTitle,
+        description: seoContent.heroSummary,
+        inLanguage: locale,
+        primaryImageOfPage: {
+          '@type': 'ImageObject',
+          url: primaryImage,
+        },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        '@id': `${canonicalUrl}#breadcrumb`,
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: locale === 'de' ? 'https://desiremap.de' : `https://desiremap.de/${locale}` },
+          { '@type': 'ListItem', position: 2, name: 'Städte', item: canonicalUrl },
+        ],
+      },
+      {
+        '@type': 'ItemList',
+        '@id': `${canonicalUrl}#city-list`,
+        numberOfItems: cities.length,
+        itemListElement: cities.map((city, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: city.name,
+          url: `https://desiremap.de${getCityPath(locale, city.slug)}`,
+        })),
+      },
+      {
+        '@type': 'FAQPage',
+        '@id': `${canonicalUrl}#faq`,
+        mainEntity: getStadtFAQItems(locale).map((item) => ({
+          '@type': 'Question',
+          name: item.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: item.answer,
+          },
+        })),
+      },
+    ],
+  }
 
   return (
     <main className="flex min-h-screen flex-col bg-[#0b1326]">
-      <JsonLd schemas={schemas} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <Header
         locale={locale}
         translations={{

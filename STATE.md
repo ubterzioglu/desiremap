@@ -1,5 +1,15 @@
 # STATE
 
+## 2026-05-22 09:38 +0200
+
+- Scope: blog/footer/legal hardening, reservation terms gate, legacy booking 404 shutdown, unsafe mock SEO surface removal.
+- Root cause: blog and footer still carried stale hardcoded links; legal pages were incomplete; reservation modal still called dead legacy `/api/bookings`; `structuredData.ts` and `mock-data.ts` could expose fake indexable venue/schema content during backend/public failures.
+- Added: detailed `AGB` and `Datenschutz` pages with mutual references; localized reservation terms strings; step-3 checkbox gating with `/agb` link; safe metadata helper modules (`page-metadata.ts`, `stadt-seo-metadata.ts`) plus targeted regression coverage.
+- Changed: blog list/detail URLs, footer legal/category links, city/search helper usage, author identity, and frontend fallback behavior for missing public establishment data.
+- Fixed: legacy booking create path now fails before network with an explicit migration message, preventing `POST /api/bookings` 404s and false success states; safe JSON-LD was reintroduced only for blog/stadt pages from current content.
+- Removed: `src/lib/structuredData.ts`, `src/lib/structuredData.test.ts`, and `src/data/mock-data.ts`.
+- Verification: targeted Bun suite `22/22` passed; `bun run typecheck` passed; `bun run lint` passed; Playwright verified `/blog`, `/agb`, `/datenschutz`, and reservation modal step-3 AGB acceptance with no `/api/bookings` request.
+
 ## 2026-05-22 05:17 +0200
 
 - Scope: final fallback hardening after code review found one remaining legacy explicit-tag gap.

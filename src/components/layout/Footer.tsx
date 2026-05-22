@@ -1,13 +1,29 @@
 import Link from 'next/link'
 import { Flame, Shield, MapPin } from 'lucide-react'
 import { citiesData } from '@/data/cities'
-import { getCityPath } from '@/lib/navigation'
+import { getCategoryPath, getCityPath, getLocalizedPath } from '@/lib/navigation'
 
 type FooterProps = {
   locale: string
 }
 
+const categoryLinks = [
+  { label: 'FKK Clubs', slug: 'fkk' },
+  { label: 'Laufhaeuser', slug: 'laufhaus' },
+  { label: 'Bordelle', slug: 'bordell' },
+  { label: 'Studios', slug: 'studio' },
+] as const
+
+const legalLinks = [
+  { label: 'Impressum', path: '/impressum' },
+  { label: 'Datenschutz', path: '/datenschutz' },
+  { label: 'AGB', path: '/agb' },
+  { label: 'Kontakt', path: '/kontakt' },
+] as const
+
 export function Footer({ locale }: FooterProps) {
+  const currentYear = new Date().getFullYear()
+
   return (
     <footer className="border-t border-[#564146] bg-[#0b1326]">
       <div className="mx-auto max-w-7xl px-6 py-12">
@@ -27,10 +43,10 @@ export function Footer({ locale }: FooterProps) {
           <div>
             <h4 className="mb-4 text-sm font-semibold text-[#dae2fd] uppercase" style={{ letterSpacing: '0.05em' }}>Kategorien</h4>
             <ul className="space-y-2">
-              {['FKK Clubs', 'Laufhaeuser', 'Bordelle', 'Studios'].map((link) => (
-                <li key={link}>
-                  <Link href={getCityPath(locale, 'berlin')} className="text-sm text-[#a48a90] transition-colors hover:text-[#ffb1c6]">
-                    {link}
+              {categoryLinks.map((link) => (
+                <li key={link.slug}>
+                  <Link href={getCategoryPath(locale, link.slug)} className="text-sm text-[#a48a90] transition-colors hover:text-[#ffb1c6]">
+                    {link.label}
                   </Link>
                 </li>
               ))}
@@ -52,10 +68,10 @@ export function Footer({ locale }: FooterProps) {
           <div>
             <h4 className="mb-4 text-sm font-semibold text-[#dae2fd] uppercase" style={{ letterSpacing: '0.05em' }}>Rechtliches</h4>
             <ul className="space-y-2">
-              {['Impressum', 'Datenschutz', 'AGB', 'Kontakt'].map((link) => (
-                <li key={link}>
-                  <Link href={locale === 'de' ? '/' : `/${locale}`} className="text-sm text-[#a48a90] transition-colors hover:text-[#ffb1c6]">
-                    {link}
+              {legalLinks.map((link) => (
+                <li key={link.path}>
+                  <Link href={getLocalizedPath(locale, link.path)} className="text-sm text-[#a48a90] transition-colors hover:text-[#ffb1c6]">
+                    {link.label}
                   </Link>
                 </li>
               ))}
@@ -63,7 +79,7 @@ export function Footer({ locale }: FooterProps) {
           </div>
         </div>
         <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-[#564146] pt-8 sm:flex-row">
-          <p className="text-sm text-[#a48a90]">© 2024 DesireMap.de - 18+ only</p>
+          <p className="text-sm text-[#a48a90]">© {currentYear} DesireMap.de - 18+ only</p>
           <div className="flex items-center gap-4">
             <a
               href="https://www.spindorai.com/en"
@@ -72,7 +88,8 @@ export function Footer({ locale }: FooterProps) {
               className="text-sm text-[#a48a90] transition-colors hover:text-[#ffb1c6]"
             >
               AI SEO Tool
-            </a> AI Powered Seo Analysis Tool
+            </a>{' '}
+            AI Powered Seo Analysis Tool
             <div className="flex items-center gap-2 text-sm text-[#a48a90]">
               <Shield className="h-4 w-4 text-[#D4AF37]" />
               SSL-gesichert
