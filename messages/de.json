@@ -110,6 +110,19 @@
     "advertiseRequired": "Sie müssen sich anmelden, um ein Werbepaket buchen zu können.",
     "registerRequired": "Sie müssen sich anmelden, um Ihren Betrieb einzutragen."
   },
+  "authPages": {
+    "loginTitle": "Mit Google anmelden",
+    "loginSubtitle": "Melden Sie sich aktuell ausschliesslich mit Ihrem Google-Konto an.",
+    "registerTitle": "Mit Google registrieren",
+    "registerSubtitle": "Erstellen Sie Ihr DesireMap-Konto aktuell direkt mit Google.",
+    "continueWithGoogle": "Mit Google fortfahren",
+    "noAccountYet": "Noch kein Konto?",
+    "alreadyHaveAccount": "Bereits registriert?",
+    "registerLink": "Registrieren",
+    "loginLink": "Anmelden",
+    "securityNote": "Geschuetzt & Diskret — Google Auth wird fuer MVP priorisiert.",
+    "googleUnavailable": "Google Auth ist noch nicht mit dem Backend verbunden. Die Start-URL muss vor Go-Live konfiguriert werden."
+  },
   "footer": {
     "copyright": "© 2026 DesireMap. Alle Rechte vorbehalten."
   },

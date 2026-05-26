@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.0] - 2026-05-26
+
+### Added
+- Added Google-only public auth pages for `/{locale}/login` and `/{locale}/register`, plus locale-less `/login` and `/register` redirects for stable public entry points.
+- Added `NEXT_PUBLIC_GOOGLE_AUTH_START_URL` config and a backend handoff document for the missing Google OAuth contract.
+
+### Changed
+- Public auth UI now uses a single Google sign-in/start action with locale, intent, and return-to parameters instead of local email/password handling.
+- Customer portal auth gates now redirect unauthenticated `/login` and `/register` traffic to the public site auth pages.
+
+### Fixed
+- Fixed empty Google auth env handling so disabled auth state is shown instead of self-linking to the same page.
+- Fixed customer E2E coverage for external auth redirects and localized public auth landings.
+
+### Removed
+- Removed temporary email/password form handling from the public login page.
+
 ## [0.6.0] - 2026-05-22
 
 ### Added

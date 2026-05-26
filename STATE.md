@@ -1,5 +1,13 @@
 # STATE
 
+## 2026-05-26 09:25 +0200
+
+- Scope: public auth surface moved to Google-only MVP flow across `frontend/`, plus customer portal redirect-gates aligned to public auth pages.
+- Added: localized `/[locale]/register` page, locale-less `/login` and `/register` redirects, Google-auth page copy in all locales, and backend handoff spec `docs/google-auth-backend-handoff.md`.
+- Changed: `LoginPage` now renders only Google auth CTA, consumes `NEXT_PUBLIC_GOOGLE_AUTH_START_URL`, and builds `intent`, `locale`, `returnTo` query parameters; customer login/register gates now redirect unauthenticated users to public DesireMap auth pages.
+- Fixed: empty Google auth env no longer self-links; customer E2E redirect assertions now tolerate localized public auth routes.
+- Verification: `bun run typecheck`, `bun run lint`, `bun run build`, `bun test`, `frontend-customer npm run lint`, `npm run build`, `npm test`, and `npm run test:e2e` all passed.
+
 ## 2026-05-22 09:38 +0200
 
 - Scope: blog/footer/legal hardening, reservation terms gate, legacy booking 404 shutdown, unsafe mock SEO surface removal.

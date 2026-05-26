@@ -110,6 +110,19 @@
     "advertiseRequired": "You must log in to book an advertising package.",
     "registerRequired": "You must log in to list your business."
   },
+  "authPages": {
+    "loginTitle": "Continue with Google",
+    "loginSubtitle": "For now, sign in only with your Google account.",
+    "registerTitle": "Register with Google",
+    "registerSubtitle": "For now, create your DesireMap account directly with Google.",
+    "continueWithGoogle": "Continue with Google",
+    "noAccountYet": "No account yet?",
+    "alreadyHaveAccount": "Already registered?",
+    "registerLink": "Register",
+    "loginLink": "Login",
+    "securityNote": "Protected & discreet — Google auth is prioritized for MVP.",
+    "googleUnavailable": "Google auth is not connected to the backend yet. Configure the start URL before go-live."
+  },
   "footer": {
     "copyright": "© 2026 DesireMap. All rights reserved."
   },

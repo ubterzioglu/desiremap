@@ -110,6 +110,19 @@
     "advertiseRequired": "Reklam paketi satın almak için giriş yapmalısınız.",
     "registerRequired": "İşletmenizi eklemek için giriş yapmalısınız."
   },
+  "authPages": {
+    "loginTitle": "Google ile giriş yap",
+    "loginSubtitle": "Şimdilik giriş sadece Google hesabı ile yapılacak.",
+    "registerTitle": "Google ile kayıt ol",
+    "registerSubtitle": "Şimdilik DesireMap hesabını doğrudan Google ile oluştur.",
+    "continueWithGoogle": "Google ile devam et",
+    "noAccountYet": "Hesabın yok mu?",
+    "alreadyHaveAccount": "Zaten hesabın var mı?",
+    "registerLink": "Kayıt ol",
+    "loginLink": "Giriş yap",
+    "securityNote": "Korumalı ve gizli — MVP için Google auth önceliklidir.",
+    "googleUnavailable": "Google auth henüz backend'e bağlanmadı. Go-live öncesi başlangıç URL'i tanımlanmalı."
+  },
   "footer": {
     "copyright": "© 2026 DesireMap. Tüm hakları saklıdır."
   },

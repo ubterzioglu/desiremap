@@ -110,6 +110,19 @@
     "advertiseRequired": "يجب تسجيل الدخول لحجز حزمة إعلانية.",
     "registerRequired": "يجب تسجيل الدخول لإضافة عملك."
   },
+  "authPages": {
+    "loginTitle": "المتابعة عبر Google",
+    "loginSubtitle": "حالياً يتم تسجيل الدخول فقط باستخدام حساب Google.",
+    "registerTitle": "التسجيل عبر Google",
+    "registerSubtitle": "حالياً يمكن إنشاء حساب DesireMap مباشرة عبر Google.",
+    "continueWithGoogle": "المتابعة عبر Google",
+    "noAccountYet": "ليس لديك حساب؟",
+    "alreadyHaveAccount": "لديك حساب بالفعل؟",
+    "registerLink": "إنشاء حساب",
+    "loginLink": "تسجيل الدخول",
+    "securityNote": "محمي وسري — تمت أولوية Google Auth ضمن MVP.",
+    "googleUnavailable": "Google Auth غير متصل بالـ backend بعد. يجب ضبط رابط البداية قبل الإطلاق."
+  },
   "footer": {
     "copyright": "© 2026 DesireMap. جميع الحقوق محفوظة."
   },
