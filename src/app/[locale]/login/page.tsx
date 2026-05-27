@@ -1,37 +1,50 @@
-'use client'
-
-import { useTranslations, useLocale } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
 import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
 import { LoginPage } from '@/components/pages/LoginPage'
+import { getPostAuthRedirect, resolveGoogleClientId } from '@/lib/member-auth'
 
-function useNavTranslations() {
-  const t = useTranslations('nav')
-  return { home: t('home'), discover: t('discover'), cities: t('cities'), premium: t('premium'), advertise: t('advertise'), login: t('login'), register: t('register'), myAccount: t('myAccount') }
-}
+export const dynamic = 'force-dynamic'
 
-export default function LoginRoute() {
-  const locale = useLocale()
-  const navTranslations = useNavTranslations()
-  const t = useTranslations('authPages')
-  const googleAuthStartUrl = process.env.NEXT_PUBLIC_GOOGLE_AUTH_START_URL?.trim() || null
-  const googleAuthUrl = googleAuthStartUrl === null
-    ? null
-    : `${googleAuthStartUrl}?intent=login&locale=${encodeURIComponent(locale)}&returnTo=${encodeURIComponent(`/${locale}/login`)}`
+export default async function LoginRoute({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+  const [tNav, t] = await Promise.all([
+    getTranslations({ locale, namespace: 'nav' }),
+    getTranslations({ locale, namespace: 'authPages' }),
+  ])
+  const googleClientId = resolveGoogleClientId(
+    process.env.MEMBER_AUTH_GOOGLE_CLIENT_IDS ?? process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? null,
+  )
+  const navTranslations = {
+    home: tNav('home'),
+    discover: tNav('discover'),
+    cities: tNav('cities'),
+    premium: tNav('premium'),
+    advertise: tNav('advertise'),
+    login: tNav('login'),
+    register: tNav('register'),
+    myAccount: tNav('myAccount'),
+  }
 
   return (
     <main className="flex min-h-screen flex-col" style={{ background: '#0b1326' }}>
       <Header locale={locale} translations={navTranslations} isLoggedIn={false} />
       <LoginPage
-        googleAuthUrl={googleAuthUrl}
+        googleAuthFailedMessage={t('googleAuthFailed')}
+        googleAuthNotConfiguredMessage={t('googleAuthNotConfigured')}
+        googleClientId={googleClientId}
+        googleIntent="login"
+        googleSetupMessage={t('googleSetupMessage')}
+        googleSigningInMessage={t('googleSigningIn')}
+        locale={locale}
         title={t('loginTitle')}
         subtitle={t('loginSubtitle')}
         primaryCta={t('continueWithGoogle')}
+        successHref={getPostAuthRedirect(locale)}
         secondaryPrompt={t('noAccountYet')}
         secondaryCta={t('registerLink')}
         secondaryHref={`/${locale}/register`}
         securityNote={t('securityNote')}
-        unavailableMessage={t('googleUnavailable')}
       />
       <Footer locale={locale} />
     </main>

@@ -121,7 +121,11 @@
     "registerLink": "Register",
     "loginLink": "Login",
     "securityNote": "Protected & discreet — Google auth is prioritized for MVP.",
-    "googleUnavailable": "Google auth is not connected to the backend yet. Configure the start URL before go-live."
+    "googleUnavailable": "Google auth is not connected to the backend yet. Configure the start URL before go-live.",
+    "googleSetupMessage": "Google sign-in will activate as soon as the provider setup is completed.",
+    "googleSigningIn": "Google sign-in is being completed…",
+    "googleAuthFailed": "Google sign-in could not be completed. Please try again.",
+    "googleAuthNotConfigured": "Google sign-in is being finalized. Please try again a bit later."
   },
   "footer": {
     "copyright": "© 2026 DesireMap. All rights reserved."

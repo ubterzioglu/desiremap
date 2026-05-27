@@ -1,5 +1,15 @@
 # STATE
 
+## 2026-05-27 02:37 +0200
+
+- Scope: public Google member-auth frontend activation for `/login` and `/register`.
+- Root cause: frontend still used the temporary `NEXT_PUBLIC_GOOGLE_AUTH_START_URL` handoff and kept showing the old backend-not-connected placeholder although backend `POST /api/member-auth/google` was already live.
+- Added: `src/lib/member-auth.ts`, `src/lib/member-auth.test.ts`, `src/stores/memberAuthStore.ts`, `src/types/google-identity.d.ts`, and targeted backend-client tests for Google auth request/error handling.
+- Changed: localized login/register routes now resolve Google client IDs on the server, `LoginPage` renders Google Identity Services button flow, and empty-config state shows a calm setup message until provider env values are supplied.
+- Fixed: removed the stale dummy warning from the public auth surface and wired frontend submissions to backend Google member auth with typed error handling.
+- Security note: member auth session state is kept in-memory only; no access token persistence in localStorage.
+- Verification: `bun test src/lib/member-auth.test.ts src/lib/backend-client.test.ts`, `bun run typecheck`, `bun run lint`, Playwright smoke on `/login`, and React Doctor `99/100` passed.
+
 ## 2026-05-26 09:25 +0200
 
 - Scope: public auth surface moved to Google-only MVP flow across `frontend/`, plus customer portal redirect-gates aligned to public auth pages.

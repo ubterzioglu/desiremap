@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.1] - 2026-05-27
+
+### Added
+- Added Google member-auth frontend wiring for localized `/login` and `/register` pages, including Google Identity Services button rendering, backend token handoff, and targeted auth regression coverage.
+- Added runtime helpers for Google client-id resolution and post-auth locale redirects, plus frontend env documentation for `MEMBER_AUTH_GOOGLE_CLIENT_IDS` / `NEXT_PUBLIC_GOOGLE_CLIENT_ID`.
+
+### Changed
+- Public Google auth pages now use the backend `POST /api/member-auth/google` flow instead of the temporary `NEXT_PUBLIC_GOOGLE_AUTH_START_URL` redirect handoff.
+- Login/register empty-config state now shows a calm setup message so the UI stays production-safe until Google provider env values are supplied.
+
+### Fixed
+- Fixed the stale public auth placeholder that claimed Google auth was not connected to the backend even after backend support shipped.
+- Fixed Google auth error handling so backend `GOOGLE_AUTH_NOT_CONFIGURED` responses surface user-safe feedback instead of leaving a dead CTA.
+
+### Removed
+- Removed the temporary frontend dependency on `NEXT_PUBLIC_GOOGLE_AUTH_START_URL`.
+
 ## [0.7.0] - 2026-05-26
 
 ### Added

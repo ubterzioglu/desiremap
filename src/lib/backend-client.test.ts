@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test'
 
-import { normalizePublicCity, normalizePublicEstablishment } from './backend-client'
+import { BackendApiError, memberAuthApi, normalizePublicCity, normalizePublicEstablishment } from './backend-client'
 import type { PublicCity, PublicEstablishment } from '@/types'
 
 describe('normalizePublicCity', () => {
@@ -151,5 +151,67 @@ describe('normalizePublicEstablishment', () => {
 
     expect((result as PublicEstablishment & { image?: string | null }).image).toBe('https://cdn.example.com/card.jpg')
     expect(result.images).toEqual(['https://cdn.example.com/gallery-1.jpg'])
+  })
+})
+
+describe('memberAuthApi', () => {
+  test('posts the Google ID token against the public member auth endpoint with credentials', async () => {
+    const originalFetch = globalThis.fetch
+    const calls: Array<{ input: RequestInfo | URL, init?: RequestInit | undefined }> = []
+
+    globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+      calls.push({ input, init })
+
+      return new Response(JSON.stringify({
+        memberPublicId: '51000000-0000-0000-0000-000000000001',
+        accessToken: 'access_live_member_x7Z8',
+        expiresAt: '2026-05-27T12:00:00.000Z',
+      }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      })
+    }) as unknown as typeof fetch
+
+    try {
+      const result = await memberAuthApi.loginWithGoogle({ idToken: 'eyJhbGciOiJSUzI1NiIsImtpZCI6Ij...' })
+
+      expect(String(calls[0]?.input)).toBe('https://api.desiremap.de/api/member-auth/google')
+      expect(calls[0]?.init?.method).toBe('POST')
+      expect(calls[0]?.init?.credentials).toBe('include')
+      expect(calls[0]?.init?.body).toBe(JSON.stringify({ idToken: 'eyJhbGciOiJSUzI1NiIsImtpZCI6Ij...' }))
+      expect(result.memberPublicId).toBe('51000000-0000-0000-0000-000000000001')
+    } finally {
+      globalThis.fetch = originalFetch
+    }
+  })
+
+  test('surfaces backend auth error codes for Google configuration failures', async () => {
+    const originalFetch = globalThis.fetch
+
+    globalThis.fetch = (async () => new Response(JSON.stringify({
+      statusCode: 503,
+      errorCode: 'GOOGLE_AUTH_NOT_CONFIGURED',
+      message: 'Google sign-in is not configured yet.',
+    }), {
+      status: 503,
+      headers: { 'content-type': 'application/json' },
+    })) as unknown as typeof fetch
+
+    try {
+      let capturedError: unknown = null
+
+      try {
+        await memberAuthApi.loginWithGoogle({ idToken: 'eyJhbGciOiJSUzI1NiIsImtpZCI6Ij...' })
+      } catch (error) {
+        capturedError = error
+      }
+
+      expect(capturedError).toBeInstanceOf(BackendApiError)
+      expect((capturedError as BackendApiError).statusCode).toBe(503)
+      expect((capturedError as BackendApiError).errorCode).toBe('GOOGLE_AUTH_NOT_CONFIGURED')
+      expect((capturedError as BackendApiError).message).toBe('Google sign-in is not configured yet.')
+    } finally {
+      globalThis.fetch = originalFetch
+    }
   })
 })

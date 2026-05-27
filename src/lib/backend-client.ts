@@ -1,8 +1,33 @@
 import type { PublicCity, PublicEstablishment } from '@/types'
-import { SERVER_BACKEND_API_URL } from '@/lib/api-config'
+import { CLIENT_API_BASE_URL, SERVER_BACKEND_API_URL, joinApiUrl } from '@/lib/api-config'
 import { normalizePublicServiceTypes } from '@/lib/public-service-types'
 
 const BACKEND_URL = SERVER_BACKEND_API_URL
+const MEMBER_AUTH_API_BASE_URL = CLIENT_API_BASE_URL
+
+type ApiErrorResponse = {
+  errorCode?: string
+  message?: string
+  statusCode?: number
+}
+
+export type MemberAuthSessionResponse = {
+  accessToken: string
+  expiresAt: string
+  memberPublicId: string
+}
+
+export class BackendApiError extends Error {
+  errorCode: string | null
+  statusCode: number
+
+  constructor(message: string, options: { errorCode?: string | null, statusCode: number }) {
+    super(message)
+    this.name = 'BackendApiError'
+    this.errorCode = options.errorCode ?? null
+    this.statusCode = options.statusCode
+  }
+}
 
 export function normalizePublicImageUrl(value: string | null | undefined) {
   if (typeof value !== 'string' || value.length === 0) {
@@ -137,12 +162,14 @@ export function normalizePublicEstablishment(item: PublicEstablishment): PublicE
 export async function backendFetch<T>(
   endpoint: string,
   options: {
+    baseUrl?: string
+    credentials?: RequestCredentials
     method?: string
     body?: unknown
     token?: string | null
   } = {}
 ): Promise<T> {
-  const { method = 'GET', body, token } = options
+  const { baseUrl = BACKEND_URL, credentials, method = 'GET', body, token } = options
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -152,21 +179,23 @@ export async function backendFetch<T>(
     headers['Authorization'] = `Bearer ${token}`
   }
 
-  const url = `${BACKEND_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`
-
   const requestInit: RequestInit = {
     method,
     headers,
     cache: 'no-store',
   }
 
+  if (credentials !== undefined) {
+    requestInit.credentials = credentials
+  }
+
   if (body !== undefined) {
     requestInit.body = JSON.stringify(body)
   }
 
-  const response = await fetch(url, requestInit)
+  const response = await fetch(joinApiUrl(baseUrl, endpoint), requestInit)
 
-  const payload = await response.json().catch(() => null)
+  const payload = await response.json().catch(() => null) as ApiErrorResponse | T | string | null
 
   if (!response.ok) {
     const message =
@@ -175,7 +204,15 @@ export async function backendFetch<T>(
         : payload && typeof payload === 'string'
           ? payload
           : `Backend ${response.status}`
-    throw new Error(message)
+    const errorCode = payload && typeof payload === 'object' && 'errorCode' in payload && typeof payload.errorCode === 'string'
+      ? payload.errorCode
+      : null
+
+    const statusCode = payload && typeof payload === 'object' && 'statusCode' in payload && typeof payload.statusCode === 'number'
+      ? payload.statusCode
+      : response.status
+
+    throw new BackendApiError(message, { errorCode, statusCode })
   }
 
   return payload as T
@@ -250,4 +287,14 @@ export const backendApi = {
       }>
     }>(`/public/venues/${venuePublicId}/events`),
 
+}
+
+export const memberAuthApi = {
+  loginWithGoogle: (payload: { idToken: string }) =>
+    backendFetch<MemberAuthSessionResponse>('/member-auth/google', {
+      baseUrl: MEMBER_AUTH_API_BASE_URL,
+      body: payload,
+      credentials: 'include',
+      method: 'POST',
+    }),
 }
