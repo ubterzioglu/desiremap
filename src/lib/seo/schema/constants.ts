@@ -18,7 +18,7 @@ export const LOGO_ID = `${SITE_URL}/#logo`
 export const DEFAULT_LOCALE = 'de'
 export const SUPPORTED_LOCALES = ['de', 'en', 'tr', 'ar'] as const
 
-export const ORG_LOGO_URL = `${SITE_URL}/icon.svg`
+export const ORG_LOGO_URL = `${SITE_URL}/web-app-manifest-512x512.png`
 export const ORG_FALLBACK_IMAGE = `${SITE_URL}/og-image.png`
 export const VENUE_FALLBACK_IMAGE = `${SITE_URL}/listing-bg.jpg`
 
