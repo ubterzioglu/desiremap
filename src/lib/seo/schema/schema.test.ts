@@ -111,7 +111,11 @@ describe('global schema nodes', () => {
 })
 
 describe('venue graph (full data)', () => {
-  const graph = buildVenueGraph(fullEstablishment, { locale: 'de' })
+  const graph = buildVenueGraph(fullEstablishment, {
+    locale: 'de',
+    datePublished: '2025-01-01T00:00:00.000Z',
+    dateModified: '2026-06-01T00:00:00.000Z',
+  })
 
   test('every internal @id reference resolves to a defined node', () => {
     const defined = new Set<string>()
@@ -145,6 +149,16 @@ describe('venue graph (full data)', () => {
     const rating = graph['@graph'].find((n) => n['@type'] === 'AggregateRating')
     expect(rating?.ratingValue).toBe(4.8)
     expect(rating?.reviewCount).toBe(37)
+  })
+
+  test('ProductGroup references the rating and the ItemPage carries dates', () => {
+    const group = graph['@graph'].find((n) => n['@type'] === 'ProductGroup')
+    expect(group?.aggregateRating).toBeDefined()
+    const page = graph['@graph'].find(
+      (n) => Array.isArray(n['@type']) && (n['@type'] as string[]).includes('ItemPage'),
+    )
+    expect(page?.datePublished).toBe('2025-01-01T00:00:00.000Z')
+    expect(page?.dateModified).toBe('2026-06-01T00:00:00.000Z')
   })
 
   test('ItemPage exposes speakable selectors that exist in the rendered DOM', () => {
@@ -279,6 +293,16 @@ describe('home graph', () => {
       expect(types).toContain(expected)
     }
     expect(graph['@graph'].filter((n) => n['@type'] === 'ItemList').length).toBe(2)
+
+    const group = graph['@graph'].find((n) => n['@type'] === 'ProductGroup')
+    expect(group?.aggregateRating).toEqual({ '@id': 'https://desiremap.de#rating' })
+    expect(group?.review).toEqual([{ '@id': 'https://desiremap.de#review' }])
+  })
+
+  test('WebPage carries datePublished/dateModified', () => {
+    const page = graph['@graph'].find((n) => n['@type'] === 'WebPage')
+    expect(page?.datePublished).toBeDefined()
+    expect(page?.dateModified).toBeDefined()
   })
 
   test('WebPage links to the global WebSite + Organization', () => {

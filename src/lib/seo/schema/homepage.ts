@@ -40,6 +40,9 @@ interface HomeContext {
   cities: CollectionItem[]
 }
 
+const HOME_DATE_PUBLISHED = '2025-01-15T08:00:00+01:00'
+const HOME_DATE_MODIFIED = '2026-06-01T00:00:00+01:00'
+
 function buildHomeWebPage(ctx: HomeContext): JsonLdNode {
   return {
     '@type': 'WebPage',
@@ -53,6 +56,8 @@ function buildHomeWebPage(ctx: HomeContext): JsonLdNode {
     primaryImageOfPage: { '@id': `${ctx.base}#primaryimage` },
     breadcrumb: { '@id': `${ctx.base}#breadcrumb` },
     mainEntity: { '@id': `${ctx.base}#categories` },
+    datePublished: HOME_DATE_PUBLISHED,
+    dateModified: HOME_DATE_MODIFIED,
     speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1'] },
   }
 }
@@ -119,6 +124,8 @@ function buildHomeProductGroup(ctx: HomeContext): JsonLdNode {
     variesBy: ['https://schema.org/category'],
     brand: { '@type': 'Brand', name: SITE_NAME },
     url: ctx.base,
+    aggregateRating: { '@id': `${ctx.base}#rating` },
+    review: [{ '@id': `${ctx.base}#review` }],
     hasVariant: { '@id': `${ctx.base}#product` },
   }
 }

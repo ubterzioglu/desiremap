@@ -24,6 +24,8 @@ export interface VenueSchemaOptions {
   locale: string
   /** Category slug for the breadcrumb (defaults to the establishment `type`). */
   categorySlug?: string
+  datePublished?: string
+  dateModified?: string
 }
 
 interface VenueContext {
@@ -44,6 +46,8 @@ interface VenueContext {
   ratingId: string
   offerId: string
   howToId: string
+  datePublished?: string | undefined
+  dateModified?: string | undefined
 }
 
 const DAY_OF_WEEK: Record<string, string> = {
@@ -224,12 +228,13 @@ function buildProductGroup(e: PublicEstablishment, ctx: VenueContext): JsonLdNod
     variesBy: ['https://schema.org/serviceType'],
     brand: { '@type': 'Brand', name: e.name },
     url: ctx.venueUrl,
+    aggregateRating: { '@id': ctx.ratingId },
     hasVariant: { '@id': ctx.productId },
   }
 }
 
 function buildVenueWebPage(e: PublicEstablishment, ctx: VenueContext): JsonLdNode {
-  return {
+  return prune({
     '@type': ['WebPage', 'ItemPage'],
     '@id': ctx.webpageId,
     url: ctx.venueUrl,
@@ -240,11 +245,13 @@ function buildVenueWebPage(e: PublicEstablishment, ctx: VenueContext): JsonLdNod
     primaryImageOfPage: { '@id': ctx.primaryImageId },
     breadcrumb: { '@id': ctx.breadcrumbId },
     mainEntity: { '@id': ctx.productId },
+    datePublished: ctx.datePublished,
+    dateModified: ctx.dateModified,
     speakable: {
       '@type': 'SpeakableSpecification',
       cssSelector: ['.speakable-description', '.speakable-services', '.speakable-faq'],
     },
-  }
+  })
 }
 
 function buildVenueBreadcrumb(e: PublicEstablishment, ctx: VenueContext): JsonLdNode {
@@ -329,6 +336,8 @@ function buildContext(e: PublicEstablishment, options: VenueSchemaOptions): Venu
     ratingId: `${venueUrl}#venue-rating`,
     offerId: `${venueUrl}#venue-offer`,
     howToId: `${venueUrl}#howto`,
+    datePublished: options.datePublished,
+    dateModified: options.dateModified,
   }
 }
 

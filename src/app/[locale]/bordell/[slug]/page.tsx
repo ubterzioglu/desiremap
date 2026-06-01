@@ -248,7 +248,11 @@ export default async function BordellDetailPage({
   const relatedResult = await getPublicEstablishmentsByCityWithFallback(establishment.city)
   const relatedItems = relatedResult.results.filter((e) => e.slug !== slug)
   const productData = bordellToProductData(bordell, relatedItems)
-  const venueGraph = buildVenueGraph(establishment, { locale })
+  const venueGraph = buildVenueGraph(establishment, {
+    locale,
+    datePublished: productData.datePublished,
+    dateModified: productData.dateModified,
+  })
 
   return (
     <>

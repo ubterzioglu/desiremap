@@ -62,9 +62,9 @@ export type HomeSeoExperience = {
 
 const HOME_SEO_METADATA: Record<HomeSeoLocale, HomeSeoMetadata> = {
   de: {
-    title: 'DesireMap | FKK Clubs, Laufhäuser & Bordelle – Köln, Berlin, Frankfurt',
+    title: 'FKK Clubs, Laufhäuser & Bordelle in Deutschland | DesireMap',
     description:
-      'FKK Clubs, Laufhäuser & Bordelle in Köln, Berlin, Frankfurt, Hamburg, München, Stuttgart. 847+ verifizierte Adressen mit Preisen & Bewertungen — kostenlos vergleichen auf DesireMap.'
+      'FKK Clubs, Laufhäuser & Bordelle in Deutschland: 847+ verifizierte Adressen mit Preisen & Bewertungen – kostenlos vergleichen auf DesireMap.'
   },
   en: {
     title: 'DesireMap | FKK Clubs & Studios in Germany',
