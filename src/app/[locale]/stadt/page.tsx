@@ -16,6 +16,8 @@ import {
 import { getStadtSeoMetadata, getStadtFAQItems } from '@/lib/stadt-seo-metadata'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { buildCollectionGraph, absoluteUrl } from '@/lib/seo/schema'
 
 type StadtSeoContent = {
   heading: string
@@ -269,61 +271,26 @@ export default async function StadtIndexPage({
   const primaryImage = cities
     .map((city) => getPublicCityImage(city))
     .find((image): image is string => typeof image === 'string' && image.length > 0) ?? 'https://desiremap.de/hero-bg.jpg'
-  const structuredData = {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'WebPage',
-        '@id': `${canonicalUrl}#webpage`,
-        url: canonicalUrl,
-        name: seoContent.heroTitle,
-        description: seoContent.heroSummary,
-        inLanguage: locale,
-        primaryImageOfPage: {
-          '@type': 'ImageObject',
-          url: primaryImage,
-        },
-      },
-      {
-        '@type': 'BreadcrumbList',
-        '@id': `${canonicalUrl}#breadcrumb`,
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: locale === 'de' ? 'https://desiremap.de' : `https://desiremap.de/${locale}` },
-          { '@type': 'ListItem', position: 2, name: 'Städte', item: canonicalUrl },
-        ],
-      },
-      {
-        '@type': 'ItemList',
-        '@id': `${canonicalUrl}#city-list`,
-        numberOfItems: cities.length,
-        itemListElement: cities.map((city, index) => ({
-          '@type': 'ListItem',
-          position: index + 1,
-          name: city.name,
-          url: `https://desiremap.de${getCityPath(locale, city.slug)}`,
-        })),
-      },
-      {
-        '@type': 'FAQPage',
-        '@id': `${canonicalUrl}#faq`,
-        mainEntity: getStadtFAQItems(locale).map((item) => ({
-          '@type': 'Question',
-          name: item.question,
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: item.answer,
-          },
-        })),
-      },
+  const structuredData = buildCollectionGraph({
+    locale,
+    url: canonicalUrl,
+    name: seoContent.heroTitle,
+    description: seoContent.heroSummary,
+    primaryImage,
+    breadcrumbs: [
+      { name: 'Home', path: locale === 'de' ? '/' : `/${locale}` },
+      { name: 'Städte', path: canonicalPath },
     ],
-  }
+    items: cities.map((city) => ({
+      name: city.name,
+      url: absoluteUrl(getCityPath(locale, city.slug)),
+    })),
+    faq: getStadtFAQItems(locale),
+  })
 
   return (
     <main className="flex min-h-screen flex-col bg-[#0b1326]">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
+      <JsonLd schemas={[structuredData]} />
       <Header
         locale={locale}
         translations={{

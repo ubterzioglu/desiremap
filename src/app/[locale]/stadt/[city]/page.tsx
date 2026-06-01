@@ -13,8 +13,9 @@ import {
   getTaggedCityDescription,
   stripSearchTags,
 } from '@/lib/city-search-tags'
-import { getSearchPath, getCityPath } from '@/lib/navigation'
+import { getSearchPath, getCityPath, getVenuePath } from '@/lib/navigation'
 import { buildSearchTagParams, normalizeSearchCategoryParam } from '@/lib/search-routing'
+import { buildCityGraph, absoluteUrl } from '@/lib/seo/schema'
 import {
   getFallbackPublicStadtCities,
   getFallbackPublicStadtCity,
@@ -210,34 +211,44 @@ export default async function CityPage({
   const image = getPublicCityImage(cityData)
   const canonical = locale === 'de' ? `/stadt/${cityData.slug}` : `/${locale}/stadt/${cityData.slug}`
 
+  const canonicalUrl = `${siteUrl}${canonical}`
+  const cityVenueItems = (Array.isArray(cityResult?.results) ? cityResult.results : [])
+    .filter((est): est is PublicEstablishment => typeof est?.slug === 'string' && est.slug.length > 0)
+    .map((est) => ({ name: est.name, url: absoluteUrl(getVenuePath(locale, est.slug)) }))
+  const citySearchTagItems = searchTags.map((tag) => ({
+    name: tag,
+    url: absoluteUrl(
+      getSearchPath(
+        locale,
+        buildSearchTagParams({
+          tag,
+          citySlug: cityData.slug,
+          cityName: cityData.name,
+          availableCategories: availableSearchCategories,
+        }),
+      ),
+    ),
+  }))
   const citySchemas = [
-    {
-      '@type': 'CollectionPage',
-      '@id': `${siteUrl}${canonical}#webpage`,
-      url: `${siteUrl}${canonical}`,
+    buildCityGraph({
+      locale,
+      url: canonicalUrl,
       name: `${cityData.name} — FKK Clubs, Laufhäuser & Studios`,
       ...(normalizedDescription ? { description: normalizedDescription } : {}),
-      isPartOf: { '@id': `${siteUrl}/#website` },
-      inLanguage: locale,
-    },
-    {
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: locale === 'de' ? siteUrl : `${siteUrl}/${locale}` },
-        { '@type': 'ListItem', position: 2, name: 'Städte', item: locale === 'de' ? `${siteUrl}/stadt` : `${siteUrl}/${locale}/stadt` },
-        { '@type': 'ListItem', position: 3, name: cityData.name, item: `${siteUrl}${canonical}` },
+      ...(image ? { primaryImage: image } : {}),
+      placeName: cityData.name,
+      breadcrumbs: [
+        { name: 'Home', path: locale === 'de' ? '/' : `/${locale}` },
+        { name: 'Städte', path: locale === 'de' ? '/stadt' : `/${locale}/stadt` },
+        { name: cityData.name, path: canonical },
       ],
-    },
-    ...(cityBordells.length > 0 ? [{
-      '@type': 'ItemList',
-      name: `Betriebe in ${cityData.name}`,
-      url: `${siteUrl}${canonical}`,
-      itemListElement: cityBordells.map((est, idx) => ({
-        '@type': 'ListItem',
-        position: idx + 1,
-        name: est.name,
-      })),
-    }] : []),
+      venues: cityVenueItems,
+      tags: citySearchTagItems,
+      keywords: searchTags,
+      ...(typeof cityData.latitude === 'number' && typeof cityData.longitude === 'number'
+        ? { geo: { latitude: cityData.latitude, longitude: cityData.longitude } }
+        : {}),
+    }),
   ]
 
   return (

@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { publicApi } from '@/lib/api'
 import { KategoriePageContent } from '@/components/kategorie/KategoriePageContent'
 import { JsonLd } from '@/components/seo/JsonLd'
+import { buildCollectionGraph, absoluteUrl } from '@/lib/seo/schema'
+import { getCategoryPath } from '@/lib/navigation'
 
 const LOCALES = ['de', 'en', 'ar', 'tr']
 const SITE_URL = 'https://desiremap.de'
@@ -72,13 +74,17 @@ export default async function KategoriePage({
   const category = await getCategory(slug)
   const categoryName = category?.name ?? slug
 
-  const structuredData = {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
+  const structuredData = buildCollectionGraph({
+    locale,
+    url: absoluteUrl(getCategoryPath(locale, slug)),
     name: `${categoryName} in Deutschland`,
-    description: `Alle ${categoryName} auf desiremap.de`,
-    url: `${SITE_URL}${locale === 'de' ? '' : `/${locale}`}/kategorie/${slug}`,
-  }
+    description: `Alle ${categoryName} in Deutschland auf desiremap.de entdecken – verifizierte Adressen, Bewertungen und Details.`,
+    breadcrumbs: [
+      { name: 'Home', path: locale === 'de' ? '/' : `/${locale}` },
+      { name: categoryName, path: getCategoryPath(locale, slug) },
+    ],
+    items: [],
+  })
 
   return (
     <>

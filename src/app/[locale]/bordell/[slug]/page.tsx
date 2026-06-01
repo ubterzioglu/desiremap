@@ -5,6 +5,8 @@ import { PRODUCTION_PUBLIC_API_BASE_URL, joinApiUrl } from '@/lib/api-config'
 import { toBordellType } from '@/lib/bordell-type'
 import { getProductMetadata, type ProductDetailData } from '@/lib/page-metadata'
 import { ProductDetailPageContent } from './ProductDetailPageContent'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { buildVenueGraph } from '@/lib/seo/schema'
 import type { Bordell, PublicEstablishment } from '@/types'
 
 const siteUrl = 'https://desiremap.de'
@@ -246,12 +248,16 @@ export default async function BordellDetailPage({
   const relatedResult = await getPublicEstablishmentsByCityWithFallback(establishment.city)
   const relatedItems = relatedResult.results.filter((e) => e.slug !== slug)
   const productData = bordellToProductData(bordell, relatedItems)
+  const venueGraph = buildVenueGraph(establishment, { locale })
 
   return (
-    <ProductDetailPageContent
-      bordell={bordell}
-      productData={productData}
-      locale={locale}
-    />
+    <>
+      <JsonLd schemas={[venueGraph]} />
+      <ProductDetailPageContent
+        bordell={bordell}
+        productData={productData}
+        locale={locale}
+      />
+    </>
   )
 }

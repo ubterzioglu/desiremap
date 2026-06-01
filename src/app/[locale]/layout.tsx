@@ -5,8 +5,11 @@ import { notFound } from 'next/navigation'
 import { AgeGate } from '@/components/layout/AgeGate'
 import { Toaster } from '@/components/ui/toaster'
 import { QueryProvider } from '@/components/providers/QueryProvider'
+import { MemberAuthProvider } from '@/components/providers/MemberAuthProvider'
 import { LocaleInit } from '@/components/layout/LocaleInit'
 import { getHomeSeoMetadata } from '@/lib/seo/home'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { buildWebSite, buildOrganization } from '@/lib/seo/schema'
 
 const siteUrl = 'https://desiremap.de'
 const locales = ['de', 'en', 'ar', 'tr']
@@ -92,12 +95,15 @@ export default async function LocaleLayout({
 
   return (
     <>
+      <JsonLd schemas={[buildWebSite(locale), buildOrganization()]} />
       <LocaleInit locale={locale} />
       <QueryProvider>
         <NextIntlClientProvider messages={messages}>
-          <AgeGate />
-          {children}
-          <Toaster />
+          <MemberAuthProvider>
+            <AgeGate />
+            {children}
+            <Toaster />
+          </MemberAuthProvider>
         </NextIntlClientProvider>
       </QueryProvider>
     </>

@@ -7,6 +7,7 @@ import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { getLocalizedPath } from '@/lib/navigation'
+import { ORG_ID, WEBSITE_ID } from '@/lib/seo/schema'
 
 export async function generateMetadata({
   params
@@ -64,7 +65,8 @@ export default async function BlogPage({
       url: blogUrl,
       name: 'DesireMap Blog',
       description: 'Guides und Tipps zu FKK Clubs, Laufhäusern und Bordellen in Deutschland.',
-      isPartOf: { '@id': `${siteUrl}/#website` },
+      isPartOf: { '@id': WEBSITE_ID },
+      publisher: { '@id': ORG_ID },
       inLanguage: locale,
       blogPost: blogPosts.map((post) => ({
         '@type': 'BlogPosting',

@@ -9,6 +9,7 @@ import { getBlogPostMetadata } from '@/lib/page-metadata'
 import { getCategoryPath, getCityPath, getLocalizedPath } from '@/lib/navigation'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
+import { ORG_ID, WEBSITE_ID } from '@/lib/seo/schema'
 
 const blogContentMap: Record<string, (locale: string) => string> = {
   'premium-erotik-plattform': getPremiumErotikPlattformContent
@@ -79,6 +80,9 @@ export default async function BlogPostPage({
         image: post.images ? [post.image, ...post.images] : [post.image],
         keywords: post.keywords,
         inLanguage: locale,
+        isPartOf: { '@id': WEBSITE_ID },
+        mainEntityOfPage: postUrl,
+        publisher: { '@id': ORG_ID },
       },
       {
         '@type': 'BreadcrumbList',
