@@ -5,7 +5,6 @@ import { notFound } from 'next/navigation'
 import { AgeGate } from '@/components/layout/AgeGate'
 import { Toaster } from '@/components/ui/toaster'
 import { QueryProvider } from '@/components/providers/QueryProvider'
-import { MemberAuthProvider } from '@/components/providers/MemberAuthProvider'
 import { LocaleInit } from '@/components/layout/LocaleInit'
 import { getHomeSeoMetadata } from '@/lib/seo/home'
 import { JsonLd } from '@/components/seo/JsonLd'
@@ -106,11 +105,9 @@ export default async function LocaleLayout({
       <LocaleInit locale={locale} />
       <QueryProvider>
         <NextIntlClientProvider messages={messages}>
-          <MemberAuthProvider>
-            <AgeGate />
-            {children}
-            <Toaster />
-          </MemberAuthProvider>
+          <AgeGate />
+          {children}
+          <Toaster />
         </NextIntlClientProvider>
       </QueryProvider>
     </>
